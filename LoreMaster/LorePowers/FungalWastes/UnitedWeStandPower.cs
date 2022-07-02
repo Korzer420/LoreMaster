@@ -40,10 +40,7 @@ namespace LoreMaster.LorePowers.FungalWastes
         private void HatchlingSpawn(On.KnightHatchling.orig_OnEnable orig, KnightHatchling self)
         {
             orig(self);
-
             self.normalDetails.damage = 10 + CompanionAmount * 2;
-            LoreMaster.Instance.Log("Final damage: " + self.normalDetails.damage);
-
         }
 
         public override void Disable()
@@ -85,7 +82,7 @@ namespace LoreMaster.LorePowers.FungalWastes
                         fsmState.InsertMethod(3, () =>
                         {
                             float attackSpeedIncrease = CompanionAmount * 0.1f;
-                            // Do prevent some unwanted behavior the attack speed is capped at 0.3 seconds
+                            // To prevent some unwanted behavior the attack speed is capped at 0.3 seconds
                             if (attackSpeedIncrease > 1.2f)
                                 attackSpeedIncrease = 1.2f;
                             companionFsm.FsmVariables.FindFsmFloat("Attack Timer").Value = 1.5f - attackSpeedIncrease;
@@ -95,9 +92,8 @@ namespace LoreMaster.LorePowers.FungalWastes
                     {
                         companionFsm = companion.LocateMyFSM("Control");
                         fsmState = companionFsm.GetState("Run Dir");
-                        fsmState.InsertMethod(7, () =>
+                        fsmState.AddMethod(() =>
                         {
-                            LoreMaster.Instance.Log("Called");
                             float weaverScale = 1f + (CompanionAmount * 0.15f);
                             companionFsm.FsmVariables.FindFsmFloat("Scale").Value = weaverScale;
                             companionFsm.FsmVariables.FindFsmFloat("Neg Scale").Value = weaverScale * -1f;
@@ -105,7 +101,6 @@ namespace LoreMaster.LorePowers.FungalWastes
                             companion.transform.SetScaleMatching(weaverScale);
                         });
                     }
-
                     _companions.Add(companion);
                 }
             }

@@ -20,6 +20,7 @@ using ItemChanger;
 using ItemChanger.Placements;
 using ItemChanger.Locations;
 using Vasi;
+using LoreMaster.LorePowers.FogCanyon;
 
 namespace LoreMaster
 {
@@ -52,148 +53,76 @@ namespace LoreMaster
 
         public override string GetVersion() => Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
-        public override void Initialize()
+        //public override void Initialize()
+        //{
+        //    if (Instance != null)
+        //        return;
+
+        //    Instance = this;
+        //    ModHooks.LanguageGetHook += ModHooks_LanguageGetHook;
+        //    On.UIManager.StartNewGame += UIManager_StartNewGame;
+
+        //}
+
+        private void UIManager_StartNewGame(On.UIManager.orig_StartNewGame orig, UIManager self, bool permaDeath, bool bossRush)
+        {
+            ItemChangerMod.CreateSettingsProfile();
+            List<MutablePlacement> teleportItems = new();
+            MutablePlacement teleportPlacement = new CoordinateLocation() { x = 35.0f, y = 5.4f, elevation = 0, sceneName = "Ruins1_27", name = "City_Teleporter" }.Wrap() as MutablePlacement;
+            teleportPlacement.Cost = new Paypal{ ToTemple = true };
+            teleportPlacement.Add(new TouristMagnetItem(true, "City_Teleporter"));
+            teleportItems.Add(teleportPlacement);
+
+            MutablePlacement secondPlacement = new CoordinateLocation() { x = 57f, y = 5f, elevation = 0, sceneName = "Room_temple", name = "Temple_Teleporter" }.Wrap() as MutablePlacement;
+            secondPlacement.Cost = new Paypal{ ToTemple = false };
+            secondPlacement.Add(new TouristMagnetItem(false, "Temple_Teleporter"));
+            teleportItems.Add(secondPlacement);
+            ItemChangerMod.AddPlacements(teleportItems);
+            orig(self, permaDeath, bossRush);
+        }
+
+        public override List<(string, string)> GetPreloadNames() => new List<(string, string)>()
+        {
+            ("RestingGrounds_08", "Ghost Battle Revek"),
+            ("sharedassets156", "Lil Jellyfish")
+        };
+
+        public override void Initialize(Dictionary<string, Dictionary<string, GameObject>> preloadedObjects)
         {
             if (Instance != null)
                 return;
 
             Instance = this;
             ModHooks.LanguageGetHook += ModHooks_LanguageGetHook;
-
             On.UIManager.StartNewGame += UIManager_StartNewGame;
 
+            foreach (string key in preloadedObjects.Keys)
+                foreach (string subKey in preloadedObjects[key].Keys)
+                    if (!PreloadedObjects.ContainsKey(subKey))
+                    { 
+                        PreloadedObjects.Add(subKey, preloadedObjects[key][subKey]);
+                        GameObject.DontDestroyOnLoad(preloadedObjects[key][subKey]);
+                    }
         }
-
-        private void UIManager_StartNewGame(On.UIManager.orig_StartNewGame orig, UIManager self, bool permaDeath, bool bossRush)
-        {
-            ItemChangerMod.CreateSettingsProfile();
-            MutablePlacement teleportPlacement = new CoordinateLocation() { x = 35.0f, y = 5.4f, elevation = 0, sceneName = "Ruins1_27", name = "City_Teleporter" }.Wrap() as MutablePlacement;
-            teleportPlacement.Cost = new Paypal() { ToTemple = true };
-            teleportPlacement.Add(new TouristMagnetItem(true, "City_Teleporter"));
-            ItemChangerMod.AddPlacements(new List<MutablePlacement>() { teleportPlacement });
-
-            MutablePlacement secondPlacement = new CoordinateLocation() { x = 56.62f, y = 3.41f, elevation = 0, sceneName = "ROOM_TEMPLE", name = "Temple_Teleporter" }.Wrap() as MutablePlacement;
-            secondPlacement.Cost = new Paypal() { ToTemple = false };
-            secondPlacement.Add(new TouristMagnetItem(false, "Temple_Teleporter"));
-            ItemChangerMod.AddPlacements(new List<MutablePlacement>() { secondPlacement });
-            orig(self, permaDeath, bossRush);
-        }
-
-        //public override void Initialize(Dictionary<string, Dictionary<string, GameObject>> preloadedObjects)
-        //{
-        //    foreach (string key in preloadedObjects.Keys)
-        //        foreach (string subKey in preloadedObjects[key].Keys)
-        //        {
-        //            if (!PreloadedObjects.ContainsKey(subKey))
-        //                PreloadedObjects.Add(subKey, preloadedObjects[key][subKey]);
-        //        }
-        //}
-
-        //public override List<(string, string)> GetPreloadNames()
-        //{
-        //    return new List<(string, string)>() { ("resources", "Hollow Shade") };
-        //}
 
         private string ModHooks_LanguageGetHook(string key, string sheetTitle, string text)
         {
-            if (key.Equals("TUT_TAB_01"))
+            if (key.Contains("TUT_TAB_02"))
             {
-                ActivePowers.Add(new FokusPower() { Acquired = true });
-                ActivePowers.Last().Enable();
-                text += ActivePowers[0].Description;
+                var uff = new JellyBellyPower();
+                uff.Enable();
             }
-            else if (key.Equals("TUT_TAB_02"))
-            {
-                ActivePowers.Add(new ScrewTheRulesPower() { Acquired = true });
-                ActivePowers.Last().Enable();
-                text += ActivePowers.Last().Description;
-            }
-            else if (key.Equals("TUT_TAB_03"))
-            {
-                Power power = new TrueFormPower();
-                power.Enable();
-                text += power.Description;
-                ActivePowers.Add(power);
-
-            }
-            else if (key.Contains("BRETTA_DIARY"))
-            {
-                Power power = new TouristPower();
-                power.Enable();
-                //text = power.Description;
-                //ActivePowers.Add(power);
-                //ActivePowers.Add(new TouristPower());
-                //ActivePowers[0].Enable();
-                
-            }
-            else if (key.Equals("PILGRIM_TAB_01"))
-            {
-                Power power = new PilgerPathPower();
-                power.Enable();
-                text += power.Description;
-                ActivePowers.Add(power);
-            }
-
+            
             return text;
         }
 
         public void Unload()
         {
-            // Reset the damage increase
-            //_damageStacks = 0;
             Instance = null;
+            ModHooks.LanguageGetHook -= ModHooks_LanguageGetHook;
+            On.UIManager.StartNewGame -= UIManager_StartNewGame;
         }
 
         #endregion
-
-        //private void ModHooks_SlashHitHook(Collider2D otherCollider, GameObject slash)
-        //{
-        //    // This event is fired multiple times, therefore we check every instance if an enemy was hit
-        //    if (otherCollider.gameObject.GetComponent<HealthManager>())
-        //        _hasHitEnemy = true;
-
-        //    // To prevent running multiple coroutines
-        //    if (_currentlyRunning)
-        //        return;
-
-        //    _currentlyRunning = true;
-        //    GameManager.instance.StartCoroutine(HitCooldown());
-        //}
-
-        //private int EmpowerNail(string name, int damage)
-        //{
-        //    if (string.Equals(name,"nailDamage"))
-        //        damage += _damageStacks;
-        //    return damage;
-        //}
-
-        //IEnumerator HitCooldown()
-        //{
-        //    // Give the event handler time to acknowledge a hit.
-        //    yield return new WaitForSeconds(0.25f);
-
-        //    if (_hasHitEnemy)
-        //    {
-        //        if (_damageStacks < 10)
-        //            _damageStacks++;
-        //    }
-        //    else
-        //        _damageStacks = 0;
-
-        //    UpdateNail();
-        //}
-
-        //private void UpdateNail()
-        //{
-        //    IEnumerator WaitThenUpdate()
-        //    {
-        //        yield return null;
-        //        PlayMakerFSM.BroadcastEvent("UPDATE NAIL DAMAGE");
-        //    }
-        //    GameManager.instance.StartCoroutine(WaitThenUpdate());
-
-        //    _hasHitEnemy = false;
-        //    _currentlyRunning = false;
-        //}
     }
 }

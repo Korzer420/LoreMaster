@@ -6,40 +6,28 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace LoreMaster
 {
-    internal record Paypal : Cost
+    internal record Paypal: Cost
     {
         public bool ToTemple { get; set; }
 
         public override bool CanPay()
-        => TouristPower.Inspected && PlayerData.instance.geo > 9;
+        => TouristPower.Inspected && PlayerData.instance.geo > 49;
 
         public override string GetCostText()
-        {
-            if (ToTemple)
-            {
-                if (!TouristPower.Inspected)
-                    return "This firefly seems to be sleeping. Whatever it has to offer, doesn't seem available at the moment. You wouldn't dare to wake it up, right?";
-                else
-                    return "Want to inspect the glorious Temple of the Black egg? Traveling costs are 10 geo (drinks not included).";
-            }
+        => TouristPower.Inspected ? "Take a ticket?" : "Currently closed";
 
-            if (!TouristPower.Inspected)
-                return "Hey, my friend. I hope you enjoy the tour of this magnificent temple. I'd like to offer a trip back to the city, but unfortunately my stag friend is a bit" +
-                    " exhausted. I don't want to push him too much. This would make me sad. You don't want me to be sad, right? :(";
-            else
-                return "Hey, my friend. I hope you enjoy the tour of this magnificent temple. If you want, I can take you back to the city, for the best view on the statue." +
-                    " But my sister wants me to take geo for my service. I hope this isn't a problem for you. Sorry :(";
-        }
-
+        public override int GetDisplayGeo() => 50;
+        
         public override bool HasPayEffects()
         => false;
 
         public override void OnPay()
         {
-            HeroController.instance.TakeGeo(10);
+            HeroController.instance.TakeGeo(50);
             HeroController.instance.StartCoroutine(Wait());
         }
 
@@ -47,6 +35,20 @@ namespace LoreMaster
         {
             yield return null;
             Paid = false;
+
+            string destinationScene = ToTemple ? "Room_Temple" : "Ruins1_27";
+            GameManager.instance.cameraCtrl.FadeOut(GlobalEnums.CameraFadeType.JUST_FADE);
+            yield return new WaitForSeconds(1f);
+            GameManager.instance.ChangeToScene(destinationScene, ToTemple ? "left1" : "right1", .25f);
+
+            yield return new WaitUntil(() => UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == destinationScene);
+
+            if (ToTemple)
+                yield break;
+
+            yield return new WaitForFinishedEnteringScene();
+
+            HeroController.instance.transform.position = new(55.38f, 23.41f);
         }
     }
 }

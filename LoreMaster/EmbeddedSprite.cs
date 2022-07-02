@@ -1,8 +1,5 @@
 using UnityEngine;
 using System.Reflection;
-using System.IO;
-using System.Collections.Generic;
-
 using ItemChanger.Internal;
 using ItemChanger;
 
@@ -10,22 +7,19 @@ namespace LoreMaster
 {
     internal class EmbeddedSprite : ISprite
     {
-        private string _key;
+        private const string _key = "Lore";
 
         private static SpriteManager _manager;
 
         static EmbeddedSprite()
         {
-            _manager = new(Assembly.GetExecutingAssembly(), "Resources");
+            _manager = new(Assembly.GetExecutingAssembly(), "LoreMaster.Resources.");
         }
-
-        public EmbeddedSprite(string key) 
-            => _key = key;
         
         public Sprite Value 
-            => SpriteManager.Instance.GetSprite(_key);
+            => _manager.GetSprite(_key);
 
         public ISprite Clone() 
-            => new EmbeddedSprite(_key);
+            => new EmbeddedSprite();
     }
 }
