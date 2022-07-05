@@ -37,6 +37,7 @@
     <Compile Include="Area.cs" />
     <Compile Include="Cost.cs" />
     <Compile Include="EmbeddedSprite.cs" />
+    <Compile Include="EnemyBinding.cs" />
     <Compile Include="FsmHelper.cs" />
     <Compile Include="LoreMaster.cs" />
     <Compile Include="LorePowers\Ancient Basin\WeDontTalkAboutShadePower.cs" />
@@ -59,9 +60,24 @@
     <Compile Include="LorePowers\FungalWastes\OneOfUsPower.cs" />
     <Compile Include="LorePowers\FungalWastes\PaleLuckPower.cs" />
     <Compile Include="LorePowers\FungalWastes\UnitedWeStandPower.cs" />
+    <Compile Include="LorePowers\Greenpath\CamouflagePower.cs" />
+    <Compile Include="LorePowers\Greenpath\GiftOnUnnPower.cs" />
+    <Compile Include="LorePowers\Greenpath\ReturnToUnnPower.cs" />
+    <Compile Include="LorePowers\Greenpath\RootedPower.cs" />
+    <Compile Include="LorePowers\Greenpath\TouchGrassPower.cs" />
+    <Compile Include="LorePowers\Greenpath\UnnMindblastPower.cs" />
+    <Compile Include="LorePowers\HowlingCliffs\JonisProtectionPower.cs" />
+    <Compile Include="LorePowers\HowlingCliffs\LifebloodWingsPower.cs" />
+    <Compile Include="LorePowers\KingdomsEdge\WisdomOfTheSagePower.cs" />
     <Compile Include="LorePowers\Power.cs" />
     <Compile Include="LorePowers\Dirtmouth\ScrewTheRulesPower.cs" />
     <Compile Include="LorePowers\Dirtmouth\TrueFormPower.cs" />
+    <Compile Include="LorePowers\QueensGarden\FlowerRingPower.cs" />
+    <Compile Include="LorePowers\QueensGarden\QueensGuardsPower.cs" />
+    <Compile Include="LorePowers\RestingGrounds\DreamBlessingPower.cs" />
+    <Compile Include="LorePowers\Waterways\RelentlessSwarmPower.cs" />
+    <Compile Include="LorePowers\Waterways\EternalSentinelPower.cs" />
+    <Compile Include="MindBlast.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TouristMagnetItem.cs" />
   </ItemGroup>
@@ -113,6 +129,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\Program Files\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.ImageConversionModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Program Files\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\UnityEngine.ImageConversionModule.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.Physics2DModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\Program Files\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\UnityEngine.Physics2DModule.dll</HintPath>
@@ -122,6 +142,10 @@
       <HintPath>..\..\Mod Dll\Vasi.dll</HintPath>
     </Reference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Queens_Thorns.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

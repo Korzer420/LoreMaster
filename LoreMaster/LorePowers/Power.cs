@@ -40,6 +40,9 @@ namespace LoreMaster.LorePowers
 
         #region Methods
 
+        /// <summary>
+        /// Enables this power in the overworld.
+        /// </summary>
         public abstract void Enable();
 
         public abstract void Disable();

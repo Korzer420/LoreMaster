@@ -19,8 +19,15 @@ using LoreMaster.LorePowers.CityOfTears;
 using ItemChanger;
 using ItemChanger.Placements;
 using ItemChanger.Locations;
-using Vasi;
 using LoreMaster.LorePowers.FogCanyon;
+using LoreMaster.LorePowers.Greenpath;
+using LoreMaster.LorePowers.HowlingCliffs;
+using ItemChanger.Extensions;
+using ItemChanger.FsmStateActions;
+using LoreMaster.LorePowers.QueensGarden;
+using LoreMaster.LorePowers.RestingGrounds;
+using LoreMaster.LorePowers.Waterways;
+using LoreMaster.LorePowers.KingdomsEdge;
 
 namespace LoreMaster
 {
@@ -53,17 +60,6 @@ namespace LoreMaster
 
         public override string GetVersion() => Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
-        //public override void Initialize()
-        //{
-        //    if (Instance != null)
-        //        return;
-
-        //    Instance = this;
-        //    ModHooks.LanguageGetHook += ModHooks_LanguageGetHook;
-        //    On.UIManager.StartNewGame += UIManager_StartNewGame;
-
-        //}
-
         private void UIManager_StartNewGame(On.UIManager.orig_StartNewGame orig, UIManager self, bool permaDeath, bool bossRush)
         {
             ItemChangerMod.CreateSettingsProfile();
@@ -95,7 +91,7 @@ namespace LoreMaster
             Instance = this;
             ModHooks.LanguageGetHook += ModHooks_LanguageGetHook;
             On.UIManager.StartNewGame += UIManager_StartNewGame;
-
+            
             foreach (string key in preloadedObjects.Keys)
                 foreach (string subKey in preloadedObjects[key].Keys)
                     if (!PreloadedObjects.ContainsKey(subKey))
@@ -109,10 +105,10 @@ namespace LoreMaster
         {
             if (key.Contains("TUT_TAB_02"))
             {
-                var uff = new JellyBellyPower();
-                uff.Enable();
+                Power power = new WisdomOfTheSagePower();
+                power.Enable();
+                ActivePowers.Add(power);
             }
-            
             return text;
         }
 
