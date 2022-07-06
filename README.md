@@ -45,12 +45,13 @@ You have five states available:
 - remove: This power doesn't work and is not considered in the logic at all.
 
 A option file can look like this:
+```cs
 %Override%
 %AmongUs% global
 %UnitedWeStand% global
 %ScrewTheRules% disable
 %True Form% exclude
-
+```
 Take note that adding white spaces in between the % don't matter.
 
 # Powers
