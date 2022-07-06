@@ -42,16 +42,17 @@
     <Compile Include="FsmHelper.cs" />
     <Compile Include="LoreMaster.cs" />
     <Compile Include="LorePowers\Ancient Basin\WeDontTalkAboutShadePower.cs" />
-    <Compile Include="LorePowers\CityOfTears\EyesOfTheWatcherPower.cs" />
+    <Compile Include="LorePowers\CityOfTears\EyeOfTheWatcherPower.cs" />
     <Compile Include="LorePowers\CityOfTears\HotStreakPower.cs" />
     <Compile Include="LorePowers\CityOfTears\MarissasAudiencePower.cs" />
     <Compile Include="LorePowers\CityOfTears\OverwhelmingPower.cs" />
     <Compile Include="LorePowers\CityOfTears\SoulExtractEfficiencyPower.cs" />
     <Compile Include="LorePowers\CityOfTears\TouristPower.cs" />
+    <Compile Include="LorePowers\Crossroads\GreaterMindPower.cs" />
     <Compile Include="LorePowers\Crossroads\PilgerPathPower.cs" />
     <Compile Include="LorePowers\Deepnest\InfestedPower.cs" />
     <Compile Include="LorePowers\Deepnest\MaskOverchargePower.cs" />
-    <Compile Include="LorePowers\Dirtmouth\FokusPower.cs" />
+    <Compile Include="LorePowers\Dirtmouth\WellFocusedPower.cs" />
     <Compile Include="LorePowers\Dirtmouth\HazardPower.cs" />
     <Compile Include="LorePowers\FogCanyon\JellyBellyPower.cs" />
     <Compile Include="LorePowers\FogCanyon\JellyFlowPower.cs" />
@@ -78,7 +79,7 @@
     <Compile Include="LorePowers\Dirtmouth\ScrewTheRulesPower.cs" />
     <Compile Include="LorePowers\Dirtmouth\TrueFormPower.cs" />
     <Compile Include="LorePowers\QueensGarden\FlowerRingPower.cs" />
-    <Compile Include="LorePowers\QueensGarden\QueensGuardsPower.cs" />
+    <Compile Include="LorePowers\QueensGarden\QueenThornsPower.cs" />
     <Compile Include="LorePowers\RestingGrounds\DreamBlessingPower.cs" />
     <Compile Include="LorePowers\Waterways\RelentlessSwarmPower.cs" />
     <Compile Include="LorePowers\Waterways\EternalSentinelPower.cs" />
@@ -87,6 +88,7 @@
     <Compile Include="LorePowers\WhitePalace\ShadowForgedPower.cs" />
     <Compile Include="LorePowers\WhitePalace\ShiningBoundPower.cs" />
     <Compile Include="MindBlast.cs" />
+    <Compile Include="PowerTag.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TouristMagnetItem.cs" />
   </ItemGroup>

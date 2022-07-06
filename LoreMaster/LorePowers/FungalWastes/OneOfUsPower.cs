@@ -15,13 +15,17 @@ namespace LoreMaster.LorePowers.FungalWastes
 
         public OneOfUsPower(): base("FUNG_TAB_04", Area.FungalWastes)
         {
-            Description = "<br>[One of Us]<br>Occasionally you emit a spore cloud. (Hold the super dash button to prevent the cloud.)";
-            _cloud = GameObject.Find("_GameManager");
+            Hint = "<br>[One of Us]<br>Occasionally you emit a spore cloud. (Hold the super dash button to prevent the cloud.)";
+            
+        }
 
+        protected override void Initialize()
+        {
+            _cloud = GameObject.Find("_GameManager");
             _cloud = _cloud.transform.Find("GlobalPool/Knight Spore Cloud(Clone)").gameObject;
         }
 
-        public override void Enable()
+        protected override void Enable()
         {
             _cloudRoutine = HeroController.instance.StartCoroutine(EmitCloud());
         }
@@ -43,7 +47,7 @@ namespace LoreMaster.LorePowers.FungalWastes
             }
         }
 
-        public override void Disable()
+        protected override void Disable()
         {
             HeroController.instance.StopCoroutine(_cloudRoutine);
         }

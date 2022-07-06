@@ -19,16 +19,20 @@ public class InfestedPower : Power
 
     public InfestedPower() : base("", Area.Deepnest)
     {
-        _weaverPrefab = GameObject.Find("Knight/Charm Effects").LocateMyFSM("Weaverling Control").GetState("Spawn").GetFirstActionOfType<SpawnObjectFromGlobalPool>().gameObject.Value;
+        
     }
 
     #endregion
 
     #region Public Methods
 
-    public override void Enable() => On.HealthManager.Die += HealthManager_Die;
-    
+    protected override void Initialize()
+    {
+        _weaverPrefab = GameObject.Find("Knight/Charm Effects").LocateMyFSM("Weaverling Control").GetState("Spawn").GetFirstActionOfType<SpawnObjectFromGlobalPool>().gameObject.Value;
+    }
 
+    protected override void Enable() => On.HealthManager.Die += HealthManager_Die;
+    
     private void HealthManager_Die(On.HealthManager.orig_Die orig, HealthManager self, float? attackDirection, AttackTypes attackType, bool ignoreEvasion)
     {
         orig(self, attackDirection, attackType, ignoreEvasion);
@@ -40,7 +44,7 @@ public class InfestedPower : Power
                 _weavers.Add(GameObject.Instantiate(_weaverPrefab, new Vector3(HeroController.instance.transform.GetPositionX(), HeroController.instance.transform.GetPositionY()), Quaternion.identity));
     }
 
-    public override void Disable() => On.HealthManager.Die -= HealthManager_Die;
+    protected override void Disable() => On.HealthManager.Die -= HealthManager_Die;
     
     #endregion
 }

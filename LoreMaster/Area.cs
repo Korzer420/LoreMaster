@@ -34,6 +34,11 @@ namespace LoreMaster
 
         KingdomsEdge,
 
-        WhitePalace
+        WhitePalace,
+
+        /// <summary>
+        /// This in unused, it only exists to compare against the last zone. Sorry peaks, really liked your music :c
+        /// </summary>
+        Peaks
     }
 }

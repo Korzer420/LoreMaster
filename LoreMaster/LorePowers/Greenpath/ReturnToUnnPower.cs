@@ -26,7 +26,7 @@ public class ReturnToUnnPower : Power
 
     #region Public Methods
 
-    public override void Enable()
+    protected override void Enable()
     {
         HeroController.instance.StartCoroutine(AdjustMovementSpeed());
     }
@@ -62,7 +62,7 @@ public class ReturnToUnnPower : Power
         }
     }
 
-    public override void Disable()
+    protected override void Disable()
     {
         HeroController.instance.StopCoroutine(AdjustMovementSpeed());
         if (_movementSpeedBuff)

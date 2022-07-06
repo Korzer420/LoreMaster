@@ -28,10 +28,10 @@ namespace LoreMaster.LorePowers.FungalWastes
         public static UnitedWeStandPower Instance { get; set; }
 
         public UnitedWeStandPower() : base("FUNG_TAB_03", Area.FungalWastes)
-        => Description = "<br>[United we stand]<br>Your companions inspire each other.";
+        => Hint = "<br>[United we stand]<br>Your companions inspire each other.";
 
 
-        public override void Enable()
+        protected override void Enable()
         {
             On.KnightHatchling.OnEnable += HatchlingSpawn;
             _runningCoroutines.Add(HeroController.instance.StartCoroutine(UpdateCompanions()));
@@ -43,7 +43,7 @@ namespace LoreMaster.LorePowers.FungalWastes
             self.normalDetails.damage = 10 + CompanionAmount * 2;
         }
 
-        public override void Disable()
+        protected override void Disable()
         {
             _runningCoroutines.RemoveAll(x => x == null);
             On.KnightHatchling.OnEnable -= HatchlingSpawn;

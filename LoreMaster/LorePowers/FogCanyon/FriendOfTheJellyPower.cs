@@ -24,7 +24,7 @@ namespace LoreMaster.LorePowers.FogCanyon
 
         #region Methods
 
-        public override void Enable()
+        protected override void Enable()
         {
             On.PlayMakerFSM.OnEnable += PlayMakerFSM_OnEnable;
             LoreMaster.Instance.PreloadedObjects["Lil Jellyfish"].GetComponent<DamageHero>().damageDealt = 0;
@@ -53,7 +53,7 @@ namespace LoreMaster.LorePowers.FogCanyon
         {
             if (self.FsmName.Equals("Explosion Control"))
             {
-                if (IsCurrentlyActive())
+                if (Active)
                 { 
                     // This is for godhome oomas
                     if(self.gameObject.name.Contains("Gas Explosion Uumuu"))
@@ -77,7 +77,7 @@ namespace LoreMaster.LorePowers.FogCanyon
             orig(self);
         }
 
-        public override void Disable()
+        protected override void Disable()
         {
             UnityEngine.SceneManagement.SceneManager.activeSceneChanged -= SceneManager_activeSceneChanged;
             LoreMaster.Instance.PreloadedObjects["Lil Jellyfish"].GetComponent<DamageHero>().damageDealt = 2;

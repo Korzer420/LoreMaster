@@ -20,14 +20,14 @@ internal class SacredShellPower : Power
 
     #region Public Methods
 
-    public override void Enable()
+    protected override void Enable()
     {
         ModHooks.AfterTakeDamageHook += ModHooks_AfterTakeDamageHook;
     }
 
     private int ModHooks_AfterTakeDamageHook(int hazardType, int damageAmount) => damageAmount > 1 ? 1 : damageAmount;
 
-    public override void Disable()
+    protected override void Disable()
     {
         ModHooks.AfterTakeDamageHook -= ModHooks_AfterTakeDamageHook;
     }

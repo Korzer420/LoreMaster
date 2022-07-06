@@ -13,7 +13,12 @@ namespace LoreMaster.LorePowers.FungalWastes
 
         public MantisStylePower() : base("MANTIS_PLAQUE_01", Area.FungalWastes)
         {
-            Description = "<br>[Mantis Style]<br>Your Nail range is increased.";
+            Hint = "<br>[Mantis Style]<br>Your Nail range is increased.";
+            
+        }
+
+        protected override void Initialize()
+        {
             GameObject attackDirections = GameObject.Find("Knight/Attacks");
             _attackTransform[0] = attackDirections.transform.Find("Slash");
             _attackTransform[1] = attackDirections.transform.Find("AltSlash");
@@ -21,7 +26,7 @@ namespace LoreMaster.LorePowers.FungalWastes
             _attackTransform[3] = attackDirections.transform.Find("DownSlash");
         }
 
-        public override void Disable()
+        protected override void Disable()
         {
             for (int i = 0; i < 4; i++)
             {
@@ -38,7 +43,7 @@ namespace LoreMaster.LorePowers.FungalWastes
             }
         }
 
-        public override void Enable()
+        protected override void Enable()
         {
             for (int i = 0; i < 4; i++)
             {

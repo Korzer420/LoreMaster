@@ -20,7 +20,7 @@ internal class YouLikeJazzPower : Power
 
     public YouLikeJazzPower() : base("", Area.KingdomsEdge)
     {
-        _hatchlingVariables = GameObject.Find("Charm Effects").LocateMyFSM("Hatchling Spawn").FsmVariables;
+        
         CustomText = GetCustomText();
     }
 
@@ -28,14 +28,19 @@ internal class YouLikeJazzPower : Power
 
     #region Public Methods
 
-    public override void Enable()
+    protected override void Initialize()
+    {
+        _hatchlingVariables = GameObject.Find("Charm Effects").LocateMyFSM("Hatchling Spawn").FsmVariables;
+    }
+
+    protected override void Enable()
     {
         _hatchlingVariables.FindFsmInt("Hatchling Max").Value = 10;
         _hatchlingVariables.FindFsmInt("Soul Cost").Value = 2;
         _hatchlingVariables.FindFsmFloat("Hatch Time").Value = 2f;
     }
 
-    public override void Disable()
+    protected override void Disable()
     {
         _hatchlingVariables.FindFsmInt("Hatchling Max").Value = 4;
         _hatchlingVariables.FindFsmInt("Soul Cost").Value = 8;

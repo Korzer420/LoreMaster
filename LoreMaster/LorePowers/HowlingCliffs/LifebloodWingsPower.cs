@@ -35,7 +35,7 @@ public class LifebloodWingsPower : Power
 
     public LifebloodWingsPower() : base("", Area.Cliffs)
     {
-        _wings = GameObject.Find("Knight/Effects").transform.Find("Double J Wings").GetComponent<tk2dSprite>();
+        
     }
 
     #endregion
@@ -58,14 +58,19 @@ public class LifebloodWingsPower : Power
 
     #region Public Methods
 
-    public override void Enable()
+    protected override void Initialize()
+    {
+        _wings = GameObject.Find("Knight/Effects").transform.Find("Double J Wings").GetComponent<tk2dSprite>();
+    }
+
+    protected override void Enable()
     {
         _wings.color = Color.cyan;
         AddRefreshHooks();
         On.HeroController.DoDoubleJump += HeroController_DoDoubleJump;
     }
 
-    public override void Disable()
+    protected override void Disable()
     {
         _wings.color = Color.white;
         RemoveRefreshHooks();

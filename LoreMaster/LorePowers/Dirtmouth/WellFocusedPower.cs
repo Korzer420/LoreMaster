@@ -10,16 +10,16 @@ namespace LoreMaster.LorePowers
     /// <summary>
     /// Class for the power to cast focus 30% faster.
     /// </summary>
-    public class FokusPower : Power
+    public class WellFocusedPower : Power
     {
         private float _baseUnFocusSpeed;
         private float _baseFocusSpeed;
 
-        public FokusPower() : base("TUT_TAB_01",Area.Dirtmouth)
-        => Description = "<br>[Well Focused]<br>You focus a bit faster.";
+        public WellFocusedPower() : base("TUT_TAB_01",Area.Dirtmouth)
+        => Hint = "<br>[Well Focused]<br>You focus a bit faster.";
         
 
-        public override void Disable()
+        protected override void Disable()
         {
             PlayMakerFSM playMakerFSM = HeroController.instance.spellControl;
 
@@ -27,9 +27,9 @@ namespace LoreMaster.LorePowers
             playMakerFSM.Fsm.GetFsmFloat("Time Per MP Drain CH").Value *= _baseFocusSpeed;
         }
 
-        public override void Enable()
+        protected override void Enable()
         {
-            if (!Acquired)
+            if (!Active)
                 return;
             PlayMakerFSM playMakerFSM = HeroController.instance.spellControl;
             _baseUnFocusSpeed = playMakerFSM.Fsm.GetFsmFloat("Time Per MP Drain CH").Value;

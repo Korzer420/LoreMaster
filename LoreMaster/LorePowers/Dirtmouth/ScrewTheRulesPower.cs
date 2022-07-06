@@ -17,10 +17,10 @@ namespace LoreMaster.LorePowers
     public class ScrewTheRulesPower : Power
     {
         public ScrewTheRulesPower() : base("TUT_TAB_02", Area.Dirtmouth)
-        => Description = "<br>[Screw the Rules]<br>You rage is weaker but quicker. Still deadly.";
+        => Hint = "<br>[Screw the Rules]<br>You rage is weaker but quicker. Still deadly.";
 
 
-        public override void Disable()
+        protected override void Disable()
         {
             PlayMakerFSM fsm = GameObject.Find("Charm Effects").LocateMyFSM("Fury");
             FsmState state = fsm.GetState("Check HP");
@@ -50,7 +50,7 @@ namespace LoreMaster.LorePowers
                 state.GetAction<SetFsmFloat>(actionIndex).setValue.Value = 1.75f;
         }
 
-        public override void Enable()
+        protected override void Enable()
         {
             PlayMakerFSM fsm = GameObject.Find("Charm Effects").LocateMyFSM("Fury");
             FsmState state = fsm.GetState("Check HP");

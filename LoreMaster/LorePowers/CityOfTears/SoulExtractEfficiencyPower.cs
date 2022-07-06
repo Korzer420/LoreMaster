@@ -22,12 +22,12 @@ internal class SoulExtractEfficiencyPower : Power
 
     #region Methods
 
-    public override void Enable()
+    protected override void Enable()
     {
         ModHooks.SoulGainHook += ModHooks_SoulGainHook;
     }
 
-    public override void Disable()
+    protected override void Disable()
     {
         ModHooks.SoulGainHook -= ModHooks_SoulGainHook;
     }

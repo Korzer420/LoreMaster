@@ -26,14 +26,19 @@ internal class DreamBlessingPower : Power
 
     public DreamBlessingPower() : base("", Area.RestingGrounds)
     {
-        _weaverlingPrefab = GameObject.Find("Charm Effects").LocateMyFSM("Weaverling Control").GetState("Spawn").GetFirstActionOfType<SpawnObjectFromGlobalPool>().gameObject.Value;
+        
     }
 
     #endregion
 
     #region Public Methods
 
-    public override void Enable()
+    protected override void Initialize()
+    {
+        _weaverlingPrefab = GameObject.Find("Charm Effects").LocateMyFSM("Weaverling Control").GetState("Spawn").GetFirstActionOfType<SpawnObjectFromGlobalPool>().gameObject.Value;
+    }
+
+    protected override void Enable()
     {
         On.EnemyDreamnailReaction.RecieveDreamImpact += EnemyDreamnailReaction_RecieveDreamImpact;
     }
@@ -72,7 +77,7 @@ internal class DreamBlessingPower : Power
         }
     }
 
-    public override void Disable()
+    protected override void Disable()
     {
         On.EnemyDreamnailReaction.RecieveDreamImpact -= EnemyDreamnailReaction_RecieveDreamImpact;
     }

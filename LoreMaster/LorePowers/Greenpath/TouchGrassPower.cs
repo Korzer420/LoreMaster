@@ -78,7 +78,7 @@ public class TouchGrassPower : Power
 
     #region Public Methods
 
-    public override void Enable()
+    protected override void Enable()
     {
         // Grass is a bit... special. We hook onto every grass class. This (hopefully) catches all grasses. -.- 
         On.Grass.OnTriggerEnter2D += Grass_OnTriggerEnter2D;
@@ -89,7 +89,7 @@ public class TouchGrassPower : Power
         On.GrassCut.OnTriggerEnter2D += GrassCut_OnTriggerEnter2D;
     }
 
-    public override void Disable()
+    protected override void Disable()
     {
         On.Grass.OnTriggerEnter2D -= Grass_OnTriggerEnter2D;
         On.GrassBehaviour.OnTriggerEnter2D -= GrassBehaviour_OnTriggerEnter2D;

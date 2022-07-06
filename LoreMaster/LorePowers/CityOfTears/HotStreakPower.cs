@@ -23,20 +23,20 @@ namespace LoreMaster.LorePowers.CityOfTears
 
         public HotStreakPower() : base("RUIN_TAB_01", Area.CityOfTears)
         {
-            Description = "[Hot Streak]Successfully striking enemies shall increase your power.";
+            Hint = "[Hot Streak]Successfully striking enemies shall increase your power.";
         }
 
         #endregion
 
         #region Methods
 
-        public override void Enable()
+        protected override void Enable()
         {
             ModHooks.SlashHitHook += ModHooks_SlashHitHook;
             ModHooks.GetPlayerIntHook += EmpowerNail;
         }
 
-        public override void Disable()
+        protected override void Disable()
         {
             ModHooks.SlashHitHook -= ModHooks_SlashHitHook;
             ModHooks.GetPlayerIntHook -= EmpowerNail;

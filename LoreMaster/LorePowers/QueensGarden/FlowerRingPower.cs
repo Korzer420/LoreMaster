@@ -22,7 +22,7 @@ public class FlowerRingPower : Power
 
     #region Public Methods
 
-    public override void Enable()
+    protected override void Enable()
     {
         On.PlayMakerFSM.OnEnable += PlayMakerFSM_OnEnable;
     }
@@ -34,7 +34,7 @@ public class FlowerRingPower : Power
             if (self.GetState("Set").Actions[0] is not Lambda)
                 self.GetState("Set").AddFirstAction(new Lambda(() =>
                  {
-                     if (IsCurrentlyActive())
+                     if (Active)
                      {
                          float damageMultiplier = 1f;
 
@@ -58,7 +58,7 @@ public class FlowerRingPower : Power
         orig(self);
     }
 
-    public override void Disable() 
+    protected override void Disable() 
     {
         On.PlayMakerFSM.OnEnable -= PlayMakerFSM_OnEnable;
     }

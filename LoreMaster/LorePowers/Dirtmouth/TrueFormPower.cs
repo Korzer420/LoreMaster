@@ -17,8 +17,12 @@ namespace LoreMaster.LorePowers
 
         public TrueFormPower() : base("TUT_TAB_03", Area.Dirtmouth)
         {
-            Description = "<br>[True Form]<br>While the true form is revealed, its vessels nail gets more powerful. Especially near your true self.";
-            LoreMaster.Instance.Log("Activate True Form");
+            Hint = "<br>[True Form]<br>While the true form is revealed, its vessels nail gets more powerful. Especially near your true self.";
+            
+        }
+
+        protected override void Initialize()
+        {
             GameObject attackDirections = GameObject.Find("Knight/Attacks");
             _attackTransform.Add(attackDirections.transform.Find("Slash"));
             _attackTransform.Add(attackDirections.transform.Find("AltSlash"));
@@ -26,7 +30,7 @@ namespace LoreMaster.LorePowers
             _attackTransform.Add(attackDirections.transform.Find("DownSlash"));
         }
 
-        public override void Enable()
+        protected override void Enable()
         {
             UnityEngine.SceneManagement.SceneManager.activeSceneChanged += SceneManager_activeSceneChanged;
             ModHooks.GetPlayerIntHook += NailDamageUpdate;
@@ -90,7 +94,7 @@ namespace LoreMaster.LorePowers
             }
         }
 
-        public override void Disable()
+        protected override void Disable()
         {
             UnityEngine.SceneManagement.SceneManager.activeSceneChanged -= SceneManager_activeSceneChanged;
             ModHooks.GetPlayerIntHook -= NailDamageUpdate;

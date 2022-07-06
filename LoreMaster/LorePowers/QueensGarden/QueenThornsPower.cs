@@ -13,7 +13,7 @@ using UnityEngine;
 
 namespace LoreMaster.LorePowers.QueensGarden;
 
-public class QueensGuardsPower : Power
+public class QueenThornsPower : Power
 {
     #region Members
 
@@ -25,7 +25,23 @@ public class QueensGuardsPower : Power
 
     #region Constructors
 
-    public QueensGuardsPower() : base("", Area.QueensGarden)
+    public QueenThornsPower() : base("", Area.QueensGarden)
+    {
+        
+    }
+
+    #endregion
+
+    #region Properties
+
+    public bool CanHeal => PlayerData.instance.GetBool("equippedCharm_27") 
+        || (PlayerData.instance.GetInt("Health") < PlayerData.instance.GetInt("maxHealth"));
+
+    #endregion
+
+    #region Public Methods
+
+    protected override void Initialize()
     {
         // Save the old thorns image and create a new one which can be used anytime.
         if (_sprites[1] == null)
@@ -44,9 +60,9 @@ public class QueensGuardsPower : Power
         currentWorkingState.AddFirstAction(new Lambda(() =>
         {
             // Prevent the freeze in the air
-            currentWorkingState.GetFirstActionOfType<SetPosition>().Enabled = !IsCurrentlyActive();
+            currentWorkingState.GetFirstActionOfType<SetPosition>().Enabled = !Active;
             // Prevent the gravity from getting removed (this would cause the hero to float until the thorns despawn... probably).
-            currentWorkingState.GetActionsOfType<SendMessage>().Take(2).ToList().ForEach(x => x.Enabled = !IsCurrentlyActive());
+            currentWorkingState.GetActionsOfType<SendMessage>().Take(2).ToList().ForEach(x => x.Enabled = !Active);
 
         }));
 
@@ -54,7 +70,7 @@ public class QueensGuardsPower : Power
         currentWorkingState.AddFirstAction(new Lambda(() =>
         {
             // Prevent the freeze in the air
-            currentWorkingState.GetFirstActionOfType<SetPosition>().Enabled = !IsCurrentlyActive();
+            currentWorkingState.GetFirstActionOfType<SetPosition>().Enabled = !Active;
             // I'm unsure if this is needed, but it can't hurt, right?
             HeroController.instance.RegainControl();
         }));
@@ -65,33 +81,22 @@ public class QueensGuardsPower : Power
         foreach (Transform child in _thorns.transform)
         {
             fsm = child.gameObject.LocateMyFSM("set_thorn_damage");
-            fsm.GetState("Set").InsertAction(new Lambda(() => 
+            fsm.GetState("Set").InsertAction(new Lambda(() =>
             {
-                if (IsCurrentlyActive())
+                if (Active)
                     fsm.FsmVariables.GetFsmInt("Damage").Value *= 2;
             }), 1);
         }
     }
 
-    #endregion
-
-    #region Properties
-
-    public bool CanHeal => PlayerData.instance.GetBool("equippedCharm_27") 
-        || (PlayerData.instance.GetInt("Health") < PlayerData.instance.GetInt("maxHealth"));
-
-    #endregion
-
-    #region Public Methods
-
-    public override void Enable()
+    protected override void Enable()
     {
         On.HealthManager.TakeDamage += HealthManager_TakeDamage;
         On.HealthManager.Die += HealthManager_Die;
         CharmIconList.Instance.spriteList[12] = _sprites[1];
     }
 
-    public override void Disable()
+    protected override void Disable()
     {
         On.HealthManager.TakeDamage -= HealthManager_TakeDamage;
         On.HealthManager.Die -= HealthManager_Die;

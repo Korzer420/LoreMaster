@@ -23,19 +23,19 @@ namespace LoreMaster.LorePowers.FungalWastes
 
         public EternalValorPower() : base("MANTIS_PLAQUE_02", Area.FungalWastes)
         {
-            Description = "[Eternal Valor]<br>The heat of the battle shall allow you to endure the pain.";
+            Hint = "[Eternal Valor]<br>The heat of the battle shall allow you to endure the pain.";
         }
 
         #endregion
 
         #region Methods
 
-        public override void Enable()
+        protected override void Enable()
         {
             ModHooks.SlashHitHook += ModHooks_SlashHitHook;
         }
 
-        public override void Disable()
+        protected override void Disable()
         {
             throw new NotImplementedException();
         }

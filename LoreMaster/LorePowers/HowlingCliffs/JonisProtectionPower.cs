@@ -69,14 +69,14 @@ public class JonisProtectionPower : Power
 
     #region Public Methods
 
-    public override void Enable()
+    protected override void Enable()
     {
         UnityEngine.SceneManagement.SceneManager.activeSceneChanged += SceneManager_activeSceneChanged;
         ModHooks.CharmUpdateHook += ModHooks_CharmUpdateHook;
         ModHooks.TakeHealthHook += ModHooks_TakeHealthHook;
     }
 
-    public override void Disable()
+    protected override void Disable()
     {
         UnityEngine.SceneManagement.SceneManager.activeSceneChanged -= SceneManager_activeSceneChanged;
         ModHooks.CharmUpdateHook -= ModHooks_CharmUpdateHook;

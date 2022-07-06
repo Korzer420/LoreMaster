@@ -19,19 +19,20 @@ public class CamouflagePower : Power
 
     #region Constructors
 
-    public CamouflagePower() : base("", Area.Greenpath)
-    {
-        _heroSprite = GameObject.Find("Knight").GetComponent<tk2dSprite>();
-    }
+    public CamouflagePower() : base("", Area.Greenpath) { }
 
     #endregion
 
     #region Public Methods
 
-    public override void Enable() => HeroController.instance.StartCoroutine(WaitForCamouflage());
+    protected override void Initialize()
+    {
+        _heroSprite = GameObject.Find("Knight").GetComponent<tk2dSprite>();
+    }
 
+    protected override void Enable() => HeroController.instance.StartCoroutine(WaitForCamouflage());
 
-    public override void Disable()
+    protected override void Disable()
     {
         HeroController.instance.StopCoroutine(WaitForCamouflage());
         PlayerData.instance.isInvincible = false;

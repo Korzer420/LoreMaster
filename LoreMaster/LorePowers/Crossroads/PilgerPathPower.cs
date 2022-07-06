@@ -17,16 +17,16 @@ namespace LoreMaster.LorePowers.Crossroads
         }
 
         public PilgerPathPower() : base("PILGRIM_TAB_01", Area.Crossroads)
-        => Description = "<br>[Reluctant Pilger]<br>While you stay on the path, your nail shall receive the gift of the grubfather.";
+        => Hint = "<br>[Reluctant Pilger]<br>While you stay on the path, your nail shall receive the gift of the grubfather.";
 
 
-        public override void Enable()
+        protected override void Enable()
         {
             ModHooks.GetPlayerBoolHook += ModHooks_GetPlayerBoolHook;
             ModHooks.GetPlayerIntHook += GetBeamDamage;
         }
 
-        public override void Disable()
+        protected override void Disable()
         {
             ModHooks.GetPlayerBoolHook -= ModHooks_GetPlayerBoolHook;
             ModHooks.GetPlayerIntHook -= GetBeamDamage;

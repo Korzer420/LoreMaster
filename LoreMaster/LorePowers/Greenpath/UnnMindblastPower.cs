@@ -20,7 +20,7 @@ public class UnnMindblastPower : Power
 
     public UnnMindblastPower() : base("", Area.Greenpath)
     {
-        _dreamNailSprites = GameObject.Find("Knight/Dream Effects").GetComponentsInChildren<tk2dSprite>(true);
+        
     }
 
     #endregion
@@ -39,7 +39,12 @@ public class UnnMindblastPower : Power
 
     #region Public Methods
 
-    public override void Enable()
+    protected override void Initialize()
+    {
+        _dreamNailSprites = GameObject.Find("Knight/Dream Effects").GetComponentsInChildren<tk2dSprite>(true);
+    }
+
+    protected override void Enable()
     {
         On.EnemyDreamnailReaction.RecieveDreamImpact += EnemyDreamnailReaction_RecieveDreamImpact;
         On.HealthManager.TakeDamage += HealthManager_TakeDamage;
@@ -95,7 +100,7 @@ public class UnnMindblastPower : Power
             dreamNailComponent.color = dreamNailColor;
     }
 
-    public override void Disable()
+    protected override void Disable()
     {
         On.EnemyDreamnailReaction.RecieveDreamImpact -= EnemyDreamnailReaction_RecieveDreamImpact;
         On.HealthManager.TakeDamage -= HealthManager_TakeDamage;

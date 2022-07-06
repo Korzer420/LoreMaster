@@ -24,11 +24,7 @@ internal class MarissasAudiencePower : Power
 
     public MarissasAudiencePower() : base("Marissa Poster", Area.CityOfTears)
     {
-        GameObject charmEffects = GameObject.Find("Charm Effects");
-
-        _companions[0] = charmEffects.LocateMyFSM("Spawn Grimmchild").GetAction<SpawnObjectFromGlobalPool>("Spawn", 2).gameObject.Value;
-        _companions[1] = charmEffects.LocateMyFSM("Weaverling Control").GetAction<SpawnObjectFromGlobalPool>("Spawn", 0).gameObject.Value;
-        _companions[2] = charmEffects.LocateMyFSM("Hatchling Spawn").GetAction<SpawnObjectFromGlobalPool>("Hatch", 2).gameObject.Value;
+        
     }
 
     public bool IsMarissaDead => SceneData.instance.FindMyState(new PersistentBoolData()
@@ -38,8 +34,18 @@ internal class MarissasAudiencePower : Power
         semiPersistent = false
     })?.activated ?? false;
 
-    public override void Enable()
+    protected override void Initialize()
     {
+        GameObject charmEffects = GameObject.Find("Charm Effects");
+        _companions[0] = charmEffects.LocateMyFSM("Spawn Grimmchild").GetAction<SpawnObjectFromGlobalPool>("Spawn", 2).gameObject.Value;
+        _companions[1] = charmEffects.LocateMyFSM("Weaverling Control").GetAction<SpawnObjectFromGlobalPool>("Spawn", 0).gameObject.Value;
+        _companions[2] = charmEffects.LocateMyFSM("Hatchling Spawn").GetAction<SpawnObjectFromGlobalPool>("Hatch", 2).gameObject.Value;
+    }
+
+    protected override void Enable()
+    {
+        if (!_initialized)
+            Initialize();
         HeroController.instance.StartCoroutine(GatherAudience());
     }
 
@@ -85,7 +91,7 @@ internal class MarissasAudiencePower : Power
         }
     }
 
-    public override void Disable()
+    protected override void Disable()
     {
         HeroController.instance.StopCoroutine(GatherAudience());
         if (_extraCompanions.Any())

@@ -19,6 +19,11 @@ namespace LoreMaster.LorePowers.CityOfTears
 
         public OverwhelmingPower() : base("MAGE_COMP_03", Area.CityOfTears)
         {
+            
+        }
+
+        protected override void Initialize()
+        {
             GameObject spell = GameObject.Find("Knight/Spells");
 
             PlayMakerFSM spellControl = FsmHelper.GetFSM("Knight", "Spell Control");
@@ -50,18 +55,20 @@ namespace LoreMaster.LorePowers.CityOfTears
                     continue;
                 spellDamageFSM.GetState("Finished").AddFirstAction(new Lambda(() =>
                 {
-                    if (_hasFullSoulMeter && IsCurrentlyActive())
+                    if (_hasFullSoulMeter && Active)
                         spellObject.LocateMyFSM("damages_enemy").FsmVariables.GetFsmInt("damageDealt").Value *= 2;
                 }));
             }
         }
 
-        public override void Enable()
+        protected override void Enable()
         {
+            if (!_initialized)
+                Initialize();
             On.PlayMakerFSM.OnEnable += CheckFireball;
         }
 
-        public override void Disable()
+        protected override void Disable()
         {
             On.PlayMakerFSM.OnEnable -= CheckFireball;
         }
@@ -80,7 +87,7 @@ namespace LoreMaster.LorePowers.CityOfTears
             else
                 setDamageState.InsertAction(new Lambda(() =>
                 {
-                    if (_hasFullSoulMeter && IsCurrentlyActive())
+                    if (_hasFullSoulMeter && Active)
                     { 
                         self.gameObject.LocateMyFSM("damages_enemy").FsmVariables.GetFsmInt("damageDealt").Value *= 2;
                         self.transform.localScale = new(self.transform.localScale.x + .8f, self.transform.localScale.y + .8f);

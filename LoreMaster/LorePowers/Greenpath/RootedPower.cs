@@ -23,12 +23,7 @@ namespace LoreMaster.LorePowers.Greenpath
 
         public RootedPower() : base("", Area.Greenpath)
         {
-            PlayMakerFSM fsm = FsmHelper.GetFSM("Knight", "ProxyFSM");
-            fsm.GetState("Left Ground").AddFirstAction(new Lambda(() =>
-            {
-                LoreMaster.Instance.Log("Wall sliding: " + HeroController.instance.cState.wallSliding);
-                LoreMaster.Instance.Log("Is focusing: " + HeroController.instance.cState.focusing);
-            }));
+            
         }
 
         #endregion
@@ -41,7 +36,11 @@ namespace LoreMaster.LorePowers.Greenpath
 
         #region Public Methods
 
-        public override void Enable()
+        protected override void Initialize()
+        {
+        }
+
+        protected override void Enable()
         {
             // I just copypasted the code without exactly knowing why and how it works.^^
 
@@ -85,7 +84,7 @@ namespace LoreMaster.LorePowers.Greenpath
             //playMakerFSM.GetState("Focus Start").RemoveFirstActionOfType<Tk2dPlayAnimation>();
         }
 
-        public override void Disable()
+        protected override void Disable()
         {
             IL.HeroController.FixedUpdate -= SetWallslideSpeed;
             IL.HeroController.LookForInput -= SetGravityOnWallslide;
@@ -136,7 +135,7 @@ namespace LoreMaster.LorePowers.Greenpath
                 cursor.GotoNext();
                 cursor.EmitDelegate<Func<float, float>>(ySpeed =>
                 {
-                    if (!IsCurrentlyActive())
+                    if (!Active)
                         return ySpeed;
 
                     if (InputHandler.Instance.inputActions.down.IsPressed && !HeroController.instance.CheckTouchingGround())
@@ -156,7 +155,7 @@ namespace LoreMaster.LorePowers.Greenpath
             {
                 wallCancel.Actions[2] = new Lambda(() =>
                 {
-                    if (!IsCurrentlyActive())
+                    if (!Active)
                     {
                         HeroController.instance.AffectedByGravity(true);
                     }
@@ -167,7 +166,7 @@ namespace LoreMaster.LorePowers.Greenpath
             if (regainControl.Actions[5] is SendMessage _)
                 regainControl.Actions[5] = new Lambda(() =>
                 {
-                    if (!IsCurrentlyActive() || !HeroController.instance.cState.wallSliding)
+                    if (!Active || !HeroController.instance.cState.wallSliding)
                         HeroController.instance.AffectedByGravity(true);
                 });
 
@@ -186,7 +185,7 @@ namespace LoreMaster.LorePowers.Greenpath
                 i => i.MatchCallvirt<InControl.OneAxisInputControl>("get_WasPressed")
             ))
             {
-                cursor.EmitDelegate<Func<bool, bool>>(pressed => pressed && !IsCurrentlyActive());
+                cursor.EmitDelegate<Func<bool, bool>>(pressed => pressed && !Active);
             }
         }
 

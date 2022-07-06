@@ -50,14 +50,14 @@ public class DiminishingCursePower : Power
 
     #region Public Methods
 
-    public override void Enable()
+    protected override void Enable()
     {
         ModHooks.GetPlayerBoolHook += ModHooks_GetPlayerBoolHook;
         On.HeroController.CharmUpdate += HeroController_CharmUpdate;
         On.PlayerData.TakeHealth += HeroController_TakeHealth;
     }
 
-    public override void Disable()
+    protected override void Disable()
     {
         ModHooks.GetPlayerBoolHook -= ModHooks_GetPlayerBoolHook;
         On.HeroController.CharmUpdate -= HeroController_CharmUpdate;

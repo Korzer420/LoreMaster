@@ -16,10 +16,10 @@ namespace LoreMaster.LorePowers.FungalWastes
 
         public GloryPower() : base("PILGRIM_TAB_02", Area.FungalWastes)
         {
-            Description = "<br>[Glory of the Wealth]<br>Enemies can drop more geo.";
+            Hint = "<br>[Glory of the Wealth]<br>Enemies can drop more geo.";
         }
 
-        public override void Enable()
+        protected override void Enable()
         {
             // This works
             UnityEngine.SceneManagement.SceneManager.activeSceneChanged += UpdateGeoDrops;
@@ -70,7 +70,7 @@ namespace LoreMaster.LorePowers.FungalWastes
             }
         }
 
-        public override void Disable()
+        protected override void Disable()
         {
             UnityEngine.SceneManagement.SceneManager.activeSceneChanged += UpdateGeoDrops;
         }

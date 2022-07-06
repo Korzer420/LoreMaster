@@ -13,14 +13,14 @@ namespace LoreMaster.LorePowers.FungalWastes
 
         public PaleLuckPower() : base("FUNG_TAB_02", Area.FungalWastes)
         {
-            Description = "<br>[Pale Luck]<br>When someone casts harm on you, sometimes you are blessed by the higher being instead. Especially if you have some artefacts related to him.";
+            Hint = "<br>[Pale Luck]<br>When someone casts harm on you, sometimes you are blessed by the higher being instead. Especially if you have some artefacts related to him.";
         }
 
         #endregion
 
         #region Methods
 
-        public override void Enable()
+        protected override void Enable()
         {
             ModHooks.AfterTakeDamageHook += ModHooks_TakeDamageHook;
         }
@@ -46,7 +46,7 @@ namespace LoreMaster.LorePowers.FungalWastes
             return damage;
         }
 
-        public override void Disable()
+        protected override void Disable()
         {
             ModHooks.AfterTakeDamageHook -= ModHooks_TakeDamageHook;
         }

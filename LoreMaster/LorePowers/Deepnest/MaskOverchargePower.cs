@@ -26,11 +26,7 @@ public class MaskOverchargePower : Power
 
     public MaskOverchargePower() : base("", Area.Deepnest)
     {
-        _overcharge = new();
-        _overcharge.transform.SetParent(GameObject.Find("Knight").transform);
-        _overcharge.transform.localPosition = new(0, 0);
-        _overcharge.name = "Mask Overcharge";
-        _overcharge.AddComponent<MaskCharge>();
+        
         /* Mask elements:
          * Under _GameCameras/HudCamera/Hud Canvas/Health
          * Health -> Background
@@ -45,7 +41,16 @@ public class MaskOverchargePower : Power
 
     #region Public Methods
 
-    public override void Enable()
+    protected override void Initialize()
+    {
+        _overcharge = new();
+        _overcharge.transform.SetParent(GameObject.Find("Knight").transform);
+        _overcharge.transform.localPosition = new(0, 0);
+        _overcharge.name = "Mask Overcharge";
+        _overcharge.AddComponent<MaskCharge>();
+    }
+
+    protected override void Enable()
     {
         On.HeroController.FixedUpdate += HeroController_FixedUpdate;
         HeroController.instance.StartCoroutine(SelectOverchargeHealth());
@@ -58,7 +63,7 @@ public class MaskOverchargePower : Power
             _overcharge.SetActive(PlayerData.instance.GetInt(nameof(PlayerData.instance.health)) == _overchargeHealth);
     }
 
-    public override void Disable()
+    protected override void Disable()
     {
         On.HeroController.FixedUpdate -= HeroController_FixedUpdate;
         HeroController.instance.StopCoroutine(SelectOverchargeHealth());

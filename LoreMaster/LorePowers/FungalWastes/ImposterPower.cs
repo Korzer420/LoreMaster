@@ -12,7 +12,7 @@ namespace LoreMaster.LorePowers.FungalWastes
 
         public ImposterPower() : base("FUNG_TAB_02", Area.FungalWastes)
         {
-            Description = "<br>[Among Us]<br>While wearing spore shroom, sometimes a lifeblood is added when healing.";
+            Hint = "<br>[Among Us]<br>While wearing spore shroom, sometimes a lifeblood is added when healing.";
             CustomText = "Pity those bugs. Their society shattered to pieces. While our kind should survive it all, we fear that they are imposter among us, which causes the blue illness upon our colony.";
         }
 
@@ -20,12 +20,12 @@ namespace LoreMaster.LorePowers.FungalWastes
 
         #region Methods
 
-        public override void Enable()
+        protected override void Enable()
         {
             On.HeroController.AddHealth += ExtraHeal;
         }
 
-        public override void Disable()
+        protected override void Disable()
         {
             On.HeroController.AddHealth -= ExtraHeal;
         }

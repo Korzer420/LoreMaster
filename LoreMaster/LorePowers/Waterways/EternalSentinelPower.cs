@@ -27,6 +27,15 @@ internal class EternalSentinelPower : Power
 
     public EternalSentinelPower() :base ("",Area.WaterWays)
     {
+        
+    }
+
+    #endregion
+
+    #region Public Methods
+
+    protected override void Initialize()
+    {
         GameObject baldurShield = GameObject.Find("Knight/Charm Effects").transform.Find("Blocker Shield").gameObject;
 
         // Modify FSM
@@ -39,7 +48,7 @@ internal class EternalSentinelPower : Power
         blockerHit.AddLastAction(new Lambda(() =>
         {
             // Refunds soul on baldur hit on break
-            if (IsCurrentlyActive())
+            if (Active)
                 HeroController.instance.AddMPCharge(PlayerData.instance.GetBool("equippedCharm_10") ? 20 : 10);
             baldurFSM.SendEvent(baldurFSM.FsmVariables.FindFsmInt("Blocks").Value.ToString());
         }));
@@ -47,11 +56,7 @@ internal class EternalSentinelPower : Power
         _baldurSprite = baldurShield.GetComponentInChildren<tk2dSprite>();
     }
 
-    #endregion
-
-    #region Public Methods
-
-    public override void Enable()
+    protected override void Enable()
     {
         if (PlayerData.instance.GetBool(nameof(PlayerData.instance.equippedCharm_10)))
         {
@@ -62,7 +67,7 @@ internal class EternalSentinelPower : Power
         ModHooks.CharmUpdateHook += ModHooks_CharmUpdateHook;
     }
 
-    public override void Disable()
+    protected override void Disable()
     {
         if (_grantedBonusHealth)
             PlayerData.instance.SetInt(nameof(PlayerData.instance.maxHealth), PlayerData.instance.maxHealth - 2);

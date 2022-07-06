@@ -20,16 +20,21 @@ public class ShiningBoundPower : Power
 
     public ShiningBoundPower() : base("", Area.WhitePalace)
     {
-        _charmHolder = GameObject.Find("_GameCameras/HudCamera/Inventory").transform.Find("Charms/Equipped Charms/Charms").gameObject;
+        
     }
 
     #endregion
 
     #region Public Methods
 
-    public override void Enable() => HeroController.instance.StartCoroutine(GatherShiningSoul());
+    protected override void Initialize()
+    {
+        _charmHolder = GameObject.Find("_GameCameras/HudCamera/Inventory").transform.Find("Charms/Equipped Charms/Charms").gameObject;
+    }
+
+    protected override void Enable() => HeroController.instance.StartCoroutine(GatherShiningSoul());
     
-    public override void Disable() => HeroController.instance.StopCoroutine(GatherShiningSoul());
+    protected override void Disable() => HeroController.instance.StopCoroutine(GatherShiningSoul());
     
     #endregion
 

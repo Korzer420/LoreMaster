@@ -15,7 +15,7 @@ namespace LoreMaster.LorePowers.CityOfTears
 
         public TouristPower() : base("FOUNTAIN_PLAQUE_MAIN", Area.CityOfTears)
         {
-            Description = "[Tourist Magnet]Want to see the incredible black egg temple? Talk to the sleeping firefly to the right.";
+            Hint = "[Tourist Magnet]Want to see the incredible black egg temple? Talk to the sleeping firefly to the right.";
         }
 
         #endregion
@@ -28,12 +28,12 @@ namespace LoreMaster.LorePowers.CityOfTears
 
         #region Methods
 
-        public override void Enable()
+        protected override void Enable()
         {
             Inspected = true;
         }
 
-        public override void Disable()
+        protected override void Disable()
         {
             Inspected = false;
         }

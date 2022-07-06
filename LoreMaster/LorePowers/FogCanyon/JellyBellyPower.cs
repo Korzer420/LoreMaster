@@ -20,7 +20,7 @@ public class JellyBellyPower : Power
 
     public JellyBellyPower() : base("", Area.FogCanyon)
     {
-        _playerRigidBody = HeroController.instance.gameObject.GetComponent<Rigidbody2D>();
+        
         
     }
 
@@ -28,13 +28,18 @@ public class JellyBellyPower : Power
 
     #region Public Methods
 
-    public override void Enable()
+    protected override void Initialize()
+    {
+        _playerRigidBody = HeroController.instance.gameObject.GetComponent<Rigidbody2D>();
+    }
+
+    protected override void Enable()
     {
         HeroController.instance.BIG_FALL_TIME *= 3;
         _playerRigidBody.gravityScale -= .25f;
     }
 
-    public override void Disable()
+    protected override void Disable()
     {
         _playerRigidBody.gravityScale += .25f;
         HeroController.instance.BIG_FALL_TIME /= 3;

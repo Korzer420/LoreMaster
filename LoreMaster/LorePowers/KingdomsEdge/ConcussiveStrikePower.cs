@@ -24,11 +24,7 @@ public class ConcussiveStrikePower : Power
 
     public ConcussiveStrikePower() : base("", Area.KingdomsEdge)
     {
-        GameObject attacks = GameObject.Find("Knight/Attacks");
-        _nailArts[0] = attacks.transform.Find("Great Slash").gameObject;
-        _nailArts[1] = attacks.transform.Find("Dash Slash").gameObject;
-        _nailArts[2] = attacks.transform.Find("Cyclone Slash").gameObject;
-        _invulnableCall = HeroController.instance.GetType().GetMethod("Invulnerable", BindingFlags.NonPublic | BindingFlags.Instance);
+        
     }
 
     #endregion
@@ -86,13 +82,22 @@ public class ConcussiveStrikePower : Power
 
     #region Public Methods
 
-    public override void Enable()
+    protected override void Initialize()
+    {
+        GameObject attacks = GameObject.Find("Knight/Attacks");
+        _nailArts[0] = attacks.transform.Find("Great Slash").gameObject;
+        _nailArts[1] = attacks.transform.Find("Dash Slash").gameObject;
+        _nailArts[2] = attacks.transform.Find("Cyclone Slash").gameObject;
+        _invulnableCall = HeroController.instance.GetType().GetMethod("Invulnerable", BindingFlags.NonPublic | BindingFlags.Instance);
+    }
+
+    protected override void Enable()
     {
         On.HealthManager.TakeDamage += HealthManager_TakeDamage;
         On.HeroController.TakeDamage += HeroController_TakeDamage;
     }
 
-    public override void Disable()
+    protected override void Disable()
     {
         On.HealthManager.TakeDamage -= HealthManager_TakeDamage;
         On.HeroController.TakeDamage -= HeroController_TakeDamage;

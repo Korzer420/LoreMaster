@@ -22,6 +22,15 @@ public class JellyFlowPower : Power
 
     public JellyFlowPower() : base("",Area.FogCanyon)
     {
+        
+    }
+
+    #endregion
+
+    #region Public Methods
+
+    protected override void Initialize()
+    {
         PlayMakerFSM knightFSM = GameObject.Find("Knight").LocateMyFSM("Surface Water");
         knightFSM.GetState("Swim Right").AddFirstAction(new Lambda(() =>
         {
@@ -36,16 +45,12 @@ public class JellyFlowPower : Power
         }));
     }
 
-    #endregion
-
-    #region Public Methods
-
-    public override void Enable()
+    protected override void Enable()
     {
         _enabled = true;
     }
 
-    public override void Disable()
+    protected override void Disable()
     {
         _enabled = false;
     }

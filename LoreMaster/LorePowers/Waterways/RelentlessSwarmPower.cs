@@ -40,13 +40,13 @@ public class RelentlessSwarmPower : Power
 
     #region Public Methods
 
-    public override void Enable()
+    protected override void Enable()
     {
         On.SpellFluke.DoDamage += SpellFluke_DoDamage;
         //On.HealthManager.TakeDamage += HealthManager_TakeDamage;
     }
 
-    public override void Disable()
+    protected override void Disable()
     {
         On.SpellFluke.DoDamage -= SpellFluke_DoDamage;
     }
