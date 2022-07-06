@@ -30,7 +30,7 @@ public class UnnMindblastPower : Power
     private void HealthManager_TakeDamage(On.HealthManager.orig_TakeDamage orig, HealthManager self, HitInstance hitInstance)
     {
         MindBlast mindBlast = self.gameObject.GetComponent<MindBlast>();
-        if (mindBlast != null)
+        if (mindBlast != null && hitInstance.DamageDealt > 0)
             hitInstance.DamageDealt += mindBlast.ExtraDamage;
         orig(self, hitInstance);
     }
@@ -79,11 +79,11 @@ public class UnnMindblastPower : Power
                 break;
             case "110":
                 // Orange
-                dreamNailColor = new Color(1f, 0.4f, 0f);
+                dreamNailColor = new(1f, 0.4f, 0f);
                 break;
             case "111":
                 // Purple
-                dreamNailColor = new Color(1f, 0f, 1f);
+                dreamNailColor = new(1f, 0f, 1f);
                 break;
             default:
                 dreamNailColor = Color.white;

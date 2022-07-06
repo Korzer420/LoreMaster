@@ -29,7 +29,6 @@ internal class WisdomOfTheSagePower : Power
         {
             if (IsCurrentlyActive())
                 UpdateSpellCost();
-
         }));
     }
 
@@ -38,7 +37,7 @@ internal class WisdomOfTheSagePower : Power
     #region Event handler
 
     private void ModHooks_CharmUpdateHook(PlayerData data, HeroController controller) => UpdateSpellCost();
-
+    
     #endregion
 
     #region Public Methods
@@ -46,8 +45,7 @@ internal class WisdomOfTheSagePower : Power
     public override void Enable() 
     {
         ModHooks.CharmUpdateHook += ModHooks_CharmUpdateHook;
-        _soulBonus = PlayerData.instance.mrMushroomState;
-        GameObject.Find("Knight").LocateMyFSM("Spell Control").FsmVariables.FindFsmInt("MP Cost").Value -= _soulBonus;
+        UpdateSpellCost();
     }
 
     public override void Disable() 
@@ -64,7 +62,6 @@ internal class WisdomOfTheSagePower : Power
 
     private void UpdateSpellCost()
     {
-        GameObject.Find("Knight").LocateMyFSM("Spell Control").FsmVariables.FindFsmInt("MP Cost").Value += _soulBonus;
         _soulBonus = PlayerData.instance.mrMushroomState;
         GameObject.Find("Knight").LocateMyFSM("Spell Control").FsmVariables.FindFsmInt("MP Cost").Value -= _soulBonus;
     }

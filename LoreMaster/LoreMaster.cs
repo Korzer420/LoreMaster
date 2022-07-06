@@ -28,6 +28,8 @@ using LoreMaster.LorePowers.QueensGarden;
 using LoreMaster.LorePowers.RestingGrounds;
 using LoreMaster.LorePowers.Waterways;
 using LoreMaster.LorePowers.KingdomsEdge;
+using LoreMaster.LorePowers.Deepnest;
+using LoreMaster.LorePowers.WhitePalace;
 
 namespace LoreMaster
 {
@@ -80,14 +82,16 @@ namespace LoreMaster
         public override List<(string, string)> GetPreloadNames() => new List<(string, string)>()
         {
             ("RestingGrounds_08", "Ghost Battle Revek"),
-            ("sharedassets156", "Lil Jellyfish")
+            ("sharedassets156", "Lil Jellyfish"),
+            ("sharedassets34", "Shot Mantis"),
+            ("GG_Hollow_Knight", "Battle Scene/HK Prime/Focus Blast/focus_ring"),
+            ("GG_Hollow_Knight", "Battle Scene/HK Prime/Focus Blast/focus_rune")
         };
 
         public override void Initialize(Dictionary<string, Dictionary<string, GameObject>> preloadedObjects)
         {
             if (Instance != null)
                 return;
-
             Instance = this;
             ModHooks.LanguageGetHook += ModHooks_LanguageGetHook;
             On.UIManager.StartNewGame += UIManager_StartNewGame;
@@ -105,9 +109,11 @@ namespace LoreMaster
         {
             if (key.Contains("TUT_TAB_02"))
             {
-                Power power = new WisdomOfTheSagePower();
+                Power power = new ConcussiveStrikePower();
                 power.Enable();
                 ActivePowers.Add(power);
+                if (!string.IsNullOrEmpty(power.CustomText))
+                    return power.CustomText;
             }
             return text;
         }

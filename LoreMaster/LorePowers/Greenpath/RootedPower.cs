@@ -81,6 +81,8 @@ namespace LoreMaster.LorePowers.Greenpath
             playMakerFSM.GetState("Focus Start").AddTransition("BUTTON UP", "Focus Cancel");
             playMakerFSM.GetState("Focus").RemoveTransitionsTo("Grace Check");
             playMakerFSM.GetState("Focus").AddTransition("BUTTON UP", "Grace Check");
+            //playMakerFSM.GetState("Focus").RemoveFirstActionOfType<Tk2dPlayAnimation>();
+            //playMakerFSM.GetState("Focus Start").RemoveFirstActionOfType<Tk2dPlayAnimation>();
         }
 
         public override void Disable()
