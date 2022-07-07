@@ -1,3 +1,5 @@
+using ItemChanger.Extensions;
+using ItemChanger.FsmStateActions;
 using Modding;
 using System;
 using System.Collections.Generic;
@@ -5,35 +7,42 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
-using Vasi;
 
 namespace LoreMaster.LorePowers
 {
     public class TrueFormPower : Power
     {
+        #region Members
+
         private int _shadeState = 0;
 
         private List<Transform> _attackTransform = new List<Transform>();
 
-        public TrueFormPower() : base("TUT_TAB_03", Area.Dirtmouth)
+        #endregion
+
+        #region Constructors
+
+        public TrueFormPower() : base("True Form", Area.Dirtmouth)
         {
-            Hint = "<br>[True Form]<br>While the true form is revealed, its vessels nail gets more powerful. Especially near your true self.";
-            
+            Hint = "While the true form is revealed, its vessels nail gets more powerful. Especially near your true self.";
+            Description = "While your shade is active, you deal 30% more damage and increase your nail length by 25%. The effects are doubled, if you are in the same room as your shade.";
         }
 
-        protected override void Initialize()
-        {
-            GameObject attackDirections = GameObject.Find("Knight/Attacks");
-            _attackTransform.Add(attackDirections.transform.Find("Slash"));
-            _attackTransform.Add(attackDirections.transform.Find("AltSlash"));
-            _attackTransform.Add(attackDirections.transform.Find("UpSlash"));
-            _attackTransform.Add(attackDirections.transform.Find("DownSlash"));
-        }
+        #endregion
 
-        protected override void Enable()
+        #region Event Handler
+
+        private void PlayMakerFSM_OnEnable(On.PlayMakerFSM.orig_OnEnable orig, PlayMakerFSM self)
         {
-            UnityEngine.SceneManagement.SceneManager.activeSceneChanged += SceneManager_activeSceneChanged;
-            ModHooks.GetPlayerIntHook += NailDamageUpdate;
+            if (self.FsmName.Equals("Shade Control") && self.gameObject.name.Contains("Hollow Shade Death") && self.GetState("Blow").GetFirstActionOfType<Lambda>() == null)
+            {
+                self.GetState("Blow").AddLastAction(new Lambda(() =>
+                {
+                    ModifyNailLength(-.5f);
+                    _shadeState = 0;
+                    PlayMakerFSM.BroadcastEvent("UPDATE NAIL DAMAGE");
+                }));
+            }
         }
 
         private int NailDamageUpdate(string name, int orig)
@@ -46,80 +55,65 @@ namespace LoreMaster.LorePowers
                 orig += dmgIncrease;
             }
 
-            
             return orig;
         }
 
-        private void SceneManager_activeSceneChanged(UnityEngine.SceneManagement.Scene arg0, UnityEngine.SceneManagement.Scene arg1)
+        #endregion
+
+        #region Protected Methods
+
+        protected override void Initialize()
         {
-            float multiplier = .25f;
-            if (!PlayerData.instance.shadeScene.Equals("None"))
+            GameObject attackDirections = GameObject.Find("Knight/Attacks");
+            _attackTransform.Add(attackDirections.transform.Find("Slash"));
+            _attackTransform.Add(attackDirections.transform.Find("AltSlash"));
+            _attackTransform.Add(attackDirections.transform.Find("UpSlash"));
+            _attackTransform.Add(attackDirections.transform.Find("DownSlash"));
+        }
+
+        protected override void Enable()
+        {
+            On.PlayMakerFSM.OnEnable += PlayMakerFSM_OnEnable;
+            ModHooks.GetPlayerIntHook += NailDamageUpdate;
+            LoreMaster.Instance.SceneActions.Add(PowerName, () =>
             {
-                // If we are going in the shade room, we increase the range buff
-                if (PlayerData.instance.shadeScene.Equals(arg1.name))
+                if (!PlayerData.instance.shadeScene.Equals("None"))
                 {
-                    // If we have been already in the shade room (like dying in a room with the save bench), we ignore the multiplier.
-                    if (_shadeState == 2)
+                    float multiplier = .25f;
+                    // If we are going in the shade room, we increase the range buff
+                    if (PlayerData.instance.shadeScene.Equals(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name))
+                    {
+                        // If we have been already in the shade room (like dying in a room with the save bench), we ignore the multiplier.
+                        if (_shadeState == 2)
+                            return;
+                        multiplier *= _shadeState == 1 ? 1 : 2;
+                        _shadeState = 2;
+                    }
+                    else if (_shadeState != 1)
+                    {
+                        // Depending where we are getting from, we lower or increase the range
+                        multiplier *= _shadeState == 2 ? -1 : 1;
+                        _shadeState = 1;
+                    }
+                    else
                         return;
-                    ModifyShade();
-                    multiplier *= _shadeState == 1 ? 1 : 2;
-                    _shadeState = 2;
-                }
-                else if (_shadeState != 1)
-                {
-                    // Depending where we are getting from, we lower or increase the range
-                   multiplier *= _shadeState == 2 ? -1 : 1;
-                    _shadeState = 1;
-                }
-                else
-                    return;
-                ModifyNailLength(multiplier);
-                PlayMakerFSM.BroadcastEvent("UPDATE NAIL DAMAGE");
-                return;
-            }
-
-            // If we are entering jiji's room we need to account for spawning the shade. Otherwise it causes the bonus not to disappear.
-
-            if(PlayerData.instance.shadeScene.Equals("Room_Ouiji"))
-            {
-                PlayMakerFSM fsm = FsmHelper.GetFSM("Jiji NPC", "Conversation Control");
-
-                fsm.GetState("Spawn").AddMethod(() =>
-                {
-                    ModifyShade();
-                    _shadeState = 2;
-                    PlayMakerFSM.BroadcastEvent("UPDATE NAIL DAMAGE");
                     ModifyNailLength(multiplier);
-                });
-            }
+                    PlayMakerFSM.BroadcastEvent("UPDATE NAIL DAMAGE");
+                    return;
+                }
+            });
         }
 
         protected override void Disable()
         {
-            UnityEngine.SceneManagement.SceneManager.activeSceneChanged -= SceneManager_activeSceneChanged;
+            On.PlayMakerFSM.OnEnable -= PlayMakerFSM_OnEnable;
             ModHooks.GetPlayerIntHook -= NailDamageUpdate;
+            LoreMaster.Instance.SceneActions.Remove(PowerName);
         }
 
-        /// <summary>
-        /// Attaches an action on the shade, to remove the buffs from the player in case they kill the shade.
-        /// </summary>
-        private void ModifyShade()
-        {
-            GameObject shade = GameObject.Find("Hollow Shade(Clone)");
+        #endregion
 
-            if (shade == null)
-                return;
-
-            PlayMakerFSM fsm = GameObject.Find("Hollow Shade(Clone)").LocateMyFSM("Shade Control");
-
-            // Add the action on the killed state
-            fsm.GetState("Killed").InsertMethod(5, () =>
-            {
-                ModifyNailLength(-.5f);
-                _shadeState = 0;
-                PlayMakerFSM.BroadcastEvent("UPDATE NAIL DAMAGE");
-            });
-        }
+        #region Private Methods
 
         /// <summary>
         /// Change the nail hit ranges.
@@ -132,6 +126,8 @@ namespace LoreMaster.LorePowers
                 Vector3 currentScale = _attackTransform[index].GetComponent<NailSlash>().scale;
                 _attackTransform[index].GetComponent<NailSlash>().scale = new Vector3(currentScale.x + multiplier, currentScale.y + multiplier, currentScale.z + multiplier);
             }
-        }
+        } 
+
+        #endregion
     }
 }

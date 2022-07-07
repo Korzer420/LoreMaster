@@ -34,7 +34,7 @@ namespace LoreMaster.LorePowers.FungalWastes
         protected override void Enable()
         {
             On.KnightHatchling.OnEnable += HatchlingSpawn;
-            _runningCoroutines.Add(HeroController.instance.StartCoroutine(UpdateCompanions()));
+            _runningCoroutines.Add(LoreMaster.Instance.Handler.StartCoroutine(UpdateCompanions()));
         }
 
         private void HatchlingSpawn(On.KnightHatchling.orig_OnEnable orig, KnightHatchling self)

@@ -30,7 +30,7 @@ public class CamouflagePower : Power
         _heroSprite = GameObject.Find("Knight").GetComponent<tk2dSprite>();
     }
 
-    protected override void Enable() => HeroController.instance.StartCoroutine(WaitForCamouflage());
+    protected override void Enable() => LoreMaster.Instance.Handler.StartCoroutine(WaitForCamouflage());
 
     protected override void Disable()
     {

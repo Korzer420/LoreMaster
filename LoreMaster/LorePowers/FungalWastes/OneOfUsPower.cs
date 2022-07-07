@@ -13,7 +13,7 @@ namespace LoreMaster.LorePowers.FungalWastes
         private GameObject _cloud;
         private Coroutine _cloudRoutine;
 
-        public OneOfUsPower(): base("FUNG_TAB_04", Area.FungalWastes)
+        public OneOfUsPower(): base("One of us", Area.FungalWastes)
         {
             Hint = "<br>[One of Us]<br>Occasionally you emit a spore cloud. (Hold the super dash button to prevent the cloud.)";
             
@@ -27,7 +27,7 @@ namespace LoreMaster.LorePowers.FungalWastes
 
         protected override void Enable()
         {
-            _cloudRoutine = HeroController.instance.StartCoroutine(EmitCloud());
+            _cloudRoutine = LoreMaster.Instance.Handler.StartCoroutine(EmitCloud());
         }
 
         IEnumerator EmitCloud()

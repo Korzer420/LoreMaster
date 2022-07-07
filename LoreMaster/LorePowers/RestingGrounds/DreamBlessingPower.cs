@@ -57,7 +57,7 @@ internal class DreamBlessingPower : Power
             _spawnedWeavers.Add(GameObject.Instantiate(_weaverlingPrefab, HeroController.instance.transform.position, Quaternion.identity));
             _spawnedWeavers.Add(GameObject.Instantiate(_weaverlingPrefab, HeroController.instance.transform.position, Quaternion.identity));
             if (_weaverRoutine == null)
-                _weaverRoutine = HeroController.instance.StartCoroutine(SpawnWeavers());
+                _weaverRoutine = LoreMaster.Instance.Handler.StartCoroutine(SpawnWeavers());
         }
 
         if (PlayerData.instance.monomonDefeated)

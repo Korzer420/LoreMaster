@@ -112,7 +112,7 @@ public class TouchGrassPower : Power
             if (_heroCollider == null)
                 _heroCollider = collider;
             _triggeredCollider = sourceCollider;
-            HeroController.instance.StartCoroutine(TouchGrass());
+            LoreMaster.Instance.Handler.StartCoroutine(TouchGrass());
         }
     }
 

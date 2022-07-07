@@ -46,7 +46,7 @@ internal class MarissasAudiencePower : Power
     {
         if (!_initialized)
             Initialize();
-        HeroController.instance.StartCoroutine(GatherAudience());
+        LoreMaster.Instance.Handler.StartCoroutine(GatherAudience());
     }
 
     IEnumerator GatherAudience()

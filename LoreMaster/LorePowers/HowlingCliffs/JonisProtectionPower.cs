@@ -36,11 +36,11 @@ public class JonisProtectionPower : Power
             return;
         
         if (_currentlyRunning == null)
-            _currentlyRunning = HeroController.instance.StartCoroutine(RemoveLifeblood());
+            _currentlyRunning = LoreMaster.Instance.Handler.StartCoroutine(RemoveLifeblood());
         else
         {
             HeroController.instance.StopCoroutine(_currentlyRunning);
-            _currentlyRunning = HeroController.instance.StartCoroutine(RemoveLifeblood());
+            _currentlyRunning = LoreMaster.Instance.Handler.StartCoroutine(RemoveLifeblood());
         }
     }
 

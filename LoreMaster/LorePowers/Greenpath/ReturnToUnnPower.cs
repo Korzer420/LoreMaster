@@ -28,7 +28,7 @@ public class ReturnToUnnPower : Power
 
     protected override void Enable()
     {
-        HeroController.instance.StartCoroutine(AdjustMovementSpeed());
+        LoreMaster.Instance.Handler.StartCoroutine(AdjustMovementSpeed());
     }
 
     private IEnumerator AdjustMovementSpeed()

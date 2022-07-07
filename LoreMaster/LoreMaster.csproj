@@ -36,6 +36,7 @@
   <ItemGroup>
     <Compile Include="Area.cs" />
     <Compile Include="ConcussionEffect.cs" />
+    <Compile Include="CoroutineHandler.cs" />
     <Compile Include="Cost.cs" />
     <Compile Include="EmbeddedSprite.cs" />
     <Compile Include="EnemyBinding.cs" />
@@ -90,6 +91,8 @@
     <Compile Include="MindBlast.cs" />
     <Compile Include="PowerTag.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SaveManagement\LoreMasterGlobalSaveData.cs" />
+    <Compile Include="SaveManagement\LoreMasterLocalSaveData.cs" />
     <Compile Include="TouristMagnetItem.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -148,6 +151,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\Program Files\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\UnityEngine.Physics2DModule.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
     <Reference Include="Vasi, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Mod Dll\Vasi.dll</HintPath>

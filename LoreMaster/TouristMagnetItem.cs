@@ -39,7 +39,7 @@ namespace LoreMaster
 
         public override void GiveImmediate(GiveInfo info)
         {
-            //HeroController.instance.StartCoroutine(Travel());
+            //LoreMaster.Instance.Handler.StartCoroutine(Travel());
         }
 
 

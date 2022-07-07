@@ -25,7 +25,7 @@ public class QueenThornsPower : Power
 
     #region Constructors
 
-    public QueenThornsPower() : base("", Area.QueensGarden)
+    public QueenThornsPower() : base("Queen Thorns", Area.QueensGarden)
     {
         
     }
@@ -43,57 +43,73 @@ public class QueenThornsPower : Power
 
     protected override void Initialize()
     {
-        // Save the old thorns image and create a new one which can be used anytime.
-        if (_sprites[1] == null)
+        try
         {
-            string imageFile = Path.Combine(Path.GetDirectoryName(typeof(MindBlast).Assembly.Location), "Resources/Queens_Thorns.png");
-            byte[] imageData = File.ReadAllBytes(imageFile);
-            Texture2D tex = new Texture2D(1, 1, TextureFormat.RGBA32, false);
-            ImageConversion.LoadImage(tex, imageData, true);
-            tex.filterMode = FilterMode.Bilinear;
-            _sprites[0] = CharmIconList.Instance.spriteList[12];
-            _sprites[1] = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(.5f, .5f));
-        }
-
-        PlayMakerFSM fsm = GameObject.Find("Knight/Charm Effects").LocateMyFSM("Thorn Counter");
-        FsmState currentWorkingState = fsm.GetState("Counter Start");
-        currentWorkingState.AddFirstAction(new Lambda(() =>
-        {
-            // Prevent the freeze in the air
-            currentWorkingState.GetFirstActionOfType<SetPosition>().Enabled = !Active;
-            // Prevent the gravity from getting removed (this would cause the hero to float until the thorns despawn... probably).
-            currentWorkingState.GetActionsOfType<SendMessage>().Take(2).ToList().ForEach(x => x.Enabled = !Active);
-
-        }));
-
-        currentWorkingState = fsm.GetState("Counter");
-        currentWorkingState.AddFirstAction(new Lambda(() =>
-        {
-            // Prevent the freeze in the air
-            currentWorkingState.GetFirstActionOfType<SetPosition>().Enabled = !Active;
-            // I'm unsure if this is needed, but it can't hurt, right?
-            HeroController.instance.RegainControl();
-        }));
-
-        _thorns = fsm.transform.Find("Thorn Hit").gameObject;
-
-        // Adjust thorn damage
-        foreach (Transform child in _thorns.transform)
-        {
-            fsm = child.gameObject.LocateMyFSM("set_thorn_damage");
-            fsm.GetState("Set").InsertAction(new Lambda(() =>
+            // Save the old thorns image and create a new one which can be used anytime.
+            if (_sprites[1] == null)
             {
-                if (Active)
-                    fsm.FsmVariables.GetFsmInt("Damage").Value *= 2;
-            }), 1);
+                string imageFile = Path.Combine(Path.GetDirectoryName(typeof(MindBlast).Assembly.Location), "Resources/Queens_Thorns.png");
+                byte[] imageData = File.ReadAllBytes(imageFile);
+                Texture2D tex = new Texture2D(1, 1, TextureFormat.RGBA32, false);
+                ImageConversion.LoadImage(tex, imageData, true);
+                tex.filterMode = FilterMode.Bilinear;
+                _sprites[0] = CharmIconList.Instance.spriteList[12];
+                _sprites[1] = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(.5f, .5f));
+            }
+
+            PlayMakerFSM fsm = GameObject.Find("Knight/Charm Effects").LocateMyFSM("Thorn Counter");
+            FsmState currentWorkingState = fsm.GetState("Counter Start");
+            currentWorkingState.AddFirstAction(new Lambda(() =>
+            {
+                // Prevent the freeze in the air
+                currentWorkingState.GetFirstActionOfType<SetPosition>().Enabled = !Active;
+                // Prevent the gravity from getting removed (this would cause the hero to float until the thorns despawn... probably).
+                currentWorkingState.GetActionsOfType<SendMessage>().Take(2).ToList().ForEach(x => x.Enabled = !Active);
+
+            }));
+
+            currentWorkingState = fsm.GetState("Counter");
+            currentWorkingState.AddFirstAction(new Lambda(() =>
+            {
+                // Prevent the freeze in the air
+                currentWorkingState.GetFirstActionOfType<SetPosition>().Enabled = !Active;
+                // I'm unsure if this is needed, but it can't hurt, right?
+                HeroController.instance.RegainControl();
+            }));
+
+            _thorns = fsm.transform.Find("Thorn Hit").gameObject;
+
+            // Adjust thorn damage
+            foreach (Transform child in _thorns.transform)
+            {
+                fsm = child.gameObject.LocateMyFSM("set_thorn_damage");
+                fsm.GetState("Set").InsertAction(new Lambda(() =>
+                {
+                    if (Active)
+                        fsm.FsmVariables.GetFsmInt("Damage").Value *= 2;
+                }), 1);
+            }
         }
+        catch (Exception error)
+        {
+            LoreMaster.Instance.LogError("Error in Initialize of Queen Thorns: " + error.Message);
+        }
+        
     }
 
     protected override void Enable()
     {
         On.HealthManager.TakeDamage += HealthManager_TakeDamage;
         On.HealthManager.Die += HealthManager_Die;
-        CharmIconList.Instance.spriteList[12] = _sprites[1];
+        try
+        {
+            CharmIconList.Instance.spriteList[12] = _sprites[1];
+        }
+        catch (Exception error)
+        {
+            LoreMaster.Instance.LogError("Error in enable of Queen Thorns: " + error.Message);
+        }
+        
     }
 
     protected override void Disable()

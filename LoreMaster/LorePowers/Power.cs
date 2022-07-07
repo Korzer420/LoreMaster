@@ -56,7 +56,7 @@ namespace LoreMaster.LorePowers
         #region Methods
 
         /// <summary>
-        /// Initialize the power. (Modifies fsm and get prefabs). This called by the constructor
+        /// Initialize the power. (Modifies fsm and get prefabs).
         /// </summary>
         protected virtual void Initialize() => _initialized = true;
 
@@ -69,13 +69,17 @@ namespace LoreMaster.LorePowers
 
         public void EnablePower()
         {
-            if (Active)
+            if (Active || Tag == PowerTag.Disabled || Tag == PowerTag.Removed)
                 return;
             try
             {
                 if (!_initialized)
+                { 
                     Initialize();
+                    _initialized = true;
+                }
                 Enable();
+                Active = true;
             }
             catch (Exception exception)
             {
@@ -83,7 +87,11 @@ namespace LoreMaster.LorePowers
             }
         }
 
-        public void DisablePower()
+        /// <summary>
+        /// Disables the power
+        /// </summary>
+        /// <param name="backToMenu">This is used to tell <see cref="EnablePower"/> to do the initialize again, if you reload the game.</param>
+        public void DisablePower(bool backToMenu)
         {
             if (!Active)
                 return;
@@ -94,10 +102,10 @@ namespace LoreMaster.LorePowers
             }
             catch (Exception exception)
             {
-                LoreMaster.Instance.LogError("Error while loading " + PowerName + ": " + exception.Message);
+                LoreMaster.Instance.LogError("Error while disabling " + PowerName + ": " + exception.Message);
             }
             Active = false;
-            _initialized = false;
+            _initialized = !backToMenu;
         }
 
         #endregion

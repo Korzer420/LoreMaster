@@ -28,7 +28,7 @@ namespace LoreMaster
         public override void OnPay()
         {
             HeroController.instance.TakeGeo(50);
-            HeroController.instance.StartCoroutine(Wait());
+            LoreMaster.Instance.Handler.StartCoroutine(Wait());
         }
 
         IEnumerator Wait()

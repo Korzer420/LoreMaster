@@ -24,9 +24,9 @@ public class MaskOverchargePower : Power
 
     #region Constructors
 
-    public MaskOverchargePower() : base("", Area.Deepnest)
+    public MaskOverchargePower() : base("Mask Overcharge Power", Area.Deepnest)
     {
-        
+
         /* Mask elements:
          * Under _GameCameras/HudCamera/Hud Canvas/Health
          * Health -> Background
@@ -53,7 +53,7 @@ public class MaskOverchargePower : Power
     protected override void Enable()
     {
         On.HeroController.FixedUpdate += HeroController_FixedUpdate;
-        HeroController.instance.StartCoroutine(SelectOverchargeHealth());
+        LoreMaster.Instance.Handler.StartCoroutine(SelectOverchargeHealth());
     }
 
     private void HeroController_FixedUpdate(On.HeroController.orig_FixedUpdate orig, HeroController self)
@@ -77,41 +77,65 @@ public class MaskOverchargePower : Power
 
     private IEnumerator SelectOverchargeHealth()
     {
+        yield return new WaitForSeconds(1f);
         GameObject parent = GameObject.Find("_GameCameras/HudCamera/Hud Canvas/Health");
         tk2dSprite[] sprites = new tk2dSprite[4];
-        sprites[3] = parent.transform.Find("Hive Recovery Blob").GetComponent<tk2dSprite>();
         Color[] colors = new Color[] { Color.yellow, Color.blue, Color.red, Color.cyan, Color.green, new(1f, 0.4f, 0f), new(1f, 0f, 1f), Color.black };
         bool firstTime = true;
+        try
+        {
+            sprites[3] = parent.transform.Find("Hive Recovery Blob").GetComponent<tk2dSprite>();
+
+        }
+        catch (Exception exception)
+        {
+            LoreMaster.Instance.LogError("Error outside while loop " + exception.Message);
+        }
+
         while (true)
         {
             // Reset sprites
-            _overchargeHealth = -1;
-            if (!firstTime)
-                foreach (tk2dSprite sprite in sprites)
-                    sprite.color = Color.white;
-            firstTime = false;
+            try
+            {
+                _overchargeHealth = -1;
+                if (!firstTime)
+                    foreach (tk2dSprite sprite in sprites)
+                        sprite.color = Color.white;
+                firstTime = false;
 
-            int playerMaxHealth = PlayerData.instance.GetInt(nameof(PlayerData.instance.maxHealth));
-            if (PlayerData.instance.GetBool("equippedCharm_27") || playerMaxHealth < 2)
-                continue;
+                int playerMaxHealth = PlayerData.instance.GetInt(nameof(PlayerData.instance.maxHealth));
+                if (PlayerData.instance.GetBool("equippedCharm_27") || playerMaxHealth < 2)
+                    continue;
 
-            // This excludes full health (we don't want to overcharge the last mask)
-            _overchargeHealth = UnityEngine.Random.Range(1, playerMaxHealth);
+                // This excludes full health (we don't want to overcharge the last mask)
+                _overchargeHealth = UnityEngine.Random.Range(1, playerMaxHealth);
 
-            // We honestly probably don't need to use transform find here, but in case the hud is unavailable we account for that, I guess.
-            GameObject health = parent.transform.Find("Health " + _overchargeHealth).gameObject;
-            sprites[0] = health.GetComponent<tk2dSprite>();
-            sprites[1] = health.transform.Find("Idle").GetComponent<tk2dSprite>();
-            sprites[2] = health.transform.Find("Idle Hive").GetComponent<tk2dSprite>();
+                // We honestly probably don't need to use transform find here, but in case the hud is unavailable we account for that, I guess.
+                GameObject health = parent.transform.Find("Health " + _overchargeHealth).gameObject;
+                sprites[0] = health.GetComponent<tk2dSprite>();
+                sprites[1] = health.transform.Find("Idle").GetComponent<tk2dSprite>();
+                sprites[2] = health.transform.Find("Idle Hive").GetComponent<tk2dSprite>();
+            }
+            catch (Exception exception)
+            {
+                LoreMaster.Instance.LogError("Error inside while loop: " + exception.Message);
+            }
 
             float passedTime = 0f;
             while (passedTime < 30f)
             {
                 yield return new WaitForSeconds(.25f);
-                passedTime += .25f;
-                Color rolledColor = colors[UnityEngine.Random.Range(0, 7)];
-                foreach (tk2dSprite sprite in sprites)
-                    sprite.color = rolledColor;
+                try
+                {
+                    passedTime += .25f;
+                    Color rolledColor = colors[UnityEngine.Random.Range(0, 7)];
+                    foreach (tk2dSprite sprite in sprites)
+                        sprite.color = rolledColor;
+                }
+                catch (Exception exception)
+                {
+                    LoreMaster.Instance.LogError("Error inside second while loop: " + exception.Message);
+                }
             }
         }
     }
