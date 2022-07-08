@@ -1,3 +1,4 @@
+using LoreMaster.Enums;
 using Modding;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
@@ -6,8 +7,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace LoreMaster.LorePowers.HowlingCliffs;
@@ -33,24 +32,32 @@ public class LifebloodWingsPower : Power
 
     #region Constructors
 
-    public LifebloodWingsPower() : base("", Area.Cliffs)
+    public LifebloodWingsPower() : base("Lifeblood Wings", Area.Cliffs)
     {
-        
+        Hint = "Lifeblood floods through your wings. The more you have, the stronger they are amplified.";
+        Description = "For each lifeblood that you have, you can jump an additional time. Requires Wings";
     }
 
     #endregion
 
+    #region Properties
+
+    /// <summary>
+    /// Gets the current blue health counter.
+    /// </summary>
     public int PlayerBlueHealth => PlayerData.instance.GetInt("healthBlue");
+
+    #endregion
 
     #region Event handler
 
-    private void HeroController_DoDoubleJump(On.HeroController.orig_DoDoubleJump orig, HeroController self)
+    private void DoDoubleJump(On.HeroController.orig_DoDoubleJump orig, HeroController self)
     {
         orig(self);
-        if (_extraJumps < PlayerBlueHealth)
+        if (ReflectionHelper.GetField<HeroController, bool>(HeroController.instance, "doubleJumped") && _extraJumps < PlayerBlueHealth)
         {
             _extraJumps++;
-            GameManager.instance.StartCoroutine(RefreshWings());
+            LoreMaster.Instance.Handler.StartCoroutine(RefreshWings());
         }
     }
 
@@ -66,15 +73,15 @@ public class LifebloodWingsPower : Power
     protected override void Enable()
     {
         _wings.color = Color.cyan;
-        AddRefreshHooks();
-        On.HeroController.DoDoubleJump += HeroController_DoDoubleJump;
+        AddRefreshDoubleJumpHooks();
+        On.HeroController.DoDoubleJump += DoDoubleJump;
     }
 
     protected override void Disable()
     {
         _wings.color = Color.white;
-        RemoveRefreshHooks();
-        On.HeroController.DoDoubleJump += HeroController_DoDoubleJump;
+        RemoveRefreshDoubleJumpHooks();
+        On.HeroController.DoDoubleJump += DoDoubleJump;
     }
 
     #endregion
@@ -87,7 +94,10 @@ public class LifebloodWingsPower : Power
         ReflectionHelper.SetField(HeroController.instance, "doubleJumped", false);
     }
 
-    private void AddRefreshHooks()
+    /// <summary>
+    /// Adds hooks to reset the extra jump counter of the double jump.
+    /// </summary>
+    private void AddRefreshDoubleJumpHooks()
     {
         IL.HeroController.BackOnGround += RefreshDoubleJump;
         IL.HeroController.Bounce += RefreshDoubleJump;
@@ -110,7 +120,10 @@ public class LifebloodWingsPower : Power
         _hooked.Add(new(typeof(HeroController).GetMethod("orig_Update", flags), RefreshDoubleJump));
     }
 
-    private void RemoveRefreshHooks()
+    /// <summary>
+    /// Removes all extra hooks for the double jump counter reset.
+    /// </summary>
+    private void RemoveRefreshDoubleJumpHooks()
     {
         IL.HeroController.BackOnGround -= RefreshDoubleJump;
         IL.HeroController.Bounce -= RefreshDoubleJump;
@@ -127,6 +140,10 @@ public class LifebloodWingsPower : Power
         _hooked.Clear();
     }
 
+    /// <summary>
+    /// Refreshes the double jump.
+    /// </summary>
+    /// <param name="il"></param>
     private void RefreshDoubleJump(ILContext il)
     {
         ILCursor cursor = new(il);

@@ -1,38 +1,33 @@
-using HutongGames.PlayMaker.Actions;
-using HutongGames.PlayMaker;
-using Modding;
-using Modding.Menu;
-using Modding.Menu.Config;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
+using GlobalEnums;
+using ItemChanger;
+using ItemChanger.Locations;
+using ItemChanger.Placements;
+using LoreMaster.CustomItem;
+using LoreMaster.Enums;
 using LoreMaster.LorePowers;
-using LoreMaster.LorePowers.Crossroads;
-using LoreMaster.LorePowers.FungalWastes;
 using LoreMaster.LorePowers.Ancient_Basin;
 using LoreMaster.LorePowers.CityOfTears;
-using ItemChanger;
-using ItemChanger.Placements;
-using ItemChanger.Locations;
+using LoreMaster.LorePowers.Crossroads;
+using LoreMaster.LorePowers.Deepnest;
 using LoreMaster.LorePowers.FogCanyon;
+using LoreMaster.LorePowers.FungalWastes;
 using LoreMaster.LorePowers.Greenpath;
 using LoreMaster.LorePowers.HowlingCliffs;
-using ItemChanger.Extensions;
-using ItemChanger.FsmStateActions;
+using LoreMaster.LorePowers.KingdomsEdge;
 using LoreMaster.LorePowers.QueensGarden;
 using LoreMaster.LorePowers.RestingGrounds;
 using LoreMaster.LorePowers.Waterways;
-using LoreMaster.LorePowers.KingdomsEdge;
-using LoreMaster.LorePowers.Deepnest;
 using LoreMaster.LorePowers.WhitePalace;
-using GlobalEnums;
 using LoreMaster.SaveManagement;
+using LoreMaster.UnityComponents;
+using Modding;
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Reflection;
+using UnityEngine;
 
 namespace LoreMaster;
 
@@ -112,13 +107,13 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         {Area.Greenpath, new(){MapZone.GREEN_PATH, MapZone.NOEYES_TEMPLE}},
         {Area.FungalWastes, new(){MapZone.WASTES, MapZone.MANTIS_VILLAGE, MapZone.QUEENS_STATION} },
         {Area.FogCanyon, new(){MapZone.FOG_CANYON, MapZone.OVERGROWN_MOUND, MapZone.MONOMON_ARCHIVE} },
-        {Area.KingdomsEdge, new(){MapZone.COLOSSEUM, MapZone.OUTSKIRTS, MapZone.HIVE} },
+        {Area.KingdomsEdge, new(){MapZone.COLOSSEUM, MapZone.OUTSKIRTS, MapZone.HIVE, MapZone.TRAM_LOWER} },
         {Area.Deepnest, new(){MapZone.DEEPNEST, MapZone.TRAM_LOWER, MapZone.BEASTS_DEN, MapZone.RUINED_TRAMWAY} },
         {Area.WaterWays, new(){MapZone.WATERWAYS, MapZone.GODS_GLORY, MapZone.GODSEEKER_WASTE, MapZone.ISMAS_GROVE} },
         {Area.Cliffs, new(){MapZone.CLIFFS, MapZone.JONI_GRAVE } },
-        {Area.AncientBasin, new(){MapZone.BONE_FOREST, MapZone.PALACE_GROUNDS} },
+        {Area.AncientBasin, new(){MapZone.BONE_FOREST, MapZone.PALACE_GROUNDS, MapZone.TRAM_LOWER} },
         {Area.CityOfTears, new(){MapZone.CITY, MapZone.SOUL_SOCIETY, MapZone.LURIENS_TOWER, MapZone.LOVE_TOWER, MapZone.MAGE_TOWER } },
-        {Area.RestingGrounds, new(){MapZone.RESTING_GROUNDS, MapZone.BLUE_LAKE} },
+        {Area.RestingGrounds, new(){MapZone.RESTING_GROUNDS, MapZone.BLUE_LAKE, MapZone.TRAM_UPPER} },
         {Area.WhitePalace, new(){MapZone.WHITE_PALACE} },
         {Area.Peaks, new(){MapZone.PEAK, MapZone.MINES, MapZone.CRYSTAL_MOUND} }
     };
@@ -134,18 +129,34 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
     /// </summary>
     public static LoreMaster Instance { get; set; }
 
+    /// <summary>
+    /// Gets or sets all active power, with their tablet key.
+    /// </summary>
     public Dictionary<string, Power> ActivePowers { get; set; } = new();
 
+    /// <summary>
+    /// Gets or sets the preloaded object, used by various different powers.
+    /// </summary>
     public Dictionary<string, GameObject> PreloadedObjects { get; set; } = new Dictionary<string, GameObject>();
 
+    /// <summary>
+    /// Gets or sets the generator used for random rolls.
+    /// </summary>
     public System.Random Generator { get; set; } = new System.Random();
 
+    /// <summary>
+    /// Gets or sets the handler that runs every coroutine.
+    /// </summary>
     public CoroutineHandler Handler { get; set; }
 
+    /// <summary>
+    /// Gets or sets the flag that indicates if hints should be shown instead of the description.
+    /// </summary>
     public bool UseHints { get; set; }
 
-    public bool OnlyNames { get; set; }
-
+    /// <summary>
+    /// Gets or sets the flag, that indicates if custom text can be used.
+    /// </summary>
     public bool UseCustomText { get; set; }
 
     /// <summary>
@@ -155,193 +166,14 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
     /// </summary>
     public Dictionary<string, Action> SceneActions { get; set; } = new();
 
-    public bool ToggleButtonInsideMenu => throw new NotImplementedException();
+    /// <summary>
+    /// Gets the flag for the toggle button to disable this mod.
+    /// </summary>
+    public bool ToggleButtonInsideMenu => true;
 
     #endregion
 
-    #region Configuration
-
-    public override string GetVersion() => Assembly.GetExecutingAssembly().GetName().Version.ToString();
-
-    private void UIManager_StartNewGame(On.UIManager.orig_StartNewGame orig, UIManager self, bool permaDeath, bool bossRush)
-    {
-        ItemChangerMod.CreateSettingsProfile();
-        List<MutablePlacement> teleportItems = new();
-        MutablePlacement teleportPlacement = new CoordinateLocation() { x = 35.0f, y = 5.4f, elevation = 0, sceneName = "Ruins1_27", name = "City_Teleporter" }.Wrap() as MutablePlacement;
-        teleportPlacement.Cost = new Paypal { ToTemple = true };
-        teleportPlacement.Add(new TouristMagnetItem(true, "City_Teleporter"));
-        teleportItems.Add(teleportPlacement);
-
-        MutablePlacement secondPlacement = new CoordinateLocation() { x = 57f, y = 5f, elevation = 0, sceneName = "Room_temple", name = "Temple_Teleporter" }.Wrap() as MutablePlacement;
-        secondPlacement.Cost = new Paypal { ToTemple = false };
-        secondPlacement.Add(new TouristMagnetItem(false, "Temple_Teleporter"));
-        teleportItems.Add(secondPlacement);
-        ItemChangerMod.AddPlacements(teleportItems);
-        orig(self, permaDeath, bossRush);
-        ModHooks.SetPlayerBoolHook += ModHooks_SetPlayerBoolHook;
-    }
-
-    private bool ModHooks_SetPlayerBoolHook(string name, bool orig)
-    {
-        if (name.Equals("killedBindingSeal") && orig)
-        {
-            if (!ActivePowers.ContainsKey("EndOfPathOfPain"))
-            {
-                Power power = _powerActivators["EndOfPathOfPain"];
-                power.EnablePower();
-                ActivePowers.Add("EndOfPathOfPain", power);
-            }
-            ModHooks.SetPlayerBoolHook -= ModHooks_SetPlayerBoolHook;
-        }
-        return orig;
-    }
-
-    public override List<(string, string)> GetPreloadNames() => new List<(string, string)>()
-    {
-        ("RestingGrounds_08", "Ghost Battle Revek"),
-        ("sharedassets156", "Lil Jellyfish"),
-        ("sharedassets34", "Shot Mantis"),
-        ("GG_Hollow_Knight", "Battle Scene/HK Prime/Focus Blast/focus_ring"),
-        ("GG_Hollow_Knight", "Battle Scene/HK Prime/Focus Blast/focus_rune")
-    };
-
-    public override void Initialize(Dictionary<string, Dictionary<string, GameObject>> preloadedObjects)
-    {
-        if (Instance != null)
-            return;
-        Instance = this;
-        ModHooks.LanguageGetHook += GetText;
-        UnityEngine.SceneManagement.SceneManager.activeSceneChanged += SceneManager_activeSceneChanged;
-        On.UIManager.StartNewGame += UIManager_StartNewGame;
-        On.UIManager.ContinueGame += UIManager_ContinueGame;
-        On.GameManager.ReturnToMainMenu += GameManager_ReturnToMainMenu;
-
-        foreach (string key in preloadedObjects.Keys)
-            foreach (string subKey in preloadedObjects[key].Keys)
-                if (!PreloadedObjects.ContainsKey(subKey))
-                {
-                    PreloadedObjects.Add(subKey, preloadedObjects[key][subKey]);
-                    GameObject.DontDestroyOnLoad(preloadedObjects[key][subKey]);
-                }
-        GameObject loreManager = new("LoreManager");
-        GameObject.DontDestroyOnLoad(loreManager);
-        Handler =  loreManager.AddComponent<CoroutineHandler>();
-
-    }
-
-    private IEnumerator GameManager_ReturnToMainMenu(On.GameManager.orig_ReturnToMainMenu orig, GameManager self, GameManager.ReturnToMainMenuSaveModes saveMode, Action<bool> callback)
-    {
-        foreach (Power power in ActivePowers.Values)
-            power.DisablePower(true);
-        
-        return orig(self, saveMode, callback);
-    }
-
-    private void UIManager_ContinueGame(On.UIManager.orig_ContinueGame orig, UIManager self)
-    {
-        orig(self);
-    }
-
-    private void SceneManager_activeSceneChanged(UnityEngine.SceneManagement.Scene arg0, UnityEngine.SceneManagement.Scene arg1)
-    {
-        if (GameManager.instance.IsGameplayScene())
-        {
-            if (arg0.name.ToLower().Contains("menu"))
-            {
-                if (PlayerData.instance.GetBool("killedBindingSeal") && !_powerActivators.ContainsKey("EndOfPathOfPain"))
-                {
-                    Power power = _powerActivators["EndOfPathOfPain"];
-                    power.EnablePower();
-                    ActivePowers.Add("EndOfPathOfPain", power);
-                }
-                else
-                    ModHooks.SetPlayerBoolHook += ModHooks_SetPlayerBoolHook;
-
-                // Load in changes from the options file (if it exists)
-                LoadOptions();
-                _fromMenu = true;
-            }
-            GameManager.instance.StartCoroutine(ManageSceneActions());
-        }
-    }
-
-    private void LoadOptions()
-    {
-        string optionFile = Path.Combine(Path.GetDirectoryName(typeof(MindBlast).Assembly.Location), "options_" + GameManager.instance.profileID + ".txt");
-        Log("Path to look for: " + optionFile);
-        try
-        {
-            if (File.Exists(optionFile))
-            {
-                using StreamReader reader = new(optionFile);
-
-                string headline = reader.ReadLine();
-                if (headline.ToLower().Contains("%modify%"))
-                {
-
-                }
-                else if (headline.ToLower().Contains("%override%"))
-                    ActivePowers.Clear();
-                else
-                    throw new Exception("Invalid option configuration file");
-                while (!reader.EndOfStream)
-                {
-                    string currentLine = reader.ReadLine().Replace(" ", "").ToLower();
-                    string powerName = "";
-                    currentLine = string.Concat(currentLine.SkipWhile(x => !x.Equals('%')).Skip(1));
-                    Log("Current line: " + currentLine);
-                    foreach (char letter in currentLine)
-                    {
-                        if (letter == '%')
-                            break;
-                        powerName += letter;
-                    }
-                    powerName += "power";
-                    Log("Power Name: " + powerName);
-                    Power power = _powerActivators.Values.FirstOrDefault(x => x.GetType().Name.ToLower().Equals(powerName));
-                    if (power == null)
-                        continue;
-                    Log("Power exists");
-                    // Skip the name
-                    currentLine = currentLine.Substring(powerName.Length - 4);
-                    Log("Line after name skip: " + currentLine);
-                    string tagText = string.Concat(currentLine.TakeWhile(x => !x.Equals('|')));
-                    tagText = char.ToUpper(tagText[0]) + tagText.Substring(1);
-                    Log("Tag: " + tagText);
-                    if (!Enum.TryParse(tagText, out PowerTag tag))
-                        continue;
-                    power.Tag = tag;
-
-                    currentLine = currentLine.Substring(tagText.Length);
-                    Log("Current line: " + currentLine);
-                    if ((currentLine.Contains("add") || tag == PowerTag.Global) && !ActivePowers.ContainsValue(power))
-                        ActivePowers.Add(_powerActivators.First(x => x.Value == power).Key, power);
-                }
-                GameManager.instance.SaveGame();
-            }
-            else
-                Log("Couldn't find option file");
-        }
-        catch (Exception exception)
-        {
-            LogError("Couldn't load option file: " + exception.Message);
-        }
-
-    }
-
-    public void Unload()
-    {
-        Instance = null;
-        ModHooks.LanguageGetHook -= GetText;
-        UnityEngine.SceneManagement.SceneManager.activeSceneChanged -= SceneManager_activeSceneChanged;
-        On.UIManager.StartNewGame -= UIManager_StartNewGame;
-        On.UIManager.ContinueGame -= UIManager_ContinueGame;
-        On.GameManager.ReturnToMainMenu -= GameManager_ReturnToMainMenu;
-    }
-
-    #endregion
-
-    #region Management
+    #region Event Handler
 
     /// <summary>
     /// This is the main control, which determines which power is on.
@@ -380,10 +212,229 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         return text;
     }
 
+    /// <summary>
+    /// Event handler, when a new game is started.
+    /// </summary>
+    /// <param name="orig"></param>
+    /// <param name="self"></param>
+    /// <param name="permaDeath"></param>
+    /// <param name="bossRush"></param>
+    private void StartNewGame(On.UIManager.orig_StartNewGame orig, UIManager self, bool permaDeath, bool bossRush)
+    {
+        ItemChangerMod.CreateSettingsProfile();
+        List<MutablePlacement> teleportItems = new();
+        MutablePlacement teleportPlacement = new CoordinateLocation() { x = 35.0f, y = 5.4f, elevation = 0, sceneName = "Ruins1_27", name = "City_Teleporter" }.Wrap() as MutablePlacement;
+        teleportPlacement.Cost = new Paypal { ToTemple = true };
+        teleportPlacement.Add(new TouristMagnetItem("City_Teleporter"));
+        teleportItems.Add(teleportPlacement);
+
+        MutablePlacement secondPlacement = new CoordinateLocation() { x = 57f, y = 5f, elevation = 0, sceneName = "Room_temple", name = "Temple_Teleporter" }.Wrap() as MutablePlacement;
+        secondPlacement.Cost = new Paypal { ToTemple = false };
+        secondPlacement.Add(new TouristMagnetItem("Temple_Teleporter"));
+        teleportItems.Add(secondPlacement);
+        ItemChangerMod.AddPlacements(teleportItems);
+        orig(self, permaDeath, bossRush);
+        ModHooks.SetPlayerBoolHook += ModHooks_SetPlayerBoolHook;
+    }
+
+    /// <summary>
+    /// Event handler, for the PoP power.
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="orig"></param>
+    /// <returns></returns>
+    private bool ModHooks_SetPlayerBoolHook(string name, bool orig)
+    {
+        if (name.Equals("killedBindingSeal") && orig)
+        {
+            if (!ActivePowers.ContainsKey("EndOfPathOfPain"))
+            {
+                Power power = _powerActivators["EndOfPathOfPain"];
+                power.EnablePower();
+                ActivePowers.Add("EndOfPathOfPain", power);
+            }
+            ModHooks.SetPlayerBoolHook -= ModHooks_SetPlayerBoolHook;
+        }
+        return orig;
+    }
+
+    /// <summary>
+    /// Event handler used for returning to the menu.
+    /// </summary>
+    /// <param name="orig"></param>
+    /// <param name="self"></param>
+    /// <param name="saveMode"></param>
+    /// <param name="callback"></param>
+    /// <returns></returns>
+    private IEnumerator GameManager_ReturnToMainMenu(On.GameManager.orig_ReturnToMainMenu orig, GameManager self, GameManager.ReturnToMainMenuSaveModes saveMode, Action<bool> callback)
+    {
+        foreach (Power power in ActivePowers.Values)
+            power.DisablePower(true);
+        Handler.StopAllCoroutines();
+        return orig(self, saveMode, callback);
+    }
+
+    /// <summary>
+    /// Event handler used for adjusting the active powers.
+    /// </summary>
+    /// <param name="arg0"></param>
+    /// <param name="arg1"></param>
+    private void SceneManager_activeSceneChanged(UnityEngine.SceneManagement.Scene arg0, UnityEngine.SceneManagement.Scene arg1)
+    {
+        if (GameManager.instance.IsGameplayScene())
+        {
+            if (arg0.name.ToLower().Contains("menu"))
+            {
+                if (PlayerData.instance.GetBool("killedBindingSeal") && !_powerActivators.ContainsKey("EndOfPathOfPain"))
+                {
+                    Power power = _powerActivators["EndOfPathOfPain"];
+                    power.EnablePower();
+                    ActivePowers.Add("EndOfPathOfPain", power);
+                }
+                else
+                    ModHooks.SetPlayerBoolHook += ModHooks_SetPlayerBoolHook;
+
+                // Load in changes from the options file (if it exists)
+                LoadOptions();
+                _fromMenu = true;
+            }
+            GameManager.instance.StartCoroutine(ManageSceneActions());
+        }
+    }
+
+    #endregion
+
+    #region Configuration
+
+    /// <summary>
+    /// Get the version of the mod.
+    /// </summary>
+    /// <returns></returns>
+    public override string GetVersion() => Assembly.GetExecutingAssembly().GetName().Version.ToString();
+
+    /// <summary>
+    /// Gets the names (objects) that need to be preloaded.
+    /// </summary>
+    /// <returns></returns>
+    public override List<(string, string)> GetPreloadNames() => new List<(string, string)>()
+    {
+        ("RestingGrounds_08", "Ghost Battle Revek"),
+        ("sharedassets156", "Lil Jellyfish"),
+        ("sharedassets34", "Shot Mantis"),
+        ("GG_Hollow_Knight", "Battle Scene/HK Prime/Focus Blast/focus_ring"),
+        ("GG_Hollow_Knight", "Battle Scene/HK Prime/Focus Blast/focus_rune")
+    };
+
+    /// <summary>
+    /// Does the initialization needed for the mod.
+    /// </summary>
+    /// <param name="preloadedObjects"></param>
+    public override void Initialize(Dictionary<string, Dictionary<string, GameObject>> preloadedObjects)
+    {
+        if (Instance != null)
+            return;
+        Instance = this;
+        ModHooks.LanguageGetHook += GetText;
+        UnityEngine.SceneManagement.SceneManager.activeSceneChanged += SceneManager_activeSceneChanged;
+        On.UIManager.StartNewGame += StartNewGame;
+        On.GameManager.ReturnToMainMenu += GameManager_ReturnToMainMenu;
+
+        foreach (string key in preloadedObjects.Keys)
+            foreach (string subKey in preloadedObjects[key].Keys)
+                if (!PreloadedObjects.ContainsKey(subKey))
+                {
+                    PreloadedObjects.Add(subKey, preloadedObjects[key][subKey]);
+                    GameObject.DontDestroyOnLoad(preloadedObjects[key][subKey]);
+                }
+        GameObject loreManager = new("LoreManager");
+        GameObject.DontDestroyOnLoad(loreManager);
+        Handler =  loreManager.AddComponent<CoroutineHandler>();
+    }
+
+    /// <summary>
+    /// Unloads the mod.
+    /// </summary>
+    public void Unload()
+    {
+        Instance = null;
+        ModHooks.LanguageGetHook -= GetText;
+        UnityEngine.SceneManagement.SceneManager.activeSceneChanged -= SceneManager_activeSceneChanged;
+        On.UIManager.StartNewGame -= StartNewGame;
+        On.GameManager.ReturnToMainMenu -= GameManager_ReturnToMainMenu;
+        Handler.StopAllCoroutines();
+        foreach (Power power in ActivePowers.Values)
+            power.DisablePower(false);
+    }
+
     #endregion
 
     #region Private Methods
 
+    /// <summary>
+    /// Loads the options from the option file (if it exists)
+    /// </summary>
+    private void LoadOptions()
+    {
+        string optionFile = Path.Combine(Path.GetDirectoryName(typeof(MindBlast).Assembly.Location), "options_" + GameManager.instance.profileID + ".txt");
+        try
+        {
+            if (File.Exists(optionFile))
+            {
+                using StreamReader reader = new(optionFile);
+
+                string headline = reader.ReadLine();
+                if (headline.ToLower().Contains("%modify%"))
+                {
+
+                }
+                else if (headline.ToLower().Contains("%override%"))
+                    ActivePowers.Clear();
+                else
+                    throw new Exception("Invalid option configuration file");
+                while (!reader.EndOfStream)
+                {
+                    string currentLine = reader.ReadLine().Replace(" ", "").ToLower();
+                    string powerName = "";
+                    currentLine = string.Concat(currentLine.SkipWhile(x => !x.Equals('%')).Skip(1));
+                    foreach (char letter in currentLine)
+                    {
+                        if (letter == '%')
+                            break;
+                        powerName += letter;
+                    }
+                    powerName += "power";
+                    Power power = _powerActivators.Values.FirstOrDefault(x => x.GetType().Name.ToLower().Equals(powerName));
+                    if (power == null)
+                        continue;
+                    // Skip the name
+                    currentLine = currentLine.Substring(powerName.Length - 4);
+                    string tagText = string.Concat(currentLine.TakeWhile(x => !x.Equals('|')));
+                    tagText = char.ToUpper(tagText[0]) + tagText.Substring(1);
+                    if (!Enum.TryParse(tagText, out PowerTag tag))
+                        continue;
+                    power.Tag = tag;
+
+                    currentLine = currentLine.Substring(tagText.Length);
+                    if ((currentLine.Contains("add") || tag == PowerTag.Global) && !ActivePowers.ContainsValue(power))
+                        ActivePowers.Add(_powerActivators.First(x => x.Value == power).Key, power);
+                }
+                GameManager.instance.SaveGame();
+            }
+            else
+                LogDebug("Couldn't find option file");
+        }
+        catch (Exception exception)
+        {
+            LogError("Couldn't load option file: " + exception.Message);
+        }
+
+    }
+
+    /// <summary>
+    /// Modifies the language key, to keep consistancy between the lore keys (mostly for NPC).
+    /// </summary>
+    /// <param name="key"></param>
+    /// <returns></returns>
     private string ModifyKey(string key)
     {
         if (key.Contains("Bretta_Diary"))
@@ -408,6 +459,10 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         return key;
     }
 
+    /// <summary>
+    /// Manages the activation/deactivation of powers and scene change trigger.
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator ManageSceneActions()
     {
         yield return new WaitForFinishedEnteringScene();
@@ -485,15 +540,13 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
     {
         UseHints = globalSaveData.ShowHint;
         UseCustomText = globalSaveData.EnableCustomText;
-        OnlyNames = globalSaveData.OnlyShowPowerName;
     }
 
     LoreMasterGlobalSaveData IGlobalSettings<LoreMasterGlobalSaveData>.OnSaveGlobal()
-        => new() { ShowHint = UseHints, EnableCustomText = UseCustomText, OnlyShowPowerName = OnlyNames };
+        => new() { ShowHint = UseHints, EnableCustomText = UseCustomText};
 
     public void OnLoadLocal(LoreMasterLocalSaveData s)
     {
-        Log("Called OnLoadLocal");
         ActivePowers.Clear();
         foreach (string key in s.Tags.Keys)
             _powerActivators[key].Tag = s.Tags[key];

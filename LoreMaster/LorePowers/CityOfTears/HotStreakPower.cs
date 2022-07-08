@@ -1,97 +1,118 @@
+using LoreMaster.Enums;
 using Modding;
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
-namespace LoreMaster.LorePowers.CityOfTears
+namespace LoreMaster.LorePowers.CityOfTears;
+
+public class HotStreakPower : Power
 {
-    public class HotStreakPower : Power
+    #region Members
+
+    private int _damageStacks = 0;
+    private bool _currentlyRunning;
+    private bool _hasHitEnemy;
+
+    #endregion
+
+    #region Constructors
+
+    public HotStreakPower() : base("Hot Streak", Area.CityOfTears)
     {
-        #region Members
-
-        private int _damageStacks = 0;
-        private bool _currentlyRunning;
-        private bool _hasHitEnemy;
-
-        #endregion
-
-        #region Constructors
-
-        public HotStreakPower() : base("RUIN_TAB_01", Area.CityOfTears)
-        {
-            Hint = "[Hot Streak]Successfully striking enemies shall increase your power.";
-        }
-
-        #endregion
-
-        #region Methods
-
-        protected override void Enable()
-        {
-            ModHooks.SlashHitHook += ModHooks_SlashHitHook;
-            ModHooks.GetPlayerIntHook += EmpowerNail;
-        }
-
-        protected override void Disable()
-        {
-            ModHooks.SlashHitHook -= ModHooks_SlashHitHook;
-            ModHooks.GetPlayerIntHook -= EmpowerNail;
-        }
-
-        private void ModHooks_SlashHitHook(Collider2D otherCollider, GameObject slash)
-        {
-            // This event is fired multiple times, therefore we check every instance if an enemy was hit
-            if (otherCollider.gameObject.GetComponent<HealthManager>())
-                _hasHitEnemy = true;
-
-            // To prevent running multiple coroutines
-            if (_currentlyRunning)
-                return;
-
-            _currentlyRunning = true;
-            GameManager.instance.StartCoroutine(HitCooldown());
-        }
-
-        private int EmpowerNail(string name, int damage)
-        {
-            if (string.Equals(name, "nailDamage"))
-                damage += _damageStacks;
-            return damage;
-        }
-
-        IEnumerator HitCooldown()
-        {
-            // Give the event handler time to acknowledge a hit.
-            yield return new WaitForSeconds(0.25f);
-
-            if (_hasHitEnemy)
-            {
-                if (_damageStacks < 10)
-                    _damageStacks++;
-            }
-            else
-                _damageStacks = 0;
-
-            UpdateNail();
-        }
-
-        private void UpdateNail()
-        {
-            IEnumerator WaitThenUpdate()
-            {
-                yield return null;
-                PlayMakerFSM.BroadcastEvent("UPDATE NAIL DAMAGE");
-            }
-            GameManager.instance.StartCoroutine(WaitThenUpdate());
-
-            _hasHitEnemy = false;
-            _currentlyRunning = false;
-        }
-
-        #endregion
+        Hint = "Successfully striking enemies shall increase your power.";
+        Description = "When hitting an enemy with the nail, increases it's damage by 1 (max. 3 stacks per nail upgrade (15 total)). Resets if you don't hit an enemy.";
     }
+
+    #endregion
+
+    #region Event Handler
+
+    /// <summary>
+    /// Event handler when the player slashes with the nail.
+    /// </summary>
+    private void NailSlash(Collider2D otherCollider, GameObject slash)
+    {
+        // This event is fired multiple times, therefore we check every instance if an enemy was hit
+        if (otherCollider.gameObject.GetComponent<HealthManager>())
+            _hasHitEnemy = true;
+
+        // To prevent running multiple coroutines
+        if (_currentlyRunning)
+            return;
+
+        _currentlyRunning = true;
+        LoreMaster.Instance.Handler.StartCoroutine(HitCooldown());
+    }
+
+    /// <summary>
+    /// Event handler, when the game asks for the nail damage.
+    /// </summary>
+    private int EmpowerNail(string name, int damage)
+    {
+        if (string.Equals(name, "nailDamage"))
+            damage += _damageStacks;
+        return damage;
+    }
+
+    #endregion
+
+    #region Protected Methods
+
+    protected override void Enable()
+    {
+        ModHooks.SlashHitHook += NailSlash;
+        ModHooks.GetPlayerIntHook += EmpowerNail;
+    }
+
+    protected override void Disable()
+    {
+        ModHooks.SlashHitHook -= NailSlash;
+        ModHooks.GetPlayerIntHook -= EmpowerNail;
+    }
+
+    #endregion
+
+    #region Private Methods
+
+    /// <summary>
+    /// Waits for the hit to finish and then checks if an enemy was hit.
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator HitCooldown()
+    {
+        // Give the event handler time to acknowledge a hit.
+        yield return new WaitForSeconds(0.25f);
+
+        if (_hasHitEnemy)
+        {
+            if (_damageStacks < PlayerData.instance.nailSmithUpgrades * 3)
+                _damageStacks++;
+        }
+        else
+            _damageStacks = 0;
+
+        UpdateNail();
+    }
+
+    /// <summary>
+    /// Updates the nail and resets the flags.
+    /// </summary>
+    private void UpdateNail()
+    {
+        LoreMaster.Instance.Handler.StartCoroutine(WaitThenUpdate());
+        _hasHitEnemy = false;
+        _currentlyRunning = false;
+    }
+
+    /// <summary>
+    /// Wait a frame and then call upon a nail damage update.
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator WaitThenUpdate()
+    {
+        yield return null;
+        PlayMakerFSM.BroadcastEvent("UPDATE NAIL DAMAGE");
+    }
+
+    #endregion
 }

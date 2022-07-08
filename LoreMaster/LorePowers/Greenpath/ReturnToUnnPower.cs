@@ -1,9 +1,9 @@
-using System;
+using HutongGames.PlayMaker;
+using ItemChanger.Extensions;
+using ItemChanger.FsmStateActions;
+using LoreMaster.Enums;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using UnityEngine;
 
 namespace LoreMaster.LorePowers.Greenpath;
 
@@ -19,21 +19,52 @@ public class ReturnToUnnPower : Power
 
     public ReturnToUnnPower() : base("", Area.Greenpath)
     {
-       
+        Hint = "Reject Bugness, return to Slug. You move faster to Unn.";
+        Description = "Your Movement speed is increased by 3 and your dash cooldown is reduces by 0.5 seconds, while you facing left.";
     }
 
     #endregion
 
-    #region Public Methods
+    #region Protected Methods
 
-    protected override void Enable()
+    protected override void Initialize()
     {
-        LoreMaster.Instance.Handler.StartCoroutine(AdjustMovementSpeed());
+        FsmState slugSpeed = GameObject.Find("Knight").LocateMyFSM("Spell Control").GetState("Start MP Drain");
+
+        slugSpeed.AddLastAction(new Lambda(() =>
+        {
+            if (Active)
+                slugSpeed.Fsm.Variables.FindFsmFloat("Slug Speed L").Value -= PlayerData.instance.GetBool("equippedCharm_7") ? 6f : 3f;
+        }));
     }
 
+    protected override void Enable() => LoreMaster.Instance.Handler.StartCoroutine(AdjustMovementSpeed());
+    
+    protected override void Disable()
+    {
+        LoreMaster.Instance.Handler.StopCoroutine(AdjustMovementSpeed());
+        if (_movementSpeedBuff)
+        { 
+            HeroController.instance.WALK_SPEED -= 3f;
+            HeroController.instance.RUN_SPEED -= 3f;
+            HeroController.instance.RUN_SPEED_CH -= 3f;
+            HeroController.instance.RUN_SPEED_CH_COMBO -= 3f;
+            HeroController.instance.DASH_COOLDOWN += .5f;
+            HeroController.instance.DASH_COOLDOWN_CH += .5f;
+        }
+    }
+
+    #endregion
+
+    #region Private Methods
+
+    /// <summary>
+    /// Increase the movement speed when looking to the left.
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator AdjustMovementSpeed()
     {
-        while(true)
+        while (true)
         {
             yield return null;
             if (!HeroController.instance.cState.facingRight)
@@ -50,7 +81,7 @@ public class ReturnToUnnPower : Power
                 _movementSpeedBuff = true;
             }
             else if (_movementSpeedBuff)
-            { 
+            {
                 HeroController.instance.WALK_SPEED -= 3f;
                 HeroController.instance.RUN_SPEED -= 3f;
                 HeroController.instance.RUN_SPEED_CH -= 3f;
@@ -59,20 +90,6 @@ public class ReturnToUnnPower : Power
                 HeroController.instance.DASH_COOLDOWN_CH += .5f;
                 _movementSpeedBuff = false;
             }
-        }
-    }
-
-    protected override void Disable()
-    {
-        HeroController.instance.StopCoroutine(AdjustMovementSpeed());
-        if (_movementSpeedBuff)
-        { 
-            HeroController.instance.WALK_SPEED -= 3f;
-            HeroController.instance.RUN_SPEED -= 3f;
-            HeroController.instance.RUN_SPEED_CH -= 3f;
-            HeroController.instance.RUN_SPEED_CH_COMBO -= 3f;
-            HeroController.instance.DASH_COOLDOWN += .5f;
-            HeroController.instance.DASH_COOLDOWN_CH += .5f;
         }
     }
 

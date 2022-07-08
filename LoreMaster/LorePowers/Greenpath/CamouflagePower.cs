@@ -1,10 +1,5 @@
-using Modding;
-using System;
+using LoreMaster.Enums;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace LoreMaster.LorePowers.Greenpath;
@@ -19,22 +14,23 @@ public class CamouflagePower : Power
 
     #region Constructors
 
-    public CamouflagePower() : base("", Area.Greenpath) { }
+    public CamouflagePower() : base("Camouflage", Area.Greenpath) 
+    {
+        Hint = "While doing nothing, your mind slowly ascent to Unn's dream, while your shell is shielded by Unn's power.";
+        Description = "After standing still for 5 seconds, you gain invincibility until you do something. If you are wearing Shape of Unn, you keep the invincibility while focusing and moving as a slug.";
+    }
 
     #endregion
 
-    #region Public Methods
+    #region Protected Methods
 
-    protected override void Initialize()
-    {
-        _heroSprite = GameObject.Find("Knight").GetComponent<tk2dSprite>();
-    }
-
+    protected override void Initialize() => _heroSprite = GameObject.Find("Knight").GetComponent<tk2dSprite>();
+    
     protected override void Enable() => LoreMaster.Instance.Handler.StartCoroutine(WaitForCamouflage());
 
     protected override void Disable()
     {
-        HeroController.instance.StopCoroutine(WaitForCamouflage());
+        LoreMaster.Instance.Handler.StopCoroutine(WaitForCamouflage());
         PlayerData.instance.isInvincible = false;
         _heroSprite.color = Color.white;
     }

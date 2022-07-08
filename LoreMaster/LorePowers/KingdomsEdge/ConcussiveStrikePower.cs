@@ -1,11 +1,8 @@
-using ItemChanger.Extensions;
+using LoreMaster.Enums;
+using LoreMaster.UnityComponents;
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace LoreMaster.LorePowers.KingdomsEdge;
@@ -22,16 +19,20 @@ public class ConcussiveStrikePower : Power
 
     #region Constructors
 
-    public ConcussiveStrikePower() : base("", Area.KingdomsEdge)
+    public ConcussiveStrikePower() : base("Concussive Strikes", Area.KingdomsEdge)
     {
-        
+        CustomText = "Oh hello litte thing. Are you the one you tickled my earlier? Don't worry if that's the case, a big guy like me can take this without a problem. These foes here never would dare approach my face. " +
+            "My arms crush everything harmful that comes close to them. That's why I'm glad a fellow traveler found their way to my. Let me teach you the secret of my strikes as a sign of friendship.";
+        Hint = "Your huge nail swings cause Concussion on their target, which will cause the target to suffer more from your nail and extend the concussion.";
+        Description = "Great Slash and Dash Slash cause Concussion on their target for 3 seconds. Concussed enemies take 10% more damage from nail attacks and increase their knockback by 50% (66% of Heavy Blow)." +
+            " Nail hits on the target extend the duration by 0.5 seconds each. Cyclone Slash is not counted as a nail slash in this case. Also cause enemies to glance 10% of their hits, decreasing their damage by 1.";
     }
 
     #endregion
 
     #region Event Handler
 
-    private void HealthManager_TakeDamage(On.HealthManager.orig_TakeDamage orig, HealthManager self, HitInstance hitInstance)
+    private void EnemyTookHit(On.HealthManager.orig_TakeDamage orig, HealthManager self, HitInstance hitInstance)
     {
         LoreMaster.Instance.Log("Knockback: " + hitInstance.MagnitudeMultiplier);
         ConcussionEffect concussive = self.GetComponentInChildren<ConcussionEffect>();
@@ -62,7 +63,7 @@ public class ConcussiveStrikePower : Power
         orig(self, hitInstance);
     }
 
-    private void HeroController_TakeDamage(On.HeroController.orig_TakeDamage orig, HeroController self, GameObject go, GlobalEnums.CollisionSide damageSide, int damageAmount, int hazardType)
+    private void TakeDamage(On.HeroController.orig_TakeDamage orig, HeroController self, GameObject go, GlobalEnums.CollisionSide damageSide, int damageAmount, int hazardType)
     {
         if (damageAmount > 0 && go.GetComponentInChildren<ConcussionEffect>(true) != null && LoreMaster.Instance.Generator.Next(1, 11) == 1)
         { 
@@ -93,17 +94,15 @@ public class ConcussiveStrikePower : Power
 
     protected override void Enable()
     {
-        On.HealthManager.TakeDamage += HealthManager_TakeDamage;
-        On.HeroController.TakeDamage += HeroController_TakeDamage;
+        On.HealthManager.TakeDamage += EnemyTookHit;
+        On.HeroController.TakeDamage += TakeDamage;
     }
 
     protected override void Disable()
     {
-        On.HealthManager.TakeDamage -= HealthManager_TakeDamage;
-        On.HeroController.TakeDamage -= HeroController_TakeDamage;
+        On.HealthManager.TakeDamage -= EnemyTookHit;
+        On.HeroController.TakeDamage -= TakeDamage;
     }
 
     #endregion
 }
-
-

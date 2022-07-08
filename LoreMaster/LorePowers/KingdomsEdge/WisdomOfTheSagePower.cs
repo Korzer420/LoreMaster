@@ -1,16 +1,12 @@
 using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
+using LoreMaster.Enums;
 using Modding;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace LoreMaster.LorePowers.KingdomsEdge;
 
-internal class WisdomOfTheSagePower : Power
+public class WisdomOfTheSagePower : Power
 {
     #region Members
 
@@ -20,9 +16,10 @@ internal class WisdomOfTheSagePower : Power
 
     #region Constructors
 
-    public WisdomOfTheSagePower() : base("", Area.KingdomsEdge)
+    public WisdomOfTheSagePower() : base("Wisdom of the Sage", Area.KingdomsEdge)
     {
-        
+        Hint = "Guide the Sage through his journey to learn how to use your spells more efficient.";
+        Description = "For each Mr. Mushroom stage that you completed, spells cost 1 soul less.";
     }
 
     #endregion
@@ -33,7 +30,7 @@ internal class WisdomOfTheSagePower : Power
 
     #endregion
 
-    #region Public Methods
+    #region Protected Methods
 
     protected override void Initialize()
     {
@@ -65,6 +62,9 @@ internal class WisdomOfTheSagePower : Power
 
     #region Private Methods
 
+    /// <summary>
+    /// Updates the spell costs.
+    /// </summary>
     private void UpdateSpellCost()
     {
         _soulBonus = PlayerData.instance.mrMushroomState;

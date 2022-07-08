@@ -1,9 +1,5 @@
 using HutongGames.PlayMaker;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using LoreMaster.Enums;
 using UnityEngine;
 
 namespace LoreMaster.LorePowers.KingdomsEdge;
@@ -12,27 +8,25 @@ internal class YouLikeJazzPower : Power
 {
     #region Members
 
-    FsmVariables _hatchlingVariables;
+    private FsmVariables _hatchlingVariables;
 
     #endregion
 
     #region Constructors
 
-    public YouLikeJazzPower() : base("", Area.KingdomsEdge)
+    public YouLikeJazzPower() : base("You like Jazz?", Area.KingdomsEdge)
     {
-        
         CustomText = GetCustomText();
+        Hint = "Your hatchlings adapted to be more powerful.";
+        Description = "You can now have 10 hatchlings at a time, they spawn twice at fast and cost only 25% of their normal soul.";
     }
 
     #endregion
 
-    #region Public Methods
+    #region Protected Methods
 
-    protected override void Initialize()
-    {
-        _hatchlingVariables = GameObject.Find("Charm Effects").LocateMyFSM("Hatchling Spawn").FsmVariables;
-    }
-
+    protected override void Initialize() => _hatchlingVariables = GameObject.Find("Charm Effects").LocateMyFSM("Hatchling Spawn").FsmVariables;
+    
     protected override void Enable()
     {
         _hatchlingVariables.FindFsmInt("Hatchling Max").Value = 10;

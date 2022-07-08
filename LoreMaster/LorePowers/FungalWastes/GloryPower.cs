@@ -1,36 +1,36 @@
+using LoreMaster.Enums;
 using Modding;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using UnityEngine;
 
-namespace LoreMaster.LorePowers.FungalWastes
+namespace LoreMaster.LorePowers.FungalWastes;
+
+public class GloryPower : Power
 {
-    public class GloryPower : Power
+    #region Members
+
+    private Dictionary<string, int[]> _enemyGeoValues = new Dictionary<string, int[]>();
+
+    #endregion
+    
+    #region Constructors
+
+    public GloryPower() : base("Glory of the Wealth", Area.FungalWastes)
     {
-        private Dictionary<string, int[]> _enemyGeoValues = new Dictionary<string, int[]>();
+        Hint = "Your enemies may \"share\" more of their wealth with you.";
+        Description = "Enemies drop more geo. 60% for small Geo (0-20 pieces), 30% for medium Geo (2 - 10 pieces) or 10% for large Geo (2-10 pieces)";
+    } 
 
-        public GloryPower() : base("PILGRIM_TAB_02", Area.FungalWastes)
+    #endregion
+
+    #region Protected Methods
+
+    protected override void Enable()
+    {
+        LoreMaster.Instance.SceneActions.Add(PowerName, () =>
         {
-            Hint = "<br>[Glory of the Wealth]<br>Enemies can drop more geo.";
-        }
-
-        protected override void Enable()
-        {
-            // This works
-            UnityEngine.SceneManagement.SceneManager.activeSceneChanged += UpdateGeoDrops;
-            
-        }
-
-        
-
-        private void UpdateGeoDrops(UnityEngine.SceneManagement.Scene arg0, UnityEngine.SceneManagement.Scene arg1)
-        {
-            // Locate all enemies
             HealthManager[] enemies = GameObject.FindObjectsOfType<HealthManager>();
 
             foreach (HealthManager enemy in enemies)
@@ -43,7 +43,7 @@ namespace LoreMaster.LorePowers.FungalWastes
                 {
                     int[] geoValues = new int[3];
 
-                    geoValues[0] =  ReflectionHelper.GetField<HealthManager, int>(enemy, "smallGeoDrops");
+                    geoValues[0] = ReflectionHelper.GetField<HealthManager, int>(enemy, "smallGeoDrops");
                     geoValues[1] = ReflectionHelper.GetField<HealthManager, int>(enemy, "mediumGeoDrops");
                     geoValues[2] = ReflectionHelper.GetField<HealthManager, int>(enemy, "largeGeoDrops");
 
@@ -68,11 +68,10 @@ namespace LoreMaster.LorePowers.FungalWastes
                         enemy.SetGeoLarge(geoDrops[2] + LoreMaster.Instance.Generator.Next(2, 11));
                 }
             }
-        }
-
-        protected override void Disable()
-        {
-            UnityEngine.SceneManagement.SceneManager.activeSceneChanged += UpdateGeoDrops;
-        }
+        });
     }
+
+    protected override void Disable() => LoreMaster.Instance.SceneActions.Remove(PowerName); 
+
+    #endregion
 }

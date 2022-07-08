@@ -1,16 +1,14 @@
 using HutongGames.PlayMaker.Actions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
 using ItemChanger.Extensions;
+using LoreMaster.Enums;
+using LoreMaster.UnityComponents;
 using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
 namespace LoreMaster.LorePowers.RestingGrounds;
 
-internal class DreamBlessingPower : Power
+public class DreamBlessingPower : Power
 {
     #region Members
 
@@ -24,30 +22,22 @@ internal class DreamBlessingPower : Power
 
     #region Constructors
 
-    public DreamBlessingPower() : base("", Area.RestingGrounds)
+    public DreamBlessingPower() : base("Dream blessing", Area.RestingGrounds)
     {
-        
+        Hint = "Your dream nail uses the power it absorbs from their powerful victims to use their hidden power.";
+        Description = "Defeated Dreamers grant the dream nail an additional effect.<br/>Lurien: Roots the target for 3 seconds (30 seconds cooldown)<br/>Herrah: Spawn 2 weavers for 15 seconds." +
+            "<br/>Monomon: Per 100 Essence you have a 1% chance to instant kill the enemy (capped at 200 damage). Capped at 2400 Essence for 24%";
     }
 
     #endregion
 
-    #region Public Methods
-
-    protected override void Initialize()
-    {
-        _weaverlingPrefab = GameObject.Find("Charm Effects").LocateMyFSM("Weaverling Control").GetState("Spawn").GetFirstActionOfType<SpawnObjectFromGlobalPool>().gameObject.Value;
-    }
-
-    protected override void Enable()
-    {
-        On.EnemyDreamnailReaction.RecieveDreamImpact += EnemyDreamnailReaction_RecieveDreamImpact;
-    }
+    #region Event Handler
 
     private void EnemyDreamnailReaction_RecieveDreamImpact(On.EnemyDreamnailReaction.orig_RecieveDreamImpact orig, EnemyDreamnailReaction self)
     {
         orig(self);
 
-        if(PlayerData.instance.lurienDefeated)
+        if (PlayerData.instance.lurienDefeated)
             if (self.GetComponent<EnemyBinding>() == null)
                 self.gameObject.AddComponent<EnemyBinding>();
 
@@ -67,21 +57,29 @@ internal class DreamBlessingPower : Power
             if (essence > 2400)
                 essence = 2400;
             essence /= 100;
-            if(LoreMaster.Instance.Generator.Next(1,101) <= essence)
+            if (LoreMaster.Instance.Generator.Next(1, 101) <= essence)
             {
                 // This assumes that the component is on the same object, if not we ignore it. (It isn't worth the hussle to account for that currently)
                 HealthManager healthManager = self.GetComponent<HealthManager>();
                 if (healthManager != null)
-                    healthManager.ApplyExtraDamage(120);
+                    healthManager.ApplyExtraDamage(200);
             }
         }
     }
 
-    protected override void Disable()
-    {
-        On.EnemyDreamnailReaction.RecieveDreamImpact -= EnemyDreamnailReaction_RecieveDreamImpact;
-    }
+    #endregion
 
+    #region Protected Methods
+
+    protected override void Initialize() 
+        =>_weaverlingPrefab = GameObject.Find("Charm Effects").LocateMyFSM("Weaverling Control").GetState("Spawn").GetFirstActionOfType<SpawnObjectFromGlobalPool>().gameObject.Value;
+    
+    protected override void Enable() 
+        => On.EnemyDreamnailReaction.RecieveDreamImpact += EnemyDreamnailReaction_RecieveDreamImpact;
+    
+    protected override void Disable()
+        => On.EnemyDreamnailReaction.RecieveDreamImpact -= EnemyDreamnailReaction_RecieveDreamImpact;
+    
     #endregion
 
     #region Private Methods

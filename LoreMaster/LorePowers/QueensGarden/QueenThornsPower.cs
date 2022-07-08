@@ -2,13 +2,10 @@ using HutongGames.PlayMaker;
 using HutongGames.PlayMaker.Actions;
 using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
+using LoreMaster.Enums;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace LoreMaster.LorePowers.QueensGarden;
@@ -27,7 +24,8 @@ public class QueenThornsPower : Power
 
     public QueenThornsPower() : base("Queen Thorns", Area.QueensGarden)
     {
-        
+        Hint = "The thorns of agony have received the blessing of the queen.";
+        Description = "Thorns of Agony are now \"Queen Thorns\", which removes the freeze on hit. restore soul if it hits an enemy and has a 33% chance to restore 1 hp if it kills an enemy.";
     }
 
     #endregion
@@ -39,7 +37,31 @@ public class QueenThornsPower : Power
 
     #endregion
 
-    #region Public Methods
+    #region Event Handler
+
+    private void EnemyTakeDamage(On.HealthManager.orig_TakeDamage orig, HealthManager self, HitInstance hitInstance)
+    {
+        orig(self, hitInstance);
+        if (_thorns.activeSelf)
+            HeroController.instance.AddMPCharge(7);
+    }
+
+    private void EnemyDeath(On.HealthManager.orig_Die orig, HealthManager self, float? attackDirection, AttackTypes attackType, bool ignoreEvasion)
+    {
+        orig(self, attackDirection, attackType, ignoreEvasion);
+        // We assume that if an enemy dies while thorns is active, they killed them.
+        if (_thorns.activeSelf && LoreMaster.Instance.Generator.Next(1, 3) == 1 && CanHeal)
+        {
+            if (PlayerData.instance.GetBool("equippedCharm_27"))
+                EventRegister.SendEvent("ADD BLUE HEALTH");
+            else
+                HeroController.instance.AddHealth(1);
+        }
+    }
+
+    #endregion
+
+    #region Protected Methods
 
     protected override void Initialize()
     {
@@ -48,7 +70,7 @@ public class QueenThornsPower : Power
             // Save the old thorns image and create a new one which can be used anytime.
             if (_sprites[1] == null)
             {
-                string imageFile = Path.Combine(Path.GetDirectoryName(typeof(MindBlast).Assembly.Location), "Resources/Queens_Thorns.png");
+                string imageFile = Path.Combine(Path.GetDirectoryName(typeof(LoreMaster).Assembly.Location), "Resources/Queens_Thorns.png");
                 byte[] imageData = File.ReadAllBytes(imageFile);
                 Texture2D tex = new Texture2D(1, 1, TextureFormat.RGBA32, false);
                 ImageConversion.LoadImage(tex, imageData, true);
@@ -94,13 +116,12 @@ public class QueenThornsPower : Power
         {
             LoreMaster.Instance.LogError("Error in Initialize of Queen Thorns: " + error.Message);
         }
-        
     }
 
     protected override void Enable()
     {
-        On.HealthManager.TakeDamage += HealthManager_TakeDamage;
-        On.HealthManager.Die += HealthManager_Die;
+        On.HealthManager.TakeDamage += EnemyTakeDamage;
+        On.HealthManager.Die += EnemyDeath;
         try
         {
             CharmIconList.Instance.spriteList[12] = _sprites[1];
@@ -109,38 +130,13 @@ public class QueenThornsPower : Power
         {
             LoreMaster.Instance.LogError("Error in enable of Queen Thorns: " + error.Message);
         }
-        
     }
 
     protected override void Disable()
     {
-        On.HealthManager.TakeDamage -= HealthManager_TakeDamage;
-        On.HealthManager.Die -= HealthManager_Die;
+        On.HealthManager.TakeDamage -= EnemyTakeDamage;
+        On.HealthManager.Die -= EnemyDeath;
         CharmIconList.Instance.spriteList[12] = _sprites[0];
-    }
-
-    #endregion
-
-    #region Private Methods
-
-    private void HealthManager_TakeDamage(On.HealthManager.orig_TakeDamage orig, HealthManager self, HitInstance hitInstance)
-    {
-        orig(self, hitInstance);
-        if (_thorns.activeSelf)
-            HeroController.instance.AddMPCharge(7);
-    }
-
-    private void HealthManager_Die(On.HealthManager.orig_Die orig, HealthManager self, float? attackDirection, AttackTypes attackType, bool ignoreEvasion)
-    {
-        orig(self, attackDirection, attackType, ignoreEvasion);
-        // We assume that if an enemy dies while thorns is active, they killed them.
-        if (_thorns.activeSelf && LoreMaster.Instance.Generator.Next(1,3) == 1 && CanHeal)
-        {
-            if (PlayerData.instance.GetBool("equippedCharm_27"))
-                EventRegister.SendEvent("ADD BLUE HEALTH");
-            else
-                HeroController.instance.AddHealth(1);
-        }
     }
 
     #endregion

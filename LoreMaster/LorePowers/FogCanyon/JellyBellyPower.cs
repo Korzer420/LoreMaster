@@ -1,9 +1,4 @@
-using Modding;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using LoreMaster.Enums;
 using UnityEngine;
 
 namespace LoreMaster.LorePowers.FogCanyon;
@@ -18,21 +13,19 @@ public class JellyBellyPower : Power
 
     #region Constructors
 
-    public JellyBellyPower() : base("", Area.FogCanyon)
+    public JellyBellyPower() : base("Belly of the Jelly(fish)", Area.FogCanyon)
     {
-        
-        
+        CustomText = "Aren't my jelly fish cute little things? The way the float in the air and fall so slowly, it has something... calming to it. I wish I could navigate to the air like that.";
+        Hint = "You are feeling light, like a feather";
+        Description = "Decrease your falling speed by 25% and triples the time needed in air, for a hard fall.";
     }
 
     #endregion
 
-    #region Public Methods
+    #region Protected Methods
 
-    protected override void Initialize()
-    {
-        _playerRigidBody = HeroController.instance.gameObject.GetComponent<Rigidbody2D>();
-    }
-
+    protected override void Initialize() => _playerRigidBody = HeroController.instance.gameObject.GetComponent<Rigidbody2D>();
+    
     protected override void Enable()
     {
         HeroController.instance.BIG_FALL_TIME *= 3;

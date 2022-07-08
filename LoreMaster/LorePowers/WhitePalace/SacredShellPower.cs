@@ -1,36 +1,31 @@
+using LoreMaster.Enums;
 using Modding;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LoreMaster.LorePowers.WhitePalace;
 
-internal class SacredShellPower : Power
+public class SacredShellPower : Power
 {
     #region Constructors
 
-    public SacredShellPower() : base("", Area.WhitePalace)
+    public SacredShellPower() : base("Sacred Shell", Area.WhitePalace)
     {
-
+        Hint = "Infuse your shell will the pale power of the monarch which grants you tenacity.";
+        Description = "You can longer take more than one damage per hit (excluding overcharmed).";
     }
 
     #endregion
 
-    #region Public Methods
-
-    protected override void Enable()
-    {
-        ModHooks.AfterTakeDamageHook += ModHooks_AfterTakeDamageHook;
-    }
+    #region Event Handler
 
     private int ModHooks_AfterTakeDamageHook(int hazardType, int damageAmount) => damageAmount > 1 ? 1 : damageAmount;
 
-    protected override void Disable()
-    {
-        ModHooks.AfterTakeDamageHook -= ModHooks_AfterTakeDamageHook;
-    }
+    #endregion
 
+    #region Protected Methods
+
+    protected override void Enable() => ModHooks.AfterTakeDamageHook += ModHooks_AfterTakeDamageHook;
+    
+    protected override void Disable() => ModHooks.AfterTakeDamageHook -= ModHooks_AfterTakeDamageHook;
+    
     #endregion
 }

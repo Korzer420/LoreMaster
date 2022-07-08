@@ -1,11 +1,11 @@
 using HutongGames.PlayMaker;
+using ItemChanger.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
-using Vasi;
 
 namespace LoreMaster
 {
@@ -85,10 +85,7 @@ namespace LoreMaster
         #region States
 
         public static FsmState GetState(PlayMakerFSM playMakerFSM, string stateName)
-        {
-            playMakerFSM.TryGetState(stateName, out FsmState state);
-            return state;
-        }
+        => playMakerFSM.GetState(stateName);
 
         #endregion
     }

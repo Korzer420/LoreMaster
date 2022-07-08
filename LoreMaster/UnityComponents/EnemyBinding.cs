@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using LoreMaster.LorePowers.RestingGrounds;
 
-namespace LoreMaster;
+namespace LoreMaster.UnityComponents;
 
 /// <summary>
 /// Used by <see cref="DreamBlessingPower"/> Component to bind the enemy to the current position. This component removes itself after the cooldown.

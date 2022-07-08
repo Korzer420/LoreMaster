@@ -1,10 +1,6 @@
+using LoreMaster.Enums;
 using Modding;
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace LoreMaster.LorePowers.HowlingCliffs;
@@ -21,39 +17,37 @@ public class JonisProtectionPower : Power
 
     #region Constructors
 
-    public JonisProtectionPower() : base("", Area.Cliffs)
+    public JonisProtectionPower() : base("Joni's Protection", Area.Cliffs)
     {
-
+        CustomText = "Did you just took my blessing? How rude of you. First you banish me here and now that? Not cool, dude. Well, now that you have already took it, my prayers are with you....................... please don't dream nail me, dude.";
+        Hint = "When going to a new area, you will receive the gift of joni, which will quickly fade away.";
+        Description = "When going to another area, you will be granted 5 life blood (10 if you have Joni's equipped). Each 3 seconds a lifeblood will fade away.";
     }
 
     #endregion
 
     #region Event handler
 
-    private void SceneManager_activeSceneChanged(UnityEngine.SceneManagement.Scene arg0, UnityEngine.SceneManagement.Scene arg1)
-    {
-        if (!GameManager._instance.IsGameplayScene())
-            return;
-        
-        if (_currentlyRunning == null)
-            _currentlyRunning = LoreMaster.Instance.Handler.StartCoroutine(RemoveLifeblood());
-        else
-        {
-            HeroController.instance.StopCoroutine(_currentlyRunning);
-            _currentlyRunning = LoreMaster.Instance.Handler.StartCoroutine(RemoveLifeblood());
-        }
-    }
-
-    private void ModHooks_CharmUpdateHook(PlayerData data, HeroController controller)
+    /// <summary>
+    /// Event handler when the charms are updated.
+    /// </summary>
+    /// <param name="data"></param>
+    /// <param name="controller"></param>
+    private void CharmUpdate(PlayerData data, HeroController controller)
     {
         if (_currentlyRunning != null)
         {
-            HeroController.instance.StopCoroutine(_currentlyRunning);
+            LoreMaster.Instance.Handler.StopCoroutine(_currentlyRunning);
             _currentLifebloodBonus = 0;
         }
     }
 
-    private int ModHooks_TakeHealthHook(int damage)
+    /// <summary>
+    /// Event handler which takes away the health.
+    /// </summary>
+    /// <param name="damage"></param>
+    /// <returns></returns>
+    private int TakeHealth(int damage)
     {
         if (_currentLifebloodBonus > 0)
         {
@@ -67,27 +61,36 @@ public class JonisProtectionPower : Power
 
     #endregion
 
-    #region Public Methods
+    #region Protected Methods
 
     protected override void Enable()
     {
-        UnityEngine.SceneManagement.SceneManager.activeSceneChanged += SceneManager_activeSceneChanged;
-        ModHooks.CharmUpdateHook += ModHooks_CharmUpdateHook;
-        ModHooks.TakeHealthHook += ModHooks_TakeHealthHook;
+        LoreMaster.Instance.SceneActions.Add(PowerName, () =>
+        {
+            LoreMaster.Instance.Handler.StopCoroutine(_currentlyRunning);
+            _currentlyRunning = LoreMaster.Instance.Handler.StartCoroutine(FadingLifeblood());
+            
+        });
+        ModHooks.CharmUpdateHook += CharmUpdate;
+        ModHooks.TakeHealthHook += TakeHealth;
     }
 
     protected override void Disable()
     {
-        UnityEngine.SceneManagement.SceneManager.activeSceneChanged -= SceneManager_activeSceneChanged;
-        ModHooks.CharmUpdateHook -= ModHooks_CharmUpdateHook;
-        ModHooks.TakeHealthHook -= ModHooks_TakeHealthHook;
+        LoreMaster.Instance.SceneActions.Remove(PowerName);
+        ModHooks.CharmUpdateHook -= CharmUpdate;
+        ModHooks.TakeHealthHook -= TakeHealth;
     }
 
     #endregion
 
     #region Private Methods
 
-    private IEnumerator RemoveLifeblood()
+    /// <summary>
+    /// Quickly fades away lifeblood.
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator FadingLifeblood()
     {
         int currentBonus = _currentLifebloodBonus;
         for (int i = 0; i < (PlayerData.instance.GetBool("equippedCharm_27") ? 10 : 5) - currentBonus; i++)

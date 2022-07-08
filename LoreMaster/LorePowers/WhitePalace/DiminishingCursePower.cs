@@ -1,9 +1,5 @@
+using LoreMaster.Enums;
 using Modding;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LoreMaster.LorePowers.WhitePalace;
 
@@ -17,14 +13,15 @@ public class DiminishingCursePower : Power
     
     #region Constructors
 
-    public DiminishingCursePower() : base("",Area.WhitePalace)
+    public DiminishingCursePower() : base("Diminish Curse",Area.WhitePalace)
     {
-        
+        Hint = "If you suffer from the curse of greed, it will vanish once you experienced enough pain after resting.";
+        Description = "If you take 15 hits, you will no longer count as overcharmed, resets if you sit on a bench";
     }
 
     #endregion
 
-    #region Event handler
+    #region Event Handler
 
     private void HeroController_TakeHealth(On.PlayerData.orig_TakeHealth orig, PlayerData self, int amount)
     {
@@ -48,7 +45,7 @@ public class DiminishingCursePower : Power
 
     #endregion
 
-    #region Public Methods
+    #region Protected Methods
 
     protected override void Enable()
     {

@@ -1,25 +1,22 @@
 using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using LoreMaster.Enums;
 
 namespace LoreMaster.LorePowers.Greenpath;
 
-internal class GiftOnUnnPower : Power
+public class GiftOnUnnPower : Power
 {
     #region Constructors
 
-    public GiftOnUnnPower() : base("", Area.Greenpath)
+    public GiftOnUnnPower() : base("Gift of Unn", Area.Greenpath)
     {
-        
+        Hint = "Grants you the power of Unn.";
+        Description = "Gain the shape of Unn effect for focusing. If you're wearing Shape of Unn, focus restores 15 soul on a successful cast.";
     }
 
     #endregion
 
-    #region Public Methods
+    #region Protected Methods
 
     protected override void Initialize()
     {
@@ -46,10 +43,6 @@ internal class GiftOnUnnPower : Power
                 HeroController.instance.AddMPCharge(15);
         }));
     }
-
-    protected override void Enable() { }
-
-    protected override void Disable() { }
 
     #endregion
 }

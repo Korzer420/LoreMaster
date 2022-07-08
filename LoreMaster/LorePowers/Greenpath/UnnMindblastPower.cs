@@ -1,9 +1,6 @@
+using LoreMaster.Enums;
+using LoreMaster.UnityComponents;
 using Modding;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace LoreMaster.LorePowers.Greenpath;
@@ -18,16 +15,17 @@ public class UnnMindblastPower : Power
 
     #region Constructors
 
-    public UnnMindblastPower() : base("", Area.Greenpath)
+    public UnnMindblastPower() : base("Mindblast of Unn", Area.Greenpath)
     {
-        
+        Hint = "Your dream nail emits the power of Unn to the target's mind, which causes their bodies to be more vulnerable.";
+        Description = "Hitting an enemy with the dream nail permanently increases the taken damage by 2. Bonus for wearing charm: (+1 Dreamwielder; +2 Dreamshield; +3 Shape of Unn)";
     }
 
     #endregion
 
     #region Event handler
 
-    private void HealthManager_TakeDamage(On.HealthManager.orig_TakeDamage orig, HealthManager self, HitInstance hitInstance)
+    private void AddMindblastDamage(On.HealthManager.orig_TakeDamage orig, HealthManager self, HitInstance hitInstance)
     {
         MindBlast mindBlast = self.gameObject.GetComponent<MindBlast>();
         if (mindBlast != null && hitInstance.DamageDealt > 0)
@@ -35,28 +33,12 @@ public class UnnMindblastPower : Power
         orig(self, hitInstance);
     }
 
-    #endregion
-
-    #region Public Methods
-
-    protected override void Initialize()
-    {
-        _dreamNailSprites = GameObject.Find("Knight/Dream Effects").GetComponentsInChildren<tk2dSprite>(true);
-    }
-
-    protected override void Enable()
-    {
-        On.EnemyDreamnailReaction.RecieveDreamImpact += EnemyDreamnailReaction_RecieveDreamImpact;
-        On.HealthManager.TakeDamage += HealthManager_TakeDamage;
-        ModHooks.CharmUpdateHook += ModHooks_CharmUpdateHook;
-    }
-
     /// <summary>
-    /// Updates the dream nail color
+    /// Updates the dream nail color.
     /// </summary>
     /// <param name="data"></param>
     /// <param name="controller"></param>
-    private void ModHooks_CharmUpdateHook(PlayerData data, HeroController controller)
+    private void UpdateDreamNailColor(PlayerData data, HeroController controller)
     {
         string colorCode = string.Empty;
 
@@ -100,21 +82,12 @@ public class UnnMindblastPower : Power
             dreamNailComponent.color = dreamNailColor;
     }
 
-    protected override void Disable()
-    {
-        On.EnemyDreamnailReaction.RecieveDreamImpact -= EnemyDreamnailReaction_RecieveDreamImpact;
-        On.HealthManager.TakeDamage -= HealthManager_TakeDamage;
-        ModHooks.CharmUpdateHook -= ModHooks_CharmUpdateHook;
-
-        foreach (tk2dSprite dreamNailComponent in _dreamNailSprites)
-            dreamNailComponent.color = Color.white;
-    }
-
-    #endregion
-
-    #region Private Methods
-
-    private void EnemyDreamnailReaction_RecieveDreamImpact(On.EnemyDreamnailReaction.orig_RecieveDreamImpact orig, EnemyDreamnailReaction self)
+    /// <summary>
+    /// Apply mindblast stacks to the target.
+    /// </summary>
+    /// <param name="orig"></param>
+    /// <param name="self"></param>
+    private void Apply_Mindblast(On.EnemyDreamnailReaction.orig_RecieveDreamImpact orig, EnemyDreamnailReaction self)
     {
         orig(self);
         MindBlast mindBlast = self.GetComponent<MindBlast>();
@@ -129,8 +102,31 @@ public class UnnMindblastPower : Power
         if (PlayerData.instance.GetBool("equippedCharm_38"))
             mindBlast.ExtraDamage += 2;
         // 3 extra damage if shape of unn is equipped
-        if(PlayerData.instance.GetBool("equippedCharm_28"))
+        if (PlayerData.instance.GetBool("equippedCharm_28"))
             mindBlast.ExtraDamage += 3;
+    }
+
+    #endregion
+
+    #region Protected Methods
+
+    protected override void Initialize() =>  _dreamNailSprites = GameObject.Find("Knight/Dream Effects").GetComponentsInChildren<tk2dSprite>(true);
+    
+    protected override void Enable()
+    {
+        On.EnemyDreamnailReaction.RecieveDreamImpact += Apply_Mindblast;
+        On.HealthManager.TakeDamage += AddMindblastDamage;
+        ModHooks.CharmUpdateHook += UpdateDreamNailColor;
+    }
+
+    protected override void Disable()
+    {
+        On.EnemyDreamnailReaction.RecieveDreamImpact -= Apply_Mindblast;
+        On.HealthManager.TakeDamage -= AddMindblastDamage;
+        ModHooks.CharmUpdateHook -= UpdateDreamNailColor;
+
+        foreach (tk2dSprite dreamNailComponent in _dreamNailSprites)
+            dreamNailComponent.color = Color.white;
     }
 
     #endregion

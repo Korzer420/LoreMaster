@@ -2,18 +2,13 @@ using HutongGames.PlayMaker;
 using HutongGames.PlayMaker.Actions;
 using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
+using LoreMaster.Enums;
 using Modding;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace LoreMaster.LorePowers.Waterways;
 
-internal class EternalSentinelPower : Power
+public class EternalSentinelPower : Power
 {
     #region Members
 
@@ -25,14 +20,38 @@ internal class EternalSentinelPower : Power
 
     #region Constructors
 
-    public EternalSentinelPower() :base ("",Area.WaterWays)
+    public EternalSentinelPower() : base ("Eternal Sentinel",Area.WaterWays)
     {
-        
+        Hint = "Increases your durablity while wearing the sign of the protector. The shield of ancient one consumes soul and is more restistance.";
+        Description = "Defender's Crest increase your max health by 2. Baldur shell now takes 10 hits instead of four. When getting hit, while baldur shell is up, you gain 10 soul "+
+            "or 20 if you also wearing Defender's Crest.";
     }
 
     #endregion
 
-    #region Public Methods
+    #region Event Handler
+
+    private void CharmUpdate(PlayerData data, HeroController controller)
+    {
+        if (data.GetBool(nameof(data.equippedCharm_10)))
+        {
+            if (!_grantedBonusHealth)
+                HeroController.instance.AddToMaxHealth(1);
+            _grantedBonusHealth = true;
+            PlayerData.instance.SetInt(nameof(PlayerData.instance.blockerHits), 10);
+            _baldurSprite.color = new(1f, 0.4f, 0f);
+            return;
+        }
+
+        if (_grantedBonusHealth)
+            PlayerData.instance.SetInt(nameof(PlayerData.instance.maxHealth), PlayerData.instance.maxHealth - 1);
+        _grantedBonusHealth = false;
+        _baldurSprite.color = Color.white;
+    }
+
+    #endregion
+
+    #region Protected Methods
 
     protected override void Initialize()
     {
@@ -61,10 +80,10 @@ internal class EternalSentinelPower : Power
         if (PlayerData.instance.GetBool(nameof(PlayerData.instance.equippedCharm_10)))
         {
             _grantedBonusHealth = true;
-            HeroController.instance.AddToMaxHealth(1);
+            HeroController.instance.AddToMaxHealth(2);
             _baldurSprite.color = new(1f, 0.4f, 0f);
         }
-        ModHooks.CharmUpdateHook += ModHooks_CharmUpdateHook;
+        ModHooks.CharmUpdateHook += CharmUpdate;
     }
 
     protected override void Disable()
@@ -72,29 +91,7 @@ internal class EternalSentinelPower : Power
         if (_grantedBonusHealth)
             PlayerData.instance.SetInt(nameof(PlayerData.instance.maxHealth), PlayerData.instance.maxHealth - 2);
         _grantedBonusHealth = false;
-        ModHooks.CharmUpdateHook -= ModHooks_CharmUpdateHook;
-        _baldurSprite.color = Color.white;
-    }
-
-    #endregion
-
-    #region Private Methods
-
-    private void ModHooks_CharmUpdateHook(PlayerData data, HeroController controller)
-    {
-        if (data.GetBool(nameof(data.equippedCharm_10)))
-        {
-            if (!_grantedBonusHealth)
-                HeroController.instance.AddToMaxHealth(1);
-            _grantedBonusHealth = true;
-            PlayerData.instance.SetInt(nameof(PlayerData.instance.blockerHits), 10);
-            _baldurSprite.color = new(1f, 0.4f, 0f);
-            return;
-        }
-
-        if (_grantedBonusHealth)
-            PlayerData.instance.SetInt(nameof(PlayerData.instance.maxHealth), PlayerData.instance.maxHealth - 1);
-        _grantedBonusHealth = false;
+        ModHooks.CharmUpdateHook -= CharmUpdate;
         _baldurSprite.color = Color.white;
     }
 

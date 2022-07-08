@@ -1,55 +1,64 @@
-using System;
+using LoreMaster.Enums;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
-namespace LoreMaster.LorePowers.FungalWastes
+namespace LoreMaster.LorePowers.FungalWastes;
+
+public class OneOfUsPower : Power
 {
-    public class OneOfUsPower : Power
+    #region Members
+
+    private GameObject _cloud;
+    private Coroutine _cloudRoutine;
+
+    #endregion
+    
+    #region Constructors
+
+    public OneOfUsPower() : base("One of Us", Area.FungalWastes)
     {
-        private GameObject _cloud;
-        private Coroutine _cloudRoutine;
+        Hint = "Occasionally you emit a spore cloud. (Hold the super dash button to prevent the cloud.)";
+        Description = "Every twelve seconds you cast the deep focus spore cloud. Hold the crystal dash button to prevent that (in case you want to do pogos for example).";
+    }
 
-        public OneOfUsPower(): base("One of us", Area.FungalWastes)
-        {
-            Hint = "<br>[One of Us]<br>Occasionally you emit a spore cloud. (Hold the super dash button to prevent the cloud.)";
-            
-        }
+    #endregion
 
-        protected override void Initialize()
-        {
-            _cloud = GameObject.Find("_GameManager");
-            _cloud = _cloud.transform.Find("GlobalPool/Knight Spore Cloud(Clone)").gameObject;
-        }
+    #region Protected Methods
 
-        protected override void Enable()
-        {
-            _cloudRoutine = LoreMaster.Instance.Handler.StartCoroutine(EmitCloud());
-        }
+    protected override void Initialize()
+    {
+        _cloud = GameObject.Find("_GameManager");
+        _cloud = _cloud.transform.Find("GlobalPool/Knight Spore Cloud(Clone)").gameObject;
+    }
 
-        IEnumerator EmitCloud()
+    protected override void Enable() => _cloudRoutine = LoreMaster.Instance.Handler.StartCoroutine(EmitCloud());
+
+    protected override void Disable() => LoreMaster.Instance.Handler.StopCoroutine(_cloudRoutine);
+
+    #endregion
+
+    #region Private Methods
+
+    /// <summary>
+    /// Emits the spore cloud.
+    /// </summary>
+    private IEnumerator EmitCloud()
+    {
+        while (true)
         {
-            while (true)
+            yield return new WaitForSeconds(12f);
+            if (!InputHandler.Instance.inputActions.superDash.IsPressed && !GameManager.instance.isPaused)
             {
-                yield return new WaitForSeconds(12f);
-                if (!InputHandler.Instance.inputActions.superDash.IsPressed && !GameManager.instance.isPaused)
-                {
-                    var newc = GameObject.Instantiate(_cloud, HeroController.instance.transform.position,
-                    Quaternion.identity);
-                    newc.SetActive(true);
-                    newc.SetActiveChildren(true);
-                    yield return new WaitForSeconds(4.5f);
-                    GameObject.Destroy(newc);
-                }
+                var newc = GameObject.Instantiate(_cloud, HeroController.instance.transform.position,
+                Quaternion.identity);
+                newc.SetActive(true);
+                newc.SetActiveChildren(true);
+                yield return new WaitForSeconds(4.5f);
+                GameObject.Destroy(newc);
             }
         }
-
-        protected override void Disable()
-        {
-            HeroController.instance.StopCoroutine(_cloudRoutine);
-        }
     }
+
+    #endregion
+
 }

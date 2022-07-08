@@ -1,11 +1,6 @@
-using System;
-using Modding;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
+using LoreMaster.Enums;
 using System.Collections;
+using UnityEngine;
 
 namespace LoreMaster.LorePowers.Greenpath;
 
@@ -23,16 +18,20 @@ public class TouchGrassPower : Power
 
     #region Constructors
 
-    public TouchGrassPower() : base("", Area.Greenpath)
+    public TouchGrassPower() : base("Touch Grass", Area.Greenpath)
     {
-
+        Hint = "The flora may nourish you wounds, if I stand long enough near it.";
+        Description = "Every 10 seconds standing on grass, you heal 1 mask. Decreased to 5 seconds if wearing Shape of Unn";
     }
 
     #endregion
 
     #region Properties
 
-    public float HealTime => PlayerData.instance.GetBool("equippedCharm_28") ? 2.5f : 5f;
+    /// <summary>
+    /// Gets the needed time to stand on grass to heal.
+    /// </summary>
+    public float HealTime => PlayerData.instance.GetBool("equippedCharm_28") ? 5f : 10f;
 
     #endregion
 
@@ -76,7 +75,7 @@ public class TouchGrassPower : Power
 
     #endregion
 
-    #region Public Methods
+    #region Protected Methods
 
     protected override void Enable()
     {
@@ -97,7 +96,7 @@ public class TouchGrassPower : Power
         On.GrassSpriteBehaviour.OnTriggerEnter2D -= GrassSpriteBehaviour_OnTriggerEnter2D;
         On.GrassWind.OnTriggerEnter2D -= GrassWind_OnTriggerEnter2D;
         On.GrassCut.OnTriggerEnter2D -= GrassCut_OnTriggerEnter2D;
-        // This forces the coroutine to stop (if it's still running)
+        LoreMaster.Instance.Handler.StopCoroutine(TouchGrass());
         _currentlyRunning = false;
     }
 
@@ -105,6 +104,11 @@ public class TouchGrassPower : Power
 
     #region Private Methods
 
+    /// <summary>
+    /// Check if the hero touches a grass object.
+    /// </summary>
+    /// <param name="collider"></param>
+    /// <param name="sourceCollider"></param>
     private void CheckForHeroEnter(Collider2D collider, Collider2D sourceCollider)
     {
         if (!_currentlyRunning && (collider.tag.Equals("Player") || collider.gameObject.name.Equals("HeroBox")))
@@ -116,6 +120,10 @@ public class TouchGrassPower : Power
         }
     }
 
+    /// <summary>
+    /// Coroutine to wait for standing long enough on grass to heal.
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator TouchGrass()
     {
         _currentlyRunning = true;

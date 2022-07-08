@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using LoreMaster.LorePowers.Greenpath;
 
-namespace LoreMaster;
+namespace LoreMaster.UnityComponents;
 
 /// <summary>
 /// Component used for <see cref="UnnMindblastPower"/> to amplify the damage dealt.

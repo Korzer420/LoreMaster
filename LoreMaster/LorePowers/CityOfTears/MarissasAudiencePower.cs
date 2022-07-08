@@ -1,32 +1,45 @@
 using HutongGames.PlayMaker.Actions;
-using System;
+using ItemChanger.Extensions;
+using LoreMaster.Enums;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
-using Vasi;
 
 namespace LoreMaster.LorePowers.CityOfTears;
 
-internal class MarissasAudiencePower : Power
+public class MarissasAudiencePower : Power
 {
+    #region Members
+
     private GameObject[] _companions = new GameObject[3];
 
     private List<GameObject> _extraCompanions = new();
 
     private GameObject _revek;
 
-    private int[] _minAmounts = new int[3] { 1, 2, 4 };
+    private int[] _minCompanionAmount = new int[3] { 1, 2, 4 };
 
-    private int[] _maxAmounts = new int[3] { 3, 6, 12 };
+    private int[] _maxCompanionAmounts = new int[3] { 3, 6, 12 };
+
+    #endregion
+
+    #region Constructors
 
     public MarissasAudiencePower() : base("Marissa Poster", Area.CityOfTears)
     {
-        
+        Hint = "While Marissa sings on stage, occasionally spawns a crowd that helps you. If you killed her however... you will be haunted by her biggest fan.";
+        Description = "After 20 to 60 seconds spawn multiple companions (Weavers, Hatchlings, Grimmchilds) that persist in the current room or for 30 to 90 seconds. If Marissa is dead," +
+            " spawns Revek each 45 to 180 seconds, that persist in the current room or 20 to 60 seconds.";
     }
 
+    #endregion
+
+    #region Properties
+
+    /// <summary>
+    /// Gets the flag, that indicates if the player has killed Marissa.
+    /// </summary>
     public bool IsMarissaDead => SceneData.instance.FindMyState(new PersistentBoolData()
     {
         sceneName = "Ruins_Bathhouse",
@@ -34,22 +47,40 @@ internal class MarissasAudiencePower : Power
         semiPersistent = false
     })?.activated ?? false;
 
+    #endregion
+
+    #region Protected Methods
+
     protected override void Initialize()
     {
         GameObject charmEffects = GameObject.Find("Charm Effects");
-        _companions[0] = charmEffects.LocateMyFSM("Spawn Grimmchild").GetAction<SpawnObjectFromGlobalPool>("Spawn", 2).gameObject.Value;
-        _companions[1] = charmEffects.LocateMyFSM("Weaverling Control").GetAction<SpawnObjectFromGlobalPool>("Spawn", 0).gameObject.Value;
-        _companions[2] = charmEffects.LocateMyFSM("Hatchling Spawn").GetAction<SpawnObjectFromGlobalPool>("Hatch", 2).gameObject.Value;
+        _companions[0] = charmEffects.LocateMyFSM("Spawn Grimmchild").GetState("Spawn").GetFirstActionOfType<SpawnObjectFromGlobalPool>().gameObject.Value;
+        _companions[1] = charmEffects.LocateMyFSM("Weaverling Control").GetState("Spawn").GetFirstActionOfType<SpawnObjectFromGlobalPool>().gameObject.Value;
+        _companions[2] = charmEffects.LocateMyFSM("Hatchling Spawn").GetState("Hatch").GetFirstActionOfType<SpawnObjectFromGlobalPool>().gameObject.Value;
     }
 
-    protected override void Enable()
+    protected override void Enable() => LoreMaster.Instance.Handler.StartCoroutine(GatherAudience());
+
+    protected override void Disable()
     {
-        if (!_initialized)
-            Initialize();
-        LoreMaster.Instance.Handler.StartCoroutine(GatherAudience());
+        LoreMaster.Instance.Handler.StopCoroutine(GatherAudience());
+        if (_extraCompanions.Any())
+            foreach (GameObject companion in _extraCompanions)
+                GameObject.Destroy(companion);
+        _extraCompanions.Clear();
+        if (_revek != null)
+            GameObject.Destroy(_revek);
     }
 
-    IEnumerator GatherAudience()
+    #endregion
+
+    #region Private Methods
+
+    /// <summary>
+    /// Spawns occasionally a crowd of companions or revek if marissa is dead.
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator GatherAudience()
     {
         while (true)
         {
@@ -72,7 +103,7 @@ internal class MarissasAudiencePower : Power
                 yield return new WaitForSeconds(LoreMaster.Instance.Generator.Next(20, 61));
                 for (int companionIndex = 0; companionIndex < 3; companionIndex++)
                 {
-                    for (int companionCopy = 0; companionCopy < LoreMaster.Instance.Generator.Next(_minAmounts[companionIndex], _maxAmounts[companionIndex]); companionCopy++)
+                    for (int companionCopy = 0; companionCopy < LoreMaster.Instance.Generator.Next(_minCompanionAmount[companionIndex], _maxCompanionAmounts[companionIndex]); companionCopy++)
                     {
                         GameObject newCompanion = GameObject.Instantiate(_companions[companionIndex]
                             , new Vector3(HeroController.instance.transform.GetPositionX()
@@ -89,17 +120,8 @@ internal class MarissasAudiencePower : Power
                 _extraCompanions.Clear();
             }
         }
-    }
+    } 
 
-    protected override void Disable()
-    {
-        HeroController.instance.StopCoroutine(GatherAudience());
-        if (_extraCompanions.Any())
-            foreach (GameObject companion in _extraCompanions)
-                GameObject.Destroy(companion);
-        _extraCompanions.Clear();
-        if (_revek != null)
-            GameObject.Destroy(_revek);
-    }
+    #endregion
 }
 

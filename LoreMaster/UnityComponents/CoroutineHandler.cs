@@ -1,5 +1,5 @@
 using UnityEngine;
 
-namespace LoreMaster;
+namespace LoreMaster.UnityComponents;
 
 public class CoroutineHandler : MonoBehaviour { }

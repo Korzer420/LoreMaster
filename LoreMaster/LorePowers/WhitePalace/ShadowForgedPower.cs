@@ -1,10 +1,7 @@
+using HutongGames.PlayMaker.Actions;
 using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using LoreMaster.Enums;
 using UnityEngine;
 
 namespace LoreMaster.LorePowers.WhitePalace;
@@ -19,14 +16,15 @@ public class ShadowForgedPower : Power
 
     #region Constructors
 
-    public ShadowForgedPower() : base("",Area.WhitePalace)
+    public ShadowForgedPower() : base("Shadow Forged",Area.WhitePalace)
     {
-        
+        Hint = "Your void energy return quicker to you.";
+        Description = "Decrease the cooldown of shade cloak by 0.4 seconds and increases sharp shadow damage by 100%.";
     }
 
     #endregion
 
-    #region Public Methods
+    #region Protected Methods
 
     protected override void Initialize()
     {
@@ -37,6 +35,17 @@ public class ShadowForgedPower : Power
         {
             if (Active)
                 fsm.FsmVariables.GetFsmFloat("Wait time").Value -= .4f;
+        }));
+
+        fsm = GameObject.Find("Knight/Attacks").LocateMyFSM("Set Sharp Shadow Damage");
+        fsm.GetState("Set").RemoveFirstActionOfType<SetFsmInt>();
+        fsm.GetState("Set").AddLastAction(new Lambda(() =>
+        {
+            int damage = fsm.FsmVariables.FindFsmInt("nailDamage").Value;
+            if (Active)
+                damage *= 2;
+            fsm.transform.Find("Sharp Shadow").gameObject.LocateMyFSM("damages_enemy").FsmVariables.FindFsmInt("damageDealt").Value = damage;
+
         }));
     }
 
