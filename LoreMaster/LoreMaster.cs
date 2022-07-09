@@ -454,6 +454,35 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
 
     }
 
+    public List<IMenuMod.MenuEntry> GetMenuData(IMenuMod.MenuEntry? toggleButtonEntry)
+    {
+
+        return new List<IMenuMod.MenuEntry>
+        {
+            new IMenuMod.MenuEntry {
+                Name = "Custom Text",
+                Description = "Replaces the text of tablets or conversations (if available).",
+                Values = new string[] {
+                    "On",
+                    "Off",
+                },
+                // opt will be the index of the option that has been chosen
+                Saver = option => UseCustomText = option == 0,
+                Loader = () => UseCustomText ? 0 : 1
+            },
+            new IMenuMod.MenuEntry {
+                Name = "Use Vague Hints",
+                Description = "If on, it shows the normal more vaguely text. Otherwise it shows a clear description what the power does.",
+                Values = new string[] {
+                    "On",
+                    "Off"
+                },
+                Saver = option => UseHints = option == 0,
+                Loader = () => UseHints ? 0 : 1
+            }
+        };
+    }
+
     /// <summary>
     /// Unloads the mod. (Currently unused)
     /// </summary>
@@ -597,6 +626,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         }
 
     }
+    
     #region NPC Dialogues
 
     private bool IsBardoon(string key)
@@ -680,35 +710,6 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
     }
 
     #endregion
-
-    public List<IMenuMod.MenuEntry> GetMenuData(IMenuMod.MenuEntry? toggleButtonEntry)
-    {
-
-        return new List<IMenuMod.MenuEntry>
-        {
-            new IMenuMod.MenuEntry {
-                Name = "Custom Text",
-                Description = "Replaces the text of tablets or conversations (if available).",
-                Values = new string[] {
-                    "On",
-                    "Off",
-                },
-                // opt will be the index of the option that has been chosen
-                Saver = option => UseCustomText = option == 0,
-                Loader = () => UseCustomText ? 0 : 1
-            },
-            new IMenuMod.MenuEntry {
-                Name = "Use Vague Hints",
-                Description = "If on, it shows the normal more vaguely text. Otherwise it shows a clear description what the power does.",
-                Values = new string[] {
-                    "On",
-                    "Off"
-                },
-                Saver = option => UseHints = option == 0,
-                Loader = () => UseHints ? 0 : 1
-            }
-        };
-    }
 
     #endregion
 }
