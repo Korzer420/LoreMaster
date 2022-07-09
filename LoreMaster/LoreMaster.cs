@@ -217,6 +217,13 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
                 LogError(exception.Message);
             }
         }
+        else if (_powerList["QUEEN"].Active)
+        {
+            if (key.Equals("CHARM_NAME_12"))
+                return "Queen's Thorns";
+            else if (key.Equals("CHARM_DESC_12"))
+                return text + "<br>Blessed by the white lady, which causes them to drain soul and sometimes energy from their victims. Leash out more agile.";
+        }
         return text;
     }
 
@@ -569,7 +576,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
                 return false;
         return true;
     }
-    
+
     /// <summary>
     /// Updates the lore tracker.
     /// </summary>
@@ -588,7 +595,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         {
             LogError(exception.Message);
         }
-        
+
     }
     #region NPC Dialogues
 
@@ -634,7 +641,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
             || key.Equals("QUEEN_DUNG_02") || key.Equals("QUEEN_REPEAT_KINGSOUL")
             || key.Equals("QUEEN_TALK_EXTRA") || key.Equals("QUEEN_REPEAT_SHADECHARM")
             || key.Equals("QUEEN_GRIMMCHILD") || key.Equals(" QUEEN_GRIMMCHILD_FULL");
-    } 
+    }
 
     #endregion
 
@@ -676,7 +683,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
 
     public List<IMenuMod.MenuEntry> GetMenuData(IMenuMod.MenuEntry? toggleButtonEntry)
     {
-        
+
         return new List<IMenuMod.MenuEntry>
         {
             new IMenuMod.MenuEntry {
