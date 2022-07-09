@@ -17,6 +17,24 @@ public class GreaterMindPower : Power
 
     private GameObject _localCounter;
 
+    private Dictionary<Area, string> _areas = new()
+    {
+        {Area.AncientBasin, "Ancient Basin" },
+        {Area.CityOfTears, "City of Tears" },
+        {Area.Dirtmouth, "Dirtmouth"},
+        {Area.Crossroads, "Crossroads"},
+        {Area.Greenpath, "Greenpath"},
+        {Area.FungalWastes, "Fungal Wastes"},
+        {Area.QueensGarden, "Queens Gardens"},
+        {Area.Peaks, "Crystal Peaks"},
+        {Area.RestingGrounds, "Resting Grounds"},
+        {Area.WaterWays, "Waterways"},
+        {Area.KingdomsEdge, "Kingdom's Edge"},
+        {Area.FogCanyon, "Fog Canyon"},
+        {Area.Cliffs, "Howling Cliffs"},
+        {Area.WhitePalace, "White Palace"},
+    };
+
     #endregion
 
     #region Constructors
@@ -76,7 +94,7 @@ public class GreaterMindPower : Power
         try
         {
             TextMeshPro currentCounter = _localCounter.GetComponent<DisplayItemAmount>().textObject;
-            currentCounter.text = currentArea + ": " + activePowers.Count(x => x.Location == currentArea && x.Tag != PowerTag.Removed);
+            currentCounter.text = _areas[currentArea] + ": " + activePowers.Count(x => x.Location == currentArea && x.Tag != PowerTag.Removed);
             currentCounter.text += "/" + allPowers.Count(x => x.Location == currentArea && x.Tag != PowerTag.Removed);
             if (globalActive)
                 currentCounter.text = "<color=#7FFF7B>" + currentCounter.text + "</color>";
