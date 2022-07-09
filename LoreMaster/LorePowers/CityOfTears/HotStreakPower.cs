@@ -35,7 +35,6 @@ public class HotStreakPower : Power
         // This event is fired multiple times, therefore we check every instance if an enemy was hit
         if (otherCollider.gameObject.GetComponent<HealthManager>())
             _hasHitEnemy = true;
-
         // To prevent running multiple coroutines
         if (_currentlyRunning)
             return;
@@ -85,7 +84,7 @@ public class HotStreakPower : Power
 
         if (_hasHitEnemy)
         {
-            if (_damageStacks < PlayerData.instance.nailSmithUpgrades * 3)
+            if (_damageStacks < (PlayerData.instance.nailSmithUpgrades + 1) * 3)
                 _damageStacks++;
         }
         else

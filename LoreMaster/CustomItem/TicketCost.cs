@@ -1,11 +1,6 @@
 using ItemChanger;
 using LoreMaster.LorePowers.CityOfTears;
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace LoreMaster.CustomItem;
@@ -18,7 +13,7 @@ internal record Paypal: Cost
     => TouristPower.Inspected && PlayerData.instance.geo > 49;
 
     public override string GetCostText()
-    => TouristPower.Inspected ? "Take a ticket?" : "Currently closed";
+    => TouristPower.Inspected ? "Take a ticket? (50 Geo)" : "Currently closed";
 
     public override int GetDisplayGeo() => 50;
     
@@ -47,7 +42,7 @@ internal record Paypal: Cost
             yield break;
 
         yield return new WaitForFinishedEnteringScene();
-
+        LoreMaster.Instance.Log("Try loading");
         HeroController.instance.transform.position = new(55.38f, 23.41f);
     }
 }

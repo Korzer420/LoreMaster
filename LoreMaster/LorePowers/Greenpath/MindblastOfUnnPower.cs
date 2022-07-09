@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace LoreMaster.LorePowers.Greenpath;
 
-public class UnnMindblastPower : Power
+public class MindblastOfUnnPower : Power
 {
     #region Members
 
@@ -15,7 +15,7 @@ public class UnnMindblastPower : Power
 
     #region Constructors
 
-    public UnnMindblastPower() : base("Mindblast of Unn", Area.Greenpath)
+    public MindblastOfUnnPower() : base("Mindblast of Unn", Area.Greenpath)
     {
         Hint = "Your dream nail emits the power of Unn to the target's mind, which causes their bodies to be more vulnerable.";
         Description = "Hitting an enemy with the dream nail permanently increases the taken damage by 2. Bonus for wearing charm: (+1 Dreamwielder; +2 Dreamshield; +3 Shape of Unn)";

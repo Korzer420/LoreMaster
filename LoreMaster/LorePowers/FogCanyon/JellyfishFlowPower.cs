@@ -5,11 +5,11 @@ using UnityEngine;
 
 namespace LoreMaster.LorePowers.FogCanyon;
 
-public class JellyFlowPower : Power
+public class JellyfishFlowPower : Power
 {
     #region Constructors
 
-    public JellyFlowPower() : base("Jellyfish Flow",Area.FogCanyon)
+    public JellyfishFlowPower() : base("Jellyfish Flow",Area.FogCanyon)
     {
         CustomText = "This is great! When I pass this test, I'll be an official jellyfish spotter! Hey, Kevin. I don't think it's working. Hey, hey, Kevin! She's here! Look, she's here! She's here, Kevin!";
         Hint = "You've gain the swimming agility of the jellyfishs... And you are now a part of the jellyspotters!";

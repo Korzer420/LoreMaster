@@ -4,11 +4,11 @@ using LoreMaster.Enums;
 
 namespace LoreMaster.LorePowers.Greenpath;
 
-public class GiftOnUnnPower : Power
+public class GiftOfUnnPower : Power
 {
     #region Constructors
 
-    public GiftOnUnnPower() : base("Gift of Unn", Area.Greenpath)
+    public GiftOfUnnPower() : base("Gift of Unn", Area.Greenpath)
     {
         Hint = "Grants you the power of Unn.";
         Description = "Gain the shape of Unn effect for focusing. If you're wearing Shape of Unn, focus restores 15 soul on a successful cast.";

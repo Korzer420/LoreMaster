@@ -72,7 +72,7 @@ public class DreamBlessingPower : Power
     #region Protected Methods
 
     protected override void Initialize() 
-        =>_weaverlingPrefab = GameObject.Find("Charm Effects").LocateMyFSM("Weaverling Control").GetState("Spawn").GetFirstActionOfType<SpawnObjectFromGlobalPool>().gameObject.Value;
+        =>_weaverlingPrefab = GameObject.Find("Knight/Charm Effects").LocateMyFSM("Weaverling Control").GetState("Spawn").GetFirstActionOfType<SpawnObjectFromGlobalPool>().gameObject.Value;
     
     protected override void Enable() 
         => On.EnemyDreamnailReaction.RecieveDreamImpact += EnemyDreamnailReaction_RecieveDreamImpact;

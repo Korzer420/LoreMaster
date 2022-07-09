@@ -20,7 +20,7 @@ public class TouchGrassPower : Power
 
     public TouchGrassPower() : base("Touch Grass", Area.Greenpath)
     {
-        Hint = "The flora may nourish you wounds, if I stand long enough near it.";
+        Hint = "The flora may nourish you wounds, if you stand long enough near it.";
         Description = "Every 10 seconds standing on grass, you heal 1 mask. Decreased to 5 seconds if wearing Shape of Unn";
     }
 

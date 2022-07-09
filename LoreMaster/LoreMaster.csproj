@@ -37,7 +37,7 @@
     <Compile Include="Enums\Area.cs" />
     <Compile Include="UnityComponents\ConcussionEffect.cs" />
     <Compile Include="UnityComponents\CoroutineHandler.cs" />
-    <Compile Include="CustomItem\Cost.cs" />
+    <Compile Include="CustomItem\TicketCost.cs" />
     <Compile Include="CustomItem\EmbeddedSprite.cs" />
     <Compile Include="UnityComponents\EnemyBinding.cs" />
     <Compile Include="FsmHelper.cs" />
@@ -50,27 +50,27 @@
     <Compile Include="LorePowers\CityOfTears\SoulExtractEfficiencyPower.cs" />
     <Compile Include="LorePowers\CityOfTears\TouristPower.cs" />
     <Compile Include="LorePowers\Crossroads\GreaterMindPower.cs" />
-    <Compile Include="LorePowers\Crossroads\PilgerPathPower.cs" />
+    <Compile Include="LorePowers\Crossroads\ReluctantPilgerPower.cs" />
     <Compile Include="LorePowers\Deepnest\InfestedPower.cs" />
     <Compile Include="LorePowers\Deepnest\MaskOverchargePower.cs" />
     <Compile Include="LorePowers\Dirtmouth\WellFocusedPower.cs" />
-    <Compile Include="LorePowers\Dirtmouth\HazardPower.cs" />
+    <Compile Include="LorePowers\Dirtmouth\CaringShellPower.cs" />
     <Compile Include="LorePowers\FogCanyon\JellyBellyPower.cs" />
-    <Compile Include="LorePowers\FogCanyon\JellyFlowPower.cs" />
-    <Compile Include="LorePowers\FogCanyon\FriendOfTheJellyPower.cs" />
+    <Compile Include="LorePowers\FogCanyon\JellyfishFlowPower.cs" />
+    <Compile Include="LorePowers\FogCanyon\FriendOfTheJellyfishPower.cs" />
     <Compile Include="LorePowers\FungalWastes\EternalValorPower.cs" />
-    <Compile Include="LorePowers\FungalWastes\GloryPower.cs" />
+    <Compile Include="LorePowers\FungalWastes\GloryOfTheWealthPower.cs" />
     <Compile Include="LorePowers\FungalWastes\ImposterPower.cs" />
     <Compile Include="LorePowers\FungalWastes\MantisStylePower.cs" />
     <Compile Include="LorePowers\FungalWastes\OneOfUsPower.cs" />
     <Compile Include="LorePowers\FungalWastes\PaleLuckPower.cs" />
     <Compile Include="LorePowers\FungalWastes\UnitedWeStandPower.cs" />
     <Compile Include="LorePowers\Greenpath\CamouflagePower.cs" />
-    <Compile Include="LorePowers\Greenpath\GiftOnUnnPower.cs" />
+    <Compile Include="LorePowers\Greenpath\GiftOfUnnPower.cs" />
     <Compile Include="LorePowers\Greenpath\ReturnToUnnPower.cs" />
     <Compile Include="LorePowers\Greenpath\RootedPower.cs" />
     <Compile Include="LorePowers\Greenpath\TouchGrassPower.cs" />
-    <Compile Include="LorePowers\Greenpath\UnnMindblastPower.cs" />
+    <Compile Include="LorePowers\Greenpath\MindblastOfUnnPower.cs" />
     <Compile Include="LorePowers\HowlingCliffs\JonisProtectionPower.cs" />
     <Compile Include="LorePowers\HowlingCliffs\LifebloodWingsPower.cs" />
     <Compile Include="LorePowers\KingdomsEdge\ConcussiveStrikePower.cs" />
@@ -147,6 +147,10 @@
     <Reference Include="UnityEngine.ImageConversionModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\Program Files\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\UnityEngine.ImageConversionModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.ParticleSystemModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Program Files\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\UnityEngine.ParticleSystemModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.Physics2DModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

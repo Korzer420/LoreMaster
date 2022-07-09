@@ -42,8 +42,9 @@ public class WeDontTalkAboutShadePower : Power
     protected override void Disable()
     {
         ModHooks.AfterPlayerDeadHook -= AfterPlayerDied;
+        LoreMaster.Instance.Log("Shade Scene: " + PlayerData.instance.shadeScene);
         LoreMaster.Instance.SceneActions.Remove(PowerName);
-        if (!string.IsNullOrEmpty(PlayerData.instance.shadeScene))
+        if (!string.IsNullOrEmpty(PlayerData.instance.shadeScene) || PlayerData.instance.shadeScene.Equals("None"))
             PlayerData.instance.StartSoulLimiter();
     }
 

@@ -19,7 +19,7 @@ public class ShadowForgedPower : Power
     public ShadowForgedPower() : base("Shadow Forged",Area.WhitePalace)
     {
         Hint = "Your void energy return quicker to you.";
-        Description = "Decrease the cooldown of shade cloak by 0.4 seconds and increases sharp shadow damage by 100%.";
+        Description = "Decrease the cooldown of shade cloak by 0.4 seconds and increases sharp shadow damage by 100%. Warning: The cooldown is not on sync with the animation! Shortly after the orbs spawn, the dash is ready again.";
     }
 
     #endregion

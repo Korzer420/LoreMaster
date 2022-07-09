@@ -32,15 +32,17 @@ public class TrueFormPower : Power
 
     private void PlayMakerFSM_OnEnable(On.PlayMakerFSM.orig_OnEnable orig, PlayMakerFSM self)
     {
-        if (self.FsmName.Equals("Shade Control") && self.gameObject.name.Contains("Hollow Shade Death") && self.GetState("Blow").GetFirstActionOfType<Lambda>() == null)
-        {
-            self.GetState("Blow").AddLastAction(new Lambda(() =>
+        if (self.gameObject.name.Contains("Hollow Shade Death") && self.FsmName.Equals("Shade Control"))
+            if (self.GetState("Blow").GetFirstActionOfType<Lambda>() == null)
             {
-                ModifyNailLength(-.5f);
-                _shadeState = 0;
-                PlayMakerFSM.BroadcastEvent("UPDATE NAIL DAMAGE");
-            }));
-        }
+                self.GetState("Blow").AddLastAction(new Lambda(() =>
+                {
+                    ModifyNailLength(-.5f);
+                    _shadeState = 0;
+                    PlayMakerFSM.BroadcastEvent("UPDATE NAIL DAMAGE");
+                }));
+            }
+        orig(self);
     }
 
     private int NailDamageUpdate(string name, int orig)
@@ -119,12 +121,19 @@ public class TrueFormPower : Power
     /// <param name="multiplier"></param>
     private void ModifyNailLength(float multiplier)
     {
-        for (int index = 0; index < 4; index++)
+        try
         {
-            Vector3 currentScale = _attackTransform[index].GetComponent<NailSlash>().scale;
-            _attackTransform[index].GetComponent<NailSlash>().scale = new Vector3(currentScale.x + multiplier, currentScale.y + multiplier, currentScale.z + multiplier);
+            for (int index = 0; index < 4; index++)
+            {
+                Vector3 currentScale = _attackTransform[index].GetComponent<NailSlash>().scale;
+                _attackTransform[index].GetComponent<NailSlash>().scale = new Vector3(currentScale.x + multiplier, currentScale.y + multiplier, currentScale.z + multiplier);
+            }
         }
-    } 
+        catch (Exception exception)
+        {
+            LoreMaster.Instance.LogError("Couldn't update nail length: " + exception.Message);
+        }
+    }
 
     #endregion
 }

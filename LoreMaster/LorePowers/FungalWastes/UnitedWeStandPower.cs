@@ -94,7 +94,7 @@ public class UnitedWeStandPower : Power
             {
                 if (_companions.Contains(companion))
                     continue;
-
+                
                 PlayMakerFSM companionFsm;
                 FsmState fsmState;
                 if (companion.tag.Equals("Grimmchild"))
@@ -115,14 +115,18 @@ public class UnitedWeStandPower : Power
                 {
                     companionFsm = companion.LocateMyFSM("Control");
                     fsmState = companionFsm.GetState("Run Dir");
-                    fsmState.AddLastAction(new Lambda(() =>
+                    fsmState.RemoveAction(7);
+                    fsmState.InsertAction(new Lambda(() =>
                     {
                         float weaverScale = 1f + (CompanionAmount * 0.1f);
                         companionFsm.FsmVariables.FindFsmFloat("Scale").Value = weaverScale;
                         companionFsm.FsmVariables.FindFsmFloat("Neg Scale").Value = weaverScale * -1f;
                         companion.transform.localScale = new Vector3(weaverScale, weaverScale);
                         companion.transform.SetScaleMatching(weaverScale);
-                    }));
+
+                        // Imitates the send random event which we removed.
+                        companionFsm.SendEvent(LoreMaster.Instance.Generator.Next(0, 2) == 0 ? "L" : "R");
+                    }),7);
                 }
                 _companions.Add(companion);
             }

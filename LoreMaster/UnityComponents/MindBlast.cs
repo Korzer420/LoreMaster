@@ -9,7 +9,7 @@ using LoreMaster.LorePowers.Greenpath;
 namespace LoreMaster.UnityComponents;
 
 /// <summary>
-/// Component used for <see cref="UnnMindblastPower"/> to amplify the damage dealt.
+/// Component used for <see cref="MindblastOfUnnPower"/> to amplify the damage dealt.
 /// </summary>
 public class MindBlast : MonoBehaviour
 {

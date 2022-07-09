@@ -3,11 +3,11 @@ using Modding;
 
 namespace LoreMaster.LorePowers;
 
-public class HazardPower : Power
+public class CaringShellPower : Power
 {
     #region Constructors
 
-    public HazardPower() : base("Caring shell", Area.Dirtmouth)
+    public CaringShellPower() : base("Caring shell", Area.Dirtmouth)
     {
         CustomText = "Dear Diary, today I did get lost again. Somehow I ended up in an area with many shroom and evil looking mantis guys." +
             " After wandering around a bit, I found myself at the top of a spike gauntlet, how did I even get there without noticing all the spikes? Seems like at least my shell cares about me. I was SOOOO scared O-O " +

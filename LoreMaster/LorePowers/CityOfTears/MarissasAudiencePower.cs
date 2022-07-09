@@ -26,7 +26,7 @@ public class MarissasAudiencePower : Power
 
     #region Constructors
 
-    public MarissasAudiencePower() : base("Marissa Poster", Area.CityOfTears)
+    public MarissasAudiencePower() : base("Marissas Audience", Area.CityOfTears)
     {
         Hint = "While Marissa sings on stage, occasionally spawns a crowd that helps you. If you killed her however... you will be haunted by her biggest fan.";
         Description = "After 20 to 60 seconds spawn multiple companions (Weavers, Hatchlings, Grimmchilds) that persist in the current room or for 30 to 90 seconds. If Marissa is dead," +

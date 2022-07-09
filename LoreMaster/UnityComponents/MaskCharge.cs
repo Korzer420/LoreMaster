@@ -9,7 +9,7 @@ public class MaskCharge : MonoBehaviour
 
     private GameObject _rune;
 
-    private GameObject _hitbox; 
+    private GameObject _hitbox;
 
     #endregion
 
@@ -28,6 +28,9 @@ public class MaskCharge : MonoBehaviour
             PlayMakerFSM damageFSM = hitbox.LocateMyFSM("damages_enemy");
             // Remove the knockback
             damageFSM.FsmVariables.FindFsmFloat("magnitudeMult").Value = 0f;
+
+            // The ring damage count as spells.
+            damageFSM.FsmVariables.FindFsmInt("attackType").Value = 2;
         }
 
         GameObject ring = GameObject.Instantiate(LoreMaster.Instance.PreloadedObjects["Battle Scene/HK Prime/Focus Blast/focus_ring"], transform);
@@ -52,7 +55,7 @@ public class MaskCharge : MonoBehaviour
     private void OnDisable()
     {
         StopAllCoroutines();
-    } 
+    }
 
     #endregion
 
@@ -75,13 +78,13 @@ public class MaskCharge : MonoBehaviour
     {
         while (true)
         {
-            yield return new WaitForSeconds(.2f);
+            yield return new WaitForSeconds(0.2f);
             _hitbox.SetActive(true);
             HeroController.instance.AddMPCharge(2);
             yield return null;
             _hitbox.SetActive(false);
         }
-    } 
+    }
 
     #endregion
 }

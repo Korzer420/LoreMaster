@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace LoreMaster.LorePowers.FungalWastes;
 
-public class GloryPower : Power
+public class GloryOfTheWealthPower : Power
 {
     #region Members
 
@@ -17,7 +17,7 @@ public class GloryPower : Power
     
     #region Constructors
 
-    public GloryPower() : base("Glory of the Wealth", Area.FungalWastes)
+    public GloryOfTheWealthPower() : base("Glory of the Wealth", Area.FungalWastes)
     {
         Hint = "Your enemies may \"share\" more of their wealth with you.";
         Description = "Enemies drop more geo. 60% for small Geo (0-20 pieces), 30% for medium Geo (2 - 10 pieces) or 10% for large Geo (2-10 pieces)";

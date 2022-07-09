@@ -56,6 +56,7 @@ public class LifebloodWingsPower : Power
         orig(self);
         if (ReflectionHelper.GetField<HeroController, bool>(HeroController.instance, "doubleJumped") && _extraJumps < PlayerBlueHealth)
         {
+            _wings.color = Color.cyan;
             _extraJumps++;
             LoreMaster.Instance.Handler.StartCoroutine(RefreshWings());
         }
@@ -63,7 +64,7 @@ public class LifebloodWingsPower : Power
 
     #endregion
 
-    #region Public Methods
+    #region Protected Methods
 
     protected override void Initialize()
     {
@@ -72,7 +73,6 @@ public class LifebloodWingsPower : Power
 
     protected override void Enable()
     {
-        _wings.color = Color.cyan;
         AddRefreshDoubleJumpHooks();
         On.HeroController.DoDoubleJump += DoDoubleJump;
     }
@@ -155,6 +155,7 @@ public class LifebloodWingsPower : Power
         {
             cursor.EmitDelegate<Action>(() => _extraJumps = 0);
         }
+        _wings.color = Color.white;
     }
 
     #endregion

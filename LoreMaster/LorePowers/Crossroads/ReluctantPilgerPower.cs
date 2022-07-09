@@ -5,11 +5,11 @@ using System;
 
 namespace LoreMaster.LorePowers.Crossroads;
 
-public class PilgerPathPower : Power
+public class ReluctantPilgerPower : Power
 {
     #region Constructors
 
-    public PilgerPathPower() : base("Reluctant Pilger", Area.Crossroads)
+    public ReluctantPilgerPower() : base("Reluctant Pilger", Area.Crossroads)
     {
         Hint = "While you stay on the path, your nail shall receive the gift of the grubfather.";
         Description = "While standing of the ground, the grubberfly elegy effect is active. If you have grubberfly equipped, the damage on ground is doubled instead.";
