@@ -32,7 +32,7 @@ public class EnemyBinding : MonoBehaviour
     void Update()
     {
         _cooldown += Time.deltaTime;
-        if (_cooldown >= 30f)
+        if (_cooldown >= 15f)
             Component.Destroy(this);
     }
 

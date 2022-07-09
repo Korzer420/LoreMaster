@@ -16,7 +16,7 @@ public class MantisStylePower : Power
     public MantisStylePower() : base("Mantis Style", Area.FungalWastes)
     {
         Hint = "Your weapon may reach further aways foes.";
-        Description = "Increase your nail range by 50% (from base)";
+        Description = "Increase your nail range by 50% (from base).";
     } 
 
     #endregion

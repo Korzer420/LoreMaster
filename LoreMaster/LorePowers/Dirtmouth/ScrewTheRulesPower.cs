@@ -17,7 +17,7 @@ public class ScrewTheRulesPower : Power
     public ScrewTheRulesPower() : base("Screw the Rules", Area.Dirtmouth)
     {
         Hint = "You rage is weaker but quicker. Still deadly.";
-        Description = "Fury of the Fallen is now also active with 2 hp, but the damage buff is decreased to 50%.";
+        Description = "Fury of the Fallen is now also active with 2 hp, but the damage buff is decreased to 50%. The debuff only affects normal nail hits.";
     }
 
     #endregion

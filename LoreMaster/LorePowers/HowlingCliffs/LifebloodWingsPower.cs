@@ -35,7 +35,7 @@ public class LifebloodWingsPower : Power
     public LifebloodWingsPower() : base("Lifeblood Wings", Area.Cliffs)
     {
         Hint = "Lifeblood floods through your wings. The more you have, the stronger they are amplified.";
-        Description = "For each lifeblood that you have, you can jump an additional time. Requires Wings";
+        Description = "For each lifeblood that you have, you can jump an additional time. Requires Wings.";
     }
 
     #endregion

@@ -153,12 +153,12 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
     /// <summary>
     /// Gets or sets the flag that indicates if hints should be shown instead of the description.
     /// </summary>
-    public bool UseHints { get; set; }
+    public bool UseHints { get; set; } = true;
 
     /// <summary>
     /// Gets or sets the flag, that indicates if custom text can be used.
     /// </summary>
-    public bool UseCustomText { get; set; }
+    public bool UseCustomText { get; set; } = true;
 
     /// <summary>
     /// Gets or sets all actions of powers that should be executed once the scene loaded. 

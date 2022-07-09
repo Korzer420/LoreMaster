@@ -24,7 +24,7 @@ public class GreaterMindPower : Power
     public GreaterMindPower() : base("Greater Mind", Area.Crossroads)
     {
         Hint = "You can now sense, which knowledge of the world you're missing.";
-        Description = "Activates the counter, to show you how many powers you are missing. If the counter is green, you have global access to the power in the area.";
+        Description = "Activates the tracker, to show you how many powers you are missing. If the counter is green, you have global access to the power in the area.";
         string imageFile = Path.Combine(Path.GetDirectoryName(typeof(LoreMaster).Assembly.Location), "Resources/Lore.png");
         byte[] imageData = File.ReadAllBytes(imageFile);
         Texture2D tex = new Texture2D(1, 1, TextureFormat.RGBA32, false);

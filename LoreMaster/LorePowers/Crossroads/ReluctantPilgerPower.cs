@@ -12,7 +12,7 @@ public class ReluctantPilgerPower : Power
     public ReluctantPilgerPower() : base("Reluctant Pilger", Area.Crossroads)
     {
         Hint = "While you stay on the path, your nail shall receive the gift of the grubfather.";
-        Description = "While standing of the ground, the grubberfly elegy effect is active. If you have grubberfly equipped, the damage on ground is doubled instead.";
+        Description = "While standing of the ground, the grubberfly elegy effect is active (regardless of your HP). If you have grubberfly equipped, the damage on ground is doubled instead.";
     }
 
     #endregion

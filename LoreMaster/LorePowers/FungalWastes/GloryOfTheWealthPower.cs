@@ -11,17 +11,17 @@ public class GloryOfTheWealthPower : Power
 {
     #region Members
 
-    private Dictionary<string, int[]> _enemyGeoValues = new Dictionary<string, int[]>();
+    private Dictionary<string, int[]> _enemyGeoValues = new();
 
     #endregion
-    
+
     #region Constructors
 
     public GloryOfTheWealthPower() : base("Glory of the Wealth", Area.FungalWastes)
     {
         Hint = "Your enemies may \"share\" more of their wealth with you.";
-        Description = "Enemies drop more geo. 60% for small Geo (0-20 pieces), 30% for medium Geo (2 - 10 pieces) or 10% for large Geo (2-10 pieces)";
-    } 
+        Description = "Enemies drop double geo.";
+    }
 
     #endregion
 
@@ -51,27 +51,18 @@ public class GloryOfTheWealthPower : Power
                 }
 
                 int[] geoDrops = _enemyGeoValues[enemyName];
-                // We only increase one of the geo drops. But only if it would drop geo anyway
+                // We only increase if it would drop geo anyway
                 if (geoDrops.Any(x => x != 0))
                 {
-                    // The dropped geo:
-                    // Small Geo (60%) 0 to 20
-                    // Medium Geo (30%) 10 to 50
-                    // Large Geo (10%) 20 to 100
-                    int rolledNumber = LoreMaster.Instance.Generator.Next(1, 101);
-
-                    if (rolledNumber < 60)
-                        enemy.SetGeoSmall(geoDrops[0] + LoreMaster.Instance.Generator.Next(0, 21));
-                    else if (rolledNumber < 90)
-                        enemy.SetGeoMedium(geoDrops[1] + LoreMaster.Instance.Generator.Next(2, 11));
-                    else
-                        enemy.SetGeoLarge(geoDrops[2] + LoreMaster.Instance.Generator.Next(2, 11));
+                    enemy.SetGeoSmall(geoDrops[0] * 2);
+                    enemy.SetGeoMedium(geoDrops[1] * 2);
+                    enemy.SetGeoLarge(geoDrops[2] * 2);
                 }
             }
         });
     }
 
-    protected override void Disable() => LoreMaster.Instance.SceneActions.Remove(PowerName); 
+    protected override void Disable() => LoreMaster.Instance.SceneActions.Remove(PowerName);
 
     #endregion
 }

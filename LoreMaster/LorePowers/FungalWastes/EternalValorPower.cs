@@ -20,7 +20,7 @@ public class EternalValorPower : Power
     public EternalValorPower() : base("Eternal Valor", Area.FungalWastes)
     {
         Hint = "The heat of the battle shall allow you to endure the pain.";
-        Description = "Each 30 hits on enemies, heal you for 1 mask";
+        Description = "Each 30 hits on enemies, heal you for 1 mask.";
     }
 
     #endregion

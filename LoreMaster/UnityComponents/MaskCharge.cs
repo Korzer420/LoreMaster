@@ -80,7 +80,7 @@ public class MaskCharge : MonoBehaviour
         {
             yield return new WaitForSeconds(0.2f);
             _hitbox.SetActive(true);
-            HeroController.instance.AddMPCharge(2);
+            HeroController.instance.AddMPCharge(1);
             yield return null;
             _hitbox.SetActive(false);
         }

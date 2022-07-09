@@ -25,8 +25,8 @@ public class DreamBlessingPower : Power
     public DreamBlessingPower() : base("Dream blessing", Area.RestingGrounds)
     {
         Hint = "Your dream nail uses the power it absorbs from their powerful victims to use their hidden power.";
-        Description = "Defeated Dreamers grant the dream nail an additional effect.<br/>Lurien: Roots the target for 3 seconds (30 seconds cooldown)<br/>Herrah: Spawn 2 weavers for 15 seconds." +
-            "<br/>Monomon: Per 100 Essence you have a 1% chance to instant kill the enemy (capped at 200 damage). Capped at 2400 Essence for 24%";
+        Description = "Defeated Dreamers grant the dream nail an additional effect.<br/>Lurien: Roots the target for 3 seconds (15 seconds cooldown)<br/>Herrah: Spawn 2 weavers for 15 seconds." +
+            "<br/>Monomon: Per 100 Essence you have a 1% chance to instant kill the enemy (capped at 200 damage). Capped at 2400 Essence for 24%.";
     }
 
     #endregion

@@ -7,7 +7,7 @@ public class FriendOfTheJellyfishPower : Power
 {
     #region Constructors
 
-    public FriendOfTheJellyfishPower() : base("Friend of the Jellys", Area.FogCanyon)
+    public FriendOfTheJellyfishPower() : base("Friend of the Jellyfishes", Area.FogCanyon)
     {
         CustomText = "He's my twelfth catch of the day. I'm gonna call him \"Twelvey.\"  Coochie coochie coo! Bye, Twelvey! Oh! It's him! Well, it's just him and me again, I've caught and named every jellyfish in Fog Canyon at least once. Except you, No Name.";
         Hint = "Jelly fishs and explosions may no longer harm you.";
