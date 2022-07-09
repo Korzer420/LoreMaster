@@ -48,8 +48,8 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         {"LURIAN_JOURNAL", new EyeOfTheWatcherPower() },
         // Dirtmouth/King's Pass
         {"TUT_TAB_01", new WellFocusedPower() },
-        {"TUT_TAB_03", new ScrewTheRulesPower() },
-        {"TUT_TAB_02", new TrueFormPower() },
+        {"TUT_TAB_02", new ScrewTheRulesPower() },
+        {"TUT_TAB_03", new TrueFormPower() },
         {"BRETTA", new CaringShellPower() },
         // Fog Canyon
         {"ARCHIVE_01", new FriendOfTheJellyfishPower() },
