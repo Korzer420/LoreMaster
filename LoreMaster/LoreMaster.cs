@@ -688,7 +688,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         {
             new IMenuMod.MenuEntry {
                 Name = "Custom Text",
-                Description = "Replaces the text of tablets of conversations (if available).",
+                Description = "Replaces the text of tablets or conversations (if available).",
                 Values = new string[] {
                     "On",
                     "Off",
