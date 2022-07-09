@@ -25,7 +25,7 @@ The only zone with no power to obtain is crystal peaks.
 # Settings
 You can change these options in the mod menu ingame:
 - Disable custom text (some text lines have been replaced with own ones, to make it more fitting for the ability)
-- Clearer hints (if enabled, instead of vaguely descriping the ability, it will show you exactly what it does (I'd recommend to don't play with this on for a better experience)).
+- Use hints: If true, the powers will display a vaguely description instead of a detailed one. Default is true.
 
 # Manual Setup
 You also can set up a predefined pack of abilites or changing their existing properties. For this, create a option_{FileSlot}.txt file (option_1.txt for example) in the loremaster folder of the game. A default option file in added to the package.
