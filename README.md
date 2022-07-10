@@ -20,24 +20,25 @@ Currently not implemented:
 - Lemm's sign on his shop (after getting a dreamer) grants a bonus but no ability (Is not required for city of tears loremaster)
 - All Dream Warrior statues grant a bonus (not required).
 
-The only zone with no power to obtain is crystal peaks.
+The only zone with no power to obtain currently is crystal peaks.
 
 # Settings
 You can change these options in the mod menu ingame:
-- Disable custom text (some text lines have been replaced with own ones, to make it more fitting for the ability)
+- Use custom text: some text lines have been replaced with own ones, to make it more fitting for the ability.
 - Use hints: If true, the powers will display a vaguely description instead of a detailed one. Default is true.
 
 # Manual Setup
-You also can set up a predefined pack of abilites or changing their existing properties. For this, create a option_{FileSlot}.txt file (option_1.txt for example) in the loremaster folder of the game. A default option file in added to the package.
+You also can set up a predefined pack of abilites or changing their existing properties. For this, create a options_{FileSlot}.txt file (optiosn_1.txt for example) in the loremaster folder of the game. A default option file in added to the package.
 Write %Override% or %Modify% in the first line:
 Override: Will reset your progress and let's you start with only your configuration.
 Modify: Loads the save data from the file and then modify the data with your configuration.
 
 Write the name of a power like %MyPower% and add an tag behind it. E. g:
+```
 %WellFocused% global
 %WorldSense% disable
-
-You can use the name of the player displayed ingame or the name of the class from the code (Excluding the "Power" text. e.g: WeDontTalkAboutShadePower -> WeDontTalkAboutShade in the file.)
+```
+You can use the name of the power displayed in game or the name of the class from the code (Excluding the "Power" text. e.g: WeDontTalkAboutShadePower -> WeDontTalkAboutShade in the file.)
 
 You have five tags available:
 - global: This power is always available once obtained.
@@ -46,7 +47,8 @@ You have five tags available:
 - disable: This power doesn't work, but it's collection still behave normally.
 - remove: This power doesn't work and is not required to get the lore master of the zone.
 
-If you want to give yourself the power instantly, you can add "|add" to the end of the line. Note, that this will be still affected by the tag
+If you want to give yourself the power instantly, you can add "|add" to the end of the line. Note, that this will be still affected by the tag. So if you give you an ability with the local tag, it will only be available in the zone where it would normally be (or globally if you have all required in the zone).
+
 A option file can look like this:
 ```cs
 %Override%
@@ -58,7 +60,7 @@ A option file can look like this:
 This example would do the following:
 - The Imposter Power will stay completely active once obtained.
 - The United we Stand Power is acquired and permanently active.
-- The Screw the Rules Power doesn't work at all (Only for the tracker).
+- The Screw the Rules Power is a requirement for globally activating the powers in Dirtmouth/King's Pass but itself does nothing.
 - The True Form ability can be acquired as normal but it will not be a requirement to fully enable the Dirtmouth/King's Pass powers globally.
 
 You can ignore a line if you insert a "#" somewhere in the line.
@@ -72,7 +74,7 @@ Ancient Basin:
 
 City of Tears:
 
-- Eye of the Watcher: Currently does nothing. Hit me up with any ideas. :)
+- Eye of the Watcher: Grants the lantern effect. If you already have the lantern effect and would take lethal damage, you will be healed to full hp instead (with joni's you gaining 5 lifeblood instead). Once triggered, has to be restored by looking through the telescope by lurien.
 - Hot Streak: When hitting an enemy with the nail, increases it's damage by 1 (max. 3 stacks per nail upgrade (15 total)). Resets if you don't hit an enemy.
 - Marissas Audience: After 20 to 60 seconds spawn multiple companions (Weavers, Hatchlings, Grimmchilds) that persist in the current room or for 30 to 90 seconds. If    Marissa is dead, spawns Revek each 45 to 180 seconds, that persist in the current room or 20 to 60 seconds.
 - Overwhelming Power: When you cast a spell while your soul vessel is full (not counting additional soul vessels), they deal twice as much damage and are twice as big.
@@ -92,7 +94,7 @@ Deepnest:
 Dirtmouth:
 
 - Caring Shell: Enviroment Hazards (like spikes) don't deal damage to you anymore.
-- Screw the Rules: Fury of the Fallen is now also active with 2 hp, but the damage buff is decreased to 50%. The debuff only affects normal nail hits.
+- Screw the Rules: Fury of the Fallen is now also active with 2 hp, but the damage buff is decreased to 50%. Grubberfly Beams are only nerfed by 40%.
 - True Form: While your shade is active, you deal 30% more damage and increase your nail length by 25%. The effects are doubled, if you are in the same room as your shade.
 - Well Focused: Focus is cast 30% faster.
 
