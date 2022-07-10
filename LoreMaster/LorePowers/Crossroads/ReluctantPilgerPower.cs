@@ -12,7 +12,7 @@ public class ReluctantPilgerPower : Power
     public ReluctantPilgerPower() : base("Reluctant Pilger", Area.Crossroads)
     {
         Hint = "While you stay on the path, your nail shall receive the gift of the grubfather.";
-        Description = "While standing of the ground, the grubberfly elegy effect is active (regardless of your HP). If you have grubberfly equipped, the damage on ground is doubled instead.";
+        Description = "While standing of the ground, the grubberfly elegy effect is active regardless of your hp (joni conditions are still normal). If you have grubberfly equipped, the damage on ground is doubled instead.";
     }
 
     #endregion
@@ -57,8 +57,12 @@ public class ReluctantPilgerPower : Power
                 {
                     if (!IsPlayerGrounded)
                         return x;
-                    if (PlayerData.instance.GetBool("equippedCharm_6") && x == 1)
+
+                    // We check for fury, in case we have one hp (or two with screw the rules), we want the fury version of grubber fly instead of the normal one. 
+                    if (PlayerData.instance.GetBool("equippedCharm_6") 
+                    && (x == 1 || (x == 2 && LoreMaster.Instance.ActivePowers.ContainsKey("TUT_TAB_02") && LoreMaster.Instance.ActivePowers["TUT_TAB_02"].Active)))
                         return x;
+                    // Always causes grubberfly to trigger, if joni's is not equipped at least.
                     return PlayerData.instance.GetInt("maxHealth");
                 });
 
@@ -117,7 +121,7 @@ public class ReluctantPilgerPower : Power
     {
         ModHooks.GetPlayerIntHook -= GetBeamDamage;
         IL.HeroController.Attack -= Attack_Modify;
-    } 
+    }
 
     #endregion
 

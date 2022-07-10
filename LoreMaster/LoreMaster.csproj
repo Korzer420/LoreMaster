@@ -35,6 +35,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Enums\Area.cs" />
+    <Compile Include="Extensions\ExtensionMethods.cs" />
+    <Compile Include="Helper\SpriteHelper.cs" />
     <Compile Include="UnityComponents\ConcussionEffect.cs" />
     <Compile Include="UnityComponents\CoroutineHandler.cs" />
     <Compile Include="CustomItem\TicketCost.cs" />
@@ -163,6 +165,10 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\EyeOfLurien.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

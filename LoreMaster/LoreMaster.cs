@@ -113,7 +113,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         {Area.CityOfTears, new(){MapZone.CITY, MapZone.SOUL_SOCIETY, MapZone.LURIENS_TOWER, MapZone.LOVE_TOWER, MapZone.MAGE_TOWER } },
         {Area.RestingGrounds, new(){MapZone.RESTING_GROUNDS, MapZone.BLUE_LAKE, MapZone.TRAM_UPPER, MapZone.GLADE} },
         {Area.QueensGarden, new(){MapZone.ROYAL_GARDENS, MapZone.ROYAL_QUARTER} },
-        {Area.WhitePalace, new(){MapZone.WHITE_PALACE} },
+        {Area.WhitePalace, new(){MapZone.WHITE_PALACE, MapZone.NONE} },
         {Area.Peaks, new(){MapZone.PEAK, MapZone.MINES, MapZone.CRYSTAL_MOUND} }
     };
 
@@ -280,6 +280,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         foreach (Power power in ActivePowers.Values)
             power.DisablePower(true);
         Handler.StopAllCoroutines();
+        _currentArea = Area.None;
         return orig(self, saveMode, callback);
     }
 
@@ -617,14 +618,13 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
             {
                 GreaterMindPower logPower = (GreaterMindPower)ActivePowers["COMPLETION_RATE_UNLOCKED"];
                 if (logPower.Active)
-                    logPower.UpdateLoreCounter(ActivePowers.Values, _powerList.Values, areaToUpdate, IsAreaGlobal(_currentArea));
+                    logPower.UpdateLoreCounter(ActivePowers.Values, _powerList.Values, areaToUpdate, IsAreaGlobal(areaToUpdate));
             }
         }
         catch (Exception exception)
         {
             LogError(exception.Message);
         }
-
     }
     
     #region NPC Dialogues

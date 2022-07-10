@@ -13,7 +13,7 @@ namespace LoreMaster.LorePowers.Deepnest;
          * Idle Bound -> Health Binding GG DLC (Needs to be considered)
          * Hive Recovery Blob -> Hive Blood Recover Sprite
          */
-
+// Maske leuchtet noch
 public class MaskOverchargePower : Power
 {
     #region Members
@@ -26,7 +26,7 @@ public class MaskOverchargePower : Power
 
     #region Constructors
 
-    public MaskOverchargePower() : base("Mask Overcharge Power", Area.Deepnest)
+    public MaskOverchargePower() : base("Mask Overcharge", Area.Deepnest)
     {
         Hint = "Let one your mask occasionly overcharge. If it is the one that protects you, it emits a searing circle, that also absorbs the loose soul around you.";
         Description = "Overcharge one of your mask (it glows in different colors), while you have exactly that much health, a circle gathers around you that deal damage and restore 5 soul each second. "+

@@ -3,6 +3,7 @@ using HutongGames.PlayMaker.Actions;
 using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
 using LoreMaster.Enums;
+using LoreMaster.Helper;
 using System;
 using System.IO;
 using System.Linq;
@@ -70,13 +71,8 @@ public class QueenThornsPower : Power
             // Save the old thorns image and create a new one which can be used anytime.
             if (_sprites[1] == null)
             {
-                string imageFile = Path.Combine(Path.GetDirectoryName(typeof(LoreMaster).Assembly.Location), "Resources/Queens_Thorns.png");
-                byte[] imageData = File.ReadAllBytes(imageFile);
-                Texture2D tex = new Texture2D(1, 1, TextureFormat.RGBA32, false);
-                ImageConversion.LoadImage(tex, imageData, true);
-                tex.filterMode = FilterMode.Bilinear;
                 _sprites[0] = CharmIconList.Instance.spriteList[12];
-                _sprites[1] = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(.5f, .5f));
+                _sprites[1] = SpriteHelper.CreateSprite("Queens_Thorns");
             }
 
             PlayMakerFSM fsm = GameObject.Find("Knight/Charm Effects").LocateMyFSM("Thorn Counter");

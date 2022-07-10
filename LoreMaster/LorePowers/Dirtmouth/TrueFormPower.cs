@@ -69,6 +69,7 @@ public class TrueFormPower : Power
         _attackTransform.Add(attackDirections.transform.Find("AltSlash"));
         _attackTransform.Add(attackDirections.transform.Find("UpSlash"));
         _attackTransform.Add(attackDirections.transform.Find("DownSlash"));
+        _attackTransform.Add(attackDirections.transform.Find("WallSlash"));
     }
 
     protected override void Enable()

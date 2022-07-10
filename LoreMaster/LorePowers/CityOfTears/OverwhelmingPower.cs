@@ -2,6 +2,7 @@ using HutongGames.PlayMaker;
 using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
 using LoreMaster.Enums;
+using LoreMaster.Extensions;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -71,14 +72,18 @@ public class OverwhelmingPower : Power
         GameObject spell = GameObject.Find("Knight/Spells");
 
         PlayMakerFSM spellControl = FsmHelper.GetFSM("Knight", "Spell Control");
-        spellControl.GetState("Spell Choice").InsertAction(new Lambda(() =>
+        spellControl.GetState("Spell Choice").ReplaceAction(new Lambda(() =>
         {
             _hasFullSoulMeter = PlayerData.instance.MPCharge >= 99;
-        }), 0);
-        spellControl.GetState("QC").InsertAction(new Lambda(() =>
+            if (spellControl.FsmVariables.FindFsmBool("Pressed Up").Value)
+                spellControl.SendEvent("SCREAM");
+        }) { Name = "Full Soul Check"}, 0);
+        spellControl.GetState("Can Cast? QC").ReplaceAction(new Lambda(() =>
         {
             _hasFullSoulMeter = PlayerData.instance.MPCharge >= 99;
-        }), 0);
+            spellControl.FsmVariables.FindFsmInt("MP").Value = PlayerData.instance.GetInt("MPCharge");
+        })
+        { Name = "Full Soul Check" }, 1);
 
         List<GameObject> spells = new();
 
