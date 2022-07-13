@@ -63,7 +63,7 @@ public class MarissasAudiencePower : Power
 
     protected override void Disable()
     {
-        LoreMaster.Instance.Handler.StopCoroutine(GatherAudience());
+        LoreMaster.Instance.Handler.StopCoroutine("GatherAudience");
         if (_extraCompanions.Any())
             foreach (GameObject companion in _extraCompanions)
                 GameObject.Destroy(companion);

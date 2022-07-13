@@ -58,8 +58,8 @@ public class GreaterMindPower : Power
         GameObject prefab = GameObject.Find("_GameCameras").transform.Find("HudCamera/Inventory/Inv/Inv_Items/Geo").gameObject;
         GameObject hudCanvas = GameObject.Find("_GameCameras").transform.Find("HudCamera/Hud Canvas").gameObject;
         _loreTracker = GameObject.Instantiate(prefab, hudCanvas.transform, true);
-        _loreTracker.name = "Local Lore";
-        PositionHudElement(_loreTracker, new Vector3(-2.6f, 8.05f), 3);
+        _loreTracker.name = "Lore Tracker";
+        PositionHudElement(_loreTracker, 3);
     }
 
     protected override void Enable() => _loreTracker.SetActive(true);
@@ -70,9 +70,10 @@ public class GreaterMindPower : Power
 
     #region Private Methods
 
-    private void PositionHudElement(GameObject go, Vector3 positionToAdd, int fontSize)
+    private void PositionHudElement(GameObject go, int fontSize)
     {
-        go.transform.position += positionToAdd;
+        go.transform.localPosition = new(-3.66f, -4.32f, 0f);
+        go.transform.localScale = new(1.3824f, 1.3824f, 1.3824f);
         go.GetComponent<DisplayItemAmount>().playerDataInt = go.name;
         go.GetComponent<DisplayItemAmount>().textObject.text = "";
         go.GetComponent<DisplayItemAmount>().textObject.fontSize = fontSize;

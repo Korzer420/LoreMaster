@@ -30,7 +30,7 @@ public class CamouflagePower : Power
 
     protected override void Disable()
     {
-        LoreMaster.Instance.Handler.StopCoroutine(WaitForCamouflage());
+        LoreMaster.Instance.Handler.StopCoroutine("WaitForCamouflage");
         PlayerData.instance.isInvincible = false;
         _heroSprite.color = Color.white;
     }

@@ -29,7 +29,7 @@ public class ShiningBoundPower : Power
     
     protected override void Enable() => LoreMaster.Instance.Handler.StartCoroutine(GatherShiningSoul());
     
-    protected override void Disable() => LoreMaster.Instance.Handler.StopCoroutine(GatherShiningSoul());
+    protected override void Disable() => LoreMaster.Instance.Handler.StopCoroutine("GatherShiningSoul");
     
     #endregion
 

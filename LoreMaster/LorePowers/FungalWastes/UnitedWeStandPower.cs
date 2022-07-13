@@ -57,7 +57,7 @@ public class UnitedWeStandPower : Power
 
     protected override void Disable()
     {
-        LoreMaster.Instance.Handler.StopCoroutine(UpdateCompanions());
+        LoreMaster.Instance.Handler.StopCoroutine("UpdateCompanions");
         On.KnightHatchling.OnEnable -= HatchlingSpawn;
     } 
 

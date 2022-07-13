@@ -1,5 +1,6 @@
 using GlobalEnums;
 using ItemChanger;
+using ItemChanger.Extensions;
 using ItemChanger.Locations;
 using ItemChanger.Placements;
 using LoreMaster.CustomItem;
@@ -21,6 +22,8 @@ using LoreMaster.LorePowers.WhitePalace;
 using LoreMaster.SaveManagement;
 using LoreMaster.UnityComponents;
 using Modding;
+using Mono.Cecil.Cil;
+using MonoMod.Cil;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -66,6 +69,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         {"MANTIS_PLAQUE_01", new MantisStylePower() },
         {"MANTIS_PLAQUE_02", new EternalValorPower() },
         {"PILGRIM_TAB_02", new GloryOfTheWealthPower() },
+        {"WILLOW", new BagOfMushroomsPower() },
         // Greenpath
         {"GREEN_TABLET_01", new TouchGrassPower() },
         {"GREEN_TABLET_02", new GiftOfUnnPower() },
@@ -236,29 +240,37 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
     /// <param name="bossRush"></param>
     private void StartNewGame(On.UIManager.orig_StartNewGame orig, UIManager self, bool permaDeath, bool bossRush)
     {
-        ItemChangerMod.CreateSettingsProfile();
-        List<MutablePlacement> teleportItems = new();
-        MutablePlacement teleportPlacement = new CoordinateLocation() { x = 35.0f, y = 5.4f, elevation = 0, sceneName = "Ruins1_27", name = "City_Teleporter" }.Wrap() as MutablePlacement;
-        teleportPlacement.Cost = new Paypal { ToTemple = true };
-        teleportPlacement.Add(new TouristMagnetItem("City_Teleporter"));
-        teleportItems.Add(teleportPlacement);
+        try
+        {
+            ItemChangerMod.CreateSettingsProfile(false);
+            List<MutablePlacement> teleportItems = new();
+            MutablePlacement teleportPlacement = new CoordinateLocation() { x = 35.0f, y = 5.4f, elevation = 0, sceneName = "Ruins1_27", name = "City_Teleporter" }.Wrap() as MutablePlacement;
+            teleportPlacement.Cost = new Paypal { ToTemple = true };
+            teleportPlacement.Add(new TouristMagnetItem("City_Teleporter"));
+            teleportItems.Add(teleportPlacement);
 
-        MutablePlacement secondPlacement = new CoordinateLocation() { x = 57f, y = 5f, elevation = 0, sceneName = "Room_temple", name = "Temple_Teleporter" }.Wrap() as MutablePlacement;
-        secondPlacement.Cost = new Paypal { ToTemple = false };
-        secondPlacement.Add(new TouristMagnetItem("Temple_Teleporter"));
-        teleportItems.Add(secondPlacement);
-        ItemChangerMod.AddPlacements(teleportItems);
-        orig(self, permaDeath, bossRush);
-        ModHooks.SetPlayerBoolHook += ModHooks_SetPlayerBoolHook;
-        _fromMenu = true;
+            MutablePlacement secondPlacement = new CoordinateLocation() { x = 57f, y = 5f, elevation = 0, sceneName = "Room_temple", name = "Temple_Teleporter" }.Wrap() as MutablePlacement;
+            secondPlacement.Cost = new Paypal { ToTemple = false };
+            secondPlacement.Add(new TouristMagnetItem("Temple_Teleporter"));
+            teleportItems.Add(secondPlacement);
+            ItemChangerMod.AddPlacements(teleportItems);
+            orig(self, permaDeath, bossRush);
+            ModHooks.SetPlayerBoolHook += TrackPathOfPain;
+            _fromMenu = true;
 
-        // Reset tags to default.
-        foreach (string key in _powerList.Keys)
-            _powerList[key].Tag = PowerTag.Local;
-        _powerList["EndOfPathOfPain"].Tag = PowerTag.Exclude;
+            // Reset tags to default.
+            foreach (string key in _powerList.Keys)
+                _powerList[key].Tag = PowerTag.Local;
+            _powerList["EndOfPathOfPain"].Tag = PowerTag.Exclude;
 
-        // Unsure if this is needed, but just in case.
-        ActivePowers.Clear();
+            // Unsure if this is needed, but just in case.
+            ActivePowers.Clear();
+        }
+        catch (Exception exception)
+        {
+            LogError(exception.Message);
+        }
+        
     }
 
     private void UIManager_ContinueGame(On.UIManager.orig_ContinueGame orig, UIManager self)
@@ -281,6 +293,12 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
             power.DisablePower(true);
         Handler.StopAllCoroutines();
         _currentArea = Area.None;
+        On.PlayMakerFSM.OnEnable -= ForcePeaksQuirrel;
+        On.DeactivateIfPlayerdataTrue.OnEnable -= ForceMyla;
+        On.DeactivateIfPlayerdataFalse.OnEnable -= PreventMylaZombie;
+        ModHooks.SetPlayerBoolHook -= TrackPathOfPain;
+        ModHooks.LanguageGetHook -= GetText;
+
         return orig(self, saveMode, callback);
     }
 
@@ -290,7 +308,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
     /// <param name="name"></param>
     /// <param name="orig"></param>
     /// <returns></returns>
-    private bool ModHooks_SetPlayerBoolHook(string name, bool orig)
+    private bool TrackPathOfPain(string name, bool orig)
     {
         if (name.Equals("killedBindingSeal") && orig)
         {
@@ -301,7 +319,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
                 ActivePowers.Add("EndOfPathOfPain", power);
                 UpdateTracker(_currentArea);
             }
-            ModHooks.SetPlayerBoolHook -= ModHooks_SetPlayerBoolHook;
+            ModHooks.SetPlayerBoolHook -= TrackPathOfPain;
         }
         return orig;
     }
@@ -311,7 +329,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
     /// </summary>
     /// <param name="arg0"></param>
     /// <param name="arg1"></param>
-    private void SceneManager_activeSceneChanged(UnityEngine.SceneManagement.Scene arg0, UnityEngine.SceneManagement.Scene arg1)
+    private void SceneChanged(UnityEngine.SceneManagement.Scene arg0, UnityEngine.SceneManagement.Scene arg1)
     {
         try
         {
@@ -321,15 +339,18 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
                 {
                     if (PlayerData.instance == null)
                         Log("Playerdata doesn't exist");
-                    if (PlayerData.instance.GetBool("killedBindingSeal") && !_powerList.ContainsKey("EndOfPathOfPain"))
+                    else if (PlayerData.instance.GetBool("killedBindingSeal") && !_powerList.ContainsKey("EndOfPathOfPain"))
                     {
                         Power power = _powerList["EndOfPathOfPain"];
                         power.EnablePower();
                         ActivePowers.Add("EndOfPathOfPain", power);
                     }
                     else
-                        ModHooks.SetPlayerBoolHook += ModHooks_SetPlayerBoolHook;
+                        ModHooks.SetPlayerBoolHook += TrackPathOfPain;
 
+                    On.PlayMakerFSM.OnEnable += ForcePeaksQuirrel;
+                    On.DeactivateIfPlayerdataTrue.OnEnable += ForceMyla;
+                    On.DeactivateIfPlayerdataFalse.OnEnable += PreventMylaZombie;
                     // Load in changes from the options file (if it exists)
                     LoadOptions();
                 }
@@ -341,7 +362,20 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
             LogError("Error while trying to load new scene: " + error.Message);
             LogError(error.StackTrace);
         }
+    }
 
+    /// <summary>
+    /// Event Handler that forces quirrel to always be in crystal peaks.
+    /// </summary>
+    /// <param name="orig"></param>
+    /// <param name="self"></param>
+    private void ForcePeaksQuirrel(On.PlayMakerFSM.orig_OnEnable orig, PlayMakerFSM self)
+    {
+        // The quirrel in peaks has 3 fsm (don't ask) that indicates if he can be there: If he has been encountered in archives, if you have superdash or if he has just left the mines.
+        // We remove all those checks.
+        if (self.gameObject.name.Equals("Quirrel Mines") && self.FsmName.Equals("FSM"))
+            self.GetState("Check").RemoveTransitionsTo("Destroy");
+        orig(self);
     }
 
     #endregion
@@ -377,7 +411,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
             return;
         Instance = this;
         ModHooks.LanguageGetHook += GetText;
-        UnityEngine.SceneManagement.SceneManager.activeSceneChanged += SceneManager_activeSceneChanged;
+        UnityEngine.SceneManagement.SceneManager.activeSceneChanged += SceneChanged;
         On.UIManager.StartNewGame += StartNewGame;
         On.UIManager.ContinueGame += UIManager_ContinueGame;
         On.GameManager.ReturnToMainMenu += GameManager_ReturnToMainMenu;
@@ -491,7 +525,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
     {
         Instance = null;
         ModHooks.LanguageGetHook -= GetText;
-        UnityEngine.SceneManagement.SceneManager.activeSceneChanged -= SceneManager_activeSceneChanged;
+        UnityEngine.SceneManagement.SceneManager.activeSceneChanged -= SceneChanged;
         On.UIManager.StartNewGame -= StartNewGame;
         On.GameManager.ReturnToMainMenu -= GameManager_ReturnToMainMenu;
         Handler.StopAllCoroutines();
@@ -526,6 +560,8 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
             key = "QUEEN";
         else if (IsMaskMaker(key))
             key = "MASKMAKER";
+        else if (IsWillow(key))
+            key = "WILLOW";
         return key;
     }
 
@@ -554,17 +590,25 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         }
         if (_currentArea != newArea)
         {
-            // Activate all local abilities
-            foreach (Power power in ActivePowers.Values.Where(x => x.Location == newArea))
-                if (power.Tag == PowerTag.Exclude || power.Tag == PowerTag.Local)
-                    power.EnablePower();
+            try
+            {
+                // Activate all local abilities
+                foreach (Power power in ActivePowers.Values.Where(x => x.Location == newArea))
+                    if (power.Tag == PowerTag.Exclude || power.Tag == PowerTag.Local)
+                        power.EnablePower();
 
-            // Disable all local abilities from the other zone
-            if (!IsAreaGlobal(_currentArea))
-                foreach (Power power in ActivePowers.Values.Where(x => x.Location == _currentArea))
-                    if (power.Tag == PowerTag.Local || power.Tag == PowerTag.Exclude)
-                        power.DisablePower(false);
-
+                // Disable all local abilities from the other zone (this has to be done that way for randomizer compability)
+                foreach (Area area in ((Area[])Enum.GetValues(typeof(Area))).Skip(1))
+                    if (!IsAreaGlobal(area))
+                        foreach (Power power in ActivePowers.Values.Where(x => x.Location == _currentArea))
+                            if (power.Tag == PowerTag.Local || power.Tag == PowerTag.Exclude)
+                                power.DisablePower(false);
+            }
+            catch (Exception exception)
+            {
+                LogError(exception.Message);
+            }
+            
             // To prevent making all members public, we manually call the completion counter here.
             UpdateTracker(newArea);
         }
@@ -671,6 +715,28 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
             || key.Equals("QUEEN_DUNG_02") || key.Equals("QUEEN_REPEAT_KINGSOUL")
             || key.Equals("QUEEN_TALK_EXTRA") || key.Equals("QUEEN_REPEAT_SHADECHARM")
             || key.Equals("QUEEN_GRIMMCHILD") || key.Equals(" QUEEN_GRIMMCHILD_FULL");
+    }
+
+    private bool IsWillow(string key)
+    {
+        return key.Equals("GIRAFFE_MEET") || key.Equals("GIRAFFE_LOWER") || key.Equals("GIRAFFE_LOWER_REPEAT");
+    }
+
+    private void PreventMylaZombie(On.DeactivateIfPlayerdataFalse.orig_OnEnable orig, DeactivateIfPlayerdataFalse self)
+    {
+        if (self.gameObject.name.Contains("Zombie Myla") || self.gameObject.name.Equals("Myla Crazy NPC"))
+        {
+            self.gameObject.SetActive(false);
+            return;
+        }
+        orig(self);
+    }
+
+    private void ForceMyla(On.DeactivateIfPlayerdataTrue.orig_OnEnable orig, DeactivateIfPlayerdataTrue self)
+    {
+        if (self.gameObject.name.Equals("Miner") && (self.boolName.Equals("hasSuperDash") || self.boolName.Equals("mageLordDefeated")))
+            return;
+        orig(self);
     }
 
     #endregion
