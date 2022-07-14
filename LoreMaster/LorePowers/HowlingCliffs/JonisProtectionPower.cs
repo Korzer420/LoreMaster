@@ -128,7 +128,6 @@ public class JonisProtectionPower : Power
         }
         else if (self.FsmName.Equals("Inspection") && self.gameObject.name.Contains("tablet"))
         {
-            LoreMaster.Instance.Log("Called tablet");
             FsmState fsmState = self.GetState("Prompt Up");
             if (fsmState.GetFirstActionOfType<Lambda>() == null)
             {

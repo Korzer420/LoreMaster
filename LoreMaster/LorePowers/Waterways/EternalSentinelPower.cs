@@ -85,7 +85,6 @@ public class EternalSentinelPower : Power
         blockerHit.RemoveFirstActionOfType<IntSwitch>();
         blockerHit.AddLastAction(new Lambda(() =>
         {
-            LoreMaster.Instance.Log("Current hits: " + baldurFSM.FsmVariables.FindFsmInt("Blocks").Value);
             // Refunds soul on baldur hit on break
             if (Active && PlayerData.instance.GetBool("equippedCharm_10"))
                 HeroController.instance.AddMPCharge(15);

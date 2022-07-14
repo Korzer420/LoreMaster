@@ -37,8 +37,12 @@
     <Compile Include="Enums\Area.cs" />
     <Compile Include="Extensions\ExtensionMethods.cs" />
     <Compile Include="Helper\SpriteHelper.cs" />
+    <Compile Include="LorePowers\CityOfTears\CharmingTrapPower.cs" />
+    <Compile Include="LorePowers\Crossroads\DiamantDashPower.cs" />
     <Compile Include="LorePowers\FungalWastes\BagOfMushroomsPower.cs" />
     <Compile Include="Helper\RandomizerHelper.cs" />
+    <Compile Include="LorePowers\Peaks\DiamondHeartPower.cs" />
+    <Compile Include="LorePowers\QueensGarden\EmbraceTheLightPower.cs" />
     <Compile Include="UnityComponents\ConcussionEffect.cs" />
     <Compile Include="UnityComponents\CoroutineHandler.cs" />
     <Compile Include="CustomItem\TicketCost.cs" />
@@ -178,6 +182,17 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\MushroomChoice.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\DiamondHeart.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\DiamondHeart_Coreless.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\DiamondHeart_Shellless.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>

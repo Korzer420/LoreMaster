@@ -123,7 +123,6 @@ public class ScrewTheRulesPower : Power
         if (PlayerData.instance.GetInt("health") == 2)
         {
             PlayMakerFSM fsm = GameObject.Find("Knight/Charm Effects").LocateMyFSM("Fury");
-            LoreMaster.Instance.Log("Current state: " + fsm.ActiveStateName);
             fsm.SendEvent("HERO HEALED");
         }
     }

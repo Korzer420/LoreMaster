@@ -19,6 +19,7 @@ using LoreMaster.LorePowers.FungalWastes;
 using LoreMaster.LorePowers.Greenpath;
 using LoreMaster.LorePowers.HowlingCliffs;
 using LoreMaster.LorePowers.KingdomsEdge;
+using LoreMaster.LorePowers.Peaks;
 using LoreMaster.LorePowers.QueensGarden;
 using LoreMaster.LorePowers.RestingGrounds;
 using LoreMaster.LorePowers.Waterways;
@@ -53,6 +54,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         {"MAGE_COMP_03", new OverwhelmingPower() },
         {"MAGE_COMP_01", new SoulExtractEfficiencyPower() },
         {"LURIAN_JOURNAL", new EyeOfTheWatcherPower() },
+        {"EMILITIA", new CharmingTrapPower() },
         // Dirtmouth/King's Pass
         {"TUT_TAB_01", new WellFocusedPower() },
         {"TUT_TAB_02", new ScrewTheRulesPower() },
@@ -65,6 +67,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         // Crossroads
         {"PILGRIM_TAB_01", new ReluctantPilgerPower() },
         {"COMPLETION_RATE_UNLOCKED", new GreaterMindPower() },
+        {"MYLA", new DiamantDashPower() },
         // Fungal Wastes
         {"FUNG_TAB_04", new OneOfUsPower() },
         {"FUNG_TAB_01", new PaleLuckPower() },
@@ -87,6 +90,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         // Queen's Garden
         {"XUN_GRAVE_INSPECT", new FlowerRingPower() },
         {"QUEEN", new QueenThornsPower() },
+        {"MOSSPROPHET", new EmbraceTheLightPower() },
         // Resting Grounds
         {"DREAMERS_INSPECT_RG5", new DreamBlessingPower() },
         // Waterways
@@ -99,6 +103,8 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         // Deepnest
         {"MASKMAKER", new MaskOverchargePower() },
         {"MIDWIFE", new InfestedPower() },
+        // Crystal Peaks
+        {"QUIRREL", new DiamondHeartPower() },
         // White Palace
         {"WP_WORKSHOP_01", new ShadowForgedPower() },
         {"WP_THRONE_01", new ShiningBoundPower() },
@@ -237,7 +243,31 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
     private string GetText(string key, string sheetTitle, string text)
     {
         key = ModifyKey(key);
-        if(key.Equals("DREAMERS_INSPECT_RG5") || key.Equals("FOUNTAIN_PLAQUE_DESC"))
+        if(key.Equals("INV_NAME_SUPERDASH"))
+        {
+            bool hasDiamondDash = _powerList["MYLA"].Active;
+            bool hasDiamondCore = _powerList["QUIRREL"].Active;
+
+            if (hasDiamondDash && !hasDiamondCore)
+                text = "Diamond Heart (Shell)";
+            else if (!hasDiamondDash && hasDiamondCore)
+                text = "Diamond Heart (Core)";
+            else if (hasDiamondCore && hasDiamondDash)
+                text = "Diamond Heart";
+        }
+        else if(key.Equals("INV_DESC_SUPERDASH"))
+        {
+            bool hasDiamondDash = _powerList["MYLA"].Active;
+            bool hasDiamondCore = _powerList["QUIRREL"].Active;
+
+            if (hasDiamondDash && !hasDiamondCore)
+                text += "<br>The vessel of the core is forged with a powerful diamond plate. You promised that you give it back to Myla... right?";
+            else if (!hasDiamondDash && hasDiamondCore)
+                text += "<br>The core is pulsing in the rate of your heart. Just having the pure diamond core near you, let you feel the pressure. It just needs the right vessel to hold it.";
+            else if (hasDiamondCore && hasDiamondDash)
+                text += "<br>Bathed and reforged with powerful diamonds. Formerly in possession of the crystal leader, this artefact can cause massive earth quakes.";
+        }
+        else if(key.Equals("DREAMERS_INSPECT_RG5") || key.Equals("FOUNTAIN_PLAQUE_DESC"))
             text += "[" + _powerList[key].PowerName +"]"+ ( UseHints ? _powerList[key].Hint : _powerList[key].Description);
         else if (!CheckForPower(key, ref text) && _powerList["QUEEN"].Active)
         {
@@ -316,7 +346,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         ModHooks.SetPlayerBoolHook -= TrackPathOfPain;
         ModHooks.LanguageGetHook -= GetText;
         if (ModHooks.GetMod("Randomizer 4", true) is Mod mod)
-            AbstractItem.BeforeGiveGlobal -= AbstractItem_BeforeGiveGlobal;
+            AbstractItem.BeforeGiveGlobal -= GiveLoreItem;
         return orig(self, saveMode, callback);
     }
 
@@ -374,7 +404,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
                     LoadOptions();
                     if (ModHooks.GetMod("Randomizer 4", true) is Mod mod)
                     {
-                        AbstractItem.BeforeGiveGlobal += AbstractItem_BeforeGiveGlobal;
+                        AbstractItem.BeforeGiveGlobal += GiveLoreItem;
                         Log("Detected Randomizer. Adding compability.");
                     }
                 }
@@ -388,7 +418,11 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         }
     }
 
-    private void AbstractItem_BeforeGiveGlobal(ReadOnlyGiveEventArgs itemData)
+    /// <summary>
+    /// Event handler to adjust the message and give the power of randomizer items.
+    /// </summary>
+    /// <param name="itemData"></param>
+    private void GiveLoreItem(ReadOnlyGiveEventArgs itemData)
     {
         if (itemData.Item.name.Contains("Lore_Tablet-"))
         {
@@ -421,6 +455,8 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
             string placeHolder = string.Empty;
             self.GetState("Anim End").ReplaceAction(new Lambda(() => CheckForPower("DREAMERS_INSPECT_RG5", ref placeHolder)) { Name = "Dreamer Power"});
         }
+        else if(self.gameObject.name.Equals("Moss Cultist") && self.FsmName.Equals("FSM"))
+            self.GetState("Check").RemoveTransitionsTo("Destroy");
 
         orig(self);
     }
@@ -609,6 +645,14 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
             key = "MASKMAKER";
         else if (IsWillow(key))
             key = "WILLOW";
+        else if (IsMyla(key))
+            key = "MYLA";
+        else if (IsQuirrel(key))
+            key = "QUIRREL";
+        else if (IsEmilitia(key))
+            key = "EMILITIA";
+        else if (IsMossProphet(key))
+            key = "MOSSPROPHET";
         return key;
     }
 
@@ -650,7 +694,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
 
                 // Disable all local abilities from all other zone (this has to be done that way for randomizer compability)
                 foreach (Area area in ((Area[])Enum.GetValues(typeof(Area))).Skip(1))
-                    if (!IsAreaGlobal(area))
+                    if (area != newArea && !IsAreaGlobal(area))
                         foreach (Power power in ActivePowers.Values.Where(x => x.Location == area))
                             if (power.Tag == PowerTag.Local || power.Tag == PowerTag.Exclude)
                                 power.DisablePower(false);
@@ -772,6 +816,26 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
     private bool IsWillow(string key)
     {
         return key.Equals("GIRAFFE_MEET") || key.Equals("GIRAFFE_LOWER") || key.Equals("GIRAFFE_LOWER_REPEAT");
+    }
+
+    private bool IsMyla(string key)
+    {
+        return key.Equals("MINER_MEET_1_B") || key.Equals("MINER_MEET_REPEAT") || key.Equals("MINER_EARLY_1_B") || key.Equals("MINER_EARLY_2_B") || key.Equals("MINER_EARLY_3");
+    }
+
+    private bool IsQuirrel(string key)
+    {
+        return key.Equals("QUIRREL_MINES_1") || key.Equals("QUIRREL_MINES_2") || key.Equals("QUIRREL_MINES_3") || key.Equals("QUIRREL_MINES_4");
+    }
+
+    private bool IsEmilitia(string key)
+    {
+        return key.Equals("EMILITIA_MEET") || key.Equals("EMILITIA_KING_BRAND") || key.Equals("EMILITIA_GREET") || key.Equals("EMILITIA_REPEAT");
+    }
+
+    private bool IsMossProphet(string key)
+    {
+        return key.Equals("MOSS_CULTIST_01") || key.Equals("MOSS_CULTIST_02") || key.Equals("MOSS_CULTIST_03");
     }
 
     private void PreventMylaZombie(On.DeactivateIfPlayerdataFalse.orig_OnEnable orig, DeactivateIfPlayerdataFalse self)

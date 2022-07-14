@@ -66,6 +66,9 @@ namespace LoreMaster.LorePowers
         /// </summary>
         protected virtual void Enable() { }
 
+        /// <summary>
+        /// Disables this power in the overworld.
+        /// </summary>
         protected virtual void Disable() { }
 
         public void EnablePower()
@@ -80,7 +83,7 @@ namespace LoreMaster.LorePowers
                     _initialized = true;
                 }
                 Enable();
-                LoreMaster.Instance.Log("Enabled " + PowerName);
+                LoreMaster.Instance.LogDebug("Enabled " + PowerName);
                 Active = true;
             }
             catch (Exception exception)
@@ -101,7 +104,7 @@ namespace LoreMaster.LorePowers
             try
             {
                 Disable();
-                LoreMaster.Instance.Log("Disabled " + PowerName);
+                LoreMaster.Instance.LogDebug("Disabled " + PowerName);
             }
             catch (Exception exception)
             {

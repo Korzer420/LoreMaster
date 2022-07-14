@@ -25,13 +25,11 @@ public class JellyfishFlowPower : Power
         PlayMakerFSM knightFSM = GameObject.Find("Knight").LocateMyFSM("Surface Water");
         knightFSM.GetState("Swim Right").AddFirstAction(new Lambda(() =>
         {
-            LoreMaster.Instance.Log("Called fsm");
             knightFSM.FsmVariables.GetFsmFloat("Swim Speed").Value = Active ? 15f : 5f;
         }));
 
         knightFSM.GetState("Swim Left").AddFirstAction(new Lambda(() =>
         {
-            LoreMaster.Instance.Log("Called fsm");
             knightFSM.FsmVariables.GetFsmFloat("Swim Speed neg").Value = Active ? -15f : -5f;
         }));
     }

@@ -42,7 +42,6 @@ internal record Paypal: Cost
             yield break;
 
         yield return new WaitForFinishedEnteringScene();
-        LoreMaster.Instance.Log("Try loading");
         HeroController.instance.transform.position = new(55.38f, 23.41f);
     }
 }

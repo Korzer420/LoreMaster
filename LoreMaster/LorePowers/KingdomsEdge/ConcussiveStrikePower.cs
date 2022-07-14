@@ -34,7 +34,6 @@ public class ConcussiveStrikePower : Power
 
     private void EnemyTookHit(On.HealthManager.orig_TakeDamage orig, HealthManager self, HitInstance hitInstance)
     {
-        LoreMaster.Instance.Log("Knockback: " + hitInstance.MagnitudeMultiplier);
         ConcussionEffect concussive = self.GetComponentInChildren<ConcussionEffect>();
         if (concussive == null)
         {
