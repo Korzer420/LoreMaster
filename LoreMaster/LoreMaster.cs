@@ -1,10 +1,14 @@
 using GlobalEnums;
 using ItemChanger;
 using ItemChanger.Extensions;
+using ItemChanger.FsmStateActions;
 using ItemChanger.Locations;
 using ItemChanger.Placements;
+using ItemChanger.UIDefs;
 using LoreMaster.CustomItem;
 using LoreMaster.Enums;
+using LoreMaster.Extensions;
+using LoreMaster.Helper;
 using LoreMaster.LorePowers;
 using LoreMaster.LorePowers.Ancient_Basin;
 using LoreMaster.LorePowers.CityOfTears;
@@ -44,7 +48,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         {"ABYSS_TUT_TAB_01", new WeDontTalkAboutShadePower() },
         // City of Tears
         {"RUINS_TAB_01", new HotStreakPower() },
-        {"FOUNTAIN_PLAQUE_MAIN", new TouristPower() },
+        {"FOUNTAIN_PLAQUE_DESC", new TouristPower() },
         {"RUINS_MARISSA_POSTER", new MarissasAudiencePower() },
         {"MAGE_COMP_03", new OverwhelmingPower() },
         {"MAGE_COMP_01", new SoulExtractEfficiencyPower() },
@@ -166,7 +170,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
 
     /// <summary>
     /// Gets or sets all actions of powers that should be executed once the scene loaded. 
-    /// This is used to prevent messing around with powers that may use activeSceneChanged.
+    /// This is used to prevent messing around with activeSceneChanged, because the manager has to enable/disable the powers first before powers execute their ability.
     /// <para/>No power shall use activeSceneChanged!!!
     /// </summary>
     public Dictionary<string, Action> SceneActions { get; set; } = new();
@@ -178,18 +182,14 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
 
     #endregion
 
-    #region Event Handler
-
     /// <summary>
-    /// This is the main control, which determines which power is on.
+    /// Main logic to check if key contains a power, if so, add it.
     /// </summary>
     /// <param name="key"></param>
-    /// <param name="sheetTitle"></param>
     /// <param name="text"></param>
     /// <returns></returns>
-    private string GetText(string key, string sheetTitle, string text)
+    private bool CheckForPower(string key, ref string text)
     {
-        key = ModifyKey(key);
         if (_powerList.ContainsKey(key))
         {
             try
@@ -215,13 +215,31 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
                     text += "<br>[" + popPower.PowerName + "]";
                     text += "<br>" + (UseHints ? popPower.Hint : popPower.Description);
                 }
+                return true;
             }
             catch (Exception exception)
             {
                 LogError(exception.Message);
             }
         }
-        else if (_powerList["QUEEN"].Active)
+        return false;
+    }
+
+    #region Event Handler
+
+    /// <summary>
+    /// This is the main control, which determines which power is on.
+    /// </summary>
+    /// <param name="key"></param>
+    /// <param name="sheetTitle"></param>
+    /// <param name="text"></param>
+    /// <returns></returns>
+    private string GetText(string key, string sheetTitle, string text)
+    {
+        key = ModifyKey(key);
+        if(key.Equals("DREAMERS_INSPECT_RG5") || key.Equals("FOUNTAIN_PLAQUE_DESC"))
+            text += "[" + _powerList[key].PowerName +"]"+ ( UseHints ? _powerList[key].Hint : _powerList[key].Description);
+        else if (!CheckForPower(key, ref text) && _powerList["QUEEN"].Active)
         {
             if (key.Equals("CHARM_NAME_12"))
                 return "Queen's Thorns";
@@ -270,10 +288,9 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         {
             LogError(exception.Message);
         }
-        
     }
 
-    private void UIManager_ContinueGame(On.UIManager.orig_ContinueGame orig, UIManager self)
+    private void ContinueGame(On.UIManager.orig_ContinueGame orig, UIManager self)
     {
         _fromMenu = true;
         orig(self);
@@ -287,18 +304,19 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
     /// <param name="saveMode"></param>
     /// <param name="callback"></param>
     /// <returns></returns>
-    private IEnumerator GameManager_ReturnToMainMenu(On.GameManager.orig_ReturnToMainMenu orig, GameManager self, GameManager.ReturnToMainMenuSaveModes saveMode, Action<bool> callback)
+    private IEnumerator ReturnToMenu(On.GameManager.orig_ReturnToMainMenu orig, GameManager self, GameManager.ReturnToMainMenuSaveModes saveMode, Action<bool> callback)
     {
         foreach (Power power in ActivePowers.Values)
             power.DisablePower(true);
         Handler.StopAllCoroutines();
         _currentArea = Area.None;
-        On.PlayMakerFSM.OnEnable -= ForcePeaksQuirrel;
+        On.PlayMakerFSM.OnEnable -= FsmEdits;
         On.DeactivateIfPlayerdataTrue.OnEnable -= ForceMyla;
         On.DeactivateIfPlayerdataFalse.OnEnable -= PreventMylaZombie;
         ModHooks.SetPlayerBoolHook -= TrackPathOfPain;
         ModHooks.LanguageGetHook -= GetText;
-
+        if (ModHooks.GetMod("Randomizer 4", true) is Mod mod)
+            AbstractItem.BeforeGiveGlobal -= AbstractItem_BeforeGiveGlobal;
         return orig(self, saveMode, callback);
     }
 
@@ -319,6 +337,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
                 ActivePowers.Add("EndOfPathOfPain", power);
                 UpdateTracker(_currentArea);
             }
+            // This hook is no longer needed after obtaining the power.
             ModHooks.SetPlayerBoolHook -= TrackPathOfPain;
         }
         return orig;
@@ -348,11 +367,16 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
                     else
                         ModHooks.SetPlayerBoolHook += TrackPathOfPain;
 
-                    On.PlayMakerFSM.OnEnable += ForcePeaksQuirrel;
+                    On.PlayMakerFSM.OnEnable += FsmEdits;
                     On.DeactivateIfPlayerdataTrue.OnEnable += ForceMyla;
                     On.DeactivateIfPlayerdataFalse.OnEnable += PreventMylaZombie;
                     // Load in changes from the options file (if it exists)
                     LoadOptions();
+                    if (ModHooks.GetMod("Randomizer 4", true) is Mod mod)
+                    {
+                        AbstractItem.BeforeGiveGlobal += AbstractItem_BeforeGiveGlobal;
+                        Log("Detected Randomizer. Adding compability.");
+                    }
                 }
                 Handler.StartCoroutine(ManageSceneActions());
             }
@@ -364,17 +388,40 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         }
     }
 
+    private void AbstractItem_BeforeGiveGlobal(ReadOnlyGiveEventArgs itemData)
+    {
+        if (itemData.Item.name.Contains("Lore_Tablet-"))
+        {
+            string tabletName = RandomizerHelper.TranslateRandoName(itemData.Item.name.Substring("Lore_Tablet-".Length));
+            string placeHolder = string.Empty;
+            CheckForPower(tabletName, ref placeHolder);
+            if (itemData.Item.UIDef is MsgUIDef msg)
+                msg.name = new BoxedString(_powerList[tabletName].PowerName);
+        }
+    }
+
     /// <summary>
-    /// Event Handler that forces quirrel to always be in crystal peaks.
+    /// Event handler that handles the fsm edits.
     /// </summary>
     /// <param name="orig"></param>
     /// <param name="self"></param>
-    private void ForcePeaksQuirrel(On.PlayMakerFSM.orig_OnEnable orig, PlayMakerFSM self)
+    private void FsmEdits(On.PlayMakerFSM.orig_OnEnable orig, PlayMakerFSM self)
     {
         // The quirrel in peaks has 3 fsm (don't ask) that indicates if he can be there: If he has been encountered in archives, if you have superdash or if he has just left the mines.
         // We remove all those checks.
         if (self.gameObject.name.Equals("Quirrel Mines") && self.FsmName.Equals("FSM"))
             self.GetState("Check").RemoveTransitionsTo("Destroy");
+        else if (self.gameObject.name.Equals("Fountain Inspect") && self.FsmName.Equals("Conversation Control"))
+        {
+            string placeHolder = string.Empty;
+            self.GetState("Anim End").ReplaceAction(new Lambda(() => CheckForPower("FOUNTAIN_PLAQUE_DESC", ref placeHolder)) { Name = "Fountain Power"});
+        }
+        else if(self.gameObject.name.Equals("Dreamer Plaque Inspect") && self.FsmName.Equals("Conversation Control"))
+        {
+            string placeHolder = string.Empty;
+            self.GetState("Anim End").ReplaceAction(new Lambda(() => CheckForPower("DREAMERS_INSPECT_RG5", ref placeHolder)) { Name = "Dreamer Power"});
+        }
+
         orig(self);
     }
 
@@ -413,8 +460,8 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         ModHooks.LanguageGetHook += GetText;
         UnityEngine.SceneManagement.SceneManager.activeSceneChanged += SceneChanged;
         On.UIManager.StartNewGame += StartNewGame;
-        On.UIManager.ContinueGame += UIManager_ContinueGame;
-        On.GameManager.ReturnToMainMenu += GameManager_ReturnToMainMenu;
+        On.UIManager.ContinueGame += ContinueGame;
+        On.GameManager.ReturnToMainMenu += ReturnToMenu;
 
         foreach (string key in preloadedObjects.Keys)
             foreach (string subKey in preloadedObjects[key].Keys)
@@ -527,7 +574,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         ModHooks.LanguageGetHook -= GetText;
         UnityEngine.SceneManagement.SceneManager.activeSceneChanged -= SceneChanged;
         On.UIManager.StartNewGame -= StartNewGame;
-        On.GameManager.ReturnToMainMenu -= GameManager_ReturnToMainMenu;
+        On.GameManager.ReturnToMainMenu -= ReturnToMenu;
         Handler.StopAllCoroutines();
         foreach (Power power in ActivePowers.Values)
             power.DisablePower(false);
@@ -573,6 +620,8 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
     {
         yield return new WaitForFinishedEnteringScene();
         Area newArea = _currentArea;
+
+        // Figure out the current Map zone. (Dream world counts as the same area)
         if (!Enum.TryParse(GameManager.instance.GetCurrentMapZone(), out MapZone newMapZone))
             LogError("Couldn't convert map zone to enum. Value: " + GameManager.instance.GetCurrentMapZone());
         else if (newMapZone != MapZone.DREAM_WORLD)
@@ -588,6 +637,8 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
             if (!foundResult)
                 LogError("Couldn't find area: " + newMapZone);
         }
+
+        // If the area changes, we adjust the powers.
         if (_currentArea != newArea)
         {
             try
@@ -597,10 +648,10 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
                     if (power.Tag == PowerTag.Exclude || power.Tag == PowerTag.Local)
                         power.EnablePower();
 
-                // Disable all local abilities from the other zone (this has to be done that way for randomizer compability)
+                // Disable all local abilities from all other zone (this has to be done that way for randomizer compability)
                 foreach (Area area in ((Area[])Enum.GetValues(typeof(Area))).Skip(1))
                     if (!IsAreaGlobal(area))
-                        foreach (Power power in ActivePowers.Values.Where(x => x.Location == _currentArea))
+                        foreach (Power power in ActivePowers.Values.Where(x => x.Location == area))
                             if (power.Tag == PowerTag.Local || power.Tag == PowerTag.Exclude)
                                 power.DisablePower(false);
             }
@@ -608,7 +659,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
             {
                 LogError(exception.Message);
             }
-            
+
             // To prevent making all members public, we manually call the completion counter here.
             UpdateTracker(newArea);
         }
@@ -631,6 +682,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
             UpdateTracker(newArea);
         }
 
+        // Execute all actions that powers want to do when the scene changes.
         foreach (Action action in SceneActions.Values)
             action();
         _currentArea = newArea;
@@ -670,7 +722,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
             LogError(exception.Message);
         }
     }
-    
+
     #region NPC Dialogues
 
     private bool IsBardoon(string key)

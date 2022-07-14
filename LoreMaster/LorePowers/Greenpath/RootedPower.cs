@@ -3,6 +3,7 @@ using HutongGames.PlayMaker.Actions;
 using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
 using LoreMaster.Enums;
+using LoreMaster.Helper;
 using MonoMod.Cil;
 using System;
 using UnityEngine;

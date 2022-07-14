@@ -1,6 +1,7 @@
 using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
 using LoreMaster.Enums;
+using LoreMaster.Helper;
 
 namespace LoreMaster.LorePowers.Greenpath;
 

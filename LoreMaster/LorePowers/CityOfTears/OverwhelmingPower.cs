@@ -3,6 +3,7 @@ using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
 using LoreMaster.Enums;
 using LoreMaster.Extensions;
+using LoreMaster.Helper;
 using System.Collections.Generic;
 using UnityEngine;
 

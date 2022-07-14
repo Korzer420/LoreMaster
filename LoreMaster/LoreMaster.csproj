@@ -38,12 +38,13 @@
     <Compile Include="Extensions\ExtensionMethods.cs" />
     <Compile Include="Helper\SpriteHelper.cs" />
     <Compile Include="LorePowers\FungalWastes\BagOfMushroomsPower.cs" />
+    <Compile Include="Helper\RandomizerHelper.cs" />
     <Compile Include="UnityComponents\ConcussionEffect.cs" />
     <Compile Include="UnityComponents\CoroutineHandler.cs" />
     <Compile Include="CustomItem\TicketCost.cs" />
     <Compile Include="CustomItem\EmbeddedSprite.cs" />
     <Compile Include="UnityComponents\EnemyBinding.cs" />
-    <Compile Include="FsmHelper.cs" />
+    <Compile Include="Helper\FsmHelper.cs" />
     <Compile Include="LoreMaster.cs" />
     <Compile Include="LorePowers\Ancient Basin\WeDontTalkAboutShadePower.cs" />
     <Compile Include="LorePowers\CityOfTears\EyeOfTheWatcherPower.cs" />
