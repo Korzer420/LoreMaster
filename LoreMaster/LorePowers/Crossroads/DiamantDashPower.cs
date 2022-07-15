@@ -107,7 +107,7 @@ public class DiamantDashPower : Power
             yield return null;
             HeroController.instance.transform.localPosition = heroPosition;
             passedTime += Time.deltaTime;
-            if(passedTime >= .25f)
+            if(passedTime >= .2f)
             {
                 passedTime = 0f;
                 HeroController.instance.TakeMP(HasDiamondHeart ? 2 : 4);

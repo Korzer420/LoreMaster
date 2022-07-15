@@ -31,8 +31,8 @@ public class BagOfMushroomsPower : Power
 
     public BagOfMushroomsPower() : base("Bag of Mushrooms", Area.FungalWastes)
     {
-        Hint = "[BETA]Allows you to consume a yummy mushroom snack occasionly. The saturation may power you up. Caution: Can cause throw up if you eat too much of the same ones. Press CDash to select another and quick map to consume the mushroom.";
-        Description = "[BETA]Allows you to pick a mushroom to consume each 180 seconds. White shroom: Increases the speed of the game by 40%. Yellow shroom: Generates 8 soul each second, " +
+        Hint = "[BETA] Allows you to consume a yummy mushroom snack occasionly. The saturation may power you up. Caution: Can cause throw up if you eat too much of the same ones. Press CDash to select another and quick map to consume the mushroom.";
+        Description = "[BETA] Allows you to pick a mushroom to consume each 180 seconds. White shroom: Increases the speed of the game by 40%. Yellow shroom: Generates 8 soul each second, " +
             "but causes nausea. Red shroom: Gives you 4 extra health, heals you fully and increases your nail damage by 20%, but you can't dash. Green shroom: Makes you small, decrease the gravity by 50%" +
             " and doubles all damage taken. Taking the same mushroom twice in a row nerfs it's positive effect by 50%. Taking the same mushroom three times in a row, deals 2 damage to you instead. Press CDash to select another and quick map to consume the mushroom.";
         _mushroomSprite = SpriteHelper.CreateSprite("MushroomChoice");
