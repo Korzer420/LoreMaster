@@ -41,7 +41,7 @@ public class EternalValorPower : Power
             return;
 
         _currentlyRunning = true;
-        LoreMaster.Instance.Handler.StartCoroutine(HitCooldown());
+         _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(HitCooldown());
     }
 
     #endregion

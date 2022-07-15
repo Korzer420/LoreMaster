@@ -26,11 +26,11 @@ public class CamouflagePower : Power
 
     protected override void Initialize() => _heroSprite = GameObject.Find("Knight").GetComponent<tk2dSprite>();
     
-    protected override void Enable() => LoreMaster.Instance.Handler.StartCoroutine(WaitForCamouflage());
+    protected override void Enable() =>  _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(WaitForCamouflage());
 
     protected override void Disable()
     {
-        LoreMaster.Instance.Handler.StopCoroutine("WaitForCamouflage");
+        LoreMaster.Instance.Handler.StopCoroutine(_runningCoroutine);
         PlayerData.instance.isInvincible = false;
         _heroSprite.color = Color.white;
     }

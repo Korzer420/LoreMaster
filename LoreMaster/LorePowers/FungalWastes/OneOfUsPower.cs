@@ -9,7 +9,6 @@ public class OneOfUsPower : Power
     #region Members
 
     private GameObject _cloud;
-    private Coroutine _cloudRoutine;
 
     #endregion
     
@@ -31,9 +30,9 @@ public class OneOfUsPower : Power
         _cloud = _cloud.transform.Find("GlobalPool/Knight Spore Cloud(Clone)").gameObject;
     }
 
-    protected override void Enable() => _cloudRoutine = LoreMaster.Instance.Handler.StartCoroutine(EmitCloud());
+    protected override void Enable() => _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(EmitCloud());
 
-    protected override void Disable() => LoreMaster.Instance.Handler.StopCoroutine(_cloudRoutine);
+    protected override void Disable() => LoreMaster.Instance.Handler.StopCoroutine(_runningCoroutine);
 
     #endregion
 

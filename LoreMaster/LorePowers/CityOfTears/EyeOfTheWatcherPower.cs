@@ -114,7 +114,7 @@ public class EyeOfTheWatcherPower : Power
         On.PlayMakerFSM.OnEnable -= RefreshEyeOfTheWatcher;
         On.HeroController.Die -= HeroController_Die;
         LoreMaster.Instance.SceneActions.Remove(PowerName);
-        LoreMaster.Instance.Handler.StopCoroutine("Blink");
+        LoreMaster.Instance.Handler.StopCoroutine(_runningCoroutine);
         _eye.SetActive(false);
     }
 

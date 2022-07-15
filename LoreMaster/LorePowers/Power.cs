@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace LoreMaster.LorePowers
 {
@@ -12,6 +13,7 @@ namespace LoreMaster.LorePowers
         #region Members
 
         protected bool _initialized;
+        protected Coroutine _runningCoroutine;
 
         #endregion
 

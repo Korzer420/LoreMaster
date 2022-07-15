@@ -72,7 +72,7 @@ public class DiamantDashPower : Power
     {
         orig(self);
         if (!_currentlyHold && HeroController.instance.cState.superDashing && InputHandler.Instance.inputActions.up.IsPressed)
-            LoreMaster.Instance.Handler.StartCoroutine(HoldPosition());
+             _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(HoldPosition());
     }
 
     protected override void Disable()

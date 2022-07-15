@@ -16,10 +16,62 @@ public class HappyFatePower : Power
     
     #region Constructors
 
-    public HappyFatePower() : base("Charming Trap", Area.CityOfTears)
+    public HappyFatePower() : base("Happy Fate", Area.CityOfTears)
     {
-        Hint = "[Not Implemented] Your \"happiness\" increases all your abilities slightly. Getting hit makes you sad :c. A good rest may restore your hapiness.";
-        Description = "[Not Implemented] After sitting on a bench, your nail damage, nail range, running speed, dash speed and cdash charge up speed is increased. You also gain 1 soul per second.";
+        Hint = "[Beta] Your \"happiness\" increases all your abilities slightly. Getting hit makes you sad :c A good rest may restore your hapiness.";
+        Description = "[Beta] After sitting on a bench, your nail damage, nail range, running speed, dash speed and cdash charge up speed is increased. You also gain 1 soul per second.";
+    }
+
+    #endregion
+
+    #region Event handler
+
+    /// <summary>
+    /// Event handler, that removes the happiness effect of the player if they got hit.
+    /// </summary>
+    /// <param name="damage"></param>
+    /// <returns></returns>
+    private int RemoveHappiness(int damage)
+    {
+        LoreMaster.Instance.Log("Take health");
+        if (damage > 0 && _isHappy)
+        {
+            _isHappy = false;
+            HappynessChange();
+        }
+        return damage;
+    }
+
+    /// <summary>
+    /// Adjust the nail damage, based on happiness.
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="orig"></param>
+    /// <returns></returns>
+    private int AdjustNail(string name, int orig)
+    {
+        if (name.Equals("nailDamage") && _isHappy)
+            orig += 3;
+        return orig;
+    }
+
+    /// <summary>
+    /// Restore happiness.
+    /// </summary>
+    /// <param name="orig"></param>
+    /// <param name="self"></param>
+    /// <param name="spawnMarker"></param>
+    /// <param name="sceneName"></param>
+    /// <param name="spawnType"></param>
+    /// <param name="facingRight"></param>
+    private void ResetHappiness(On.HeroController.orig_SetBenchRespawn orig, HeroController self, string spawnMarker, string sceneName, int spawnType, bool facingRight)
+    {
+        orig(self, spawnMarker, sceneName, spawnType, facingRight);
+        if (!_isHappy)
+        {
+            _isHappy = true;
+            HappynessChange();
+        }
     }
 
     #endregion
@@ -38,47 +90,20 @@ public class HappyFatePower : Power
 
     protected override void Enable()
     {
-        On.HeroController.TakeHealth += HeroController_TakeHealth;
-        On.HeroController.SetBenchRespawn += HeroController_SetBenchRespawn;
-        ModHooks.GetPlayerIntHook += ModHooks_GetPlayerIntHook;
+        On.HeroController.SetBenchRespawn += ResetHappiness;
+        ModHooks.GetPlayerIntHook += AdjustNail;
+        ModHooks.TakeHealthHook += RemoveHappiness;
         _isHappy = true;
         HappynessChange();
     }
 
-    private int ModHooks_GetPlayerIntHook(string name, int orig)
-    {
-        if (name.Equals("nailDamage") && _isHappy)
-            orig += 3;
-        return orig;
-    }
-
     protected override void Disable()
     {
-        On.HeroController.TakeHealth -= HeroController_TakeHealth;
-        On.HeroController.SetBenchRespawn -= HeroController_SetBenchRespawn;
-        ModHooks.GetPlayerIntHook -= ModHooks_GetPlayerIntHook;
+        On.HeroController.SetBenchRespawn -= ResetHappiness;
+        ModHooks.GetPlayerIntHook -= AdjustNail;
+        ModHooks.TakeHealthHook -= RemoveHappiness;
         _isHappy = false;
         HappynessChange();
-    }
-
-    private void HeroController_SetBenchRespawn(On.HeroController.orig_SetBenchRespawn orig, HeroController self, string spawnMarker, string sceneName, int spawnType, bool facingRight)
-    {
-        orig(self, spawnMarker, sceneName, spawnType, facingRight);
-        if (!_isHappy) 
-        {
-            _isHappy = true;
-            HappynessChange();
-        }
-    }
-
-    private void HeroController_TakeHealth(On.HeroController.orig_TakeHealth orig, HeroController self, int amount)
-    {
-        orig(self, amount);
-        if (amount > 0 && _isHappy)
-        {
-            _isHappy = false;
-            HappynessChange();
-        }
     }
 
     #endregion
@@ -102,7 +127,7 @@ public class HappyFatePower : Power
             HeroController.instance.DASH_COOLDOWN -= .2f;
             HeroController.instance.DASH_COOLDOWN_CH -= .2f;
             HeroController.instance.superDash.FsmVariables.FindFsmFloat("Charge Time").Value -= .1f;
-            LoreMaster.Instance.Handler.StartCoroutine(GainHappySoul());
+             _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(GainHappySoul());
         }
         else
         {
@@ -118,13 +143,14 @@ public class HappyFatePower : Power
             HeroController.instance.DASH_COOLDOWN += .2f;
             HeroController.instance.DASH_COOLDOWN_CH += .2f;
             HeroController.instance.superDash.FsmVariables.FindFsmFloat("Charge Time").Value += .1f;
+            LoreMaster.Instance.Handler.StopCoroutine(_runningCoroutine);
         }
         PlayMakerFSM.BroadcastEvent("UPDATE NAIL DAMAGE");
     }
 
     private IEnumerator GainHappySoul()
     {
-        while(_isHappy)
+        while(true)
         {
             yield return new WaitForSeconds(1f);
             HeroController.instance.AddMPCharge(1);

@@ -27,9 +27,9 @@ public class ShiningBoundPower : Power
 
     protected override void Initialize() => _charmHolder = GameObject.Find("_GameCameras/HudCamera/Inventory").transform.Find("Charms/Equipped Charms/Charms").gameObject;
     
-    protected override void Enable() => LoreMaster.Instance.Handler.StartCoroutine(GatherShiningSoul());
+    protected override void Enable() =>  _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(GatherShiningSoul());
     
-    protected override void Disable() => LoreMaster.Instance.Handler.StopCoroutine("GatherShiningSoul");
+    protected override void Disable() => LoreMaster.Instance.Handler.StopCoroutine(_runningCoroutine);
     
     #endregion
 

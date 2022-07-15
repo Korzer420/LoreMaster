@@ -38,11 +38,11 @@ public class ReturnToUnnPower : Power
         }));
     }
 
-    protected override void Enable() => LoreMaster.Instance.Handler.StartCoroutine(AdjustMovementSpeed());
+    protected override void Enable() =>  _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(AdjustMovementSpeed());
     
     protected override void Disable()
     {
-        LoreMaster.Instance.Handler.StopCoroutine("AdjustMovementSpeed");
+        LoreMaster.Instance.Handler.StopCoroutine(_runningCoroutine);
         if (_movementSpeedBuff)
         { 
             HeroController.instance.WALK_SPEED -= 3f;

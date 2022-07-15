@@ -58,7 +58,7 @@ public class LifebloodWingsPower : Power
         {
             _wings.color = Color.cyan;
             _extraJumps++;
-            LoreMaster.Instance.Handler.StartCoroutine(RefreshWings());
+             _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(RefreshWings());
         }
     }
 

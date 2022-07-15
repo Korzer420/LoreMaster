@@ -96,7 +96,7 @@ public class TouchGrassPower : Power
         On.GrassSpriteBehaviour.OnTriggerEnter2D -= GrassSpriteBehaviour_OnTriggerEnter2D;
         On.GrassWind.OnTriggerEnter2D -= GrassWind_OnTriggerEnter2D;
         On.GrassCut.OnTriggerEnter2D -= GrassCut_OnTriggerEnter2D;
-        LoreMaster.Instance.Handler.StopCoroutine("TouchGrass");
+        LoreMaster.Instance.Handler.StopCoroutine(_runningCoroutine);
         _currentlyRunning = false;
     }
 
@@ -116,7 +116,7 @@ public class TouchGrassPower : Power
             if (_heroCollider == null)
                 _heroCollider = collider;
             _triggeredCollider = sourceCollider;
-            LoreMaster.Instance.Handler.StartCoroutine(TouchGrass());
+             _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(TouchGrass());
         }
     }
 

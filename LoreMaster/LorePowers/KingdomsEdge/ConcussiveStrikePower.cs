@@ -71,7 +71,7 @@ public class ConcussiveStrikePower : Power
             {
                 // If the enemy deals no damage it will not trigger the i frames and cause the knight to take the damage next frame, which would make this rather pointless.
                 // Therefore we doing some witchcraft to trigger the i frames manually if no damage is applied because of this.
-                LoreMaster.Instance.Handler.StartCoroutine((IEnumerator)_invulnableCall.Invoke(HeroController.instance, new object[] { 1.5f }));
+                 _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine((IEnumerator)_invulnableCall.Invoke(HeroController.instance, new object[] { 1.5f }));
             }
         }
 

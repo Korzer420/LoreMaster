@@ -59,11 +59,11 @@ public class MarissasAudiencePower : Power
         _companions[2] = charmEffects.LocateMyFSM("Hatchling Spawn").GetState("Hatch").GetFirstActionOfType<SpawnObjectFromGlobalPool>().gameObject.Value;
     }
 
-    protected override void Enable() => LoreMaster.Instance.Handler.StartCoroutine(GatherAudience());
+    protected override void Enable() =>  _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(GatherAudience());
 
     protected override void Disable()
     {
-        LoreMaster.Instance.Handler.StopCoroutine("GatherAudience");
+        LoreMaster.Instance.Handler.StopCoroutine(_runningCoroutine);
         if (_extraCompanions.Any())
             foreach (GameObject companion in _extraCompanions)
                 GameObject.Destroy(companion);

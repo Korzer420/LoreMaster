@@ -40,7 +40,7 @@ public class HotStreakPower : Power
             return;
 
         _currentlyRunning = true;
-        LoreMaster.Instance.Handler.StartCoroutine(HitCooldown());
+         _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(HitCooldown());
     }
 
     /// <summary>

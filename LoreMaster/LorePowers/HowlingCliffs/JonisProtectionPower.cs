@@ -14,8 +14,6 @@ public class JonisProtectionPower : Power
 {
     #region Members
 
-    private Coroutine _currentlyRunning;
-
     private int _currentLifebloodBonus = 0;
 
     private PlayMakerFSM[] _dialogueFSM = new PlayMakerFSM[3];
@@ -53,9 +51,9 @@ public class JonisProtectionPower : Power
     /// <param name="controller"></param>
     private void CharmUpdate(PlayerData data, HeroController controller)
     {
-        if (_currentlyRunning != null)
+        if (_runningCoroutine != null)
         {
-            LoreMaster.Instance.Handler.StopCoroutine(_currentlyRunning);
+            LoreMaster.Instance.Handler.StopCoroutine(_runningCoroutine);
             _currentLifebloodBonus = 0;
         }
     }
@@ -93,9 +91,9 @@ public class JonisProtectionPower : Power
         LoreMaster.Instance.SceneActions.Add(PowerName, () =>
         {
             _immune = false;
-            if (_currentlyRunning != null)
-                LoreMaster.Instance.Handler.StopCoroutine(_currentlyRunning);
-            _currentlyRunning = LoreMaster.Instance.Handler.StartCoroutine(FadingLifeblood());
+            if (_runningCoroutine != null)
+                LoreMaster.Instance.Handler.StopCoroutine(_runningCoroutine);
+            _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(FadingLifeblood());
         });
         ModHooks.CharmUpdateHook += CharmUpdate;
         ModHooks.TakeHealthHook += TakeHealth;

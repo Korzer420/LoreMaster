@@ -80,7 +80,7 @@ public class BagOfMushroomsPower : Power
     {
         HeroController.instance.orig_CharmUpdate();
         ModHooks.HeroUpdateHook -= ShroomControl;
-        LoreMaster.Instance.Handler.StopCoroutine("Saturation");
+        LoreMaster.Instance.Handler.StopCoroutine(_runningCoroutine);
         RevertMushroom();
         _activeEffect = 0;
         _selectedEffect = 0;
@@ -100,7 +100,7 @@ public class BagOfMushroomsPower : Power
         }
 
         if (_selectedEffect != 0 && InputHandler.Instance.inputActions.quickMap.IsPressed)
-            LoreMaster.Instance.Handler.StartCoroutine(Saturation());
+            _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(Saturation());
     }
 
     private IEnumerator ChangeChoice()

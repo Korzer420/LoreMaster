@@ -65,13 +65,13 @@ public class MaskOverchargePower : Power
     protected override void Enable()
     {
         On.HeroController.FixedUpdate += HeroController_FixedUpdate;
-        LoreMaster.Instance.Handler.StartCoroutine(SelectOverchargeHealth());
+         _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(SelectOverchargeHealth());
     }
 
     protected override void Disable()
     {
         On.HeroController.FixedUpdate -= HeroController_FixedUpdate;
-        LoreMaster.Instance.Handler.StopCoroutine("SelectOverchargeHealth");
+        LoreMaster.Instance.Handler.StopCoroutine(_runningCoroutine);
         _overcharge.SetActive(false);
         _overchargeHealth = -1;
     }

@@ -312,7 +312,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
             foreach (string key in _powerList.Keys)
                 _powerList[key].Tag = PowerTag.Local;
             _powerList["EndOfPathOfPain"].Tag = PowerTag.Exclude;
-
+            _powerList["ELDERBUG"].Tag = PowerTag.Removed;
             // Unsure if this is needed, but just in case.
             ActivePowers.Clear();
         }

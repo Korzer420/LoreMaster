@@ -55,7 +55,7 @@ public class DiamondHeartPower : Power
         {
             if (Active)
                 foreach (HealthManager enemy in _enemies)
-                    LoreMaster.Instance.Handler.StartCoroutine(StunEnemy(enemy.gameObject));
+                     _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(StunEnemy(enemy.gameObject));
                 
             HeroController.instance.superDash.FsmVariables.FindFsmGameObject("SuperDash Damage").Value.SetActive(false);
         }) { Name = "Wall Crash" }, 8);
