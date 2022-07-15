@@ -91,6 +91,9 @@ namespace LoreMaster.LorePowers
             catch (Exception exception)
             {
                 LoreMaster.Instance.LogError("Error while loading " + PowerName + ": " + exception.Message);
+                LoreMaster.Instance.LogError("Error while loading " + PowerName + ": " + exception);
+                LoreMaster.Instance.LogError("Error while loading " + PowerName + ": " + exception.Source);
+                LoreMaster.Instance.LogError("Error while loading " + PowerName + ": " + exception.StackTrace);
             }
         }
 

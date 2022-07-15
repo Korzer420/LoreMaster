@@ -49,7 +49,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         // Ancient Basin
         {"ABYSS_TUT_TAB_01", new WeDontTalkAboutShadePower() },
         // City of Tears
-        {"RUINS_TAB_01", new HotStreakPower() },
+        {"RUIN_TAB_01", new HotStreakPower() },
         {"FOUNTAIN_PLAQUE_DESC", new TouristPower() },
         {"RUINS_MARISSA_POSTER", new MarissasAudiencePower() },
         {"MAGE_COMP_03", new OverwhelmingPower() },
@@ -61,14 +61,14 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         {"TUT_TAB_02", new ScrewTheRulesPower() },
         {"TUT_TAB_03", new TrueFormPower() },
         {"BRETTA", new CaringShellPower() },
-        {"ELDERBUG", new ElderbugHitListPower() },
+        {"ELDERBUG", new ElderbugHitListPower() { Tag = PowerTag.Removed } },
         // Fog Canyon
         {"ARCHIVE_01", new FriendOfTheJellyfishPower() },
         {"ARCHIVE_02", new JellyBellyPower() },
         {"ARCHIVE_03", new JellyfishFlowPower() },
         // Crossroads
         {"PILGRIM_TAB_01", new ReluctantPilgerPower() },
-        {"COMPLETION_RATE_UNLOCKED", new GreaterMindPower() },
+        {"COMPLETION_RATE_UNLOCKED", new GreaterMindPower() { Tag = PowerTag.Global } },
         {"MYLA", new DiamantDashPower() },
         // Fungal Wastes
         {"FUNG_TAB_04", new OneOfUsPower() },
@@ -111,7 +111,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         {"WP_WORKSHOP_01", new ShadowForgedPower() },
         {"WP_THRONE_01", new ShiningBoundPower() },
         {"PLAQUE_WARN", new DiminishingCursePower() },
-        {"EndOfPathOfPain", new SacredShellPower() }
+        {"EndOfPathOfPain", new SacredShellPower() { Tag = PowerTag.Exclude } }
     };
 
     private readonly Dictionary<Area, List<MapZone>> _mapZones = new()
@@ -245,7 +245,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
     private string GetText(string key, string sheetTitle, string text)
     {
         key = ModifyKey(key);
-        if(key.Equals("INV_NAME_SUPERDASH"))
+        if (key.Equals("INV_NAME_SUPERDASH"))
         {
             bool hasDiamondDash = _powerList["MYLA"].Active;
             bool hasDiamondCore = _powerList["QUIRREL"].Active;
@@ -257,7 +257,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
             else if (hasDiamondCore && hasDiamondDash)
                 text = "Diamond Heart";
         }
-        else if(key.Equals("INV_DESC_SUPERDASH"))
+        else if (key.Equals("INV_DESC_SUPERDASH"))
         {
             bool hasDiamondDash = _powerList["MYLA"].Active;
             bool hasDiamondCore = _powerList["QUIRREL"].Active;
@@ -269,8 +269,8 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
             else if (hasDiamondCore && hasDiamondDash)
                 text += "<br>Bathed and reforged with powerful diamonds. Formerly in possession of the crystal leader, this artefact can cause massive earth quakes.";
         }
-        else if(key.Equals("DREAMERS_INSPECT_RG5") || key.Equals("FOUNTAIN_PLAQUE_DESC"))
-            text += "[" + _powerList[key].PowerName +"]"+ ( UseHints ? _powerList[key].Hint : _powerList[key].Description);
+        else if (key.Equals("DREAMERS_INSPECT_RG5") || key.Equals("FOUNTAIN_PLAQUE_DESC"))
+            text += "[" + _powerList[key].PowerName + "]" + (UseHints ? _powerList[key].Hint : _powerList[key].Description);
         else if (!CheckForPower(key, ref text) && _powerList["QUEEN"].Active)
         {
             if (key.Equals("CHARM_NAME_12"))
@@ -306,6 +306,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
             ItemChangerMod.AddPlacements(teleportItems);
             orig(self, permaDeath, bossRush);
             ModHooks.SetPlayerBoolHook += TrackPathOfPain;
+            ModHooks.LanguageGetHook += GetText;
             _fromMenu = true;
 
             // Reset tags to default.
@@ -325,6 +326,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
     private void ContinueGame(On.UIManager.orig_ContinueGame orig, UIManager self)
     {
         _fromMenu = true;
+        ModHooks.LanguageGetHook += GetText;
         orig(self);
     }
 
@@ -384,8 +386,9 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
     {
         try
         {
-            if (GameManager.instance.IsGameplayScene())
+            if (GameManager.instance.IsGameplayScene() && !arg1.name.Equals("Quit_To_Menu"))
             {
+                Log("Scene name is: " + arg1.name);
                 if (_fromMenu)
                 {
                     if (PlayerData.instance == null)
@@ -450,14 +453,14 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         else if (self.gameObject.name.Equals("Fountain Inspect") && self.FsmName.Equals("Conversation Control"))
         {
             string placeHolder = string.Empty;
-            self.GetState("Anim End").ReplaceAction(new Lambda(() => CheckForPower("FOUNTAIN_PLAQUE_DESC", ref placeHolder)) { Name = "Fountain Power"});
+            self.GetState("Anim End").ReplaceAction(new Lambda(() => CheckForPower("FOUNTAIN_PLAQUE_DESC", ref placeHolder)) { Name = "Fountain Power" });
         }
-        else if(self.gameObject.name.Equals("Dreamer Plaque Inspect") && self.FsmName.Equals("Conversation Control"))
+        else if (self.gameObject.name.Equals("Dreamer Plaque Inspect") && self.FsmName.Equals("Conversation Control"))
         {
             string placeHolder = string.Empty;
-            self.GetState("Anim End").ReplaceAction(new Lambda(() => CheckForPower("DREAMERS_INSPECT_RG5", ref placeHolder)) { Name = "Dreamer Power"});
+            self.GetState("Anim End").ReplaceAction(new Lambda(() => CheckForPower("DREAMERS_INSPECT_RG5", ref placeHolder)) { Name = "Dreamer Power" });
         }
-        else if(self.gameObject.name.Equals("Moss Cultist") && self.FsmName.Equals("FSM"))
+        else if (self.gameObject.name.Equals("Moss Cultist") && self.FsmName.Equals("FSM"))
             self.GetState("Check").RemoveTransitionsTo("Destroy");
 
         orig(self);
@@ -495,7 +498,6 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         if (Instance != null)
             return;
         Instance = this;
-        ModHooks.LanguageGetHook += GetText;
         UnityEngine.SceneManagement.SceneManager.activeSceneChanged += SceneChanged;
         On.UIManager.StartNewGame += StartNewGame;
         On.UIManager.ContinueGame += ContinueGame;
@@ -684,6 +686,9 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
                 LogError("Couldn't find area: " + newMapZone);
         }
 
+        Log("Old area is: " + _currentArea);
+        Log("New area is: " + newArea);
+
         // If the area changes, we adjust the powers.
         if (_currentArea != newArea)
         {
@@ -712,6 +717,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
 
         if (_fromMenu)
         {
+            Log("Came from menu");
             _fromMenu = false;
             // Enables the powers beforehand. This has to be done because otherwise the effects will only stay permanent once the player enters the area.
             List<Power> toActivate = new();
@@ -742,7 +748,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
     private bool IsAreaGlobal(Area toCheck)
     {
 
-        List<Power> neededAreaPowers = _powerList.Values.Where(x => x.Location == toCheck && (x.Tag == PowerTag.Local || x.Tag == PowerTag.Disabled)).ToList();
+        List<Power> neededAreaPowers = _powerList.Values.Where(x => x.Location == toCheck && (x.Tag == PowerTag.Local || x.Tag == PowerTag.Disabled || x.Tag == PowerTag.Global)).ToList();
         foreach (Power neededPower in neededAreaPowers)
             if (!ActivePowers.ContainsValue(neededPower))
                 return false;
@@ -873,11 +879,19 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
     public void OnLoadLocal(LoreMasterLocalSaveData s)
     {
         ActivePowers.Clear();
-        foreach (string key in s.Tags.Keys)
-            _powerList[key].Tag = s.Tags[key];
 
-        foreach (string key in s.AcquiredPowersKey)
-            ActivePowers.Add(key, _powerList[key]);
+        try
+        {
+            foreach (string key in s.Tags.Keys)
+                _powerList[key].Tag = s.Tags[key];
+
+            foreach (string key in s.AcquiredPowersKey)
+                ActivePowers.Add(key, _powerList[key]);
+        }
+        catch (Exception exception)
+        {
+            LogError("Error while loading file powers: " + exception.Message);
+        }
     }
 
     LoreMasterLocalSaveData ILocalSettings<LoreMasterLocalSaveData>.OnSaveLocal()

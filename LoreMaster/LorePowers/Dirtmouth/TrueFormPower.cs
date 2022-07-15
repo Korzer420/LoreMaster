@@ -110,6 +110,10 @@ public class TrueFormPower : Power
         On.PlayMakerFSM.OnEnable -= PlayMakerFSM_OnEnable;
         ModHooks.GetPlayerIntHook -= NailDamageUpdate;
         LoreMaster.Instance.SceneActions.Remove(PowerName);
+        if (_shadeState != 0)
+            ModifyNailLength(_shadeState == 1 ? -.25f : -.5f);
+        _shadeState = 0;
+        PlayMakerFSM.BroadcastEvent("UPDATE NAIL DAMAGE");
     }
 
     #endregion

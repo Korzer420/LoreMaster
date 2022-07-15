@@ -57,7 +57,7 @@ public class DiamantDashPower : Power
         if (HasDiamondHeart)
         {
             _crystalHeartSprite.sprite = _diamondSprite;
-            HeroController.instance.superDash.FsmVariables.FindFsmFloat("Charge Time").Value -= .3f;
+            HeroController.instance.superDash.FsmVariables.FindFsmFloat("Charge Time").Value -= .6f;
         }
         else
         { 

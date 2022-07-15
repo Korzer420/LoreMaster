@@ -104,8 +104,8 @@ public class EyeOfTheWatcherPower : Power
             else if (_eye.activeSelf)
                 _eye.GetComponent<SpriteRenderer>().color = Color.white;
         });
-        LoreMaster.Instance.Handler.StartCoroutine(Blink());
-        _eye.SetActive(true);
+        _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(Blink());
+        _eye?.SetActive(true);
     }
 
     protected override void Disable()
@@ -115,7 +115,7 @@ public class EyeOfTheWatcherPower : Power
         On.HeroController.Die -= HeroController_Die;
         LoreMaster.Instance.SceneActions.Remove(PowerName);
         LoreMaster.Instance.Handler.StopCoroutine(_runningCoroutine);
-        _eye.SetActive(false);
+        _eye?.SetActive(false);
     }
 
     #endregion

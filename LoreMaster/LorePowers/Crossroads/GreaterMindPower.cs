@@ -60,11 +60,12 @@ public class GreaterMindPower : Power
         _loreTracker = GameObject.Instantiate(prefab, hudCanvas.transform, true);
         _loreTracker.name = "Lore Tracker";
         PositionHudElement(_loreTracker, 3);
+        LoreMaster.Instance.Log("Called initialize for greater mind.");
     }
 
-    protected override void Enable() => _loreTracker.SetActive(true);
+    protected override void Enable() => _loreTracker?.SetActive(true);
     
-    protected override void Disable() => _loreTracker.SetActive(false);
+    protected override void Disable() => _loreTracker?.SetActive(false);
     
     #endregion
 
@@ -72,18 +73,31 @@ public class GreaterMindPower : Power
 
     private void PositionHudElement(GameObject go, int fontSize)
     {
-        go.transform.localPosition = new(-3.66f, -4.32f, 0f);
-        go.transform.localScale = new(1.3824f, 1.3824f, 1.3824f);
-        go.GetComponent<DisplayItemAmount>().playerDataInt = go.name;
-        go.GetComponent<DisplayItemAmount>().textObject.text = "";
-        go.GetComponent<DisplayItemAmount>().textObject.fontSize = fontSize;
-        go.GetComponent<SpriteRenderer>().sprite = _loreSprite;
-        go.GetComponent<BoxCollider2D>().size = new Vector2(1.5f, 1f);
-        go.GetComponent<BoxCollider2D>().offset = new Vector2(0.5f, 0f);
+        try
+        {
+            go.transform.localPosition = new(-3.66f, -4.32f, 0f);
+            go.transform.localScale = new(1.3824f, 1.3824f, 1.3824f);
+            go.GetComponent<DisplayItemAmount>().playerDataInt = go.name;
+            go.GetComponent<DisplayItemAmount>().textObject.text = "";
+            go.GetComponent<DisplayItemAmount>().textObject.fontSize = fontSize;
+            go.GetComponent<DisplayItemAmount>().textObject.gameObject.name = "Counter";
+            go.GetComponent<SpriteRenderer>().sprite = _loreSprite;
+            go.GetComponent<BoxCollider2D>().size = new Vector2(1.5f, 1f);
+            go.GetComponent<BoxCollider2D>().offset = new Vector2(0.5f, 0f);
+        }
+        catch (Exception exception)
+        {
+            LoreMaster.Instance.LogError("Error in Position Hud: " + exception.Message);
+        }
     }
 
     public void UpdateLoreCounter(IEnumerable<Power> activePowers, IEnumerable<Power> allPowers, Area currentArea, bool globalActive)
     {
+        if(_loreTracker == null)
+        {
+            LoreMaster.Instance.Log("The lore tracker doesn't exist");
+            return;
+        }
         try
         {
             TextMeshPro currentCounter = _loreTracker.GetComponent<DisplayItemAmount>().textObject;
@@ -92,6 +106,7 @@ public class GreaterMindPower : Power
             if (globalActive)
                 currentCounter.text = "<color=#7FFF7B>" + currentCounter.text + "</color>";
 
+            LoreMaster.Instance.Log("All powers without remove: " + allPowers.Count(x => x.Tag != PowerTag.Removed) + "; All Powers with remove: " + allPowers.Count());
             string globalPart = "All: "+ activePowers.Count(x => x.Tag != PowerTag.Removed) + "/" + allPowers.Count(x => x.Tag != PowerTag.Removed);
             if (activePowers.Count(x => x.Tag != PowerTag.Removed) == allPowers.Count(x => x.Tag != PowerTag.Removed))
                 globalPart = "<color=#7FFF7B>" + globalPart + "</color>";

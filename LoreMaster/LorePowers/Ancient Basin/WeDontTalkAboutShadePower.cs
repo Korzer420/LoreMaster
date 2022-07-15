@@ -43,7 +43,7 @@ public class WeDontTalkAboutShadePower : Power
     {
         ModHooks.AfterPlayerDeadHook -= AfterPlayerDied;
         LoreMaster.Instance.SceneActions.Remove(PowerName);
-        if (!string.IsNullOrEmpty(PlayerData.instance.shadeScene) || PlayerData.instance.shadeScene.Equals("None"))
+        if (!PlayerData.instance.shadeScene.Equals("None"))
             PlayerData.instance.StartSoulLimiter();
     }
 
