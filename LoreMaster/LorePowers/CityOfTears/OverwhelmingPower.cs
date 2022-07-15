@@ -76,14 +76,14 @@ public class OverwhelmingPower : Power
         PlayMakerFSM spellControl = FsmHelper.GetFSM("Knight", "Spell Control");
         spellControl.GetState("Spell Choice").ReplaceAction(new Lambda(() =>
         {
-            _hasFullSoulMeter = PlayerData.instance.MPCharge >= 99;
+            _hasFullSoulMeter = PlayerData.instance.GetInt(nameof(PlayerData.instance.MPCharge)) >= 99;
             if (spellControl.FsmVariables.FindFsmBool("Pressed Up").Value)
                 spellControl.SendEvent("SCREAM");
         })
         { Name = "Full Soul Check" }, 0);
         spellControl.GetState("Can Cast? QC").ReplaceAction(new Lambda(() =>
         {
-            _hasFullSoulMeter = PlayerData.instance.MPCharge >= 99;
+            _hasFullSoulMeter = PlayerData.instance.GetInt(nameof(PlayerData.instance.MPCharge)) >= 99;
             spellControl.FsmVariables.FindFsmInt("MP").Value = PlayerData.instance.GetInt("MPCharge");
         })
         { Name = "Full Soul Check" }, 1);

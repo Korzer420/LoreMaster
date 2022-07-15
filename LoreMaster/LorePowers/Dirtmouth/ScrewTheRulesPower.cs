@@ -78,7 +78,7 @@ public class ScrewTheRulesPower : Power
             // Remove "HP Compare" action and add new one, so fury is active while have two OR LESS health
             state.ReplaceAction(new Lambda(() =>
             {
-                if (PlayerData.instance.health == 1 || (PlayerData.instance.health == 2 && Active))
+                if (PlayerData.instance.GetInt(nameof(PlayerData.instance.health)) == 1 || (PlayerData.instance.GetInt(nameof(PlayerData.instance.health)) == 2 && Active))
                     fsm.SendEvent("FURY");
                 else
                     fsm.SendEvent("CANCEL");
@@ -88,7 +88,7 @@ public class ScrewTheRulesPower : Power
             // Also changing the recheck for after getting hit or healed
             fsm.GetState("Recheck").ReplaceAction(new Lambda(() =>
             {
-                if (PlayerData.instance.health == 1 || (PlayerData.instance.health == 2 && Active))
+                if (PlayerData.instance.GetInt(nameof(PlayerData.instance.health)) == 1 || (PlayerData.instance.GetInt(nameof(PlayerData.instance.health)) == 2 && Active))
                     fsm.SendEvent("RETURN");
             })
             { Name = "HP Compare" }, 1);
@@ -120,7 +120,7 @@ public class ScrewTheRulesPower : Power
         On.PlayMakerFSM.OnEnable -= PlayMakerFSM_OnEnable;
         IL.HeroController.Attack -= HeroController_Attack;
         // Disable the fury effect if you leave with 2 hp.
-        if (PlayerData.instance.GetInt("health") == 2)
+        if (PlayerData.instance.GetInt(nameof(PlayerData.instance.health)) == 2)
         {
             PlayMakerFSM fsm = GameObject.Find("Knight/Charm Effects").LocateMyFSM("Fury");
             fsm.SendEvent("HERO HEALED");

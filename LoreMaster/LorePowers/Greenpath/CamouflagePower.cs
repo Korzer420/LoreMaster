@@ -31,7 +31,7 @@ public class CamouflagePower : Power
     protected override void Disable()
     {
         LoreMaster.Instance.Handler.StopCoroutine(_runningCoroutine);
-        PlayerData.instance.isInvincible = false;
+        PlayerData.instance.SetBool(nameof(PlayerData.instance.isInvincible), false);
         _heroSprite.color = Color.white;
     }
 
@@ -58,12 +58,12 @@ public class CamouflagePower : Power
             if (passedTime >= 5f)
             {
                 _heroSprite.color = Color.green;
-                PlayerData.instance.isInvincible = true;
+                PlayerData.instance.SetBool(nameof(PlayerData.instance.isInvincible), true);
             }
             else
             {
                 _heroSprite.color = Color.white;
-                PlayerData.instance.isInvincible = false;
+                PlayerData.instance.SetBool(nameof(PlayerData.instance.isInvincible), false);
             }
         }
     }

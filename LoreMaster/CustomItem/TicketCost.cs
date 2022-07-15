@@ -10,7 +10,7 @@ internal record Paypal: Cost
     public bool ToTemple { get; set; }
 
     public override bool CanPay()
-    => TouristPower.Inspected && PlayerData.instance.geo > 49;
+    => TouristPower.Inspected && PlayerData.instance.GetInt(nameof(PlayerData.instance.geo)) > 49;
 
     public override string GetCostText()
     => TouristPower.Inspected ? "Take a ticket? (50 Geo)" : "Currently closed";

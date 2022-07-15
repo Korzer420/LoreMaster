@@ -143,7 +143,7 @@ public class TouchGrassPower : Power
                     yield break;
                 }
             }
-            if (PlayerData.instance.GetInt("Health") < PlayerData.instance.maxHealth)
+            if (PlayerData.instance.GetInt("Health") < PlayerData.instance.GetInt(nameof(PlayerData.instance.maxHealth)))
                 HeroController.instance.AddHealth(1);
         }
     }

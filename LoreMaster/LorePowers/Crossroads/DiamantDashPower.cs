@@ -102,7 +102,7 @@ public class DiamantDashPower : Power
         _currentlyHold = true;
         Vector3 heroPosition = HeroController.instance.transform.localPosition;
         float passedTime = 0f;
-        while (PlayerData.instance.MPCharge > 3 && HeroController.instance.cState.superDashing && InputHandler.Instance.inputActions.up.IsPressed)
+        while (PlayerData.instance.GetInt(nameof(PlayerData.instance.MPCharge)) > 3 && HeroController.instance.cState.superDashing && InputHandler.Instance.inputActions.up.IsPressed)
         {
             yield return null;
             HeroController.instance.transform.localPosition = heroPosition;

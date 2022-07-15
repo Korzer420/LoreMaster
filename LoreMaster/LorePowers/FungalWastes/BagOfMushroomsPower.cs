@@ -163,8 +163,8 @@ public class BagOfMushroomsPower : Power
         while (passedTime <= 60f)
         {
             yield return null;
-            if (PlayerData.instance.atBench)
-                yield return new WaitUntil(() => !PlayerData.instance.atBench);
+            if (PlayerData.instance.GetBool(nameof(PlayerData.instance.atBench)))
+                yield return new WaitUntil(() => !PlayerData.instance.GetBool(nameof(PlayerData.instance.atBench)));
             if (playerScale != 1)
                 HeroController.instance.transform.localScale = new Vector3(HeroController.instance.cState.facingRight ? playerScale * -1 : playerScale, playerScale, playerScale);
             passedTime += Time.deltaTime;

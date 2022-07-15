@@ -29,15 +29,15 @@ public class FlowerRingPower : Power
                     {
                         float damageMultiplier = 1f;
 
-                        if (PlayerData.instance.elderbugGaveFlower)
+                        if (PlayerData.instance.GetBool(nameof(PlayerData.instance.elderbugGaveFlower)))
                             damageMultiplier += .1f;
-                        if (PlayerData.instance.givenEmilitiaFlower)
+                        if (PlayerData.instance.GetBool(nameof(PlayerData.instance.givenEmilitiaFlower)))
                             damageMultiplier += .1f;
-                        if (PlayerData.instance.givenGodseekerFlower)
+                        if (PlayerData.instance.GetBool(nameof(PlayerData.instance.givenGodseekerFlower)))
                             damageMultiplier += .1f;
-                        if (PlayerData.instance.givenOroFlower)
+                        if (PlayerData.instance.GetBool(nameof(PlayerData.instance.givenOroFlower)))
                             damageMultiplier += .1f;
-                        if (PlayerData.instance.givenWhiteLadyFlower)
+                        if (PlayerData.instance.GetBool(nameof(PlayerData.instance.givenWhiteLadyFlower)))
                             damageMultiplier += .1f;
 
                         // This applies onto the already modified damage value. This means that if the multiplier is 1.5f, the end damage is 3.75 times the nail damage.

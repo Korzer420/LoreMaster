@@ -27,7 +27,7 @@ public class PaleLuckPower: Power
         int chance = 1;
 
         // Chance increases with king's brand and kingssoul
-        if (PlayerData.instance.hasKingsBrand)
+        if (PlayerData.instance.GetBool(nameof(PlayerData.instance.hasKingsBrand)))
             chance += 2;
         if (PlayerData.instance.GetBool("equippedCharm_36"))
             chance += 2;
@@ -35,7 +35,7 @@ public class PaleLuckPower: Power
         int rolledValue = LoreMaster.Instance.Generator.Next(1, 101);
         if (rolledValue <= chance)
         {
-            if (PlayerData.instance.health < PlayerData.instance.maxHealth)
+            if (PlayerData.instance.GetInt(nameof(PlayerData.instance.health)) < PlayerData.instance.GetInt(nameof(PlayerData.instance.maxHealth)))
                 HeroController.instance.AddHealth(1);
             damage = 0;
         }

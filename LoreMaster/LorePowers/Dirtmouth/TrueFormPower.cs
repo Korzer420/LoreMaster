@@ -78,11 +78,11 @@ public class TrueFormPower : Power
         ModHooks.GetPlayerIntHook += NailDamageUpdate;
         LoreMaster.Instance.SceneActions.Add(PowerName, () =>
         {
-            if (!PlayerData.instance.shadeScene.Equals("None"))
+            if (!PlayerData.instance.GetString(nameof(PlayerData.instance.shadeScene)).Equals("None"))
             {
                 float multiplier = .25f;
                 // If we are going in the shade room, we increase the range buff
-                if (PlayerData.instance.shadeScene.Equals(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name))
+                if (PlayerData.instance.GetString(nameof(PlayerData.instance.shadeScene)).Equals(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name))
                 {
                     // If we have been already in the shade room (like dying in a room with the save bench), we ignore the multiplier.
                     if (_shadeState == 2)

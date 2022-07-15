@@ -68,7 +68,7 @@ public class EternalValorPower : Power
         if (_hasHitEnemy)
         {
             _successfulHits++;
-            if (_successfulHits >= 30 && PlayerData.instance.health < PlayerData.instance.maxHealth)
+            if (_successfulHits >= 30 && PlayerData.instance.GetInt(nameof(PlayerData.instance.health)) < PlayerData.instance.GetInt(nameof(PlayerData.instance.maxHealth)))
             {
                 HeroController.instance.AddHealth(1);
                 _successfulHits = 0;

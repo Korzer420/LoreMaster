@@ -84,7 +84,7 @@ public class HotStreakPower : Power
 
         if (_hasHitEnemy)
         {
-            if (_damageStacks < (PlayerData.instance.nailSmithUpgrades + 1) * 3)
+            if (_damageStacks < (PlayerData.instance.GetInt(nameof(PlayerData.instance.nailSmithUpgrades)) + 1) * 3)
                 _damageStacks++;
         }
         else

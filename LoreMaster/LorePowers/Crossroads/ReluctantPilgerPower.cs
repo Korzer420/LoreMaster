@@ -105,7 +105,7 @@ public class ReluctantPilgerPower : Power
     /// <param name="orig"></param>
     /// <returns></returns>
     private int GetBeamDamage(string name, int orig)
-        => name.Equals("beamDamage") && IsPlayerGrounded && PlayerData.instance.equippedCharm_35 ? orig * 2 : orig;
+        => name.Equals("beamDamage") && IsPlayerGrounded && PlayerData.instance.GetBool(nameof(PlayerData.instance.equippedCharm_35)) ? orig * 2 : orig;
 
     #endregion
 

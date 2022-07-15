@@ -67,7 +67,7 @@ public class WisdomOfTheSagePower : Power
     /// </summary>
     private void UpdateSpellCost()
     {
-        _soulBonus = PlayerData.instance.mrMushroomState;
+        _soulBonus = PlayerData.instance.GetInt(nameof(PlayerData.instance.mrMushroomState));
         GameObject.Find("Knight").LocateMyFSM("Spell Control").FsmVariables.FindFsmInt("MP Cost").Value -= _soulBonus;
     }
 

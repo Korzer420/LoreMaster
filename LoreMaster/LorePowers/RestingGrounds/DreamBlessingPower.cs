@@ -37,12 +37,12 @@ public class DreamBlessingPower : Power
     {
         orig(self);
 
-        if (PlayerData.instance.lurienDefeated)
+        if (PlayerData.instance.GetBool(nameof(PlayerData.instance.lurienDefeated)))
             if (self.GetComponent<EnemyBinding>() == null)
                 self.gameObject.AddComponent<EnemyBinding>();
 
         // Herrah... don't ask.
-        if (PlayerData.instance.hegemolDefeated)
+        if (PlayerData.instance.GetBool(nameof(PlayerData.instance.hegemolDefeated)))
         {
             _spawnedWeavers.Add(GameObject.Instantiate(_weaverlingPrefab, HeroController.instance.transform.position, Quaternion.identity));
             _spawnedWeavers.Add(GameObject.Instantiate(_weaverlingPrefab, HeroController.instance.transform.position, Quaternion.identity));
@@ -50,7 +50,7 @@ public class DreamBlessingPower : Power
                 _weaverRoutine = LoreMaster.Instance.Handler.StartCoroutine(SpawnWeavers());
         }
 
-        if (PlayerData.instance.monomonDefeated)
+        if (PlayerData.instance.GetBool(nameof(PlayerData.instance.monomonDefeated)))
         {
             int essence = PlayerData.instance.GetInt(nameof(PlayerData.instance.dreamOrbs));
 
