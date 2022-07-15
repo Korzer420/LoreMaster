@@ -33,7 +33,6 @@ public class HappyFatePower : Power
     /// <returns></returns>
     private int RemoveHappiness(int damage)
     {
-        LoreMaster.Instance.Log("Take health");
         if (damage > 0 && _isHappy)
         {
             _isHappy = false;

@@ -60,7 +60,6 @@ public class GreaterMindPower : Power
         _loreTracker = GameObject.Instantiate(prefab, hudCanvas.transform, true);
         _loreTracker.name = "Lore Tracker";
         PositionHudElement(_loreTracker, 3);
-        LoreMaster.Instance.Log("Called initialize for greater mind.");
     }
 
     protected override void Enable() => _loreTracker?.SetActive(true);
@@ -95,7 +94,7 @@ public class GreaterMindPower : Power
     {
         if(_loreTracker == null)
         {
-            LoreMaster.Instance.Log("The lore tracker doesn't exist");
+            LoreMaster.Instance.LogError("The lore tracker doesn't exist");
             return;
         }
         try
@@ -106,7 +105,6 @@ public class GreaterMindPower : Power
             if (globalActive)
                 currentCounter.text = "<color=#7FFF7B>" + currentCounter.text + "</color>";
 
-            LoreMaster.Instance.Log("All powers without remove: " + allPowers.Count(x => x.Tag != PowerTag.Removed) + "; All Powers with remove: " + allPowers.Count());
             string globalPart = "All: "+ activePowers.Count(x => x.Tag != PowerTag.Removed) + "/" + allPowers.Count(x => x.Tag != PowerTag.Removed);
             if (activePowers.Count(x => x.Tag != PowerTag.Removed) == allPowers.Count(x => x.Tag != PowerTag.Removed))
                 globalPart = "<color=#7FFF7B>" + globalPart + "</color>";

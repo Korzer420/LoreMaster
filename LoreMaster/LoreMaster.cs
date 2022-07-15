@@ -306,7 +306,6 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
             ItemChangerMod.AddPlacements(teleportItems);
             orig(self, permaDeath, bossRush);
             ModHooks.SetPlayerBoolHook += TrackPathOfPain;
-            ModHooks.LanguageGetHook += GetText;
             _fromMenu = true;
 
             // Reset tags to default.
@@ -326,7 +325,6 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
     private void ContinueGame(On.UIManager.orig_ContinueGame orig, UIManager self)
     {
         _fromMenu = true;
-        ModHooks.LanguageGetHook += GetText;
         orig(self);
     }
 
@@ -388,12 +386,9 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         {
             if (GameManager.instance.IsGameplayScene() && !arg1.name.Equals("Quit_To_Menu"))
             {
-                Log("Scene name is: " + arg1.name);
                 if (_fromMenu)
                 {
-                    if (PlayerData.instance == null)
-                        Log("Playerdata doesn't exist");
-                    else if (PlayerData.instance.GetBool("killedBindingSeal") && !_powerList.ContainsKey("EndOfPathOfPain"))
+                    if (PlayerData.instance.GetBool("killedBindingSeal") && !_powerList.ContainsKey("EndOfPathOfPain"))
                     {
                         Power power = _powerList["EndOfPathOfPain"];
                         power.EnablePower();
@@ -402,6 +397,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
                     else
                         ModHooks.SetPlayerBoolHook += TrackPathOfPain;
 
+                    ModHooks.LanguageGetHook += GetText;
                     On.PlayMakerFSM.OnEnable += FsmEdits;
                     On.DeactivateIfPlayerdataTrue.OnEnable += ForceMyla;
                     On.DeactivateIfPlayerdataFalse.OnEnable += PreventMylaZombie;
@@ -686,9 +682,6 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
                 LogError("Couldn't find area: " + newMapZone);
         }
 
-        Log("Old area is: " + _currentArea);
-        Log("New area is: " + newArea);
-
         // If the area changes, we adjust the powers.
         if (_currentArea != newArea)
         {
@@ -717,7 +710,6 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
 
         if (_fromMenu)
         {
-            Log("Came from menu");
             _fromMenu = false;
             // Enables the powers beforehand. This has to be done because otherwise the effects will only stay permanent once the player enters the area.
             List<Power> toActivate = new();

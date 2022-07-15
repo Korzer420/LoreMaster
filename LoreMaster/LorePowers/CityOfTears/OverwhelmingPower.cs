@@ -43,24 +43,25 @@ public class OverwhelmingPower : Power
         }
 
         FsmState setDamageState = self.GetState("Init");
-        if (setDamageState.Actions[0].Name.Equals("Overpower Fireball"))
-            LoreMaster.Instance.Log("Already added action");
-        else
-            setDamageState.InsertAction(new Lambda(() =>
+        setDamageState.ReplaceAction(new Lambda(() =>
+        {
+            if (_hasFullSoulMeter && Active)
             {
-                if (_hasFullSoulMeter && Active)
-                {
-                    self.gameObject.LocateMyFSM("damages_enemy").FsmVariables.GetFsmInt("damageDealt").Value *= 2;
-                    self.transform.localScale = new(self.transform.localScale.x + .8f, self.transform.localScale.y + .8f);
-                    self.GetComponent<tk2dSprite>().color = Color.cyan;
-                }
-                else
-                    self.GetComponent<tk2dSprite>().color = Color.white;
-            })
-            {
-                IsAutoNamed = false,
-                Name = "Overpower Fireball"
-            }, 0);
+                self.gameObject.LocateMyFSM("damages_enemy").FsmVariables.GetFsmInt("damageDealt").Value *= 2;
+                self.transform.localScale = new(self.transform.localScale.x + .8f, self.transform.localScale.y + .8f);
+                self.GetComponent<tk2dSprite>().color = Color.cyan;
+            }
+            else
+                self.GetComponent<tk2dSprite>().color = Color.white;
+
+            if (self.FsmVariables.FindFsmFloat("Velocity").Value < 0f)
+                self.SendEvent("LEFT");
+            else
+                self.SendEvent("RIGHT");
+        })
+        {
+            Name = "Overpower Fireball"
+        }, 1);
         orig(self);
     }
 
@@ -78,7 +79,8 @@ public class OverwhelmingPower : Power
             _hasFullSoulMeter = PlayerData.instance.MPCharge >= 99;
             if (spellControl.FsmVariables.FindFsmBool("Pressed Up").Value)
                 spellControl.SendEvent("SCREAM");
-        }) { Name = "Full Soul Check"}, 0);
+        })
+        { Name = "Full Soul Check" }, 0);
         spellControl.GetState("Can Cast? QC").ReplaceAction(new Lambda(() =>
         {
             _hasFullSoulMeter = PlayerData.instance.MPCharge >= 99;
@@ -124,7 +126,7 @@ public class OverwhelmingPower : Power
 
     protected override void Enable() => On.PlayMakerFSM.OnEnable += CheckFireball;
 
-    protected override void Disable() => On.PlayMakerFSM.OnEnable -= CheckFireball; 
+    protected override void Disable() => On.PlayMakerFSM.OnEnable -= CheckFireball;
 
     #endregion
 }
