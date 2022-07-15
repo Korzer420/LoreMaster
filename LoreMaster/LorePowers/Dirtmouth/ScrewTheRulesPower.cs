@@ -8,7 +8,7 @@ using MonoMod.Cil;
 using System;
 using UnityEngine;
 
-namespace LoreMaster.LorePowers;
+namespace LoreMaster.LorePowers.Dirtmouth;
 
 /// <summary>
 /// Fury of the Fallen is active, while you have two health, but only increases your damage by 50%.

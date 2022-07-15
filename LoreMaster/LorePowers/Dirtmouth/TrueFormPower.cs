@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace LoreMaster.LorePowers;
+namespace LoreMaster.LorePowers.Dirtmouth;
 
 public class TrueFormPower : Power
 {

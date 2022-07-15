@@ -14,6 +14,7 @@ using LoreMaster.LorePowers.Ancient_Basin;
 using LoreMaster.LorePowers.CityOfTears;
 using LoreMaster.LorePowers.Crossroads;
 using LoreMaster.LorePowers.Deepnest;
+using LoreMaster.LorePowers.Dirtmouth;
 using LoreMaster.LorePowers.FogCanyon;
 using LoreMaster.LorePowers.FungalWastes;
 using LoreMaster.LorePowers.Greenpath;
@@ -54,12 +55,13 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         {"MAGE_COMP_03", new OverwhelmingPower() },
         {"MAGE_COMP_01", new SoulExtractEfficiencyPower() },
         {"LURIAN_JOURNAL", new EyeOfTheWatcherPower() },
-        {"EMILITIA", new CharmingTrapPower() },
+        {"EMILITIA", new HappyFatePower() },
         // Dirtmouth/King's Pass
         {"TUT_TAB_01", new WellFocusedPower() },
         {"TUT_TAB_02", new ScrewTheRulesPower() },
         {"TUT_TAB_03", new TrueFormPower() },
         {"BRETTA", new CaringShellPower() },
+        {"ELDERBUG", new ElderbugHitListPower() },
         // Fog Canyon
         {"ARCHIVE_01", new FriendOfTheJellyfishPower() },
         {"ARCHIVE_02", new JellyBellyPower() },

@@ -35,10 +35,12 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Enums\Area.cs" />
+    <Compile Include="Enums\ElderbugReward.cs" />
     <Compile Include="Extensions\ExtensionMethods.cs" />
     <Compile Include="Helper\SpriteHelper.cs" />
-    <Compile Include="LorePowers\CityOfTears\CharmingTrapPower.cs" />
+    <Compile Include="LorePowers\CityOfTears\HappyFatePower.cs" />
     <Compile Include="LorePowers\Crossroads\DiamantDashPower.cs" />
+    <Compile Include="LorePowers\Dirtmouth\ElderbugHitListPower.cs" />
     <Compile Include="LorePowers\FungalWastes\BagOfMushroomsPower.cs" />
     <Compile Include="Helper\RandomizerHelper.cs" />
     <Compile Include="LorePowers\Peaks\DiamondHeartPower.cs" />

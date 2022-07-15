@@ -19,7 +19,7 @@ public class ShadowForgedPower : Power
     public ShadowForgedPower() : base("Shadow Forged",Area.WhitePalace)
     {
         Hint = "Your void energy return quicker to you.";
-        Description = "Decrease the cooldown of shade cloak by 0.4 seconds and increases sharp shadow damage by 100%. Warning: The cooldown is not on sync with the animation! Shortly after the orbs spawn, the dash is ready again.";
+        Description = "Decrease the cooldown of shade cloak by 0.4 seconds and increases sharp shadow damage by 100%.";
     }
 
     #endregion
@@ -52,13 +52,13 @@ public class ShadowForgedPower : Power
     protected override void Enable()
     {
         HeroController.instance.SHADOW_DASH_COOLDOWN -= .4f;
-        _shadow.GetComponent<tk2dSpriteAnimator>().ClipFps += 8f;
+        _shadow.GetComponent<tk2dSpriteAnimator>().CurrentClip.fps += 10f;
     }
 
     protected override void Disable()
     {
         HeroController.instance.SHADOW_DASH_COOLDOWN += .4f;
-        _shadow.GetComponent<tk2dSpriteAnimator>().ClipFps -= 8f;
+        _shadow.GetComponent<tk2dSpriteAnimator>().CurrentClip.fps -= 10f;
     }
 
     #endregion

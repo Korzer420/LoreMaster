@@ -8,7 +8,7 @@ public class EmbraceTheLightPower : Power
 
     public EmbraceTheLightPower() : base("Embrace the Light", Area.QueensGarden)
     {
-        Hint = "[Not Implemented] I have no idea for this one. Hit me up with something fitting.";
+        Hint = "[Not Implemented] Currently does nothing. Something with essence or dream nail I guess.";
         Description = Hint;
     }
 

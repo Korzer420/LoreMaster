@@ -1,7 +1,7 @@
 using LoreMaster.Enums;
 using Modding;
 
-namespace LoreMaster.LorePowers;
+namespace LoreMaster.LorePowers.Dirtmouth;
 
 public class CaringShellPower : Power
 {

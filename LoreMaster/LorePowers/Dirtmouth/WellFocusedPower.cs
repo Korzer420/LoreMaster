@@ -1,6 +1,6 @@
 using LoreMaster.Enums;
 
-namespace LoreMaster.LorePowers;
+namespace LoreMaster.LorePowers.Dirtmouth;
 
 /// <summary>
 /// Class for the power to cast focus 30% faster.

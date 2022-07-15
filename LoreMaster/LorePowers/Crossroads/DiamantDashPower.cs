@@ -57,12 +57,12 @@ public class DiamantDashPower : Power
         if (HasDiamondHeart)
         {
             _crystalHeartSprite.sprite = _diamondSprite;
-            HeroController.instance.superDash.FsmVariables.FindFsmFloat("Charge Time").Value = .2f;
+            HeroController.instance.superDash.FsmVariables.FindFsmFloat("Charge Time").Value -= .3f;
         }
         else
         { 
             _crystalHeartSprite.sprite = _corelessSprite;
-            HeroController.instance.superDash.FsmVariables.FindFsmFloat("Charge Time").Value = .5f;
+            HeroController.instance.superDash.FsmVariables.FindFsmFloat("Charge Time").Value -= .3f;
         }
         _trailSprite.color = Color.cyan;
         On.HeroController.Update += HeroController_Update;
@@ -78,10 +78,16 @@ public class DiamantDashPower : Power
     protected override void Disable()
     {
         if (HasDiamondHeart)
+        {
             _crystalHeartSprite.sprite = _shelllessSprite;
+            HeroController.instance.superDash.FsmVariables.FindFsmFloat("Charge Time").Value += .6f;
+        }
+
         else
+        {
             _crystalHeartSprite.sprite = _originalSprite;
-        HeroController.instance.superDash.FsmVariables.FindFsmFloat("Charge Time").Value = .8f;
+            HeroController.instance.superDash.FsmVariables.FindFsmFloat("Charge Time").Value += .3f;
+        }
         _currentlyHold = false;
         _trailSprite.color = Color.white;
         On.HeroController.Update -= HeroController_Update;
