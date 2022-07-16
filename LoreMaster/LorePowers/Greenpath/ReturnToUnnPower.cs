@@ -52,6 +52,7 @@ public class ReturnToUnnPower : Power
             HeroController.instance.DASH_COOLDOWN += .5f;
             HeroController.instance.DASH_COOLDOWN_CH += .5f;
         }
+        _movementSpeedBuff = false;
     }
 
     #endregion

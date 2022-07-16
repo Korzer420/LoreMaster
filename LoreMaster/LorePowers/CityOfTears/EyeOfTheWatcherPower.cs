@@ -24,7 +24,7 @@ public class EyeOfTheWatcherPower : Power
 
     public EyeOfTheWatcherPower() : base("Eye Of The Watcher", Area.CityOfTears)
     {
-        Hint = "The eye of the watcher will protect you and share it's sight, allowing you to see in the dark. If the eye can fully see you, ";
+        Hint = "The eye of the watcher will protect you and share it's sight, allowing you to see in the dark. If the eye can fully see you, it gaze may once prevent a fatal blow on you. To call the eye again, look through the tool of the watcher.";
         Description = "Grants the lantern effect. If you already have the lantern effect and would take lethal damage, you will be healed to full hp instead (with joni's you gaining 5 lifeblood instead)." +
             " Once triggered, has to be restored by looking through the telescope by lurien.";
         _eyeSprite = SpriteHelper.CreateSprite("EyeOfLurien");

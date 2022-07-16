@@ -20,7 +20,7 @@ public class EternalSentinelPower : Power
 
     public EternalSentinelPower() : base("Eternal Sentinel", Area.WaterWays)
     {
-        Hint = "Increases your durablity while wearing the sign of the protector. The shield of ancient one consumes soul and is more restistance.";
+        Hint = "Increases your scent while wearing the sign of the protector. The shield of the ancient ones is more restistent and gather soul with the blessing of the protector.";
         Description = "Defender's Crest clouds are 150% bigger and tick twice as fast. Baldur shell now takes 10 hits instead of four. When getting hit, while baldur shell is up, you gain 15 soul " +
             "if you are also wearing Defender's Crest.";
     }

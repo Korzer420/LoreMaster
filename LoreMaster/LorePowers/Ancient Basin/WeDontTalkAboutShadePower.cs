@@ -25,7 +25,12 @@ public class WeDontTalkAboutShadePower : Power
 
     #endregion
 
-    #region Public Methods
+    #region Protected Methods
+
+    protected override void Initialize()
+    {
+        
+    }
 
     protected override void Enable()
     {
@@ -33,7 +38,8 @@ public class WeDontTalkAboutShadePower : Power
         // The game uses the soulLimited value to determine, if the shade is active, because we negate that, we manually need to spawn the shade.
         LoreMaster.Instance.SceneActions.Add(PowerName, () =>
         {
-            if (string.Equals(PlayerData.instance.GetString(nameof(PlayerData.instance.shadeScene)), UnityEngine.SceneManagement.SceneManager.GetActiveScene().name))
+            LoreMaster.Instance.Log("Called shade spawn");
+            if (GameObject.Find("Hollow Shade(Clone)") == null && string.Equals(PlayerData.instance.GetString(nameof(PlayerData.instance.shadeScene)), UnityEngine.SceneManagement.SceneManager.GetActiveScene().name))
                 GameObject.Instantiate(GameManager.instance.sm.hollowShadeObject, new Vector3(PlayerData.instance.GetFloat(nameof(PlayerData.instance.shadePositionX)), PlayerData.instance.GetFloat(nameof(PlayerData.instance.shadePositionY))), Quaternion.identity);
         });
         PlayerData.instance.SetBool("soulLimited", false);
@@ -42,7 +48,7 @@ public class WeDontTalkAboutShadePower : Power
     protected override void Disable()
     {
         ModHooks.AfterPlayerDeadHook -= AfterPlayerDied;
-        LoreMaster.Instance.SceneActions.Remove(PowerName);
+        //LoreMaster.Instance.SceneActions.Remove(PowerName);
         if (!PlayerData.instance.GetString(nameof(PlayerData.instance.shadeScene)).Equals("None"))
             PlayerData.instance.StartSoulLimiter();
     }
