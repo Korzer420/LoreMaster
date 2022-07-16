@@ -31,14 +31,16 @@ public class CamouflagePower : Power
     protected override void Enable() 
     { 
         _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(WaitForCamouflage());
-        ModHooks.GetPlayerBoolHook += ModHooks_GetPlayerBoolHook;
+        On.HeroController.CanTakeDamage += HeroController_CanTakeDamage;
     }
 
-    private bool ModHooks_GetPlayerBoolHook(string name, bool orig)
+    private bool HeroController_CanTakeDamage(On.HeroController.orig_CanTakeDamage orig, HeroController self)
     {
-        if(orig.Equals(nameof(PlayerData.instance.isInvincible)))
-            return _isCamouflaged;
-        return orig;
+        bool result = orig(self);
+
+        if (_isCamouflaged)
+            return false;
+        return result;
     }
 
     protected override void Disable()
@@ -47,7 +49,7 @@ public class CamouflagePower : Power
         _isCamouflaged = false;
         PlayerData.instance.SetBool(nameof(PlayerData.instance.isInvincible), false);
         _heroSprite.color = Color.white;
-        ModHooks.GetPlayerBoolHook -= ModHooks_GetPlayerBoolHook;
+        On.HeroController.CanTakeDamage -= HeroController_CanTakeDamage;
     }
 
     #endregion
