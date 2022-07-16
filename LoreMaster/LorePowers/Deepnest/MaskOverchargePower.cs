@@ -22,6 +22,8 @@ public class MaskOverchargePower : Power
 
     private int _overchargeHealth = -1;
 
+    private tk2dSprite[] _healthSprites = new tk2dSprite[4]; 
+
     #endregion
 
     #region Constructors
@@ -75,6 +77,10 @@ public class MaskOverchargePower : Power
         On.HeroController.FixedUpdate -= HeroController_FixedUpdate;
         LoreMaster.Instance.Handler.StopCoroutine(_runningCoroutine);
         _overcharge.SetActive(false);
+        // Reset mask color.
+        foreach (tk2dSprite sprite in _healthSprites)
+            sprite.color = Color.white;
+        
         _overchargeHealth = -1;
     }
 
@@ -89,10 +95,9 @@ public class MaskOverchargePower : Power
     {
         yield return new WaitForSeconds(1f);
         GameObject parent = GameObject.Find("_GameCameras/HudCamera/Hud Canvas/Health");
-        tk2dSprite[] sprites = new tk2dSprite[4];
         Color[] colors = new Color[] { Color.yellow, Color.blue, Color.red, Color.cyan, Color.green, new(1f, 0.4f, 0f), new(1f, 0f, 1f), Color.black };
         bool firstTime = true;
-        sprites[3] = parent.transform.Find("Hive Recovery Blob").GetComponent<tk2dSprite>();
+        _healthSprites[3] = parent.transform.Find("Hive Recovery Blob").GetComponent<tk2dSprite>();
 
         while (true)
         {
@@ -101,7 +106,7 @@ public class MaskOverchargePower : Power
             // Reset sprites
             _overchargeHealth = -1;
             if (!firstTime)
-                foreach (tk2dSprite sprite in sprites)
+                foreach (tk2dSprite sprite in _healthSprites)
                     sprite.color = Color.white;
             firstTime = false;
 
@@ -114,9 +119,9 @@ public class MaskOverchargePower : Power
 
             // We honestly probably don't need to use transform find here, but in case the hud is unavailable we account for that, I guess.
             GameObject health = parent.transform.Find("Health " + _overchargeHealth).gameObject;
-            sprites[0] = health.GetComponent<tk2dSprite>();
-            sprites[1] = health.transform.Find("Idle").GetComponent<tk2dSprite>();
-            sprites[2] = health.transform.Find("Idle Hive").GetComponent<tk2dSprite>();
+            _healthSprites[0] = health.GetComponent<tk2dSprite>();
+            _healthSprites[1] = health.transform.Find("Idle").GetComponent<tk2dSprite>();
+            _healthSprites[2] = health.transform.Find("Idle Hive").GetComponent<tk2dSprite>();
 
             float passedTime = 0f;
             while (passedTime < 30f)
@@ -124,7 +129,7 @@ public class MaskOverchargePower : Power
                 yield return new WaitForSeconds(.25f);
                 passedTime += .25f;
                 Color rolledColor = colors[Random.Range(0, 7)];
-                foreach (tk2dSprite sprite in sprites)
+                foreach (tk2dSprite sprite in _healthSprites)
                     sprite.color = rolledColor;
             }
         }

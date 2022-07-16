@@ -1,6 +1,7 @@
 using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
 using LoreMaster.Enums;
+using LoreMaster.Extensions;
 using UnityEngine;
 
 namespace LoreMaster.LorePowers.FogCanyon;
@@ -23,15 +24,19 @@ public class JellyfishFlowPower : Power
     protected override void Initialize()
     {
         PlayMakerFSM knightFSM = GameObject.Find("Knight").LocateMyFSM("Surface Water");
-        knightFSM.GetState("Swim Right").AddFirstAction(new Lambda(() =>
+        knightFSM.GetState("Swim Right").ReplaceAction(new Lambda(() =>
         {
             knightFSM.FsmVariables.GetFsmFloat("Swim Speed").Value = Active ? 15f : 5f;
-        }));
+            knightFSM.FsmVariables.GetFsmString("Idle Anim").Value = "Surface Idle";
+        })
+        { Name ="Jellyfish swim"},1);
 
-        knightFSM.GetState("Swim Left").AddFirstAction(new Lambda(() =>
+        knightFSM.GetState("Swim Left").ReplaceAction(new Lambda(() =>
         {
             knightFSM.FsmVariables.GetFsmFloat("Swim Speed neg").Value = Active ? -15f : -5f;
-        }));
+            knightFSM.FsmVariables.GetFsmString("Idle Anim").Value = "Surface Idle";
+        })
+        { Name ="Jellyfish swim"},1);
     }
 
     #endregion

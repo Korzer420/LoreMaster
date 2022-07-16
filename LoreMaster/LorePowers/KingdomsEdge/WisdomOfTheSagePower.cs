@@ -1,6 +1,7 @@
 using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
 using LoreMaster.Enums;
+using LoreMaster.Extensions;
 using Modding;
 using UnityEngine;
 
@@ -37,11 +38,12 @@ public class WisdomOfTheSagePower : Power
         // If the player is using spell twister (enable or disable) it triggers this fsm AFTER the charm update hook, which would negate the effect.
         // Therefore we have to add a clauses here too.
         PlayMakerFSM fsm = GameObject.Find("Knight/Charm Effects").LocateMyFSM("Set Spell Cost");
-        fsm.GetState("Idle").AddFirstAction(new Lambda(() =>
+        fsm.GetState("Idle").ReplaceAction(new Lambda(() =>
         {
             if (Active)
                 UpdateSpellCost();
-        }));
+        })
+        { Name = "Mushroom power up"});
     }
 
     protected override void Enable() 

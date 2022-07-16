@@ -97,6 +97,9 @@ public class EternalSentinelPower : Power
 
     protected override void Enable()
     {
+        if (PlayerData.instance.GetInt(nameof(PlayerData.instance.blockerHits)) > 0)
+            PlayerData.instance.SetInt(nameof(PlayerData.instance.blockerHits), PlayerData.instance.GetBool(nameof(PlayerData.instance.equippedCharm_10)) ? 10 : 7);
+        
         if (PlayerData.instance.GetBool(nameof(PlayerData.instance.equippedCharm_10)))
             _baldurSprite.color = new(1f, 0.4f, 0f);
         ModHooks.CharmUpdateHook += CharmUpdate;
@@ -108,6 +111,8 @@ public class EternalSentinelPower : Power
         ModHooks.CharmUpdateHook -= CharmUpdate;
         _baldurSprite.color = Color.white;
         On.PlayMakerFSM.OnEnable -= PlayMakerFSM_OnEnable;
+        if (PlayerData.instance.GetInt(nameof(PlayerData.instance.blockerHits)) > 4)
+            PlayerData.instance.SetInt(nameof(PlayerData.instance.blockerHits), 4);
     }
 
     #endregion

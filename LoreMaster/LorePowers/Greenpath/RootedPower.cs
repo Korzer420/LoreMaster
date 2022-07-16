@@ -3,6 +3,7 @@ using HutongGames.PlayMaker.Actions;
 using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
 using LoreMaster.Enums;
+using LoreMaster.Extensions;
 using LoreMaster.Helper;
 using MonoMod.Cil;
 using System;
@@ -37,10 +38,12 @@ public class RootedPower : Power
     {
         PlayMakerFSM playMakerFSM = FsmHelper.GetFSM("Knight", "Spell Control");
         // This disables the animation, so that it doesn't look weird on the wall.
-        playMakerFSM.GetState("Focus Start").AddFirstAction(new Lambda(() =>
+        playMakerFSM.GetState("Focus Start").ReplaceAction(new Lambda(() =>
         {
             playMakerFSM.GetState("Focus Start").GetFirstActionOfType<Tk2dPlayAnimation>().Enabled = !Active;
-        }));
+            playMakerFSM.FsmVariables.GetFsmFloat("Grace Timer").Value = 0f;
+        })
+        { Name ="Control animation"},0);
     }
 
     protected override void Enable()

@@ -2,6 +2,7 @@ using HutongGames.PlayMaker;
 using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
 using LoreMaster.Enums;
+using LoreMaster.Extensions;
 using Modding;
 using System;
 using System.Collections;
@@ -127,23 +128,21 @@ public class JonisProtectionPower : Power
         else if (self.FsmName.Equals("Inspection") && self.gameObject.name.Contains("tablet"))
         {
             FsmState fsmState = self.GetState("Prompt Up");
-            if (fsmState.GetFirstActionOfType<Lambda>() == null)
+            fsmState.ReplaceAction(new Lambda(() =>
             {
-                fsmState.RemoveAction(7);
-                fsmState.InsertAction(new Lambda(() =>
-                {
-                    PlayMakerFSM.BroadcastEvent("LORE PROMPT UP");
-                    _immune = true;
-                }), 7);
+                PlayMakerFSM.BroadcastEvent("LORE PROMPT UP");
+                _immune = true;
+            })
+            { Name = "Prompt Up Immunity" }, 7);
 
-                fsmState = self.GetState("Regain Control");
-                fsmState.RemoveAction(1);
-                fsmState.InsertAction(new Lambda(() =>
-                {
-                    _immune = false;
-                    PlayerData.instance.SetBool("disablePause", false);
-                }), 1);
-            }
+            fsmState = self.GetState("Regain Control");
+            fsmState.ReplaceAction(new Lambda(() =>
+            {
+                _immune = false;
+                PlayerData.instance.SetBool("disablePause", false);
+            })
+            { Name = "Remove Immunity" }, 1);
+
         }
 
         orig(self);

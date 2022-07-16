@@ -3,6 +3,7 @@ using HutongGames.PlayMaker.Actions;
 using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
 using LoreMaster.Enums;
+using LoreMaster.Extensions;
 using LoreMaster.Helper;
 using System;
 using System.IO;
@@ -77,23 +78,29 @@ public class QueenThornsPower : Power
 
             PlayMakerFSM fsm = GameObject.Find("Knight/Charm Effects").LocateMyFSM("Thorn Counter");
             FsmState currentWorkingState = fsm.GetState("Counter Start");
-            currentWorkingState.AddFirstAction(new Lambda(() =>
+            currentWorkingState.ReplaceAction(new Lambda(() =>
             {
                 // Prevent the freeze in the air
                 currentWorkingState.GetFirstActionOfType<SetPosition>().Enabled = !Active;
                 // Prevent the gravity from getting removed (this would cause the hero to float until the thorns despawn... probably).
                 currentWorkingState.GetActionsOfType<SendMessage>().Take(2).ToList().ForEach(x => x.Enabled = !Active);
-
-            }));
+                fsm.FsmVariables.FindFsmVector3("Thorn Pos").Value = HeroController.instance.transform.localPosition;
+            })
+            { Name = "Block freeze"}, 0);
 
             currentWorkingState = fsm.GetState("Counter");
-            currentWorkingState.AddFirstAction(new Lambda(() =>
+            currentWorkingState.ReplaceAction(new Lambda(() =>
             {
-                // Prevent the freeze in the air
-                currentWorkingState.GetFirstActionOfType<SetPosition>().Enabled = !Active;
-                // I'm unsure if this is needed, but it can't hurt, right?
-                HeroController.instance.RegainControl();
-            }));
+                if (Active)
+                    // I'm unsure if this is needed, but it can't hurt, right?
+                    HeroController.instance.RegainControl();
+                else
+                    // The freeze in the air.
+                    HeroController.instance.transform.localPosition = fsm.FsmVariables.FindFsmVector3("Thorn Pos").Value;
+            })
+            {
+                Name = "Block freeze"
+            }, 1);
 
             _thorns = fsm.transform.Find("Thorn Hit").gameObject;
 
@@ -101,11 +108,12 @@ public class QueenThornsPower : Power
             foreach (Transform child in _thorns.transform)
             {
                 fsm = child.gameObject.LocateMyFSM("set_thorn_damage");
-                fsm.GetState("Set").InsertAction(new Lambda(() =>
+                fsm.GetState("Set").ReplaceAction(new Lambda(() =>
                 {
+                    fsm.FsmVariables.GetFsmInt("Damage").Value = PlayerData.instance.GetInt(nameof(PlayerData.instance.nailDamage));
                     if (Active)
                         fsm.FsmVariables.GetFsmInt("Damage").Value *= 2;
-                }), 1);
+                }), 0);
             }
         }
         catch (Exception error)

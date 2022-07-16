@@ -244,7 +244,6 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
     /// <returns></returns>
     private string GetText(string key, string sheetTitle, string text)
     {
-        Log("The key is: " + key);
         key = ModifyKey(key);
         if (key.Equals("INV_NAME_SUPERDASH"))
         {
@@ -406,14 +405,8 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
                     LoadOptions();
                     if (ModHooks.GetMod("Randomizer 4", true) is Mod mod)
                     {
-                        AbstractItem.BeforeGiveGlobal += GiveLoreItem;
                         Log("Detected Randomizer. Adding compability.");
-
-                        // If world sense but not lore is randomized, the tablet will become unreadable, which is why we need to account for that
-                        if (ItemChanger.Internal.Ref.Settings.Placements.ContainsKey(LocationNames.World_Sense))
-                        {
-                            Log("World sense is randomized");
-                        }
+                        AbstractItem.BeforeGiveGlobal += GiveLoreItem;
                     }
                 }
                 Handler.StartCoroutine(ManageSceneActions());
@@ -432,7 +425,23 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
     /// <param name="itemData"></param>
     private void GiveLoreItem(ReadOnlyGiveEventArgs itemData)
     {
-        if (itemData.Item.name.Contains("Lore_Tablet-"))
+        //If focus is randomized but the lore tablet isn't, the lore tablet becames unavailable, which is we add the power to focus instead.
+        if (itemData.Item.name.Equals("Focus") && ItemChanger.Internal.Ref.Settings.Placements.ContainsKey(LocationNames.Focus))
+        {
+            string text = string.Empty;
+            CheckForPower("TUT_TAB_01", ref text);
+            if (itemData.Item.UIDef is BigUIDef big)
+                big.descTwo = new BoxedString(text.Replace("<br>", " "));
+        }
+        // If world sense is randomized but the lore tablet isn't, the lore tablet becames unavailable, which is we add the power to world sense instead.
+        else if (itemData.Item.name.Equals("World_Sense") && ItemChanger.Internal.Ref.Settings.Placements.ContainsKey(LocationNames.World_Sense))
+        {
+            string text = string.Empty;
+            CheckForPower("COMPLETION_RATE_UNLOCKED", ref text);
+            if (itemData.Item.UIDef is BigUIDef big)
+                big.descTwo = new BoxedString(text.Replace("<br>", " "));
+        }
+        else if (itemData.Item.name.Contains("Lore_Tablet-"))
         {
             string tabletName = RandomizerHelper.TranslateRandoName(itemData.Item.name.Substring("Lore_Tablet-".Length));
             string placeHolder = string.Empty;
@@ -463,9 +472,15 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
             string placeHolder = string.Empty;
             self.GetState("Anim End").ReplaceAction(new Lambda(() => CheckForPower("DREAMERS_INSPECT_RG5", ref placeHolder)) { Name = "Dreamer Power" });
         }
-        //else if (self.gameObject.name.Equals("Moss Cultist") && self.FsmName.Equals("FSM"))
-        //    self.GetState("Check").RemoveTransitionsTo("Destroy");
-
+        else if (self.gameObject.name.Equals("Moss Cultist") && self.FsmName.Equals("FSM"))
+        { 
+            self.GetState("Check").RemoveTransitionsTo("Destroy");
+            self.gameObject.GetComponent<BoxCollider2D>().enabled = true;
+        }
+        else if (self.gameObject.name.Equals("corpse set") && self.FsmName.Equals("FSM"))
+        {
+            self.gameObject.FindChild("corpse0000").SetActive(false);
+        }
         orig(self);
     }
 
@@ -710,7 +725,6 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
                 LogError(exception.Message);
             }
 
-            // To prevent making all members public, we manually call the completion counter here.
             UpdateTracker(newArea);
         }
 
@@ -728,7 +742,6 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
 
             foreach (Power power in toActivate)
                 power.EnablePower();
-            // To prevent making all members public, we manually call the completion counter here.
             UpdateTracker(newArea);
         }
 

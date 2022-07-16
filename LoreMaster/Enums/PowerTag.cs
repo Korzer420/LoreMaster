@@ -9,7 +9,7 @@ public enum PowerTag
     Local,
 
     /// <summary>
-    /// The power is available at all times.
+    /// The power is available at all times once obtained.
     /// </summary>
     Global,
 

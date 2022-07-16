@@ -156,9 +156,10 @@ public class BagOfMushroomsPower : Power
         float passedTime = 0f;
         float playerScale = 1f;
 
-        if (_activeEffect == 3)
-            playerScale = HasEatenTwice ? 1.25f : 1.5f;
-        else if (_activeEffect == 4)
+        //if (_activeEffect == 3)
+        //    playerScale = HasEatenTwice ? 1.25f : 1.5f;
+        //else
+        if (_activeEffect == 4)
             playerScale = HasEatenTwice ? 0.75f : 0.5f;
         while (passedTime <= 60f)
         {

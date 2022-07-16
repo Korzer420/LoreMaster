@@ -58,10 +58,7 @@ public class OverwhelmingPower : Power
                     self.GetComponent<tk2dSprite>().color = Color.white;
 
                 if (direction < 0f)
-                {
-                    LoreMaster.Instance.Log("Shade Soul left");
                     self.SendEvent("LEFT");
-                }
                 else
                     self.SendEvent("RIGHT");
             })

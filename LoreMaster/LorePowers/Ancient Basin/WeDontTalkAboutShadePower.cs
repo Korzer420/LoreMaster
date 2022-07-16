@@ -38,7 +38,6 @@ public class WeDontTalkAboutShadePower : Power
         // The game uses the soulLimited value to determine, if the shade is active, because we negate that, we manually need to spawn the shade.
         LoreMaster.Instance.SceneActions.Add(PowerName, () =>
         {
-            LoreMaster.Instance.Log("Called shade spawn");
             if (GameObject.Find("Hollow Shade(Clone)") == null && string.Equals(PlayerData.instance.GetString(nameof(PlayerData.instance.shadeScene)), UnityEngine.SceneManagement.SceneManager.GetActiveScene().name))
                 GameObject.Instantiate(GameManager.instance.sm.hollowShadeObject, new Vector3(PlayerData.instance.GetFloat(nameof(PlayerData.instance.shadePositionX)), PlayerData.instance.GetFloat(nameof(PlayerData.instance.shadePositionY))), Quaternion.identity);
         });

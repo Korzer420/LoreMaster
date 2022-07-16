@@ -1,4 +1,5 @@
 using LoreMaster.Enums;
+using Modding;
 using System.Collections;
 using UnityEngine;
 
@@ -9,6 +10,7 @@ public class CamouflagePower : Power
     #region Members
 
     private tk2dSprite _heroSprite;
+    private bool _isCamouflaged;
 
     #endregion
 
@@ -25,14 +27,27 @@ public class CamouflagePower : Power
     #region Protected Methods
 
     protected override void Initialize() => _heroSprite = GameObject.Find("Knight").GetComponent<tk2dSprite>();
-    
-    protected override void Enable() =>  _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(WaitForCamouflage());
+
+    protected override void Enable() 
+    { 
+        _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(WaitForCamouflage());
+        ModHooks.GetPlayerBoolHook += ModHooks_GetPlayerBoolHook;
+    }
+
+    private bool ModHooks_GetPlayerBoolHook(string name, bool orig)
+    {
+        if(orig.Equals(nameof(PlayerData.instance.isInvincible)))
+            return _isCamouflaged;
+        return orig;
+    }
 
     protected override void Disable()
     {
         LoreMaster.Instance.Handler.StopCoroutine(_runningCoroutine);
+        _isCamouflaged = false;
         PlayerData.instance.SetBool(nameof(PlayerData.instance.isInvincible), false);
         _heroSprite.color = Color.white;
+        ModHooks.GetPlayerBoolHook -= ModHooks_GetPlayerBoolHook;
     }
 
     #endregion
@@ -58,12 +73,12 @@ public class CamouflagePower : Power
             if (passedTime >= 5f)
             {
                 _heroSprite.color = Color.green;
-                PlayerData.instance.SetBool(nameof(PlayerData.instance.isInvincible), true);
+                _isCamouflaged = true;
             }
             else
             {
                 _heroSprite.color = Color.white;
-                PlayerData.instance.SetBool(nameof(PlayerData.instance.isInvincible), false);
+                _isCamouflaged = false;
             }
         }
     }
