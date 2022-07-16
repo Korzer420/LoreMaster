@@ -220,7 +220,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
                 {
                     Power popPower = _powerList["EndOfPathOfPain"];
                     text += "<br>For those, that reveals the secret, awaits the power:";
-                    text += "<br>[" + popPower.PowerName + "]";
+                    text += "<br>[" + popPower.PowerName + "] ";
                     text += "<br>" + (UseHints ? popPower.Hint : popPower.Description);
                 }
                 return true;
