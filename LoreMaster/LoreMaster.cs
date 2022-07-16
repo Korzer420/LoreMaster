@@ -3,7 +3,9 @@ using ItemChanger;
 using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
 using ItemChanger.Locations;
+using ItemChanger.Locations.SpecialLocations;
 using ItemChanger.Placements;
+using ItemChanger.Tags;
 using ItemChanger.UIDefs;
 using LoreMaster.CustomItem;
 using LoreMaster.Enums;
@@ -28,8 +30,6 @@ using LoreMaster.LorePowers.WhitePalace;
 using LoreMaster.SaveManagement;
 using LoreMaster.UnityComponents;
 using Modding;
-using Mono.Cecil.Cil;
-using MonoMod.Cil;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -67,7 +67,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         {"ARCHIVE_02", new JellyBellyPower() },
         {"ARCHIVE_03", new JellyfishFlowPower() },
         // Crossroads
-        {"PILGRIM_TAB_01", new ReluctantPilgerPower() },
+        {"PILGRIM_TAB_01", new ReluctantPilgrimPower() },
         {"COMPLETION_RATE_UNLOCKED", new GreaterMindPower() { Tag = PowerTag.Global } },
         {"MYLA", new DiamantDashPower() },
         // Fungal Wastes
@@ -244,6 +244,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
     /// <returns></returns>
     private string GetText(string key, string sheetTitle, string text)
     {
+        Log("The key is: " + key);
         key = ModifyKey(key);
         if (key.Equals("INV_NAME_SUPERDASH"))
         {
@@ -407,6 +408,12 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
                     {
                         AbstractItem.BeforeGiveGlobal += GiveLoreItem;
                         Log("Detected Randomizer. Adding compability.");
+
+                        // If world sense but not lore is randomized, the tablet will become unreadable, which is why we need to account for that
+                        if (ItemChanger.Internal.Ref.Settings.Placements.ContainsKey(LocationNames.World_Sense))
+                        {
+                            Log("World sense is randomized");
+                        }
                     }
                 }
                 Handler.StartCoroutine(ManageSceneActions());
@@ -456,8 +463,8 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
             string placeHolder = string.Empty;
             self.GetState("Anim End").ReplaceAction(new Lambda(() => CheckForPower("DREAMERS_INSPECT_RG5", ref placeHolder)) { Name = "Dreamer Power" });
         }
-        else if (self.gameObject.name.Equals("Moss Cultist") && self.FsmName.Equals("FSM"))
-            self.GetState("Check").RemoveTransitionsTo("Destroy");
+        //else if (self.gameObject.name.Equals("Moss Cultist") && self.FsmName.Equals("FSM"))
+        //    self.GetState("Check").RemoveTransitionsTo("Destroy");
 
         orig(self);
     }
@@ -524,13 +531,9 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
                 using StreamReader reader = new(optionFile);
 
                 string headline = reader.ReadLine();
-                if (headline.ToLower().Contains("%modify%"))
-                {
-
-                }
-                else if (headline.ToLower().Contains("%override%"))
+                if (headline.ToLower().Contains("%override%"))
                     ActivePowers.Clear();
-                else
+                else if (!headline.ToLower().Contains("%modify%"))
                     throw new Exception("Invalid option configuration file");
                 while (!reader.EndOfStream)
                 {
@@ -560,7 +563,10 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
                     if (currentLine.Contains("add") && !ActivePowers.ContainsValue(power))
                         ActivePowers.Add(_powerList.First(x => x.Value == power).Key, power);
                 }
-                GameManager.instance.SaveGame();
+                if (GameManager.instance != null)
+                    GameManager.instance.SaveGame();
+                else
+                    Log("Couldn't find the game manager to save the game.");
             }
             else
                 LogDebug("Couldn't find option file");
@@ -627,7 +633,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
     /// <returns></returns>
     private string ModifyKey(string key)
     {
-        if (key.Contains("Bretta_Diary"))
+        if (key.Contains("BRETTA_DIARY"))
             key = "BRETTA";
         else if (IsMidwife(key))
             key = "MIDWIFE";

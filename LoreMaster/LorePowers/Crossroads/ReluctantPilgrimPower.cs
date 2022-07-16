@@ -5,11 +5,11 @@ using System;
 
 namespace LoreMaster.LorePowers.Crossroads;
 
-public class ReluctantPilgerPower : Power
+public class ReluctantPilgrimPower : Power
 {
     #region Constructors
 
-    public ReluctantPilgerPower() : base("Reluctant Pilger", Area.Crossroads)
+    public ReluctantPilgrimPower() : base("Reluctant Pilgrim", Area.Crossroads)
     {
         Hint = "While you stay on the path, your nail shall receive the gift of the grubfather.";
         Description = "While standing of the ground, the grubberfly elegy effect is active regardless of your hp (joni conditions are still normal). If you have grubberfly equipped, the damage on ground is doubled instead.";

@@ -43,25 +43,52 @@ public class OverwhelmingPower : Power
         }
 
         FsmState setDamageState = self.GetState("Init");
-        setDamageState.ReplaceAction(new Lambda(() =>
-        {
-            if (_hasFullSoulMeter && Active)
+        if (self.gameObject.name.Contains("Spiral"))
+            setDamageState.ReplaceAction(new Lambda(() =>
             {
-                self.gameObject.LocateMyFSM("damages_enemy").FsmVariables.GetFsmInt("damageDealt").Value *= 2;
-                self.transform.localScale = new(self.transform.localScale.x + .8f, self.transform.localScale.y + .8f);
-                self.GetComponent<tk2dSprite>().color = Color.cyan;
-            }
-            else
-                self.GetComponent<tk2dSprite>().color = Color.white;
+                float direction = self.FsmVariables.FindFsmFloat("X Scale").Value > 0 ? -.8f : .8f;
+                if (_hasFullSoulMeter && Active)
+                {
+                    self.gameObject.LocateMyFSM("damages_enemy").FsmVariables.GetFsmInt("damageDealt").Value *= 2;
 
-            if (self.FsmVariables.FindFsmFloat("Velocity").Value < 0f)
-                self.SendEvent("LEFT");
-            else
-                self.SendEvent("RIGHT");
-        })
-        {
-            Name = "Overpower Fireball"
-        }, 1);
+                    self.transform.localScale = new(self.transform.localScale.x + .8f, self.transform.localScale.y + .8f);
+                    self.GetComponent<tk2dSprite>().color = Color.cyan;
+                }
+                else
+                    self.GetComponent<tk2dSprite>().color = Color.white;
+
+                if (direction < 0f)
+                {
+                    LoreMaster.Instance.Log("Shade Soul left");
+                    self.SendEvent("LEFT");
+                }
+                else
+                    self.SendEvent("RIGHT");
+            })
+            {
+                Name = "Overpower Fireball"
+            }, 3);
+        else
+            setDamageState.ReplaceAction(new Lambda(() =>
+            {
+                if (_hasFullSoulMeter && Active)
+                {
+                    self.gameObject.LocateMyFSM("damages_enemy").FsmVariables.GetFsmInt("damageDealt").Value *= 2;
+
+                    self.transform.localScale = new(self.transform.localScale.x + .8f, self.transform.localScale.y + .8f);
+                    self.GetComponent<tk2dSprite>().color = Color.cyan;
+                }
+                else
+                    self.GetComponent<tk2dSprite>().color = Color.white;
+
+                if (self.FsmVariables.FindFsmFloat("Velocity").Value < 0f)
+                    self.SendEvent("LEFT");
+                else
+                    self.SendEvent("RIGHT");
+            })
+            {
+                Name = "Overpower Fireball"
+            }, 1);
         orig(self);
     }
 
@@ -98,7 +125,6 @@ public class OverwhelmingPower : Power
             foreach (Transform subChild in child)
                 if (subChild.tag.Equals("Hero Spell"))
                     spells.Add(subChild.gameObject);
-
         }
 
         // Modify the damage fsm of each spell
@@ -107,7 +133,7 @@ public class OverwhelmingPower : Power
             PlayMakerFSM spellDamageFSM = spellObject.LocateMyFSM("Set Damage");
             if (spellDamageFSM == null)
                 continue;
-            spellDamageFSM.GetState("Finished").AddFirstAction(new Lambda(() =>
+            spellDamageFSM.GetState("Finished").ReplaceAction(new Lambda(() =>
             {
                 if (_hasFullSoulMeter && Active)
                 {
@@ -120,7 +146,11 @@ public class OverwhelmingPower : Power
                     spell.transform.localScale = new(1, 1);
                     spell.GetComponent<tk2dSprite>().color = Color.white;
                 }
-            }));
+
+                if (!PlayerData.instance.GetBool(nameof(PlayerData.instance.equippedCharm_19)))
+                    spellDamageFSM.SendEvent("FINISHED");
+            })
+            { Name = "Empower Spell" });
         }
     }
 

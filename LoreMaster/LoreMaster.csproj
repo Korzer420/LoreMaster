@@ -60,7 +60,7 @@
     <Compile Include="LorePowers\CityOfTears\SoulExtractEfficiencyPower.cs" />
     <Compile Include="LorePowers\CityOfTears\TouristPower.cs" />
     <Compile Include="LorePowers\Crossroads\GreaterMindPower.cs" />
-    <Compile Include="LorePowers\Crossroads\ReluctantPilgerPower.cs" />
+    <Compile Include="LorePowers\Crossroads\ReluctantPilgrimPower.cs" />
     <Compile Include="LorePowers\Deepnest\InfestedPower.cs" />
     <Compile Include="LorePowers\Deepnest\MaskOverchargePower.cs" />
     <Compile Include="LorePowers\Dirtmouth\WellFocusedPower.cs" />
