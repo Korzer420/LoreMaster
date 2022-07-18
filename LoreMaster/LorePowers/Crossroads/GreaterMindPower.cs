@@ -100,13 +100,13 @@ public class GreaterMindPower : Power
         try
         {
             TextMeshPro currentCounter = _loreTracker.GetComponent<DisplayItemAmount>().textObject;
-            currentCounter.text = _areas[currentArea] + ": " + activePowers.Count(x => x.Location == currentArea && x.Tag != PowerTag.Removed);
-            currentCounter.text += "/" + allPowers.Count(x => x.Location == currentArea && x.Tag != PowerTag.Removed);
+            currentCounter.text = _areas[currentArea] + ": " + activePowers.Count(x => x.Location == currentArea && x.Tag != PowerTag.Remove);
+            currentCounter.text += "/" + allPowers.Count(x => x.Location == currentArea && x.Tag != PowerTag.Remove);
             if (globalActive)
                 currentCounter.text = "<color=#7FFF7B>" + currentCounter.text + "</color>";
 
-            string globalPart = "All: "+ activePowers.Count(x => x.Tag != PowerTag.Removed) + "/" + allPowers.Count(x => x.Tag != PowerTag.Removed);
-            if (activePowers.Count(x => x.Tag != PowerTag.Removed) == allPowers.Count(x => x.Tag != PowerTag.Removed))
+            string globalPart = "All: "+ activePowers.Count(x => x.Tag != PowerTag.Remove) + "/" + allPowers.Count(x => x.Tag != PowerTag.Remove);
+            if (activePowers.Count(x => x.Tag != PowerTag.Remove) == allPowers.Count(x => x.Tag != PowerTag.Remove))
                 globalPart = "<color=#7FFF7B>" + globalPart + "</color>";
 
             currentCounter.text += Environment.NewLine + globalPart;

@@ -3,9 +3,7 @@ using ItemChanger;
 using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
 using ItemChanger.Locations;
-using ItemChanger.Locations.SpecialLocations;
 using ItemChanger.Placements;
-using ItemChanger.Tags;
 using ItemChanger.UIDefs;
 using LoreMaster.CustomItem;
 using LoreMaster.Enums;
@@ -30,6 +28,7 @@ using LoreMaster.LorePowers.WhitePalace;
 using LoreMaster.SaveManagement;
 using LoreMaster.UnityComponents;
 using Modding;
+using SFCore;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -61,7 +60,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         {"TUT_TAB_02", new ScrewTheRulesPower() },
         {"TUT_TAB_03", new TrueFormPower() },
         {"BRETTA", new CaringShellPower() },
-        {"ELDERBUG", new ElderbugHitListPower() { Tag = PowerTag.Removed } },
+        {"ELDERBUG", new ElderbugHitListPower() { Tag = PowerTag.Remove } },
         // Fog Canyon
         {"ARCHIVE_01", new FriendOfTheJellyfishPower() },
         {"ARCHIVE_02", new JellyBellyPower() },
@@ -312,7 +311,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
             foreach (string key in _powerList.Keys)
                 _powerList[key].Tag = PowerTag.Local;
             _powerList["EndOfPathOfPain"].Tag = PowerTag.Exclude;
-            _powerList["ELDERBUG"].Tag = PowerTag.Removed;
+            _powerList["ELDERBUG"].Tag = PowerTag.Remove;
             // Unsure if this is needed, but just in case.
             ActivePowers.Clear();
         }
@@ -402,7 +401,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
                     On.DeactivateIfPlayerdataTrue.OnEnable += ForceMyla;
                     On.DeactivateIfPlayerdataFalse.OnEnable += PreventMylaZombie;
                     // Load in changes from the options file (if it exists)
-                    LoadOptions();
+                    //LoadOptions();
                     if (ModHooks.GetMod("Randomizer 4", true) is Mod mod)
                     {
                         Log("Detected Randomizer. Adding compability.");
@@ -473,7 +472,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
             self.GetState("Anim End").ReplaceAction(new Lambda(() => CheckForPower("DREAMERS_INSPECT_RG5", ref placeHolder)) { Name = "Dreamer Power" });
         }
         else if (self.gameObject.name.Equals("Moss Cultist") && self.FsmName.Equals("FSM"))
-        { 
+        {
             self.GetState("Check").RemoveTransitionsTo("Destroy");
             self.gameObject.GetComponent<BoxCollider2D>().enabled = true;
         }
@@ -590,36 +589,51 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         {
             LogError("Couldn't load option file: " + exception.Message);
         }
-
     }
 
     public List<IMenuMod.MenuEntry> GetMenuData(IMenuMod.MenuEntry? toggleButtonEntry)
     {
-
-        return new List<IMenuMod.MenuEntry>
+        List<IMenuMod.MenuEntry> menu = new();
+        menu.Add(new()
         {
-            new IMenuMod.MenuEntry {
-                Name = "Custom Text",
-                Description = "Replaces the text of tablets or conversations (if available).",
-                Values = new string[] {
+            Name = "Custom Text",
+            Description = "Replaces the text of tablets or conversations (if available).",
+            Values = new string[] {
                     "On",
                     "Off",
                 },
-                // opt will be the index of the option that has been chosen
-                Saver = option => UseCustomText = option == 0,
-                Loader = () => UseCustomText ? 0 : 1
-            },
-            new IMenuMod.MenuEntry {
-                Name = "Use Vague Hints",
-                Description = "If on, it shows the normal more vaguely text. Otherwise it shows a clear description what the power does.",
-                Values = new string[] {
-                    "On",
-                    "Off"
-                },
-                Saver = option => UseHints = option == 0,
-                Loader = () => UseHints ? 0 : 1
-            }
-        };
+            // opt will be the index of the option that has been chosen
+            Saver = option => UseCustomText = option == 0,
+            Loader = () => UseCustomText ? 0 : 1
+        });
+
+        menu.Add(new()
+        {
+            Name = "Use Vague Hints",
+            Description = "If on, it shows the normal more vaguely text. Otherwise it shows a clear description what the power does.",
+            Values = new string[] { "On", "Off" },
+            Saver = option => UseHints = option == 0,
+            Loader = () => UseHints ? 0 : 1
+        });
+        
+        //foreach (Power power in _powerList.Values)
+        //    menu.Add(new()
+        //    {
+        //        Name = power.PowerName,
+        //        Values = new string[]
+        //        {
+        //            "Global",
+        //            "Local",
+        //            "Exclude",
+        //            "Disable",
+        //            "Remove"
+        //        },
+        //        Saver = option => power.Tag = (PowerTag)option,
+        //        Loader = () => (int)power.Tag
+        //    });
+        
+
+        return menu;
     }
 
     /// <summary>
@@ -758,8 +772,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
     /// <returns></returns>
     private bool IsAreaGlobal(Area toCheck)
     {
-
-        List<Power> neededAreaPowers = _powerList.Values.Where(x => x.Location == toCheck && (x.Tag == PowerTag.Local || x.Tag == PowerTag.Disabled || x.Tag == PowerTag.Global)).ToList();
+        List<Power> neededAreaPowers = _powerList.Values.Where(x => x.Location == toCheck && (x.Tag == PowerTag.Local || x.Tag == PowerTag.Disable || x.Tag == PowerTag.Global)).ToList();
         foreach (Power neededPower in neededAreaPowers)
             if (!ActivePowers.ContainsValue(neededPower))
                 return false;
@@ -880,6 +893,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
 
     public void OnLoadGlobal(LoreMasterGlobalSaveData globalSaveData)
     {
+        Log("Loaded global data");
         UseHints = globalSaveData.ShowHint;
         UseCustomText = globalSaveData.EnableCustomText;
     }

@@ -1,4 +1,5 @@
 using LoreMaster.Enums;
+using Modding;
 using UnityEngine;
 
 namespace LoreMaster.LorePowers.FogCanyon;
@@ -16,8 +17,21 @@ public class JellyBellyPower : Power
     public JellyBellyPower() : base("Belly of the Jelly(fish)", Area.FogCanyon)
     {
         CustomText = "Aren't my jelly fish cute little things? The way the float in the air and fall so slowly, it has something... calming to it. I wish I could navigate to the air like that.";
-        Hint = "You are feeling light, like a feather";
-        Description = "Decrease your falling speed by 25% and triples the time needed in air, for a hard fall.";
+        Hint = "You are feeling light, like a feather.";
+        Description = "Decrease your falling speed by about 20% and triples the time needed in air, for a hard fall.";
+    }
+
+    #endregion
+
+    #region Event Handler
+
+    private void Float()
+    {
+
+        if (_playerRigidBody.gravityScale == 0)
+            return;
+
+        _playerRigidBody.gravityScale = HeroController.instance.transitionState == GlobalEnums.HeroTransitionState.WAITING_TO_TRANSITION ? 0.64f : 0.79f;
     }
 
     #endregion
@@ -25,17 +39,18 @@ public class JellyBellyPower : Power
     #region Protected Methods
 
     protected override void Initialize() => _playerRigidBody = HeroController.instance.gameObject.GetComponent<Rigidbody2D>();
-    
+
     protected override void Enable()
     {
         HeroController.instance.BIG_FALL_TIME *= 3;
-        _playerRigidBody.gravityScale -= .25f;
+        ModHooks.HeroUpdateHook += Float;
     }
 
     protected override void Disable()
     {
-        _playerRigidBody.gravityScale += .25f;
+        ModHooks.HeroUpdateHook -= Float;
         HeroController.instance.BIG_FALL_TIME /= 3;
+        _playerRigidBody.gravityScale = .79f;
     }
 
     #endregion

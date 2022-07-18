@@ -31,7 +31,7 @@ public class MaskOverchargePower : Power
     public MaskOverchargePower() : base("Mask Overcharge", Area.Deepnest)
     {
         Hint = "Let one your mask occasionly overcharge. If it is the one that protects you, it emits a searing circle, that also absorbs the loose soul around you.";
-        Description = "Overcharge one of your mask (it glows in different colors), while you have exactly that much health, a circle gathers around you that deal damage and restore 5 soul each second. "+
+        Description = "Overcharge one of your mask (it glows in different colors), while you have exactly that much health, a circle gathers around you that deal damage and restore 8 soul each second. "+
             "The overcharged mask changes every 30 seconds and may never select the full hp mask. Inactive while you have Joni's Blessing equipped.";
     }
 
@@ -80,7 +80,6 @@ public class MaskOverchargePower : Power
         // Reset mask color.
         foreach (tk2dSprite sprite in _healthSprites)
             sprite.color = Color.white;
-        
         _overchargeHealth = -1;
     }
 
