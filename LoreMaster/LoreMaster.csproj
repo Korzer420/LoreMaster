@@ -37,13 +37,14 @@
     <Compile Include="Enums\Area.cs" />
     <Compile Include="Enums\ElderbugReward.cs" />
     <Compile Include="Extensions\ExtensionMethods.cs" />
+    <Compile Include="Helper\PowerHelper.cs" />
     <Compile Include="Helper\SpriteHelper.cs" />
     <Compile Include="LorePowers\CityOfTears\HappyFatePower.cs" />
     <Compile Include="LorePowers\Crossroads\DiamantDashPower.cs" />
     <Compile Include="LorePowers\Dirtmouth\ElderbugHitListPower.cs" />
     <Compile Include="LorePowers\FungalWastes\BagOfMushroomsPower.cs" />
     <Compile Include="Helper\RandomizerHelper.cs" />
-    <Compile Include="LorePowers\Peaks\DiamondHeartPower.cs" />
+    <Compile Include="LorePowers\Peaks\DiamondCorePower.cs" />
     <Compile Include="LorePowers\QueensGarden\EmbraceTheLightPower.cs" />
     <Compile Include="UnityComponents\ConcussionEffect.cs" />
     <Compile Include="UnityComponents\CoroutineHandler.cs" />
@@ -148,9 +149,6 @@
     <Reference Include="PlayMaker, Version=1.6.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\Program Files\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\PlayMaker.dll</HintPath>
-    </Reference>
-    <Reference Include="SFCore">
-      <HintPath>..\..\Mod Dll\SFCore.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">

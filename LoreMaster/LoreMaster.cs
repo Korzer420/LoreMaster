@@ -28,7 +28,6 @@ using LoreMaster.LorePowers.WhitePalace;
 using LoreMaster.SaveManagement;
 using LoreMaster.UnityComponents;
 using Modding;
-using SFCore;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -105,7 +104,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         {"MASKMAKER", new MaskOverchargePower() },
         {"MIDWIFE", new InfestedPower() },
         // Crystal Peaks
-        {"QUIRREL", new DiamondHeartPower() },
+        {"QUIRREL", new DiamondCorePower() },
         // White Palace
         {"WP_WORKSHOP_01", new ShadowForgedPower() },
         {"WP_THRONE_01", new ShiningBoundPower() },

@@ -101,8 +101,11 @@ public class HappyFatePower : Power
         On.HeroController.SetBenchRespawn -= ResetHappiness;
         ModHooks.GetPlayerIntHook -= AdjustNail;
         ModHooks.TakeHealthHook -= RemoveHappiness;
-        _isHappy = false;
-        HappynessChange();
+        if (_isHappy)
+        {
+            _isHappy = false;
+            HappynessChange();
+        }
     }
 
     #endregion

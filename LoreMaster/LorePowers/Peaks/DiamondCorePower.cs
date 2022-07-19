@@ -3,14 +3,12 @@ using ItemChanger.FsmStateActions;
 using LoreMaster.Enums;
 using LoreMaster.Extensions;
 using LoreMaster.Helper;
-using Modding;
 using System.Collections;
-using System.Reflection;
 using UnityEngine;
 
 namespace LoreMaster.LorePowers.Peaks;
 
-public class DiamondHeartPower : Power
+public class DiamondCorePower : Power
 {
     #region Members
 
@@ -25,7 +23,7 @@ public class DiamondHeartPower : Power
 
     #region Constructors
 
-    public DiamondHeartPower() : base("Diamond Heart", Area.Peaks)
+    public DiamondCorePower() : base("Diamond Core", Area.Peaks)
     {
         Hint = "The crystal heart's core absorbed the power of diamond and got even stronger. If you hit a wall, all foes may be stunned shortly. The power of the diamond may crush enemies in your path even more.";
         Description = "Crystal Heart snares all enemies in the room for 1.5 seconds if you hit a wall and doubles the damage. Doubled if you have Diamant Dash Power.";

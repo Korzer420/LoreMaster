@@ -36,7 +36,7 @@ public class DiamantDashPower : Power
 
     #region Properties
 
-    public bool HasDiamondHeart => LoreMaster.Instance.ActivePowers.ContainsKey("QUIRREL") && LoreMaster.Instance.ActivePowers["QUIRREL"].Active;
+    public bool HasDiamondCore => LoreMaster.Instance.ActivePowers.ContainsKey("QUIRREL") && LoreMaster.Instance.ActivePowers["QUIRREL"].Active;
 
     #endregion
 
@@ -54,7 +54,7 @@ public class DiamantDashPower : Power
 
     protected override void Enable()
     {
-        if (HasDiamondHeart)
+        if (HasDiamondCore)
         {
             _crystalHeartSprite.sprite = _diamondSprite;
             HeroController.instance.superDash.FsmVariables.FindFsmFloat("Charge Time").Value -= .6f;
@@ -77,12 +77,11 @@ public class DiamantDashPower : Power
 
     protected override void Disable()
     {
-        if (HasDiamondHeart)
+        if (HasDiamondCore)
         {
             _crystalHeartSprite.sprite = _shelllessSprite;
             HeroController.instance.superDash.FsmVariables.FindFsmFloat("Charge Time").Value += .6f;
         }
-
         else
         {
             _crystalHeartSprite.sprite = _originalSprite;
@@ -110,7 +109,7 @@ public class DiamantDashPower : Power
             if(passedTime >= .2f)
             {
                 passedTime = 0f;
-                HeroController.instance.TakeMP(HasDiamondHeart ? 2 : 4);
+                HeroController.instance.TakeMP(HasDiamondCore ? 2 : 4);
             }
         }
         _currentlyHold = false;
