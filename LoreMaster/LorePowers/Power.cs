@@ -54,6 +54,8 @@ public abstract class Power
 
     public PowerTag Tag { get; set; } = PowerTag.Local;
 
+    public PowerTag DefaultTag { get; set; } = PowerTag.Local;
+
     #endregion
 
     #region Methods
@@ -80,13 +82,13 @@ public abstract class Power
         try
         {
             if (!_initialized)
-            { 
-                Initialize();
+            {
                 _initialized = true;
+                Initialize();
             }
+            Active = true;
             Enable();
             LoreMaster.Instance.LogDebug("Enabled " + PowerName);
-            Active = true;
         }
         catch (Exception exception)
         {
@@ -94,6 +96,7 @@ public abstract class Power
             LoreMaster.Instance.LogError("Error while loading " + PowerName + ": " + exception);
             LoreMaster.Instance.LogError("Error while loading " + PowerName + ": " + exception.Source);
             LoreMaster.Instance.LogError("Error while loading " + PowerName + ": " + exception.StackTrace);
+            Active = false;
         }
     }
 

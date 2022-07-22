@@ -178,7 +178,7 @@ public class JonisProtectionPower : Power
             if (IsDialogueOpen)
                 yield return new WaitWhile(() => IsDialogueOpen);
             // This is an extra check for the case, that the last lifeblood gets taken to prevent removing real masks.
-            if (_currentLifebloodBonus > 0)
+            if (_currentLifebloodBonus > 0 && PlayerData.instance.GetInt(nameof(PlayerData.instance.healthBlue)) > 0)
                 HeroController.instance.TakeHealth(1);
 
         }

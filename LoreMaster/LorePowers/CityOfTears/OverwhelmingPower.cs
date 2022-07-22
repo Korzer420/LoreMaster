@@ -4,6 +4,7 @@ using ItemChanger.FsmStateActions;
 using LoreMaster.Enums;
 using LoreMaster.Extensions;
 using LoreMaster.Helper;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -49,8 +50,7 @@ public class OverwhelmingPower : Power
                 float direction = self.FsmVariables.FindFsmFloat("X Scale").Value > 0 ? -.8f : .8f;
                 if (_hasFullSoulMeter && Active)
                 {
-                    self.gameObject.LocateMyFSM("damages_enemy").FsmVariables.GetFsmInt("damageDealt").Value *= 2;
-
+                    self.gameObject.LocateMyFSM("damages_enemy").FsmVariables.GetFsmInt("damageDealt").Value = Convert.ToInt32(self.gameObject.LocateMyFSM("damages_enemy").FsmVariables.GetFsmInt("damageDealt").Value * 1.4f);
                     self.transform.localScale = new(self.transform.localScale.x + .8f, self.transform.localScale.y + .8f);
                     self.GetComponent<tk2dSprite>().color = Color.cyan;
                 }
@@ -70,7 +70,7 @@ public class OverwhelmingPower : Power
             {
                 if (_hasFullSoulMeter && Active)
                 {
-                    self.gameObject.LocateMyFSM("damages_enemy").FsmVariables.GetFsmInt("damageDealt").Value *= 2;
+                    self.gameObject.LocateMyFSM("damages_enemy").FsmVariables.GetFsmInt("damageDealt").Value = Convert.ToInt32(self.gameObject.LocateMyFSM("damages_enemy").FsmVariables.GetFsmInt("damageDealt").Value * 1.4f);
 
                     self.transform.localScale = new(self.transform.localScale.x + .8f, self.transform.localScale.y + .8f);
                     self.GetComponent<tk2dSprite>().color = Color.cyan;

@@ -39,13 +39,14 @@
     <Compile Include="Extensions\ExtensionMethods.cs" />
     <Compile Include="Helper\PowerHelper.cs" />
     <Compile Include="Helper\SpriteHelper.cs" />
+    <Compile Include="LorePage.cs" />
     <Compile Include="LorePowers\CityOfTears\HappyFatePower.cs" />
     <Compile Include="LorePowers\Crossroads\DiamantDashPower.cs" />
     <Compile Include="LorePowers\Dirtmouth\ElderbugHitListPower.cs" />
     <Compile Include="LorePowers\FungalWastes\BagOfMushroomsPower.cs" />
     <Compile Include="Helper\RandomizerHelper.cs" />
     <Compile Include="LorePowers\Peaks\DiamondCorePower.cs" />
-    <Compile Include="LorePowers\QueensGarden\EmbraceTheLightPower.cs" />
+    <Compile Include="LorePowers\QueensGarden\FollowTheLightPower.cs" />
     <Compile Include="UnityComponents\ConcussionEffect.cs" />
     <Compile Include="UnityComponents\CoroutineHandler.cs" />
     <Compile Include="CustomItem\TicketCost.cs" />
@@ -150,6 +151,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\Program Files\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\PlayMaker.dll</HintPath>
     </Reference>
+    <Reference Include="SFCore, Version=1.5.3.2, Culture=neutral, PublicKeyToken=723094b6adc0e8b9, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Mod Dll\SFCore.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\..\..\..\Program Files\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\UnityEngine.dll</HintPath>
@@ -197,6 +202,11 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\DiamondHeart_Shellless.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\DisabledPower.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>

@@ -28,31 +28,45 @@ public class ShadowForgedPower : Power
 
     protected override void Initialize()
     {
-        _shadow = GameObject.Find("Knight/Effects").transform.Find("Shadow Recharge").gameObject;
-        PlayMakerFSM fsm = _shadow.LocateMyFSM("Recharge Effect");
-
-        fsm.GetState("Init").AddLastAction(new Lambda(() =>
+        try
         {
-            if (Active)
-                fsm.FsmVariables.GetFsmFloat("Wait time").Value -= .4f;
-        }));
+            _shadow = GameObject.Find("Knight/Effects").transform.Find("Shadow Recharge").gameObject;
+            PlayMakerFSM fsm = _shadow.LocateMyFSM("Recharge Effect");
 
-        fsm = GameObject.Find("Knight/Attacks").LocateMyFSM("Set Sharp Shadow Damage");
-        fsm.GetState("Set").RemoveFirstActionOfType<SetFsmInt>();
-        fsm.GetState("Set").AddLastAction(new Lambda(() =>
+            fsm.GetState("Init").AddLastAction(new Lambda(() =>
+            {
+                if (Active)
+                    fsm.FsmVariables.GetFsmFloat("Wait time").Value -= .4f;
+            }));
+
+            fsm = GameObject.Find("Knight/Attacks").LocateMyFSM("Set Sharp Shadow Damage");
+            fsm.GetState("Set").RemoveFirstActionOfType<SetFsmInt>();
+            fsm.GetState("Set").AddLastAction(new Lambda(() =>
+            {
+                int damage = fsm.FsmVariables.FindFsmInt("nailDamage").Value;
+                if (Active)
+                    damage *= 2;
+                fsm.transform.Find("Sharp Shadow").gameObject.LocateMyFSM("damages_enemy").FsmVariables.FindFsmInt("damageDealt").Value = damage;
+
+            }));
+        }
+        catch
         {
-            int damage = fsm.FsmVariables.FindFsmInt("nailDamage").Value;
-            if (Active)
-                damage *= 2;
-            fsm.transform.Find("Sharp Shadow").gameObject.LocateMyFSM("damages_enemy").FsmVariables.FindFsmInt("damageDealt").Value = damage;
-
-        }));
+            _initialized = false;
+        }
     }
 
     protected override void Enable()
     {
-        HeroController.instance.SHADOW_DASH_COOLDOWN -= .4f;
-        _shadow.GetComponent<tk2dSpriteAnimator>().CurrentClip.fps += 10f;
+        try
+        {
+            HeroController.instance.SHADOW_DASH_COOLDOWN -= .4f;
+            _shadow.GetComponent<tk2dSpriteAnimator>().CurrentClip.fps += 10f;
+        }
+        catch
+        {
+            Active = false;
+        }
     }
 
     protected override void Disable()

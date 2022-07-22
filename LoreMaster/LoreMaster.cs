@@ -3,6 +3,7 @@ using ItemChanger;
 using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
 using ItemChanger.Locations;
+using ItemChanger.Modules;
 using ItemChanger.Placements;
 using ItemChanger.UIDefs;
 using LoreMaster.CustomItem;
@@ -28,6 +29,7 @@ using LoreMaster.LorePowers.WhitePalace;
 using LoreMaster.SaveManagement;
 using LoreMaster.UnityComponents;
 using Modding;
+using SFCore;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -54,20 +56,24 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         {"MAGE_COMP_01", new SoulExtractEfficiencyPower() },
         {"LURIAN_JOURNAL", new EyeOfTheWatcherPower() },
         {"EMILITIA", new HappyFatePower() },
+        // Crossroads
+        {"PILGRIM_TAB_01", new ReluctantPilgrimPower() },
+        {"COMPLETION_RATE_UNLOCKED", new GreaterMindPower() { DefaultTag = PowerTag.Global } },
+        {"MYLA", new DiamantDashPower() },
+        // Crystal Peaks
+        {"QUIRREL", new DiamondCorePower() },
+        // Deepnest
+        {"MASKMAKER", new MaskOverchargePower() },
+        {"MIDWIFE", new InfestedPower() },
         // Dirtmouth/King's Pass
         {"TUT_TAB_01", new WellFocusedPower() },
         {"TUT_TAB_02", new ScrewTheRulesPower() },
         {"TUT_TAB_03", new TrueFormPower() },
         {"BRETTA", new CaringShellPower() },
-        {"ELDERBUG", new ElderbugHitListPower() { Tag = PowerTag.Remove } },
         // Fog Canyon
         {"ARCHIVE_01", new FriendOfTheJellyfishPower() },
         {"ARCHIVE_02", new JellyBellyPower() },
         {"ARCHIVE_03", new JellyfishFlowPower() },
-        // Crossroads
-        {"PILGRIM_TAB_01", new ReluctantPilgrimPower() },
-        {"COMPLETION_RATE_UNLOCKED", new GreaterMindPower() { Tag = PowerTag.Global } },
-        {"MYLA", new DiamantDashPower() },
         // Fungal Wastes
         {"FUNG_TAB_04", new OneOfUsPower() },
         {"FUNG_TAB_01", new PaleLuckPower() },
@@ -87,29 +93,26 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         // Howling Cliffs
         {"CLIFF_TAB_02", new LifebloodWingsPower() },
         {"JONI", new JonisProtectionPower() },
+        // Kingdom's Edge
+        {"MR_MUSH_RIDDLE_TAB_NORMAL", new WisdomOfTheSagePower() },
+        {"BADOON", new ConcussiveStrikePower() },
+        {"HIVEQUEEN", new YouLikeJazzPower() },
         // Queen's Garden
         {"XUN_GRAVE_INSPECT", new FlowerRingPower() },
         {"QUEEN", new QueenThornsPower() },
-        {"MOSSPROPHET", new EmbraceTheLightPower() },
+        {"MOSSPROPHET", new FollowTheLightPower() },
         // Resting Grounds
         {"DREAMERS_INSPECT_RG5", new DreamBlessingPower() },
         // Waterways
         {"DUNG_DEF_SIGN", new EternalSentinelPower() },
         {"FLUKE_HERMIT", new RelentlessSwarmPower() },
-        // Kingdom's Edge
-        {"MR_MUSH_RIDDLE_TAB_NORMAL", new WisdomOfTheSagePower() },
-        {"BADOON", new ConcussiveStrikePower() },
-        {"HIVEQUEEN", new YouLikeJazzPower() },
-        // Deepnest
-        {"MASKMAKER", new MaskOverchargePower() },
-        {"MIDWIFE", new InfestedPower() },
-        // Crystal Peaks
-        {"QUIRREL", new DiamondCorePower() },
         // White Palace
         {"WP_WORKSHOP_01", new ShadowForgedPower() },
         {"WP_THRONE_01", new ShiningBoundPower() },
         {"PLAQUE_WARN", new DiminishingCursePower() },
-        {"EndOfPathOfPain", new SacredShellPower() { Tag = PowerTag.Exclude } }
+        {"EndOfPathOfPain", new SacredShellPower() { DefaultTag = PowerTag.Exclude } },
+        // Unused
+        {"ELDERBUG", new ElderbugHitListPower() { DefaultTag = PowerTag.Remove } }
     };
 
     private readonly Dictionary<Area, List<MapZone>> _mapZones = new()
@@ -134,6 +137,16 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
     private bool _fromMenu;
 
     private Area _currentArea;
+
+    #endregion
+
+    #region Constructors
+
+    public LoreMaster()
+    {
+        LorePage.PassPowers(_powerList.Values.ToList());
+        InventoryHelper.AddInventoryPage(InventoryPageType.Empty, "Lore", "Loremaster", "Loremaster", "metElderbug", LorePage.GeneratePage);
+    }
 
     #endregion
 
@@ -242,6 +255,8 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
     /// <returns></returns>
     private string GetText(string key, string sheetTitle, string text)
     {
+        if (key.Equals("Loremaster"))
+            return "Lore Powers";
         key = ModifyKey(key);
         if (key.Equals("INV_NAME_SUPERDASH"))
         {
@@ -267,8 +282,13 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
             else if (hasDiamondCore && hasDiamondDash)
                 text += "<br>Bathed and reforged with powerful diamonds. Formerly in possession of the crystal leader, this artefact can cause massive earth quakes.";
         }
-        else if (key.Equals("DREAMERS_INSPECT_RG5") || key.Equals("FOUNTAIN_PLAQUE_DESC"))
-            text += "[" + _powerList[key].PowerName + "]" + (UseHints ? _powerList[key].Hint : _powerList[key].Description);
+        else if (key.Equals("FOUNTAIN_PLAQUE_DESC"))
+            text += " [" + _powerList[key].PowerName + "] " + (UseHints ? _powerList[key].Hint : _powerList[key].Description);
+        else if (key.Contains("DREAMERS_INSPECT_RG"))
+        {
+            DreamBlessingPower dPower = (DreamBlessingPower)_powerList["DREAMERS_INSPECT_RG5"];
+            text += dPower.GetExtraText(key);
+        }
         else if (!CheckForPower(key, ref text) && _powerList["QUEEN"].Active)
         {
             if (key.Equals("CHARM_NAME_12"))
@@ -308,11 +328,11 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
 
             // Reset tags to default.
             foreach (string key in _powerList.Keys)
-                _powerList[key].Tag = PowerTag.Local;
-            _powerList["EndOfPathOfPain"].Tag = PowerTag.Exclude;
-            _powerList["ELDERBUG"].Tag = PowerTag.Remove;
+                _powerList[key].Tag = _powerList[key].DefaultTag;
             // Unsure if this is needed, but just in case.
             ActivePowers.Clear();
+            foreach (string key in _powerList.Keys)
+                ActivePowers.Add(key, _powerList[key]);
         }
         catch (Exception exception)
         {
@@ -399,8 +419,16 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
                     On.PlayMakerFSM.OnEnable += FsmEdits;
                     On.DeactivateIfPlayerdataTrue.OnEnable += ForceMyla;
                     On.DeactivateIfPlayerdataFalse.OnEnable += PreventMylaZombie;
+
+                    // Allow the player to read the resting grounds tablet.
+                    DreamNailCutsceneEvent cutscene = ItemChangerMod.Modules.Modules.FirstOrDefault(x => x.Name.Equals("DreamNailCutsceneEvent")) as DreamNailCutsceneEvent;
+                    if (cutscene == null)
+                        ItemChangerMod.Modules.Modules.Add(new DreamNailCutsceneEvent() { Faster = false });
+                    else
+                        cutscene.Faster = false;
+
                     // Load in changes from the options file (if it exists)
-                    //LoadOptions();
+                    LoadOptions();
                     if (ModHooks.GetMod("Randomizer 4", true) is Mod mod)
                     {
                         Log("Detected Randomizer. Adding compability.");
@@ -548,6 +576,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
                     ActivePowers.Clear();
                 else if (!headline.ToLower().Contains("%modify%"))
                     throw new Exception("Invalid option configuration file");
+                Log("Apply option file");
                 while (!reader.EndOfStream)
                 {
                     string currentLine = reader.ReadLine().Replace(" ", "").ToLower();
@@ -576,10 +605,6 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
                     if (currentLine.Contains("add") && !ActivePowers.ContainsValue(power))
                         ActivePowers.Add(_powerList.First(x => x.Value == power).Key, power);
                 }
-                if (GameManager.instance != null)
-                    GameManager.instance.SaveGame();
-                else
-                    Log("Couldn't find the game manager to save the game.");
             }
             else
                 LogDebug("Couldn't find option file");
@@ -614,23 +639,6 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
             Saver = option => UseHints = option == 0,
             Loader = () => UseHints ? 0 : 1
         });
-        
-        //foreach (Power power in _powerList.Values)
-        //    menu.Add(new()
-        //    {
-        //        Name = power.PowerName,
-        //        Values = new string[]
-        //        {
-        //            "Global",
-        //            "Local",
-        //            "Exclude",
-        //            "Disable",
-        //            "Remove"
-        //        },
-        //        Saver = option => power.Tag = (PowerTag)option,
-        //        Loader = () => (int)power.Tag
-        //    });
-        
 
         return menu;
     }

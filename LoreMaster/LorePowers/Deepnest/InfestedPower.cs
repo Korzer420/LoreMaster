@@ -46,14 +46,14 @@ public class InfestedPower : Power
     {
         orig(self, attackDirection, attackType, ignoreEvasion);
         _weavers.RemoveAll(x => x == null);
-
+        LoreMaster.Instance.Log("Called Death");
         // Just in case we limit the amount of weavers to prevent crashing the game... hopefully
         Infested infested = self.GetComponent<Infested>();
         if (infested != null)
         {
             for (int i = 0; i < infested.Eggs; i++)
             {
-                if (_weavers.Count >= 75)
+                if (_weavers.Count >= 25)
                     break;
                 _weavers.Add(GameObject.Instantiate(_weaverPrefab, new Vector3(HeroController.instance.transform.GetPositionX(), HeroController.instance.transform.GetPositionY()), Quaternion.identity));
             }
@@ -67,6 +67,7 @@ public class InfestedPower : Power
         {
             self.GetState("Hit").ReplaceAction(new Lambda(() =>
             {
+                LoreMaster.Instance.Log("Called attack");
                 if (Active)
                     Infest(self.gameObject);
                 self.FsmVariables.FindFsmInt("Enemy HP").Value -= self.FsmVariables.FindFsmInt("Damage").Value;
@@ -92,7 +93,7 @@ public class InfestedPower : Power
 
     protected override void Disable()
     {
-        On.HealthManager.TakeDamage += HealthManager_TakeDamage;
+        On.HealthManager.TakeDamage -= HealthManager_TakeDamage;
         On.HealthManager.Die -= HealthManager_Die;
         On.PlayMakerFSM.OnEnable -= PlayMakerFSM_OnEnable;
     }
@@ -108,7 +109,7 @@ public class InfestedPower : Power
     private void Infest(GameObject gameObject)
     {
         // The hollow knight can trigger it's death multiple times. To make true ending more accessable thk doesn't spawn weavers.
-        if (!gameObject.name.Equals("Hollow Knight Boss"))
+        if (!gameObject.name.Equals("Hollow Knight Boss") && !gameObject.name.Contains("Collector"))
         {
             Infested infested = gameObject.GetComponent<Infested>();
             if (infested == null)

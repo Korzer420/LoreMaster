@@ -19,7 +19,7 @@ public class HotStreakPower : Power
 
     public HotStreakPower() : base("Hot Streak", Area.CityOfTears)
     {
-        Hint = "Successfully striking enemies shall increase your power.";
+        Hint = "Successfully striking enemies shall increase your power. The power will fade away from your weapon if it doesn't hit a foe.";
         Description = "When hitting an enemy with the nail, increases it's damage by 1 (max. 3 stacks per nail upgrade (15 total)). Resets if you don't hit an enemy.";
     }
 

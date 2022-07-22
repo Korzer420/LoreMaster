@@ -1,5 +1,5 @@
 using HutongGames.PlayMaker;
-using ItemChanger.Extensions;
+using SFCore.Utils;
 using System.Linq;
 
 namespace LoreMaster.Extensions;
@@ -13,7 +13,7 @@ public static class ExtensionMethods
             if (state.Actions.Any(x => string.Equals(x.Name, actionToAdd.Name)))
                 return;
             if (actionToRemove == -1)
-                state.AddLastAction(actionToAdd);
+                state.AddAction(actionToAdd);
             else
             {
                 state.RemoveAction(actionToRemove);
@@ -24,5 +24,10 @@ public static class ExtensionMethods
         {
             LoreMaster.Instance.LogError("Couldn't replace method: "+exception.Message);
         }
+    }
+
+    public static void AddGTransition(this PlayMakerFSM fsm, string eventName, string stateName)
+    {
+        fsm.AddGlobalTransition(eventName, stateName);
     }
 }

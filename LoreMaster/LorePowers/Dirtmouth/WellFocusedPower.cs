@@ -30,7 +30,7 @@ public class WellFocusedPower : Power
     protected override void Enable()
     {
         PlayMakerFSM playMakerFSM = HeroController.instance.spellControl;
-        _baseUnFocusSpeed = playMakerFSM.Fsm.GetFsmFloat("Time Per MP Drain CH").Value;
+        _baseUnFocusSpeed = playMakerFSM.Fsm.GetFsmFloat("Time Per MP Drain UnCH").Value;
         _baseFocusSpeed = playMakerFSM.Fsm.GetFsmFloat("Time Per MP Drain CH").Value;
 
         playMakerFSM.Fsm.GetFsmFloat("Time Per MP Drain UnCH").Value *= 0.7f;
