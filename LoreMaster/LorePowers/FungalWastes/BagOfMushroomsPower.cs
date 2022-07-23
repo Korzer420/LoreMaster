@@ -186,6 +186,7 @@ public class BagOfMushroomsPower : Power
 
     #region Protected Methods
 
+    /// <inheritdoc/>
     protected override void Initialize()
     {
         _mushroomBag = new("Mushroom Bag");
@@ -206,12 +207,14 @@ public class BagOfMushroomsPower : Power
         _selectedEffect = 1;
     }
 
+    /// <inheritdoc/>
     protected override void Enable()
     {
         ModHooks.HeroUpdateHook += ShroomControl;
         _mushroomBag.SetActive(true);
     }
 
+    /// <inheritdoc/>
     protected override void Disable()
     {
         ModHooks.HeroUpdateHook -= ShroomControl;

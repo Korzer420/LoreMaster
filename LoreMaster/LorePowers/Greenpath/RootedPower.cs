@@ -34,6 +34,7 @@ public class RootedPower : Power
 
     #region Protected Methods
 
+    /// <inheritdoc/>
     protected override void Initialize()
     {
         PlayMakerFSM playMakerFSM = FsmHelper.GetFSM("Knight", "Spell Control");
@@ -43,9 +44,10 @@ public class RootedPower : Power
             playMakerFSM.GetState("Focus Start").GetFirstActionOfType<Tk2dPlayAnimation>().Enabled = !Active;
             playMakerFSM.FsmVariables.GetFsmFloat("Grace Timer").Value = 0f;
         })
-        { Name ="Control animation"},0);
+        { Name = "Control animation" }, 0);
     }
 
+    /// <inheritdoc/>
     protected override void Enable()
     {
         // This is taken from the skill upgrade mod, with a few adjustments.
@@ -87,6 +89,7 @@ public class RootedPower : Power
 
     }
 
+    /// <inheritdoc/>
     protected override void Disable()
     {
         IL.HeroController.FixedUpdate -= SetWallslideSpeed;

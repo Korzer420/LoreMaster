@@ -14,7 +14,7 @@ public class DiamantDashPower : Power
     private Sprite _corelessSprite;
     private Sprite _shelllessSprite;
     private Sprite _diamondSprite;
-    
+
     private bool _currentlyHold;
 
     #endregion
@@ -42,6 +42,7 @@ public class DiamantDashPower : Power
 
     #region Protected Methods
 
+    /// <inheritdoc/>
     protected override void Initialize()
     {
         _crystalHeartSprite = GameObject.Find("_GameCameras").transform.Find("HudCamera/Inventory/Inv/Equipment/Super Dash").GetComponent<SpriteRenderer>();
@@ -51,6 +52,7 @@ public class DiamantDashPower : Power
         _diamondSprite = SpriteHelper.CreateSprite("DiamondHeart");
     }
 
+    /// <inheritdoc/>
     protected override void Enable()
     {
         _crystalHeartSprite.sprite = HasDiamondCore ? _diamondSprite : _corelessSprite;
@@ -65,6 +67,7 @@ public class DiamantDashPower : Power
             _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(HoldPosition());
     }
 
+    /// <inheritdoc/>
     protected override void Disable()
     {
         _crystalHeartSprite.sprite = HasDiamondCore ? _shelllessSprite : _originalSprite;

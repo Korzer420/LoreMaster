@@ -50,17 +50,19 @@ public class UnitedWeStandPower : Power
 
     #region Protected Methods
 
+    /// <inheritdoc/>
     protected override void Enable()
     {
         On.KnightHatchling.OnEnable += HatchlingSpawn;
-         _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(UpdateCompanions());
+        _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(UpdateCompanions());
     }
 
+    /// <inheritdoc/>
     protected override void Disable()
     {
         LoreMaster.Instance.Handler.StopCoroutine(_runningCoroutine);
         On.KnightHatchling.OnEnable -= HatchlingSpawn;
-    } 
+    }
 
     #endregion
 
@@ -95,7 +97,7 @@ public class UnitedWeStandPower : Power
             {
                 if (_companions.Contains(companion))
                     continue;
-                
+
                 PlayMakerFSM companionFsm;
                 FsmState fsmState;
                 if (companion.tag.Equals("Grimmchild"))
@@ -134,7 +136,7 @@ public class UnitedWeStandPower : Power
                         }
                         // Imitates the send random event which we removed.
                         companionFsm.SendEvent(LoreMaster.Instance.Generator.Next(0, 2) == 0 ? "L" : "R");
-                    }),7);
+                    }), 7);
                 }
                 _companions.Add(companion);
             }
@@ -143,7 +145,7 @@ public class UnitedWeStandPower : Power
         {
             LoreMaster.Instance.LogError("Error: " + exception.Message);
         }
-    } 
+    }
 
     #endregion
 }

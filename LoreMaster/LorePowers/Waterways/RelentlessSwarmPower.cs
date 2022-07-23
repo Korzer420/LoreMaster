@@ -30,9 +30,11 @@ public class RelentlessSwarmPower : Power
 
     #region Protected Methods
 
+    /// <inheritdoc/>
     protected override void Enable() => On.SpellFluke.DoDamage += SpellFluke_DoDamage;
-    
+
+    /// <inheritdoc/>
     protected override void Disable() => On.SpellFluke.DoDamage -= SpellFluke_DoDamage;
-    
+
     #endregion
 }

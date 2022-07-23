@@ -11,7 +11,7 @@ public class OneOfUsPower : Power
     private GameObject _cloud;
 
     #endregion
-    
+
     #region Constructors
 
     public OneOfUsPower() : base("One of Us", Area.FungalWastes)
@@ -24,14 +24,17 @@ public class OneOfUsPower : Power
 
     #region Protected Methods
 
+    /// <inheritdoc/>
     protected override void Initialize()
     {
         _cloud = GameObject.Find("_GameManager");
         _cloud = _cloud.transform.Find("GlobalPool/Knight Spore Cloud(Clone)").gameObject;
     }
 
+    /// <inheritdoc/>
     protected override void Enable() => _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(EmitCloud());
 
+    /// <inheritdoc/>
     protected override void Disable() => LoreMaster.Instance.Handler.StopCoroutine(_runningCoroutine);
 
     #endregion

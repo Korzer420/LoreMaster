@@ -57,6 +57,7 @@ public class DiamondCorePower : Power
 
     #region Protected Methods
 
+    /// <inheritdoc/>
     protected override void Initialize()
     {
         try
@@ -96,6 +97,7 @@ public class DiamondCorePower : Power
         }
     }
 
+    /// <inheritdoc/>
     protected override void Enable()
     {
         try
@@ -114,6 +116,7 @@ public class DiamondCorePower : Power
         }
     }
 
+    /// <inheritdoc/>
     protected override void Disable()
     {
         LoreMaster.Instance.SceneActions.Remove(PowerName);
@@ -158,8 +161,8 @@ public class DiamondCorePower : Power
             if (passedTime >= 0.2f)
             {
                 passedTime = 0f;
-                if(damage.Value < 90)
-                damage.Value++;
+                if (damage.Value < 90)
+                    damage.Value++;
                 if (_speed < 90f && _speed > -90f)
                     _speed += HeroController.instance.cState.facingRight ? 1.2f : -1.2f;
                 speed.Value = _speed;

@@ -22,7 +22,7 @@ public class MaskOverchargePower : Power
 
     private int _overchargeHealth = -1;
 
-    private tk2dSprite[] _healthSprites = new tk2dSprite[4]; 
+    private tk2dSprite[] _healthSprites = new tk2dSprite[4];
 
     #endregion
 
@@ -31,7 +31,7 @@ public class MaskOverchargePower : Power
     public MaskOverchargePower() : base("Mask Overcharge", Area.Deepnest)
     {
         Hint = "Let one your mask occasionly overcharge. If it is the one that protects you, it emits a searing circle, that also absorbs the loose soul around you.";
-        Description = "Overcharge one of your mask (it glows in different colors), while you have exactly that much health, a circle gathers around you that deal damage and restore 8 soul each second. "+
+        Description = "Overcharge one of your mask (it glows in different colors), while you have exactly that much health, a circle gathers around you that deal damage and restore 8 soul each second. " +
             "The overcharged mask changes every 30 seconds and may never select the full hp mask. Inactive while you have Joni's Blessing equipped.";
     }
 
@@ -55,6 +55,7 @@ public class MaskOverchargePower : Power
 
     #region Protected Methods
 
+    /// <inheritdoc/>
     protected override void Initialize()
     {
         _overcharge = new();
@@ -64,14 +65,16 @@ public class MaskOverchargePower : Power
         _overcharge.AddComponent<MaskCharge>();
     }
 
+    /// <inheritdoc/>
     protected override void Enable()
     {
         if (_overcharge == null)
             Initialize();
         On.HeroController.FixedUpdate += HeroController_FixedUpdate;
-         _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(SelectOverchargeHealth());
+        _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(SelectOverchargeHealth());
     }
 
+    /// <inheritdoc/>
     protected override void Disable()
     {
         On.HeroController.FixedUpdate -= HeroController_FixedUpdate;

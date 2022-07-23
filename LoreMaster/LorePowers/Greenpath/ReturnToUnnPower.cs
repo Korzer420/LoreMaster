@@ -27,6 +27,7 @@ public class ReturnToUnnPower : Power
 
     #region Protected Methods
 
+    /// <inheritdoc/>
     protected override void Initialize()
     {
         FsmState slugSpeed = GameObject.Find("Knight").LocateMyFSM("Spell Control").GetState("Start MP Drain");
@@ -38,13 +39,15 @@ public class ReturnToUnnPower : Power
         }));
     }
 
-    protected override void Enable() =>  _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(AdjustMovementSpeed());
-    
+    /// <inheritdoc/>
+    protected override void Enable() => _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(AdjustMovementSpeed());
+
+    /// <inheritdoc/>
     protected override void Disable()
     {
         LoreMaster.Instance.Handler.StopCoroutine(_runningCoroutine);
         if (_movementSpeedBuff)
-        { 
+        {
             HeroController.instance.WALK_SPEED -= 3f;
             HeroController.instance.RUN_SPEED -= 3f;
             HeroController.instance.RUN_SPEED_CH -= 3f;

@@ -47,7 +47,7 @@ public class ConcussiveStrikePower : Power
                 child.transform.localPosition = new(0, 0 + self.transform.GetComponent<BoxCollider2D>().size.y / 2);
             }
         }
-        else if(hitInstance.DamageDealt > 0)
+        else if (hitInstance.DamageDealt > 0)
         {
             // Nail hits extends the duration of concussion (except cyclone slash) and increase their damage
             if (hitInstance.AttackType == AttackTypes.Nail && !_nailArts[2].activeSelf)
@@ -65,13 +65,13 @@ public class ConcussiveStrikePower : Power
     private void TakeDamage(On.HeroController.orig_TakeDamage orig, HeroController self, GameObject go, GlobalEnums.CollisionSide damageSide, int damageAmount, int hazardType)
     {
         if (damageAmount > 0 && go.GetComponentInChildren<ConcussionEffect>(true) != null && LoreMaster.Instance.Generator.Next(1, 11) == 1)
-        { 
+        {
             damageAmount--;
             if (damageAmount <= 0)
             {
                 // If the enemy deals no damage it will not trigger the i frames and cause the knight to take the damage next frame, which would make this rather pointless.
                 // Therefore we doing some witchcraft to trigger the i frames manually if no damage is applied because of this.
-                 _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine((IEnumerator)_invulnableCall.Invoke(HeroController.instance, new object[] { 1.5f }));
+                _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine((IEnumerator)_invulnableCall.Invoke(HeroController.instance, new object[] { 1.5f }));
             }
         }
 
@@ -82,6 +82,7 @@ public class ConcussiveStrikePower : Power
 
     #region Public Methods
 
+    /// <inheritdoc/>
     protected override void Initialize()
     {
         GameObject attacks = GameObject.Find("Knight/Attacks");
@@ -91,12 +92,14 @@ public class ConcussiveStrikePower : Power
         _invulnableCall = HeroController.instance.GetType().GetMethod("Invulnerable", BindingFlags.NonPublic | BindingFlags.Instance);
     }
 
+    /// <inheritdoc/>
     protected override void Enable()
     {
         On.HealthManager.TakeDamage += EnemyTookHit;
         On.HeroController.TakeDamage += TakeDamage;
     }
 
+    /// <inheritdoc/>
     protected override void Disable()
     {
         On.HealthManager.TakeDamage -= EnemyTookHit;

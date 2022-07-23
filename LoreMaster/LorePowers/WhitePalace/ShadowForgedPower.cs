@@ -16,7 +16,7 @@ public class ShadowForgedPower : Power
 
     #region Constructors
 
-    public ShadowForgedPower() : base("Shadow Forged",Area.WhitePalace)
+    public ShadowForgedPower() : base("Shadow Forged", Area.WhitePalace)
     {
         Hint = "Your void energy return quicker to you.";
         Description = "Decrease the cooldown of shade cloak by 0.4 seconds and increases sharp shadow damage by 100%.";
@@ -26,6 +26,7 @@ public class ShadowForgedPower : Power
 
     #region Protected Methods
 
+    /// <inheritdoc/>
     protected override void Initialize()
     {
         try
@@ -56,6 +57,7 @@ public class ShadowForgedPower : Power
         }
     }
 
+    /// <inheritdoc/>
     protected override void Enable()
     {
         try
@@ -69,6 +71,7 @@ public class ShadowForgedPower : Power
         }
     }
 
+    /// <inheritdoc/>
     protected override void Disable()
     {
         HeroController.instance.SHADOW_DASH_COOLDOWN += .4f;

@@ -41,15 +41,17 @@ public class EternalValorPower : Power
             return;
 
         _currentlyRunning = true;
-         _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(HitCooldown());
+        _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(HitCooldown());
     }
 
     #endregion
 
     #region Protected Methods
 
+    /// <inheritdoc/>
     protected override void Enable() => ModHooks.SlashHitHook += ModHooks_SlashHitHook;
-    
+
+    /// <inheritdoc/>
     protected override void Disable() => ModHooks.SlashHitHook -= ModHooks_SlashHitHook;
 
     #endregion

@@ -44,7 +44,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
 {
     #region Members
 
-    private readonly Dictionary<string, Power> _powerList = new()
+    private Dictionary<string, Power> _powerList = new()
     {
         // Ancient Basin
         {"ABYSS_TUT_TAB_01", new WeDontTalkAboutShadePower() },
@@ -70,6 +70,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         {"TUT_TAB_02", new ScrewTheRulesPower() },
         {"TUT_TAB_03", new TrueFormPower() },
         {"BRETTA", new CaringShellPower() },
+        //{"GRAVEDIGGER", new RequiemPower() },
         // Fog Canyon
         {"ARCHIVE_01", new FriendOfTheJellyfishPower() },
         {"ARCHIVE_02", new JellyBellyPower() },
@@ -660,6 +661,32 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
 
     #endregion
 
+    #region Internal Methods
+
+    /// <summary>
+    /// Adds a power to the dictionary.
+    /// </summary>
+    /// <param name="key"></param>
+    /// <param name="power"></param>
+    /// <returns></returns>
+    internal bool AddPower(string key, Power power)
+    {
+        if (power == null)
+            return false;
+        try
+        {
+            _powerList.Add(key, power);
+            return true;
+        }
+        catch (Exception exception)
+        {
+            LogError("Failed adding " + power.PowerName+". Error: "+exception.Message);
+        }
+        return false;
+    }
+
+    #endregion
+
     #region Private Methods
 
     /// <summary>
@@ -695,6 +722,8 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
             key = "EMILITIA";
         else if (IsMossProphet(key))
             key = "MOSSPROPHET";
+        //else if (key.Equals("GRAVEDIGGER_TALK") || key.Equals("GRAVEDIGGER_REPEAT"))
+        //    key = "GRAVEDIGGER";
         return key;
     }
 

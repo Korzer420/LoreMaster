@@ -18,7 +18,7 @@ public class QueenThornsPower : Power
 
     private GameObject _thorns;
 
-    private Sprite[] _sprites = new Sprite[2];  
+    private Sprite[] _sprites = new Sprite[2];
 
     #endregion
 
@@ -34,7 +34,7 @@ public class QueenThornsPower : Power
 
     #region Properties
 
-    public bool CanHeal => PlayerData.instance.GetBool("equippedCharm_27") 
+    public bool CanHeal => PlayerData.instance.GetBool("equippedCharm_27")
         || (PlayerData.instance.GetInt("Health") < PlayerData.instance.GetInt("maxHealth"));
 
     #endregion
@@ -65,6 +65,7 @@ public class QueenThornsPower : Power
 
     #region Protected Methods
 
+    /// <inheritdoc/>
     protected override void Initialize()
     {
         try
@@ -86,7 +87,7 @@ public class QueenThornsPower : Power
                 currentWorkingState.GetActionsOfType<SendMessage>().Take(2).ToList().ForEach(x => x.Enabled = !Active);
                 fsm.FsmVariables.FindFsmVector3("Thorn Pos").Value = HeroController.instance.transform.localPosition;
             })
-            { Name = "Block freeze"}, 0);
+            { Name = "Block freeze" }, 0);
 
             currentWorkingState = fsm.GetState("Counter");
             currentWorkingState.ReplaceAction(new Lambda(() =>
@@ -122,6 +123,7 @@ public class QueenThornsPower : Power
         }
     }
 
+    /// <inheritdoc/>
     protected override void Enable()
     {
         On.HealthManager.TakeDamage += EnemyTakeDamage;
@@ -136,6 +138,7 @@ public class QueenThornsPower : Power
         }
     }
 
+    /// <inheritdoc/>
     protected override void Disable()
     {
         On.HealthManager.TakeDamage -= EnemyTakeDamage;

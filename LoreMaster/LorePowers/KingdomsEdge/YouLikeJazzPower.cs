@@ -27,8 +27,10 @@ internal class YouLikeJazzPower : Power
 
     #region Protected Methods
 
+    /// <inheritdoc/>
     protected override void Initialize() => _hatchlingVariables = GameObject.Find("Charm Effects").LocateMyFSM("Hatchling Spawn").FsmVariables;
-    
+
+    /// <inheritdoc/>
     protected override void Enable()
     {
         _hatchlingVariables.FindFsmInt("Hatchling Max").Value = 10;
@@ -36,6 +38,7 @@ internal class YouLikeJazzPower : Power
         _hatchlingVariables.FindFsmFloat("Hatch Time").Value = 2f;
     }
 
+    /// <inheritdoc/>
     protected override void Disable()
     {
         _hatchlingVariables.FindFsmInt("Hatchling Max").Value = 4;

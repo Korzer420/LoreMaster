@@ -27,6 +27,7 @@ public class GloryOfTheWealthPower : Power
 
     #region Protected Methods
 
+    /// <inheritdoc/>
     protected override void Enable()
     {
         LoreMaster.Instance.SceneActions.Add(PowerName, () =>
@@ -62,6 +63,7 @@ public class GloryOfTheWealthPower : Power
         });
     }
 
+    /// <inheritdoc/>
     protected override void Disable() => LoreMaster.Instance.SceneActions.Remove(PowerName);
 
     #endregion

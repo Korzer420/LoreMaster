@@ -9,7 +9,7 @@ public class MindblastOfUnnPower : Power
 {
     #region Members
 
-    private tk2dSprite[] _dreamNailSprites; 
+    private tk2dSprite[] _dreamNailSprites;
 
     #endregion
 
@@ -41,7 +41,7 @@ public class MindblastOfUnnPower : Power
     private void UpdateDreamNailColor(PlayerData data, HeroController controller)
     {
         string colorCode = string.Empty;
-
+        HitInstance instance = new();
         colorCode += PlayerData.instance.GetBool("equippedCharm_30") ? 1 : 0;
         colorCode += PlayerData.instance.GetBool("equippedCharm_38") ? 1 : 0;
         colorCode += PlayerData.instance.GetBool("equippedCharm_28") ? 1 : 0;
@@ -110,8 +110,10 @@ public class MindblastOfUnnPower : Power
 
     #region Protected Methods
 
-    protected override void Initialize() =>  _dreamNailSprites = GameObject.Find("Knight/Dream Effects").GetComponentsInChildren<tk2dSprite>(true);
-    
+    /// <inheritdoc/>
+    protected override void Initialize() => _dreamNailSprites = GameObject.Find("Knight/Dream Effects").GetComponentsInChildren<tk2dSprite>(true);
+
+    /// <inheritdoc/>
     protected override void Enable()
     {
         On.EnemyDreamnailReaction.RecieveDreamImpact += Apply_Mindblast;
@@ -119,6 +121,7 @@ public class MindblastOfUnnPower : Power
         ModHooks.CharmUpdateHook += UpdateDreamNailColor;
     }
 
+    /// <inheritdoc/>
     protected override void Disable()
     {
         On.EnemyDreamnailReaction.RecieveDreamImpact -= Apply_Mindblast;

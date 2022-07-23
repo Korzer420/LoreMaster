@@ -59,7 +59,7 @@ public class ReluctantPilgrimPower : Power
                         return x;
 
                     // We check for fury, in case we have one hp (or two with screw the rules), we want the fury version of grubber fly instead of the normal one. 
-                    if (PlayerData.instance.GetBool("equippedCharm_6") 
+                    if (PlayerData.instance.GetBool("equippedCharm_6")
                     && (x == 1 || (x == 2 && LoreMaster.Instance.ActivePowers.ContainsKey("TUT_TAB_02") && LoreMaster.Instance.ActivePowers["TUT_TAB_02"].Active)))
                         return x;
                     // Always causes grubberfly to trigger, if joni's is not equipped at least.
@@ -111,12 +111,14 @@ public class ReluctantPilgrimPower : Power
 
     #region Protected Methods
 
+    /// <inheritdoc/>
     protected override void Enable()
     {
         ModHooks.GetPlayerIntHook += GetBeamDamage;
         IL.HeroController.Attack += Attack_Modify;
     }
 
+    /// <inheritdoc/>
     protected override void Disable()
     {
         ModHooks.GetPlayerIntHook -= GetBeamDamage;

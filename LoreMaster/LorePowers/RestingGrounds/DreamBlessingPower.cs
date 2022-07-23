@@ -81,7 +81,7 @@ public class DreamBlessingPower : Power
         else if (key.Equals("DREAMERS_INSPECT_RG4"))
             return LoreMaster.Instance.UseHints ? " Invoking her children from the victim." : " Spawn 2 weavers for 30 seconds.";
         else if (key.Equals("DREAMERS_INSPECT_RG5"))
-            return " ["+PowerName+"] "+ (LoreMaster.Instance.UseHints ? "The dream artifact uses the power it absorbs from their powerful victims to use it's hidden power." : "Defeated Dreamers grant the dream nail an additional effect.");
+            return " [" + PowerName + "] " + (LoreMaster.Instance.UseHints ? "The dream artifact uses the power it absorbs from their powerful victims to use it's hidden power." : "Defeated Dreamers grant the dream nail an additional effect.");
         return string.Empty;
     }
 
@@ -89,15 +89,18 @@ public class DreamBlessingPower : Power
 
     #region Protected Methods
 
-    protected override void Initialize() 
-        =>_weaverlingPrefab = GameObject.Find("Knight/Charm Effects").LocateMyFSM("Weaverling Control").GetState("Spawn").GetFirstActionOfType<SpawnObjectFromGlobalPool>().gameObject.Value;
-    
-    protected override void Enable() 
-        => On.EnemyDreamnailReaction.RecieveDreamImpact += EnemyDreamnailReaction_RecieveDreamImpact;
-    
+    /// <inheritdoc/>
+    protected override void Initialize()
+           => _weaverlingPrefab = GameObject.Find("Knight/Charm Effects").LocateMyFSM("Weaverling Control").GetState("Spawn").GetFirstActionOfType<SpawnObjectFromGlobalPool>().gameObject.Value;
+
+    /// <inheritdoc/>
+    protected override void Enable()
+           => On.EnemyDreamnailReaction.RecieveDreamImpact += EnemyDreamnailReaction_RecieveDreamImpact;
+
+    /// <inheritdoc/>
     protected override void Disable()
-        => On.EnemyDreamnailReaction.RecieveDreamImpact -= EnemyDreamnailReaction_RecieveDreamImpact;
-    
+           => On.EnemyDreamnailReaction.RecieveDreamImpact -= EnemyDreamnailReaction_RecieveDreamImpact;
+
     #endregion
 
     #region Private Methods

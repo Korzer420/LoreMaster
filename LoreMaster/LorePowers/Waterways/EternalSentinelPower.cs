@@ -73,6 +73,7 @@ public class EternalSentinelPower : Power
 
     #region Protected Methods
 
+    /// <inheritdoc/>
     protected override void Initialize()
     {
         GameObject baldurShield = GameObject.Find("Knight/Charm Effects").transform.Find("Blocker Shield").gameObject;
@@ -95,17 +96,19 @@ public class EternalSentinelPower : Power
         _baldurSprite = baldurShield.GetComponentInChildren<tk2dSprite>();
     }
 
+    /// <inheritdoc/>
     protected override void Enable()
     {
         if (PlayerData.instance.GetInt(nameof(PlayerData.instance.blockerHits)) > 0)
             PlayerData.instance.SetInt(nameof(PlayerData.instance.blockerHits), PlayerData.instance.GetBool(nameof(PlayerData.instance.equippedCharm_10)) ? 10 : 7);
-        
+
         if (PlayerData.instance.GetBool(nameof(PlayerData.instance.equippedCharm_10)))
             _baldurSprite.color = new(1f, 0.4f, 0f);
         ModHooks.CharmUpdateHook += CharmUpdate;
         On.PlayMakerFSM.OnEnable += PlayMakerFSM_OnEnable;
     }
 
+    /// <inheritdoc/>
     protected override void Disable()
     {
         ModHooks.CharmUpdateHook -= CharmUpdate;

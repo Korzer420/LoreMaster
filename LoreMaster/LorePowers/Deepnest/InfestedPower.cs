@@ -81,9 +81,11 @@ public class InfestedPower : Power
 
     #region Protected Methods
 
+    /// <inheritdoc/>
     protected override void Initialize()
-    => _weaverPrefab = GameObject.Find("Knight/Charm Effects").LocateMyFSM("Weaverling Control").GetState("Spawn").GetFirstActionOfType<SpawnObjectFromGlobalPool>().gameObject.Value;
+       => _weaverPrefab = GameObject.Find("Knight/Charm Effects").LocateMyFSM("Weaverling Control").GetState("Spawn").GetFirstActionOfType<SpawnObjectFromGlobalPool>().gameObject.Value;
 
+    /// <inheritdoc/>
     protected override void Enable()
     {
         On.HealthManager.TakeDamage += HealthManager_TakeDamage;
@@ -91,6 +93,7 @@ public class InfestedPower : Power
         On.PlayMakerFSM.OnEnable += PlayMakerFSM_OnEnable;
     }
 
+    /// <inheritdoc/>
     protected override void Disable()
     {
         On.HealthManager.TakeDamage -= HealthManager_TakeDamage;

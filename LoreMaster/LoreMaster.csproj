@@ -32,6 +32,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>..\..\..\..\Program Files\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\Mods\LoreMaster\LoreMaster.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Enums\Area.cs" />
@@ -43,6 +44,7 @@
     <Compile Include="LorePowers\CityOfTears\HappyFatePower.cs" />
     <Compile Include="LorePowers\Crossroads\DiamantDashPower.cs" />
     <Compile Include="LorePowers\Dirtmouth\ElderbugHitListPower.cs" />
+    <Compile Include="LorePowers\Dirtmouth\RequiemPower.cs" />
     <Compile Include="LorePowers\FungalWastes\BagOfMushroomsPower.cs" />
     <Compile Include="Helper\RandomizerHelper.cs" />
     <Compile Include="LorePowers\Peaks\DiamondCorePower.cs" />
@@ -166,6 +168,14 @@
     <Reference Include="UnityEngine.ImageConversionModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\Program Files\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\UnityEngine.ImageConversionModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.InputLegacyModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Program Files\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\UnityEngine.InputLegacyModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.InputModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Program Files\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\UnityEngine.InputModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.ParticleSystemModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

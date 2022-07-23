@@ -27,11 +27,13 @@ public class WeDontTalkAboutShadePower : Power
 
     #region Protected Methods
 
+    /// <inheritdoc/>
     protected override void Initialize()
     {
-        
+
     }
 
+    /// <inheritdoc/>
     protected override void Enable()
     {
         ModHooks.AfterPlayerDeadHook += AfterPlayerDied;
@@ -44,6 +46,7 @@ public class WeDontTalkAboutShadePower : Power
         PlayerData.instance.SetBool("soulLimited", false);
     }
 
+    /// <inheritdoc/>
     protected override void Disable()
     {
         ModHooks.AfterPlayerDeadHook -= AfterPlayerDied;

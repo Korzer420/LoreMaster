@@ -27,6 +27,7 @@ public class WellFocusedPower : Power
 
     #region Protected Methods
 
+    /// <inheritdoc/>
     protected override void Enable()
     {
         PlayMakerFSM playMakerFSM = HeroController.instance.spellControl;
@@ -38,6 +39,7 @@ public class WellFocusedPower : Power
 
     }
 
+    /// <inheritdoc/>
     protected override void Disable()
     {
         PlayMakerFSM playMakerFSM = HeroController.instance.spellControl;

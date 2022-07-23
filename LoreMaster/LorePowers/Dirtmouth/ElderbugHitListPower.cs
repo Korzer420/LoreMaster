@@ -1,9 +1,6 @@
 using LoreMaster.Enums;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -52,6 +49,7 @@ public class ElderbugHitListPower : Power
 
     #region Protected Methods
 
+    /// <inheritdoc/>
     protected override void Enable()
     {
         LoreMaster.Instance.SceneActions.Add(PowerName, () =>
@@ -123,12 +121,12 @@ public class ElderbugHitListPower : Power
                 HeroController.instance.AddGeo(200);
                 break;
             case ElderbugReward.MaskShard:
-                
+
                 break;
             case ElderbugReward.SoulVessel:
                 break;
             case ElderbugReward.Notch:
-                
+
                 break;
             case ElderbugReward.Nail:
                 break;

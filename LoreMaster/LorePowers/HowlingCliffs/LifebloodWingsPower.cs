@@ -58,7 +58,7 @@ public class LifebloodWingsPower : Power
         {
             _wings.color = Color.cyan;
             _extraJumps++;
-             _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(RefreshWings());
+            _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(RefreshWings());
         }
     }
 
@@ -66,17 +66,20 @@ public class LifebloodWingsPower : Power
 
     #region Protected Methods
 
+    /// <inheritdoc/>
     protected override void Initialize()
     {
         _wings = GameObject.Find("Knight/Effects").transform.Find("Double J Wings").GetComponent<tk2dSprite>();
     }
 
+    /// <inheritdoc/>
     protected override void Enable()
     {
         AddRefreshDoubleJumpHooks();
         On.HeroController.DoDoubleJump += DoDoubleJump;
     }
 
+    /// <inheritdoc/>
     protected override void Disable()
     {
         _wings.color = Color.white;

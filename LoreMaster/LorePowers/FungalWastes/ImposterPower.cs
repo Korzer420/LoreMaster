@@ -32,9 +32,11 @@ public class ImposterPower : Power
 
     #region Protected Methods
 
+    /// <inheritdoc/>
     protected override void Enable() => On.HeroController.AddHealth += ExtraHeal;
-    
+
+    /// <inheritdoc/>
     protected override void Disable() => On.HeroController.AddHealth -= ExtraHeal;
-    
+
     #endregion
 }

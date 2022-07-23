@@ -21,7 +21,8 @@ public class JellyfishFlowPower : Power
 
     #region Protected Methods
 
-    protected override void Initialize()
+    /// <inheritdoc/>
+ protected override void Initialize()
     {
         PlayMakerFSM knightFSM = GameObject.Find("Knight").LocateMyFSM("Surface Water");
         knightFSM.GetState("Swim Right").ReplaceAction(new Lambda(() =>

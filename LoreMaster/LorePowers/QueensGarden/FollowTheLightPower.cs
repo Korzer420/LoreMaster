@@ -33,7 +33,8 @@ public class FollowTheLightPower : Power
 
     #region Protected Methods
 
-    protected override void Initialize()
+    /// <inheritdoc/>
+ protected override void Initialize()
     {
         var fsm = HeroController.instance.gameObject.LocateMyFSM("Dream Nail");
         LoreMaster.Instance.Log("Try to find Dream Gate");
@@ -56,7 +57,7 @@ public class FollowTheLightPower : Power
 
                         _dreamGate.transform.localPosition = HeroController.instance.transform.localPosition;
                         // Adjust to place the portal on the ground
-                        _dreamGate.transform.localPosition -= new Vector3(0f,1f,0f);
+                        _dreamGate.transform.localPosition -= new Vector3(0f,1.4f,0f);
                         _gatePosition = HeroController.instance.transform.localPosition;
                     }
                 })

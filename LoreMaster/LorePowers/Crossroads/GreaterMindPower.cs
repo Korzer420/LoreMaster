@@ -1,9 +1,7 @@
 using LoreMaster.Enums;
 using LoreMaster.Helper;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using TMPro;
 using UnityEngine;
@@ -53,6 +51,7 @@ public class GreaterMindPower : Power
 
     #region Protected Methods
 
+    /// <inheritdoc/>
     protected override void Initialize()
     {
         GameObject prefab = GameObject.Find("_GameCameras").transform.Find("HudCamera/Inventory/Inv/Inv_Items/Geo").gameObject;
@@ -62,10 +61,12 @@ public class GreaterMindPower : Power
         PositionHudElement(_loreTracker, 3);
     }
 
+    /// <inheritdoc/>
     protected override void Enable() => _loreTracker?.SetActive(true);
-    
+
+    /// <inheritdoc/>
     protected override void Disable() => _loreTracker?.SetActive(false);
-    
+
     #endregion
 
     #region Private Methods
@@ -92,7 +93,7 @@ public class GreaterMindPower : Power
 
     public void UpdateLoreCounter(IEnumerable<Power> activePowers, IEnumerable<Power> allPowers, Area currentArea, bool globalActive)
     {
-        if(_loreTracker == null)
+        if (_loreTracker == null)
         {
             LoreMaster.Instance.LogError("The lore tracker doesn't exist");
             return;
@@ -105,7 +106,7 @@ public class GreaterMindPower : Power
             if (globalActive)
                 currentCounter.text = "<color=#7FFF7B>" + currentCounter.text + "</color>";
 
-            string globalPart = "All: "+ activePowers.Count(x => x.Tag != PowerTag.Remove) + "/" + allPowers.Count(x => x.Tag != PowerTag.Remove);
+            string globalPart = "All: " + activePowers.Count(x => x.Tag != PowerTag.Remove) + "/" + allPowers.Count(x => x.Tag != PowerTag.Remove);
             if (activePowers.Count(x => x.Tag != PowerTag.Remove) == allPowers.Count(x => x.Tag != PowerTag.Remove))
                 globalPart = "<color=#7FFF7B>" + globalPart + "</color>";
 

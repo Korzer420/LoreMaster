@@ -79,6 +79,7 @@ public class EyeOfTheWatcherPower : Power
 
     #region Protected Methods
 
+    /// <inheritdoc/>
     protected override void Initialize()
     {
         _eye = new("Eye of Lurien");
@@ -88,6 +89,7 @@ public class EyeOfTheWatcherPower : Power
         _eye.transform.localScale = new(.5f, .5f);
     }
 
+    /// <inheritdoc/>
     protected override void Enable()
     {
         On.HeroController.SetDarkness += HeroController_SetDarkness;
@@ -108,6 +110,7 @@ public class EyeOfTheWatcherPower : Power
         _eye?.SetActive(true);
     }
 
+    /// <inheritdoc/>
     protected override void Disable()
     {
         On.HeroController.SetDarkness -= HeroController_SetDarkness;

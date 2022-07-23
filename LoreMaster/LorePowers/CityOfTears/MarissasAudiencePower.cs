@@ -51,6 +51,7 @@ public class MarissasAudiencePower : Power
 
     #region Protected Methods
 
+    /// <inheritdoc/>
     protected override void Initialize()
     {
         GameObject charmEffects = GameObject.Find("Charm Effects");
@@ -59,8 +60,10 @@ public class MarissasAudiencePower : Power
         _companions[2] = charmEffects.LocateMyFSM("Hatchling Spawn").GetState("Hatch").GetFirstActionOfType<SpawnObjectFromGlobalPool>().gameObject.Value;
     }
 
-    protected override void Enable() =>  _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(GatherAudience());
+    /// <inheritdoc/>
+    protected override void Enable() => _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(GatherAudience());
 
+    /// <inheritdoc/>
     protected override void Disable()
     {
         LoreMaster.Instance.Handler.StopCoroutine(_runningCoroutine);
@@ -120,7 +123,7 @@ public class MarissasAudiencePower : Power
                 _extraCompanions.Clear();
             }
         }
-    } 
+    }
 
     #endregion
 }

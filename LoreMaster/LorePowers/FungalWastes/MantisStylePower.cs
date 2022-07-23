@@ -6,8 +6,8 @@ namespace LoreMaster.LorePowers.FungalWastes;
 public class MantisStylePower : Power
 {
     #region Members
-    
-    private Transform[] _attackTransform = new Transform[4]; 
+
+    private Transform[] _attackTransform = new Transform[4];
 
     #endregion
 
@@ -17,12 +17,13 @@ public class MantisStylePower : Power
     {
         Hint = "Your weapon may reach further aways foes.";
         Description = "Increase your nail range by 50% (from base).";
-    } 
+    }
 
     #endregion
 
     #region Protected Methods
 
+    /// <inheritdoc/>
     protected override void Initialize()
     {
         GameObject attackDirections = GameObject.Find("Knight/Attacks");
@@ -32,6 +33,7 @@ public class MantisStylePower : Power
         _attackTransform[3] = attackDirections.transform.Find("DownSlash");
     }
 
+    /// <inheritdoc/>
     protected override void Enable()
     {
         for (int i = 0; i < 4; i++)
@@ -44,6 +46,7 @@ public class MantisStylePower : Power
         }
     }
 
+    /// <inheritdoc/>
     protected override void Disable()
     {
         for (int i = 0; i < 4; i++)
@@ -54,7 +57,7 @@ public class MantisStylePower : Power
             else
                 _attackTransform[i].GetComponent<NailSlash>().scale = new Vector3(currentScale.x, currentScale.y - .5f, currentScale.z);
         }
-    } 
+    }
 
     #endregion
 }

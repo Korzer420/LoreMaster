@@ -28,10 +28,12 @@ public class SoulExtractEfficiencyPower : Power
 
     #region Protected Methods
 
+    /// <inheritdoc/>
     protected override void Enable() => ModHooks.SoulGainHook += OnSoulGain;
-    
+
+    /// <inheritdoc/>
     protected override void Disable() => ModHooks.SoulGainHook -= OnSoulGain;
-    
+
     #endregion
 }
 

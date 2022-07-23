@@ -38,14 +38,17 @@ public class JellyBellyPower : Power
 
     #region Protected Methods
 
+    /// <inheritdoc/>
     protected override void Initialize() => _playerRigidBody = HeroController.instance.gameObject.GetComponent<Rigidbody2D>();
 
+    /// <inheritdoc/>
     protected override void Enable()
     {
         HeroController.instance.BIG_FALL_TIME *= 3;
         ModHooks.HeroUpdateHook += Float;
     }
 
+    /// <inheritdoc/>
     protected override void Disable()
     {
         ModHooks.HeroUpdateHook -= Float;

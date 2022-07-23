@@ -15,7 +15,7 @@ public class CaringShellPower : Power
             "person to acknowledge me after such a long time. In just that moment, all my sadness just disappeared. I'm the happiest girl in the world. UwU";
         Hint = "No hazard shall cast harm onto you... UwU";
         Description = "Enviroment Hazards (like spikes) don't deal damage to you anymore.";
-    } 
+    }
 
     #endregion
 
@@ -29,6 +29,7 @@ public class CaringShellPower : Power
     /// <returns></returns>
     private int ModHooks_TakeDamageHook(int hazardType, int damageAmount)
     {
+        LoreMaster.Instance.Log("The player wears: "+PlayerData.instance.equippedCharms.Count+" charms.");
         if (hazardType > 1 && hazardType < 5)
             damageAmount = 0;
         return damageAmount;
@@ -38,11 +39,13 @@ public class CaringShellPower : Power
 
     #region Protected Methods
 
+    /// <inheritdoc/>
     protected override void Enable()
-        => ModHooks.AfterTakeDamageHook += ModHooks_TakeDamageHook;
+           => ModHooks.AfterTakeDamageHook += ModHooks_TakeDamageHook;
 
+    /// <inheritdoc/>
     protected override void Disable()
-    => ModHooks.AfterTakeDamageHook -= ModHooks_TakeDamageHook; 
+       => ModHooks.AfterTakeDamageHook -= ModHooks_TakeDamageHook;
 
     #endregion
 }

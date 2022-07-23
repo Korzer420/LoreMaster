@@ -16,7 +16,7 @@ public class CamouflagePower : Power
 
     #region Constructors
 
-    public CamouflagePower() : base("Camouflage", Area.Greenpath) 
+    public CamouflagePower() : base("Camouflage", Area.Greenpath)
     {
         Hint = "While doing nothing, your mind slowly ascent to Unn's dream, while your shell is shielded by Unn's power.";
         Description = "After standing still for 5 seconds, you gain invincibility until you do something. If you are wearing Shape of Unn, you keep the invincibility while focusing and moving as a slug.";
@@ -26,10 +26,12 @@ public class CamouflagePower : Power
 
     #region Protected Methods
 
+    /// <inheritdoc/>
     protected override void Initialize() => _heroSprite = GameObject.Find("Knight").GetComponent<tk2dSprite>();
 
-    protected override void Enable() 
-    { 
+    /// <inheritdoc/>
+    protected override void Enable()
+    {
         _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(WaitForCamouflage());
         On.HeroController.CanTakeDamage += HeroController_CanTakeDamage;
     }
@@ -43,6 +45,7 @@ public class CamouflagePower : Power
         return result;
     }
 
+    /// <inheritdoc/>
     protected override void Disable()
     {
         LoreMaster.Instance.Handler.StopCoroutine(_runningCoroutine);
@@ -68,7 +71,7 @@ public class CamouflagePower : Power
                 if (HeroController.instance.hero_state != GlobalEnums.ActorStates.idle || InputHandler.Instance.inputActions.attack.IsPressed
                     || InputHandler.Instance.inputActions.dash.IsPressed || InputHandler.Instance.inputActions.superDash.IsPressed
                     || InputHandler.Instance.inputActions.dreamNail.IsPressed || InputHandler.Instance.inputActions.quickCast.IsPressed
-                    || ((InputHandler.Instance.inputActions.focus.IsPressed 
+                    || ((InputHandler.Instance.inputActions.focus.IsPressed
                     || InputHandler.Instance.inputActions.cast.IsPressed) && !PlayerData.instance.GetBool("equippedCharm_28"))
                     || InputHandler.Instance.inputActions.quickMap.IsPressed)
                     break;

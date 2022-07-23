@@ -40,7 +40,7 @@ public class HotStreakPower : Power
             return;
 
         _currentlyRunning = true;
-         _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(HitCooldown());
+        _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(HitCooldown());
     }
 
     /// <summary>
@@ -57,12 +57,14 @@ public class HotStreakPower : Power
 
     #region Protected Methods
 
+    /// <inheritdoc/>
     protected override void Enable()
     {
         ModHooks.SlashHitHook += NailSlash;
         ModHooks.GetPlayerIntHook += EmpowerNail;
     }
 
+    /// <inheritdoc/>
     protected override void Disable()
     {
         ModHooks.SlashHitHook -= NailSlash;

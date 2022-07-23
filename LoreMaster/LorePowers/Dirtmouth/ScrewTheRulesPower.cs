@@ -68,6 +68,7 @@ public class ScrewTheRulesPower : Power
 
     #region Protected Methods
 
+    /// <inheritdoc/>
     protected override void Initialize()
     {
         try
@@ -109,12 +110,14 @@ public class ScrewTheRulesPower : Power
         }
     }
 
+    /// <inheritdoc/>
     protected override void Enable()
     {
         On.PlayMakerFSM.OnEnable += PlayMakerFSM_OnEnable;
         IL.HeroController.Attack += HeroController_Attack;
     }
 
+    /// <inheritdoc/>
     protected override void Disable()
     {
         On.PlayMakerFSM.OnEnable -= PlayMakerFSM_OnEnable;

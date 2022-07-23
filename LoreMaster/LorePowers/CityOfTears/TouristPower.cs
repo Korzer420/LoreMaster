@@ -26,8 +26,10 @@ public class TouristPower : Power
 
     #region Protected Methods
 
+    /// <inheritdoc/>
     protected override void Enable() => Inspected = true;
 
+    /// <inheritdoc/>
     protected override void Disable() => Inspected = false;
 
     #endregion

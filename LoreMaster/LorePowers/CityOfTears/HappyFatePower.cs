@@ -10,10 +10,10 @@ public class HappyFatePower : Power
     #region Members
 
     private bool _isHappy = true; // :)
-    private Transform[] _nailObjects = new Transform[5]; 
+    private Transform[] _nailObjects = new Transform[5];
 
     #endregion
-    
+
     #region Constructors
 
     public HappyFatePower() : base("Happy Fate", Area.CityOfTears)
@@ -77,16 +77,18 @@ public class HappyFatePower : Power
 
     #region Protected Methods
 
+    /// <inheritdoc/>
     protected override void Initialize()
     {
         GameObject attackDirections = GameObject.Find("Knight/Attacks");
-        _nailObjects[0] =attackDirections.transform.Find("Slash");
-        _nailObjects[1] =attackDirections.transform.Find("AltSlash");
-        _nailObjects[2] =attackDirections.transform.Find("UpSlash");
-        _nailObjects[3] =attackDirections.transform.Find("DownSlash");
-        _nailObjects[4] =attackDirections.transform.Find("WallSlash");
+        _nailObjects[0] = attackDirections.transform.Find("Slash");
+        _nailObjects[1] = attackDirections.transform.Find("AltSlash");
+        _nailObjects[2] = attackDirections.transform.Find("UpSlash");
+        _nailObjects[3] = attackDirections.transform.Find("DownSlash");
+        _nailObjects[4] = attackDirections.transform.Find("WallSlash");
     }
 
+    /// <inheritdoc/>
     protected override void Enable()
     {
         On.HeroController.SetBenchRespawn += ResetHappiness;
@@ -96,6 +98,7 @@ public class HappyFatePower : Power
         HappynessChange();
     }
 
+    /// <inheritdoc/>
     protected override void Disable()
     {
         On.HeroController.SetBenchRespawn -= ResetHappiness;
@@ -114,7 +117,7 @@ public class HappyFatePower : Power
 
     private void HappynessChange()
     {
-        if(_isHappy)
+        if (_isHappy)
         {
             foreach (Transform child in _nailObjects)
             {
@@ -129,7 +132,7 @@ public class HappyFatePower : Power
             HeroController.instance.DASH_COOLDOWN -= .2f;
             HeroController.instance.DASH_COOLDOWN_CH -= .2f;
             HeroController.instance.superDash.FsmVariables.FindFsmFloat("Charge Time").Value -= .1f;
-             _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(GainHappySoul());
+            _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(GainHappySoul());
         }
         else
         {
@@ -152,7 +155,7 @@ public class HappyFatePower : Power
 
     private IEnumerator GainHappySoul()
     {
-        while(true)
+        while (true)
         {
             yield return new WaitForSeconds(1f);
             HeroController.instance.AddMPCharge(1);

@@ -93,6 +93,7 @@ public class OverwhelmingPower : Power
 
     #region Protected Methods
 
+    /// <inheritdoc/>
     protected override void Initialize()
     {
         GameObject spell = GameObject.Find("Knight/Spells");
@@ -151,8 +152,10 @@ public class OverwhelmingPower : Power
         }
     }
 
+    /// <inheritdoc/>
     protected override void Enable() => On.PlayMakerFSM.OnEnable += CheckFireball;
 
+    /// <inheritdoc/>
     protected override void Disable() => On.PlayMakerFSM.OnEnable -= CheckFireball;
 
     #endregion

@@ -80,6 +80,7 @@ public class JonisProtectionPower : Power
 
     #region Protected Methods
 
+    /// <inheritdoc/>
     protected override void Initialize()
     {
         _dialogueFSM[0] = GameObject.Find("_GameCameras/HudCamera/DialogueManager").LocateMyFSM("Box Open");
@@ -87,6 +88,7 @@ public class JonisProtectionPower : Power
         _dialogueFSM[2] = GameObject.Find("_GameCameras/HudCamera/DialogueManager").LocateMyFSM("Box Open Dream");
     }
 
+    /// <inheritdoc/>
     protected override void Enable()
     {
         LoreMaster.Instance.SceneActions.Add(PowerName, () =>
@@ -148,6 +150,7 @@ public class JonisProtectionPower : Power
         orig(self);
     }
 
+    /// <inheritdoc/>
     protected override void Disable()
     {
         LoreMaster.Instance.SceneActions.Remove(PowerName);

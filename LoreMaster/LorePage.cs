@@ -182,6 +182,7 @@ internal class LorePage
                 foreach (Transform child in lorePage.transform)
                     child.gameObject.SetActive(true);
             }));
+
             // Create main state
             fsm.AddState(new(fsm.Fsm)
             {

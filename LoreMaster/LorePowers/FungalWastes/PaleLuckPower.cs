@@ -3,7 +3,7 @@ using Modding;
 
 namespace LoreMaster.LorePowers.FungalWastes;
 
-public class PaleLuckPower: Power 
+public class PaleLuckPower : Power
 {
     #region Constructors
 
@@ -46,10 +46,12 @@ public class PaleLuckPower: Power
 
     #region Methods
 
+    /// <inheritdoc/>
     protected override void Enable() => ModHooks.AfterTakeDamageHook += ModHooks_TakeDamageHook;
-    
+
+    /// <inheritdoc/>
     protected override void Disable() => ModHooks.AfterTakeDamageHook -= ModHooks_TakeDamageHook;
-    
+
 
     #endregion
 }

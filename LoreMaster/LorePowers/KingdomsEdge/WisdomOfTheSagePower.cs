@@ -33,6 +33,7 @@ public class WisdomOfTheSagePower : Power
 
     #region Protected Methods
 
+    /// <inheritdoc/>
     protected override void Initialize()
     {
         // If the player is using spell twister (enable or disable) it triggers this fsm AFTER the charm update hook, which would negate the effect.
@@ -43,17 +44,19 @@ public class WisdomOfTheSagePower : Power
             if (Active)
                 UpdateSpellCost();
         })
-        { Name = "Mushroom power up"});
+        { Name = "Mushroom power up" });
     }
 
-    protected override void Enable() 
+    /// <inheritdoc/>
+    protected override void Enable()
     {
         ModHooks.CharmUpdateHook += ModHooks_CharmUpdateHook;
         UpdateSpellCost();
     }
 
-    protected override void Disable() 
-    { 
+    /// <inheritdoc/>
+    protected override void Disable()
+    {
         ModHooks.CharmUpdateHook -= ModHooks_CharmUpdateHook;
         if (_soulBonus != 0)
             GameObject.Find("Knight").LocateMyFSM("Spell Control").FsmVariables.FindFsmInt("MP Cost").Value += _soulBonus;

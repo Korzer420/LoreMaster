@@ -10,10 +10,10 @@ public class DiminishingCursePower : Power
     private int _takenHits = 15;
 
     #endregion
-    
+
     #region Constructors
 
-    public DiminishingCursePower() : base("Diminishing Curse",Area.WhitePalace)
+    public DiminishingCursePower() : base("Diminishing Curse", Area.WhitePalace)
     {
         Hint = "If you suffer from the curse of greed, it will vanish once you experienced enough pain after resting.";
         Description = "If you take 15 hits, you will no longer count as overcharmed, resets if you sit on a bench. The UI only updates if you open the charm screen.";
@@ -47,6 +47,7 @@ public class DiminishingCursePower : Power
 
     #region Protected Methods
 
+    /// <inheritdoc/>
     protected override void Enable()
     {
         ModHooks.GetPlayerBoolHook += ModHooks_GetPlayerBoolHook;
@@ -54,6 +55,7 @@ public class DiminishingCursePower : Power
         On.PlayerData.TakeHealth += HeroController_TakeHealth;
     }
 
+    /// <inheritdoc/>
     protected override void Disable()
     {
         ModHooks.GetPlayerBoolHook -= ModHooks_GetPlayerBoolHook;

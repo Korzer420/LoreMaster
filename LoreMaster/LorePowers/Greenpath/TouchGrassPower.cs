@@ -77,6 +77,7 @@ public class TouchGrassPower : Power
 
     #region Protected Methods
 
+    /// <inheritdoc/>
     protected override void Enable()
     {
         // Grass is a bit... special. We hook onto every grass class. This (hopefully) catches all grasses. -.- 
@@ -88,6 +89,7 @@ public class TouchGrassPower : Power
         On.GrassCut.OnTriggerEnter2D += GrassCut_OnTriggerEnter2D;
     }
 
+    /// <inheritdoc/>
     protected override void Disable()
     {
         On.Grass.OnTriggerEnter2D -= Grass_OnTriggerEnter2D;
@@ -116,7 +118,7 @@ public class TouchGrassPower : Power
             if (_heroCollider == null)
                 _heroCollider = collider;
             _triggeredCollider = sourceCollider;
-             _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(TouchGrass());
+            _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(TouchGrass());
         }
     }
 

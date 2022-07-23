@@ -62,6 +62,7 @@ public class TrueFormPower : Power
 
     #region Protected Methods
 
+    /// <inheritdoc/>
     protected override void Initialize()
     {
         GameObject attackDirections = GameObject.Find("Knight/Attacks");
@@ -72,6 +73,7 @@ public class TrueFormPower : Power
         _attackTransform.Add(attackDirections.transform.Find("WallSlash"));
     }
 
+    /// <inheritdoc/>
     protected override void Enable()
     {
         On.PlayMakerFSM.OnEnable += PlayMakerFSM_OnEnable;
@@ -105,6 +107,7 @@ public class TrueFormPower : Power
         });
     }
 
+    /// <inheritdoc/>
     protected override void Disable()
     {
         On.PlayMakerFSM.OnEnable -= PlayMakerFSM_OnEnable;

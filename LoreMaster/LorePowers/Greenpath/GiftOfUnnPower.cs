@@ -20,7 +20,8 @@ public class GiftOfUnnPower : Power
 
     #region Protected Methods
 
-    protected override void Initialize()
+    /// <inheritdoc/>
+ protected override void Initialize()
     {
         PlayMakerFSM spellFsm = FsmHelper.GetFSM("Knight", "Spell Control");
 

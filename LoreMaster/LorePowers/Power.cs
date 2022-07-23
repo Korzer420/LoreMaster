@@ -1,9 +1,5 @@
 using LoreMaster.Enums;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace LoreMaster.LorePowers;
@@ -29,8 +25,14 @@ public abstract class Power
 
     #region Properties
 
+    /// <summary>
+    /// Gets or set location in which the power is. This is used for the tracker and the logic regarding the <see cref="Tag"/>.
+    /// </summary>
     public Area Location { get; protected set; }
 
+    /// <summary>
+    /// Gets or sets the name of the power.
+    /// </summary>
     public string PowerName { get; set; }
 
     /// <summary>
@@ -50,10 +52,19 @@ public abstract class Power
     /// </summary>
     public string CustomText { get; set; }
 
+    /// <summary>
+    /// Gets or set the flag that indicates if this power is active.
+    /// </summary>
     public bool Active { get; set; }
 
+    /// <summary>
+    /// Gets or sets the tag, to determine how this power activation behave.
+    /// </summary>
     public PowerTag Tag { get; set; } = PowerTag.Local;
 
+    /// <summary>
+    /// Gets or sets the default tag. This is used to toggle the power on/off in the menu.
+    /// </summary>
     public PowerTag DefaultTag { get; set; } = PowerTag.Local;
 
     #endregion
@@ -61,7 +72,7 @@ public abstract class Power
     #region Methods
 
     /// <summary>
-    /// Initialize the power. (Modifies fsm and get prefabs).
+    /// Initialize the power. (Modifies fsm and get prefabs). This get's called the first time this power calls<see cref="Enable"/> once you entered a save file.
     /// </summary>
     protected virtual void Initialize() => _initialized = true;
 
@@ -75,7 +86,10 @@ public abstract class Power
     /// </summary>
     protected virtual void Disable() { }
 
-    public void EnablePower()
+    /// <summary>
+    /// Wrapper to activate the power and control the needed values.
+    /// </summary>
+    internal void EnablePower()
     {
         if (Active || Tag == PowerTag.Disable || Tag == PowerTag.Remove)
             return;
@@ -101,10 +115,10 @@ public abstract class Power
     }
 
     /// <summary>
-    /// Disables the power
+    /// Wrapper to disable the power.
     /// </summary>
     /// <param name="backToMenu">This is used to tell <see cref="EnablePower"/> to do the initialize again, if you reload the game.</param>
-    public void DisablePower(bool backToMenu)
+    internal void DisablePower(bool backToMenu)
     {
         if (!Active)
             return;

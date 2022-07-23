@@ -50,6 +50,7 @@ public class FriendOfTheJellyfishPower : Power
 
     #region Protected Methods
 
+    /// <inheritdoc/>
     protected override void Enable()
     {
         On.PlayMakerFSM.OnEnable += PlayMakerFSM_OnEnable;
@@ -64,6 +65,7 @@ public class FriendOfTheJellyfishPower : Power
         MakeJellyfishHarmless();
     }
 
+    /// <inheritdoc/>
     protected override void Disable()
     {
         On.PlayMakerFSM.OnEnable -= PlayMakerFSM_OnEnable;

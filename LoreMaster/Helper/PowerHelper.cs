@@ -17,8 +17,7 @@ public static class PowerHelper
     /// </summary>
     /// <param name="power">The power that you want to add.</param>
     /// <param name="key">The text key which should activate the power ingame.</param>
-    public static void AddPower(Power power, string key)
-    {
-
-    }
+    public static void AddPower(string key, Power power)
+    => LoreMaster.Instance.AddPower(key, power);
+    
 }
