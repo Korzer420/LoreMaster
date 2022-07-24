@@ -18,7 +18,7 @@ public class RequiemPower : Power
     public RequiemPower() : base("Requiem", Area.Dirtmouth)
     {
         Hint = "When your shell breaks, holding a pure focus may arise you at the home of death. Holding the light's artifact will instead catch you in the protecting wings of the last one.";
-        Description = "Holding focus, while you dying will spawn you in dirtmouth instead of your bench. Holding dream nail will spawn you at spirit's glade instead";
+        Description = "Holding focus, while you dying will spawn you in dirtmouth instead of your bench. Holding dream nail will spawn you at spirit's glade instead (when the glade is open).";
     }
 
     #endregion
@@ -36,7 +36,7 @@ public class RequiemPower : Power
                 info.EntryGateName = "left1";
                 _warpScene = "Town";
             }
-            else if (InputHandler.Instance.inputActions.dreamNail.IsPressed)
+            else if (InputHandler.Instance.inputActions.dreamNail.IsPressed && PlayerData.instance.GetBool(nameof(PlayerData.instance.gladeDoorOpened)))
             {
                 PlayerData.instance.SetInt(nameof(PlayerData.instance.respawnType), 2);
                 info.SceneName = "RestingGrounds_08";

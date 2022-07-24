@@ -34,7 +34,7 @@ public class FollowTheLightPower : Power
     #region Protected Methods
 
     /// <inheritdoc/>
- protected override void Initialize()
+    protected override void Initialize()
     {
         var fsm = HeroController.instance.gameObject.LocateMyFSM("Dream Nail");
         GameObject dreamGate = fsm.GetState("Spawn Gate").GetFirstActionOfType<SpawnObjectFromGlobalPool>().gameObject.Value;
