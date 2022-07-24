@@ -257,7 +257,7 @@ internal class LorePage
             currentWorkingState.AddTransition("FINISHED", "Powers");
             currentWorkingState.AddLastAction(new Lambda(() =>
             {
-                if (indexVariable.Value == 9 || indexVariable.Value % 10 == 9)
+                if (indexVariable.Value == 9 || indexVariable.Value % 10 == 9 || indexVariable.Value == 52)
                 {
                     indexVariable.Value = -1;
                     fsm.SendEvent("OUT");
@@ -273,7 +273,7 @@ internal class LorePage
             currentWorkingState.AddTransition("FINISHED", "Powers");
             currentWorkingState.AddLastAction(new Lambda(() =>
             {
-                if (indexVariable.Value <= 1)
+                if (indexVariable.Value <= 2)
                     indexVariable.Value += 50;
                 else if (indexVariable.Value < 10)
                     indexVariable.Value += 40;
@@ -287,11 +287,9 @@ internal class LorePage
             currentWorkingState.AddTransition("FINISHED", "Powers");
             currentWorkingState.AddLastAction(new Lambda(() =>
             {
-                if (indexVariable.Value == 50)
-                    indexVariable.Value = 0;
-                else if (indexVariable.Value == 51)
-                    indexVariable.Value = 1;
-                else if (indexVariable.Value >= 41)
+                if (indexVariable.Value >= 50)
+                    indexVariable.Value -= 50;
+                else if (indexVariable.Value >= 43)
                     indexVariable.Value -= 40;
                 else
                     indexVariable.Value += 10;

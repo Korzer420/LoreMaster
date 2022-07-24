@@ -73,7 +73,7 @@ public class CamouflagePower : Power
                     || InputHandler.Instance.inputActions.dreamNail.IsPressed || InputHandler.Instance.inputActions.quickCast.IsPressed
                     || ((InputHandler.Instance.inputActions.focus.IsPressed
                     || InputHandler.Instance.inputActions.cast.IsPressed) && !PlayerData.instance.GetBool("equippedCharm_28"))
-                    || InputHandler.Instance.inputActions.quickMap.IsPressed)
+                    || InputHandler.Instance.inputActions.quickMap.IsPressed || !HeroController.instance.acceptingInput)
                     break;
             }
             if (passedTime >= 5f)

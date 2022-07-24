@@ -21,6 +21,8 @@ public class JonisProtectionPower : Power
 
     private bool _immune;
 
+    private bool _takingJoniBonus;
+
     #endregion
 
     #region Constructors
@@ -28,7 +30,7 @@ public class JonisProtectionPower : Power
     public JonisProtectionPower() : base("Joni's Protection", Area.Cliffs)
     {
         CustomText = "Did you just took my blessing? How rude of you. First you banish me here and now that? Not cool, dude. Well, now that you have already took it, my prayers are with you....................... please don't dream nail me, dude.";
-        Hint = "When going to a new area, you will receive the gift of joni, which will quickly fade away.";
+        Hint = "When going to a new area, you will receive the gift of Joni, which will quickly fade away.";
         Description = "When going to another area, you will be granted 5 life blood (10 if you have Joni's equipped). Each 3 seconds a lifeblood will fade away.";
     }
 
@@ -86,6 +88,20 @@ public class JonisProtectionPower : Power
         _dialogueFSM[0] = GameObject.Find("_GameCameras/HudCamera/DialogueManager").LocateMyFSM("Box Open");
         _dialogueFSM[1] = GameObject.Find("_GameCameras/HudCamera/DialogueManager").LocateMyFSM("Box Open YN");
         _dialogueFSM[2] = GameObject.Find("_GameCameras/HudCamera/DialogueManager").LocateMyFSM("Box Open Dream");
+
+        PlayMakerFSM fsm = GameObject.Find("Knight").LocateMyFSM("ProxyFSM");
+        fsm.GetState("Flower?").ReplaceAction(new Lambda(() =>
+        {
+            if ((Active && _takingJoniBonus)
+            || !PlayerData.instance.GetBool(nameof(PlayerData.instance.hasXunFlower))
+            || PlayerData.instance.GetBool(nameof(PlayerData.instance.xunFlowerBroken)))
+            {
+                if (_takingJoniBonus)
+                    _takingJoniBonus = false;
+                fsm.SendEvent("FINISHED");
+            }
+        })
+        { Name = "Joni Block" }, 0);
     }
 
     /// <inheritdoc/>
@@ -144,7 +160,6 @@ public class JonisProtectionPower : Power
                 PlayerData.instance.SetBool("disablePause", false);
             })
             { Name = "Remove Immunity" }, 1);
-
         }
 
         orig(self);
@@ -182,8 +197,10 @@ public class JonisProtectionPower : Power
                 yield return new WaitWhile(() => IsDialogueOpen);
             // This is an extra check for the case, that the last lifeblood gets taken to prevent removing real masks.
             if (_currentLifebloodBonus > 0 && PlayerData.instance.GetInt(nameof(PlayerData.instance.healthBlue)) > 0)
+            {
+                _takingJoniBonus = true;
                 HeroController.instance.TakeHealth(1);
-
+            }
         }
     }
 
