@@ -29,7 +29,6 @@ public class CaringShellPower : Power
     /// <returns></returns>
     private int ModHooks_TakeDamageHook(int hazardType, int damageAmount)
     {
-        LoreMaster.Instance.Log("The player wears: "+PlayerData.instance.equippedCharms.Count+" charms.");
         if (hazardType > 1 && hazardType < 5)
             damageAmount = 0;
         return damageAmount;

@@ -259,7 +259,6 @@ internal class LorePage
             {
                 if (indexVariable.Value == 9 || indexVariable.Value % 10 == 9)
                 {
-                    LoreMaster.Instance.Log("Called Right Press OUT");
                     indexVariable.Value = -1;
                     fsm.SendEvent("OUT");
                     return;
@@ -274,7 +273,7 @@ internal class LorePage
             currentWorkingState.AddTransition("FINISHED", "Powers");
             currentWorkingState.AddLastAction(new Lambda(() =>
             {
-                if (indexVariable.Value == 0)
+                if (indexVariable.Value <= 1)
                     indexVariable.Value += 50;
                 else if (indexVariable.Value < 10)
                     indexVariable.Value += 40;
@@ -290,6 +289,8 @@ internal class LorePage
             {
                 if (indexVariable.Value == 50)
                     indexVariable.Value = 0;
+                else if (indexVariable.Value == 51)
+                    indexVariable.Value = 1;
                 else if (indexVariable.Value >= 41)
                     indexVariable.Value -= 40;
                 else
@@ -330,18 +331,18 @@ internal class LorePage
             lorePage.SetActive(false);
 
             // Logic for disabling the page when the inventory was closed there.
-            PlayMakerFSM inventoryFSM = lorePage.transform.parent.gameObject.LocateMyFSM("Inventory Control");
-            inventoryFSM.GetState("Regain Control").ReplaceAction(new Lambda(() =>
-            {
-                lorePage.SetActive(false);
-                PlayerData.instance.SetBool("disablePause", false);
-            }), 6);
+            //PlayMakerFSM inventoryFSM = lorePage.transform.parent.gameObject.LocateMyFSM("Inventory Control");
+            //inventoryFSM.GetState("Regain Control").ReplaceAction(new Lambda(() =>
+            //{
+            //    lorePage.SetActive(false);
+            //    PlayerData.instance.SetBool("disablePause", false);
+            //}), 6);
 
-            inventoryFSM.GetState("Regain Control 2").ReplaceAction(new Lambda(() =>
-            {
-                lorePage.SetActive(false);
-                PlayerData.instance.SetBool("disablePause", false);
-            }), 5);
+            //inventoryFSM.GetState("Regain Control 2").ReplaceAction(new Lambda(() =>
+            //{
+            //    lorePage.SetActive(false);
+            //    PlayerData.instance.SetBool("disablePause", false);
+            //}), 5);
         }
         catch (Exception exception)
         {

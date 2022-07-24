@@ -41,6 +41,7 @@
     <Compile Include="Helper\PowerHelper.cs" />
     <Compile Include="Helper\SpriteHelper.cs" />
     <Compile Include="LorePage.cs" />
+    <Compile Include="LorePowers\CityOfTears\DeliciousMealPower.cs" />
     <Compile Include="LorePowers\CityOfTears\HappyFatePower.cs" />
     <Compile Include="LorePowers\Crossroads\DiamantDashPower.cs" />
     <Compile Include="LorePowers\Dirtmouth\ElderbugHitListPower.cs" />
@@ -160,6 +161,10 @@
     <Reference Include="System" />
     <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\..\..\..\Program Files\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.AudioModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Program Files\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\UnityEngine.AudioModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

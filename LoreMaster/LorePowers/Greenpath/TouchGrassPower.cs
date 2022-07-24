@@ -21,7 +21,7 @@ public class TouchGrassPower : Power
     public TouchGrassPower() : base("Touch Grass", Area.Greenpath)
     {
         Hint = "The flora may nourish your shell, if you stand long enough near it.";
-        Description = "Every 10 seconds standing on grass, you heal 1 mask. Decreased to 5 seconds if wearing Shape of Unn.";
+        Description = "Every 8 seconds standing on grass, you heal 1 mask. Decreased to 4 seconds if wearing Shape of Unn.";
     }
 
     #endregion
@@ -31,7 +31,7 @@ public class TouchGrassPower : Power
     /// <summary>
     /// Gets the needed time to stand on grass to heal.
     /// </summary>
-    public float HealTime => PlayerData.instance.GetBool("equippedCharm_28") ? 5f : 10f;
+    public float HealTime => PlayerData.instance.GetBool("equippedCharm_28") ? 4f : 8f;
 
     #endregion
 

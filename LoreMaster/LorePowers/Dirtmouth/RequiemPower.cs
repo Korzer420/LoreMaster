@@ -1,4 +1,5 @@
 using LoreMaster.Enums;
+using System.Collections;
 using UnityEngine;
 
 namespace LoreMaster.LorePowers.Dirtmouth;
@@ -30,7 +31,6 @@ public class RequiemPower : Power
         {
             if (InputHandler.Instance.inputActions.cast.IsPressed)
             {
-                //GameManager.instance.RespawningHero = false;
                 PlayerData.instance.SetInt(nameof(PlayerData.instance.respawnType), 2);
                 info.SceneName = "Town";
                 info.EntryGateName = "left1";
@@ -38,7 +38,6 @@ public class RequiemPower : Power
             }
             else if (InputHandler.Instance.inputActions.dreamNail.IsPressed)
             {
-                //GameManager.instance.RespawningHero = false;
                 PlayerData.instance.SetInt(nameof(PlayerData.instance.respawnType), 2);
                 info.SceneName = "RestingGrounds_08";
                 info.EntryGateName = "left1";
@@ -70,6 +69,20 @@ public class RequiemPower : Power
             _counter = 3;
         }
         return gameObject.transform;
+    }
+
+    #endregion
+
+    #region Internal Methods
+
+    /// <summary>
+    /// This power has to be deactived after the scene has loaded to prevent getting stuck in the running animation when porting to resting grounds from king's pass.
+    /// </summary>
+    /// <returns></returns>
+    internal IEnumerator DeactivateRequiem()
+    {
+        yield return new WaitUntil(() => HeroController.instance.acceptingInput);
+        Disable();
     }
 
     #endregion

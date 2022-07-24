@@ -37,9 +37,7 @@ public class FollowTheLightPower : Power
  protected override void Initialize()
     {
         var fsm = HeroController.instance.gameObject.LocateMyFSM("Dream Nail");
-        LoreMaster.Instance.Log("Try to find Dream Gate");
         GameObject dreamGate = fsm.GetState("Spawn Gate").GetFirstActionOfType<SpawnObjectFromGlobalPool>().gameObject.Value;
-        LoreMaster.Instance.Log("Add states");
         fsm.AddState(new(fsm.Fsm)
         {
             Name = "Set Light Gate",
@@ -90,7 +88,6 @@ public class FollowTheLightPower : Power
                 })
             }
         });
-        LoreMaster.Instance.Log("Insert Action transitions");
         fsm.GetState("Dream Gate?").InsertAction(new Lambda(() =>
         {
             if (Active)
@@ -102,12 +99,9 @@ public class FollowTheLightPower : Power
             }
 
         }), 3);
-        LoreMaster.Instance.Log("Adjust transitions from Dream Gate?");
         fsm.GetState("Dream Gate?").AddTransition("PLACE", "Set Light Gate");
         fsm.GetState("Dream Gate?").AddTransition("MOVE", "Move to Light Gate");
-        LoreMaster.Instance.Log("Set transition from Set Light");
         fsm.GetState("Set Light Gate").AddTransition("FINISHED", "Slash Antic");
-        LoreMaster.Instance.Log("Set transition from Move To Light");
         fsm.GetState("Move to Light Gate").AddTransition("FINISHED", "Slash Antic");
     }
 

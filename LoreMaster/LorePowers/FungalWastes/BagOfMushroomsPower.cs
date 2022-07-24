@@ -36,10 +36,12 @@ public class BagOfMushroomsPower : Power
 
     public BagOfMushroomsPower() : base("Bag of Mushrooms", Area.FungalWastes)
     {
-        Hint = "[BETA] Allows you to consume a yummy mushroom snack occasionly. The saturation may power you up. Caution: Can cause throw up if you eat too much of the same ones. Press quick map to select another and cdash + dash to consume the mushroom. You can cancel the effect early by pressing quick map and down.";
-        Description = "[BETA] Allows you to pick a mushroom to consume each 180 seconds. White shroom: Increases the speed of the game by 40%. Yellow shroom: Generates 20 soul each second, " +
+        Hint = "Allows you to consume a yummy mushroom snack occasionly. The saturation may power you up. Caution: Can cause throw up if you eat too much of the same ones. Press quick map to select another and cdash + dash to consume the mushroom. You can cancel the effect early by pressing quick map and down. " +
+            "Warning: The yellow one causes a nausea effect! If you don't want to use that, you can turn off the effect in the mod settings. Eating the yellow mushroom then, will only give a small effect.";
+        Description = "Allows you to pick a mushroom to consume each 180 seconds. White shroom: Increases the speed of the game by 40%. Yellow shroom: Generates 20 soul each second, " +
             "but causes nausea. Red shroom: Gives you 4 extra health, heals you fully and increases your nail damage by 20%, but you can't dash. Green shroom: Makes you small, decrease the gravity by 50%" +
-            " and doubles all damage taken. Taking the same mushroom twice in a row nerfs it's positive effect by 50%. Taking the same mushroom three times in a row, deals 2 damage to you instead. Press quick map to select another and cdash + dash to consume the mushroom. You can cancel the effect early by pressing quick map and down.";
+            " and doubles all damage taken. Taking the same mushroom twice in a row nerfs it's positive effect by 50%. Taking the same mushroom three times in a row, deals 2 damage to you instead. Press quick map to select another and cdash + dash to consume the mushroom. You can cancel the effect early by pressing quick map and down. " +
+            "Warning: The yellow one causes a nausea effect! If you don't want to use that, you can turn off the effect in the mod settings. Eating the yellow mushroom then, will only give a small effect.";
         _mushroomSprite = SpriteHelper.CreateSprite("MushroomChoice");
     }
 
@@ -131,7 +133,7 @@ public class BagOfMushroomsPower : Power
     /// Makes sure the hero controller doesn't "fix" the scale back again.
     /// </summary>
     /// <param name="il"></param>
-    private void ModifyScalePatch(ILContext il)
+    private void ModifyScaleFix(ILContext il)
     {
         ILCursor cursor = new(il);
 
@@ -365,12 +367,18 @@ public class BagOfMushroomsPower : Power
     {
         if (active)
         {
-            _recoverSoul = LoreMaster.Instance.Handler.StartCoroutine(RecoverSoul());
-            On.tk2dCamera.UpdateCameraMatrix += NauseaEffect;
+            if (LoreMaster.Instance.DisableYellowMushroom)
+                HeroController.instance.AddMPCharge(HasEatenTwice ? 5 : 10);
+            else
+            {
+                _recoverSoul = LoreMaster.Instance.Handler.StartCoroutine(RecoverSoul());
+                On.tk2dCamera.UpdateCameraMatrix += NauseaEffect;
+            }
         }
         else
         {
-            LoreMaster.Instance.Handler.StopCoroutine(_recoverSoul);
+            if (_recoverSoul != null)
+                LoreMaster.Instance.Handler.StopCoroutine(_recoverSoul);
             On.tk2dCamera.UpdateCameraMatrix -= NauseaEffect;
         }
     }
@@ -383,24 +391,17 @@ public class BagOfMushroomsPower : Power
     {
         if (active)
         {
-            //IL.HeroController.Update10 += ModifyScalePatch;
             On.HeroController.CanDash += DisableDash;
             On.HeroController.CanSuperDash += DisableCDash;
             ModHooks.GetPlayerIntHook += ModifyHealth;
             ModHooks.HitInstanceHook += BuffNail;
-            // Small try to prevent clipping into the ground
-            //HeroController.instance.transform.localPosition += new Vector3(0f, .25f);
-            //float scale = HasEatenTwice ? 1.1f : 1.2f;
-            //HeroController.instance.transform.localScale = new(HeroController.instance.cState.facingRight ? -scale: scale, scale, scale);
         }
         else
         {
-            //IL.HeroController.Update10 -= ModifyScalePatch;
             On.HeroController.CanDash -= DisableDash;
             On.HeroController.CanSuperDash -= DisableCDash;
             ModHooks.GetPlayerIntHook -= ModifyHealth;
             ModHooks.HitInstanceHook -= BuffNail;
-            //HeroController.instance.transform.localScale = new(HeroController.instance.cState.facingRight ? -1f : 1f, 1f, 1f);
         }
         HeroController.instance.orig_CharmUpdate();
         PlayMakerFSM.BroadcastEvent("CHARM INDICATOR CHECK");
@@ -414,7 +415,7 @@ public class BagOfMushroomsPower : Power
     {
         if (active)
         {
-            IL.HeroController.Update10 += ModifyScalePatch;
+            IL.HeroController.Update10 += ModifyScaleFix;
             ModHooks.AfterTakeDamageHook += MiniMushroomDamage;
             float scale = HasEatenTwice ? .75f : .5f;
             HeroController.instance.transform.localScale = new(HeroController.instance.cState.facingRight ? scale * -1 : scale, scale, scale);
@@ -426,7 +427,7 @@ public class BagOfMushroomsPower : Power
         }
         else
         {
-            IL.HeroController.Update10 -= ModifyScalePatch;
+            IL.HeroController.Update10 -= ModifyScaleFix;
             ModHooks.AfterTakeDamageHook -= MiniMushroomDamage;
             ModHooks.HeroUpdateHook -= MiniMushroomAdjustments;
             HeroController.instance.transform.localScale = new(HeroController.instance.cState.facingRight ? -1f : 1f, 1f, 1f);

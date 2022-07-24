@@ -26,7 +26,7 @@ public class DreamBlessingPower : Power
     {
         Hint = "The dream artifact uses the power it absorbs from their powerful victims to use it's hidden power.<br>Monomon: Through her knowledge she exposes the foes biggest weakness.<br>" +
             "Lurien: His gaze may freeze the enemy in place.<br>Herrah: Invoking her children from the victim.";
-        Description = "Defeated Dreamers grant the dream nail an additional effect.<br/>Lurien: Roots the target for 3 seconds (15 seconds cooldown)<br/>Herrah: Spawn 2 weavers for 30 seconds." +
+        Description = "Defeated Dreamers grant the dream nail an additional effect.<br/>Lurien: Roots the target for 3 seconds (15 seconds cooldown)<br/>Herrah: Spawn 2 weavers." +
             "<br/>Monomon: Per 100 Essence you have a 1% chance to instant kill the enemy (capped at 200 damage). Capped at 2400 Essence for 24%.";
     }
 
@@ -45,10 +45,11 @@ public class DreamBlessingPower : Power
         // Herrah... don't ask.
         if (PlayerData.instance.GetBool(nameof(PlayerData.instance.hegemolDefeated)))
         {
-            _spawnedWeavers.Add(GameObject.Instantiate(_weaverlingPrefab, HeroController.instance.transform.position, Quaternion.identity));
-            _spawnedWeavers.Add(GameObject.Instantiate(_weaverlingPrefab, HeroController.instance.transform.position, Quaternion.identity));
-            if (_weaverRoutine == null)
-                _weaverRoutine = LoreMaster.Instance.Handler.StartCoroutine(WeaverLifeTime());
+            if (_spawnedWeavers.Count > 40)
+            {
+                _spawnedWeavers.Add(GameObject.Instantiate(_weaverlingPrefab, HeroController.instance.transform.position, Quaternion.identity));
+                _spawnedWeavers.Add(GameObject.Instantiate(_weaverlingPrefab, HeroController.instance.transform.position, Quaternion.identity));
+            }
         }
 
         if (PlayerData.instance.GetBool(nameof(PlayerData.instance.monomonDefeated)))

@@ -27,7 +27,6 @@ public class JellyBellyPower : Power
 
     private void Float()
     {
-
         if (_playerRigidBody.gravityScale == 0)
             return;
 

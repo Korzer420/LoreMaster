@@ -50,12 +50,13 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         {"ABYSS_TUT_TAB_01", new WeDontTalkAboutShadePower() },
         // City of Tears
         {"RUIN_TAB_01", new HotStreakPower() },
-        {"FOUNTAIN_PLAQUE_DESC", new TouristPower() },
+        {"FOUNTAIN_PLAQUE_DESC", new TouristPower() {DefaultTag = PowerTag.Global } },
         {"RUINS_MARISSA_POSTER", new MarissasAudiencePower() },
         {"MAGE_COMP_03", new OverwhelmingPower() },
         {"MAGE_COMP_01", new SoulExtractEfficiencyPower() },
         {"LURIAN_JOURNAL", new EyeOfTheWatcherPower() },
         {"EMILITIA", new HappyFatePower() },
+        {"POGGY", new DeliciousMealPower() },
         // Crossroads
         {"PILGRIM_TAB_01", new ReluctantPilgrimPower() },
         {"COMPLETION_RATE_UNLOCKED", new GreaterMindPower() { DefaultTag = PowerTag.Global } },
@@ -70,7 +71,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         {"TUT_TAB_02", new ScrewTheRulesPower() },
         {"TUT_TAB_03", new TrueFormPower() },
         {"BRETTA", new CaringShellPower() },
-        //{"GRAVEDIGGER", new RequiemPower() },
+        {"GRAVEDIGGER", new RequiemPower() },
         // Fog Canyon
         {"ARCHIVE_01", new FriendOfTheJellyfishPower() },
         {"ARCHIVE_02", new JellyBellyPower() },
@@ -113,7 +114,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         {"PLAQUE_WARN", new DiminishingCursePower() },
         {"EndOfPathOfPain", new SacredShellPower() { DefaultTag = PowerTag.Exclude } },
         // Unused
-        {"ELDERBUG", new ElderbugHitListPower() { DefaultTag = PowerTag.Remove } }
+        {"ELDERBUG", new ElderbugHitListPower() { DefaultTag = PowerTag.Remove, Tag = PowerTag.Remove } }
     };
 
     private readonly Dictionary<Area, List<MapZone>> _mapZones = new()
@@ -189,6 +190,11 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
     public bool UseCustomText { get; set; } = true;
 
     /// <summary>
+    /// Gets or sets the flag, that indicates if the yellow mushroom effect should not use the nausea effect.
+    /// </summary>
+    public bool DisableYellowMushroom { get; set; }
+
+    /// <summary>
     /// Gets or sets all actions of powers that should be executed once the scene loaded. 
     /// This is used to prevent messing around with activeSceneChanged, because the manager has to enable/disable the powers first before powers execute their ability.
     /// <para/>No power shall use activeSceneChanged!!!
@@ -199,6 +205,16 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
     /// Gets the flag for the toggle button to disable this mod.
     /// </summary>
     public bool ToggleButtonInsideMenu => true;
+
+    /// <summary>
+    /// Gets all powers
+    /// </summary>
+    internal Dictionary<string, Power> AllPowers => _powerList;
+
+    /// <summary>
+    /// Gets the current map area.
+    /// </summary>
+    public Area CurrentArea => _currentArea;
 
     #endregion
 
@@ -332,8 +348,6 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
                 _powerList[key].Tag = _powerList[key].DefaultTag;
             // Unsure if this is needed, but just in case.
             ActivePowers.Clear();
-            foreach (string key in _powerList.Keys)
-                ActivePowers.Add(key, _powerList[key]);
         }
         catch (Exception exception)
         {
@@ -452,7 +466,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
     /// <param name="itemData"></param>
     private void GiveLoreItem(ReadOnlyGiveEventArgs itemData)
     {
-        //If focus is randomized but the lore tablet isn't, the lore tablet becames unavailable, which is we add the power to focus instead.
+        //If focus is randomized but the lore tablet isn't, the lore tablet becomes unavailable, which is we add the power to focus instead.
         if (itemData.Item.name.Equals("Focus") && ItemChanger.Internal.Ref.Settings.Placements.ContainsKey(LocationNames.Focus))
         {
             string text = string.Empty;
@@ -460,7 +474,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
             if (itemData.Item.UIDef is BigUIDef big)
                 big.descTwo = new BoxedString(text.Replace("<br>", " "));
         }
-        // If world sense is randomized but the lore tablet isn't, the lore tablet becames unavailable, which is we add the power to world sense instead.
+        // If world sense is randomized but the lore tablet isn't, the lore tablet becomes unavailable, which is we add the power to world sense instead.
         else if (itemData.Item.name.Equals("World_Sense") && ItemChanger.Internal.Ref.Settings.Placements.ContainsKey(LocationNames.World_Sense))
         {
             string text = string.Empty;
@@ -641,6 +655,15 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
             Loader = () => UseHints ? 0 : 1
         });
 
+        menu.Add(new()
+        {
+            Name = "Disable Yellow Mushroom",
+            Description = "If on, the yellow mushroom will not cause a nausea effect.",
+            Values = new string[] { "On", "Off" },
+            Saver = option => DisableYellowMushroom = option == 0,
+            Loader = () => DisableYellowMushroom ? 0 : 1
+        });
+
         return menu;
     }
 
@@ -706,6 +729,10 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
             key = "HIVEQUEEN";
         else if (key.Equals("JONI_TALK") || key.Equals("JONI_REPEAT"))
             key = "JONI";
+        else if (key.Equals("POGGY_TALK") || key.Equals("POGGY_REPEAT"))
+            key = "POGGY";
+        else if (key.Equals("GRAVEDIGGER_TALK") || key.Equals("GRAVEDIGGER_REPEAT"))
+            key = "GRAVEDIGGER";
         else if (IsFlukeHermit(key))
             key = "FLUKE_HERMIT";
         else if (IsQueen(key))
@@ -722,8 +749,6 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
             key = "EMILITIA";
         else if (IsMossProphet(key))
             key = "MOSSPROPHET";
-        //else if (key.Equals("GRAVEDIGGER_TALK") || key.Equals("GRAVEDIGGER_REPEAT"))
-        //    key = "GRAVEDIGGER";
         return key;
     }
 
@@ -768,7 +793,13 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
                     if (area != newArea && !IsAreaGlobal(area))
                         foreach (Power power in ActivePowers.Values.Where(x => x.Location == area))
                             if (power.Tag == PowerTag.Local || power.Tag == PowerTag.Exclude)
-                                power.DisablePower(false);
+                            {
+                                // Requiem is a special case. This has to be disabled later to prevent getting locked in an animation.
+                                if (power.PowerName.Equals("Requiem"))
+                                    Handler.StartCoroutine(((RequiemPower)power).DeactivateRequiem());
+                                else
+                                    power.DisablePower(false);
+                            }
             }
             catch (Exception exception)
             {
@@ -806,7 +837,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
     /// </summary>
     /// <param name="toCheck"></param>
     /// <returns></returns>
-    private bool IsAreaGlobal(Area toCheck)
+    internal bool IsAreaGlobal(Area toCheck)
     {
         List<Power> neededAreaPowers = _powerList.Values.Where(x => x.Location == toCheck && (x.Tag == PowerTag.Local || x.Tag == PowerTag.Disable || x.Tag == PowerTag.Global)).ToList();
         foreach (Power neededPower in neededAreaPowers)
@@ -932,10 +963,11 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         Log("Loaded global data");
         UseHints = globalSaveData.ShowHint;
         UseCustomText = globalSaveData.EnableCustomText;
+        DisableYellowMushroom = globalSaveData.DisableNausea;
     }
 
     LoreMasterGlobalSaveData IGlobalSettings<LoreMasterGlobalSaveData>.OnSaveGlobal()
-        => new() { ShowHint = UseHints, EnableCustomText = UseCustomText };
+        => new() { ShowHint = UseHints, EnableCustomText = UseCustomText, DisableNausea = DisableYellowMushroom };
 
     public void OnLoadLocal(LoreMasterLocalSaveData s)
     {

@@ -2,6 +2,7 @@ using LoreMaster.Enums;
 using Modding;
 using MonoMod.Cil;
 using System;
+using UnityEngine;
 
 namespace LoreMaster.LorePowers.Crossroads;
 
@@ -107,6 +108,22 @@ public class ReluctantPilgrimPower : Power
     private int GetBeamDamage(string name, int orig)
         => name.Equals("beamDamage") && IsPlayerGrounded && PlayerData.instance.GetBool(nameof(PlayerData.instance.equippedCharm_35)) ? orig * 2 : orig;
 
+    /// <summary>
+    /// Mute elegy objects.
+    /// </summary>
+    /// <param name="arg"></param>
+    /// <returns></returns>
+    private GameObject MuteElegy(GameObject arg)
+    {
+        if (arg.name.Contains("Grubberfly Beam"))
+        {
+            AudioSource source = arg.GetComponent<AudioSource>();
+            if (source != null)
+                source.playOnAwake = false;
+        }
+        return arg;
+    }
+
     #endregion
 
     #region Protected Methods
@@ -116,6 +133,7 @@ public class ReluctantPilgrimPower : Power
     {
         ModHooks.GetPlayerIntHook += GetBeamDamage;
         IL.HeroController.Attack += Attack_Modify;
+        ModHooks.ObjectPoolSpawnHook += MuteElegy;
     }
 
     /// <inheritdoc/>
@@ -123,6 +141,7 @@ public class ReluctantPilgrimPower : Power
     {
         ModHooks.GetPlayerIntHook -= GetBeamDamage;
         IL.HeroController.Attack -= Attack_Modify;
+        ModHooks.ObjectPoolSpawnHook -= MuteElegy;
     }
 
     #endregion

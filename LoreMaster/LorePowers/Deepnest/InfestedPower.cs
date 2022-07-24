@@ -6,6 +6,7 @@ using LoreMaster.Enums;
 using LoreMaster.UnityComponents;
 using LoreMaster.Extensions;
 using ItemChanger.FsmStateActions;
+using System.Collections;
 
 namespace LoreMaster.LorePowers.Deepnest;
 
@@ -44,9 +45,7 @@ public class InfestedPower : Power
     /// </summary>
     private void HealthManager_Die(On.HealthManager.orig_Die orig, HealthManager self, float? attackDirection, AttackTypes attackType, bool ignoreEvasion)
     {
-        orig(self, attackDirection, attackType, ignoreEvasion);
         _weavers.RemoveAll(x => x == null);
-        LoreMaster.Instance.Log("Called Death");
         // Just in case we limit the amount of weavers to prevent crashing the game... hopefully
         Infested infested = self.GetComponent<Infested>();
         if (infested != null)
@@ -55,10 +54,13 @@ public class InfestedPower : Power
             {
                 if (_weavers.Count >= 25)
                     break;
-                _weavers.Add(GameObject.Instantiate(_weaverPrefab, new Vector3(HeroController.instance.transform.GetPositionX(), HeroController.instance.transform.GetPositionY()), Quaternion.identity));
+                GameObject weaver = GameObject.Instantiate(_weaverPrefab, new Vector3(HeroController.instance.transform.GetPositionX(), HeroController.instance.transform.GetPositionY()), Quaternion.identity);
+                _weavers.Add(weaver);
+                LoreMaster.Instance.Handler.StartCoroutine(WeaverLife(weaver));
             }
             Object.Destroy(infested);
         }
+        orig(self, attackDirection, attackType, ignoreEvasion);
     }
 
     private void PlayMakerFSM_OnEnable(On.PlayMakerFSM.orig_OnEnable orig, PlayMakerFSM self)
@@ -67,9 +69,8 @@ public class InfestedPower : Power
         {
             self.GetState("Hit").ReplaceAction(new Lambda(() =>
             {
-                LoreMaster.Instance.Log("Called attack");
                 if (Active)
-                    Infest(self.gameObject);
+                    Infest(self.FsmVariables.FindFsmGameObject("Enemy").Value);
                 self.FsmVariables.FindFsmInt("Enemy HP").Value -= self.FsmVariables.FindFsmInt("Damage").Value;
             })
             { Name = "Infest" }, 4);
@@ -120,6 +121,24 @@ public class InfestedPower : Power
             else
                 infested.Eggs++;
         }
+    }
+
+    /// <summary>
+    /// Handles the life time of weavers.
+    /// </summary>
+    /// <param name="weaver"></param>
+    /// <returns></returns>
+    private IEnumerator WeaverLife(GameObject weaver)
+    {
+        float passedTime = 0f;
+        while(passedTime < 30f && weaver != null)
+        {
+            yield return null;
+            passedTime += Time.deltaTime;
+        }
+
+        if (weaver != null)
+            GameObject.Destroy(weaver);
     }
 
     #endregion

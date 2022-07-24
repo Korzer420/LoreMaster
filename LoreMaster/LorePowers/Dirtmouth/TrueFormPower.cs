@@ -4,6 +4,7 @@ using LoreMaster.Enums;
 using Modding;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace LoreMaster.LorePowers.Dirtmouth;
@@ -105,6 +106,8 @@ public class TrueFormPower : Power
                 return;
             }
         });
+
+        LoreMaster.Instance.SceneActions[PowerName].Invoke();
     }
 
     /// <inheritdoc/>

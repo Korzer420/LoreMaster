@@ -62,7 +62,11 @@ public class GreaterMindPower : Power
     }
 
     /// <inheritdoc/>
-    protected override void Enable() => _loreTracker?.SetActive(true);
+    protected override void Enable() 
+    {
+        _loreTracker?.SetActive(true);
+        UpdateLoreCounter(LoreMaster.Instance.ActivePowers.Values, LoreMaster.Instance.AllPowers.Values, LoreMaster.Instance.CurrentArea, LoreMaster.Instance.IsAreaGlobal(LoreMaster.Instance.CurrentArea));
+    }
 
     /// <inheritdoc/>
     protected override void Disable() => _loreTracker?.SetActive(false);
@@ -109,7 +113,7 @@ public class GreaterMindPower : Power
             string globalPart = "All: " + activePowers.Count(x => x.Tag != PowerTag.Remove) + "/" + allPowers.Count(x => x.Tag != PowerTag.Remove);
             if (activePowers.Count(x => x.Tag != PowerTag.Remove) == allPowers.Count(x => x.Tag != PowerTag.Remove))
                 globalPart = "<color=#7FFF7B>" + globalPart + "</color>";
-
+            LoreMaster.Instance.Log("Power Amount: " + allPowers.Count());
             currentCounter.text += Environment.NewLine + globalPart;
         }
         catch (Exception exception)

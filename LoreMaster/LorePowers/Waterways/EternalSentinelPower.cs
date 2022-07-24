@@ -3,6 +3,7 @@ using HutongGames.PlayMaker.Actions;
 using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
 using LoreMaster.Enums;
+using LoreMaster.Extensions;
 using Modding;
 using UnityEngine;
 
@@ -42,30 +43,20 @@ public class EternalSentinelPower : Power
         _baldurSprite.color = Color.white;
     }
 
-    #endregion
-
-    #region Event Handler
-
     private void PlayMakerFSM_OnEnable(On.PlayMakerFSM.orig_OnEnable orig, PlayMakerFSM self)
     {
         if (self.gameObject.name.Equals("Knight Dung Trail(Clone)") && self.FsmName.Equals("Control"))
-        {
-            FsmState waitState = self.GetState("Init");
-            if (waitState.GetFirstActionOfType<Lambda>() == null)
+            self.GetState("Init").ReplaceAction(new Lambda(() =>
             {
-                waitState.RemoveAction(1);
-                waitState.AddLastAction(new Lambda(() =>
-                {
-                    self.transform.localPosition = HeroController.instance.transform.position;
-                    if (Active)
-                        self.transform.localScale = new(2.5f, 2.5f);
-                    else
-                        self.transform.localScale = new(1f, 1f);
-                    self.GetComponent<DamageEffectTicker>().SetDamageInterval(Active ? .3f : .15f);
-                }));
-            }
-        }
-
+                self.transform.localPosition = HeroController.instance.transform.position;
+                if (Active)
+                    self.transform.localScale = new(2.5f, 2.5f);
+                else
+                    self.transform.localScale = new(1f, 1f);
+                self.GetComponent<DamageEffectTicker>().SetDamageInterval(Active ? .3f : .15f);
+            })
+            { Name = "Extend Cloud" });
+        
         orig(self);
     }
 
@@ -99,9 +90,6 @@ public class EternalSentinelPower : Power
     /// <inheritdoc/>
     protected override void Enable()
     {
-        if (PlayerData.instance.GetInt(nameof(PlayerData.instance.blockerHits)) > 0)
-            PlayerData.instance.SetInt(nameof(PlayerData.instance.blockerHits), PlayerData.instance.GetBool(nameof(PlayerData.instance.equippedCharm_10)) ? 10 : 7);
-
         if (PlayerData.instance.GetBool(nameof(PlayerData.instance.equippedCharm_10)))
             _baldurSprite.color = new(1f, 0.4f, 0f);
         ModHooks.CharmUpdateHook += CharmUpdate;
