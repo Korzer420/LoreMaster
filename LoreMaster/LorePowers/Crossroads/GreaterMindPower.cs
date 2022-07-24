@@ -113,7 +113,6 @@ public class GreaterMindPower : Power
             string globalPart = "All: " + activePowers.Count(x => x.Tag != PowerTag.Remove) + "/" + allPowers.Count(x => x.Tag != PowerTag.Remove);
             if (activePowers.Count(x => x.Tag != PowerTag.Remove) == allPowers.Count(x => x.Tag != PowerTag.Remove))
                 globalPart = "<color=#7FFF7B>" + globalPart + "</color>";
-            LoreMaster.Instance.Log("Power Amount: " + allPowers.Count());
             currentCounter.text += Environment.NewLine + globalPart;
         }
         catch (Exception exception)
