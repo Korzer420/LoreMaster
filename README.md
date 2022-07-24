@@ -1,5 +1,5 @@
 # LoreMaster
-Hollow Knight Mod that adds abilities to the lore tablets. (Requires Item Changer)
+Hollow Knight Mod that adds abilities to the lore tablets. (Requires Item Changer and SFCore)
 
 ## How it works
 Reading a lore tablet displays the granted power name and a mostly vaguely description of what it does (or detailed description). The ability stays only active while you are in the zone, in which you found the lore tablet. If you have found all lore tablets in the zone, the powers are granted permanently. (Default)
@@ -12,6 +12,8 @@ I mostly oriented on the wiki page of lore tablets to see what actually counts. 
 - The traitor's grave, Moss prophet and the queen grant abilites.
 - Badoon and Hive Queen Vesper grant an ability. WARNING: Dreamnailing her before talking, denies the power forever.
 - Joni grants an ability (same conditions as Hive Queen Vesper).
+- Poggy (The ghost in the elevator room of Pleasure Houses) grants an ability.
+- The Gravedigger grants an ability.
 - The journal entry at the end of PoP grant an ability (Ability is only shown at the lore tablet at the start of PoP. This is the only power that by default is excluded (see below for more details))
 - The world sense tablet in the black egg temple does count.
 - Willow grants an ability.
@@ -101,13 +103,14 @@ Here are all powers listed with their description (This contains the detailed de
 - Overwhelming Power: When you cast a spell while your soul vessel is full (not counting additional soul vessels), they deal twice as much damage and are twice as big.
 - Soul Extract Efficiency: You gain 5 more soul per hit on enemies.
 - Tourist: You can talk to the firefly by the statue of THK to teleport to black egg temple for 50 geo, or back to this room from the temple.
-- Happy Fate: [Beta] After sitting on a bench, your nail damage, nail range, running speed, dash speed and cdash charge up speed is increased. You also gain 1 soul per second.
+- Happy Fate: After sitting on a bench, your nail damage, nail range, running speed, dash speed and cdash charge up speed is increased. You also gain 1 soul per second. Fades away if you are getting hit.
+- Delicious Meal: You can consume a rancid egg to heal you for 1 mask every 12 seconds and gain a +20% damage buff for 3 minutes. Press jump to consume the egg.
 
 ### Crossroads:
 
 - Reluctant Pilger: While standing of the ground, the grubberfly elegy effect is active (regardless of your HP). If you have grubberfly equipped, the damage on ground is doubled instead.
 - Greater Mind: Activates the tracker, to show you how many powers you are missing. If the counter is green, you have global access to the power in the area.
-- Diamond Dash: Crystal Heart is cast 0.2 seconds faster and be hold midair with up press. Doubled, if you have Diamond Core unlocked. Drains 20 Soul per second (or 10 if you have Diamond Core).
+- Diamond Dash: Crystal Heart is cast 0.3 seconds faster and be hold midair with up press. Doubled, if you have Diamond Core unlocked. Drains 20 Soul per second (or 10 if you have Diamond Core).
 
 ### Deepnest:
 
@@ -120,6 +123,7 @@ Here are all powers listed with their description (This contains the detailed de
 - Screw the Rules: Fury of the Fallen is now also active with 2 hp, but the damage buff is decreased to 50%. Grubberfly Beams are only nerfed by 40%.
 - True Form: While your shade is active, you deal 30% more damage and increase your nail length by 25%. The effects are doubled, if you are in the same room as your shade.
 - Well Focused: Focus is cast 30% faster.
+- Requiem: Holding focus, while you dying will spawn you in dirtmouth instead of your bench. Holding dream nail will spawn you at spirit's glade instead (when the glade is open).
 
 ### Fog Canyon:
 
@@ -143,14 +147,14 @@ Here are all powers listed with their description (This contains the detailed de
 - Camouflage: After standing still for 5 seconds, you gain invincibility until you do something. If you are wearing Shape of Unn, you keep the invincibility while focusing and moving as a slug.
 - Gift on Unn: Gain the shape of Unn effect for focusing. If you're wearing Shape of Unn, focus restores 15 soul on a successful cast.
 - Mindblast of Unn: Hitting an enemy with the dream nail permanently increases the taken damage by 2. Bonus for wearing charm: (+1 Dreamwielder; +2 Dreamshield; +3 Shape of Unn)
-- Rooted: You can hang on walls, without sliding down. Pressing down let's you move down. Also you can cast focus on walls. If you have Shape on Unn equipped, you can also move down on walls during focus.
+- Rooted: Currently does nothing.
 - Return to Unn: Your Movement speed is increased by 3 and your dash cooldown is reduces by 0.5 seconds, while you facing left.
 - Touch Grass: Every 10 seconds standing on grass, you heal 1 mask. Decreased to 5 seconds if wearing Shape of Unn.
 
 ### Howling Cliffs:
 
 - Joni's Protection: When going to another area, you will be granted 5 life blood (10 if you have Joni's equipped). Each 3 seconds a lifeblood will fade away.
-- Lifeblood Wings: For each lifeblood that you have, you can jump an additional time. Requires Wings.
+- Lifeblood Wings: Currently does nothing.
 
 ### Kingdom's Edge:
 
@@ -162,11 +166,14 @@ Here are all powers listed with their description (This contains the detailed de
 
 - Ring of Flowers: Increase the damage of your nail arts by 10% for each recipient for the flower.
 - Queen's Thorns: Thorns of Agony are now "Queen's Thorns", which removes the freeze on hit. restore soul if it hits an enemy and has a 33% chance to restore 1 hp if it kills an enemy.
-- Embrace the Light: [Not Implemented] Currently does nothing. Something with essence or dream nail I guess.
+- Follow the Light: When you hold left while casting dreamnail, it will spawn an orange portal by your side, which you can travel to from anywhere in the room. Hold right while casting dreamnail to warp to the portal. Warping will consume 1 essence and the portal. Neither get's consumed if you have awoken Dreamnail (the portal will swap position with you instead).
 
 ### Resting Grounds:
 
-- Defeated Dreamers grant the dream nail an additional effect. Lurien: Roots the target for 3 seconds (15 seconds cooldown) Herrah: Spawn 2 weavers for 15 seconds. Monomon: Per 100 Essence you have a 1% chance to instant kill the enemy (capped at 200 damage). Capped at 2400 Essence for 24%. (This is granted, if you enter the room)
+- Defeated Dreamers grant the dream nail an additional effect. Lurien: Roots the target for 3 seconds (15 seconds cooldown) Herrah: Spawn 2 weavers. Monomon: Per 100 Essence you have a 1% chance to instant kill the enemy (capped at 200 damage). Capped at 2400 Essence for 24%. (This is granted, if you enter the room)
+
+### Crystal Peak:
+- Diamond Core : Crystal Heart snares all enemies in the room if you hit a wall. The duration of the stun and c dash damage increases with the c dash duration.(Stun duration is capped at 10 seconds, gain 5 damage and 20% speed per second, gain invincibility after 3 seconds.)
 
 ### Waterways:
 
