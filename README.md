@@ -1,5 +1,5 @@
 # LoreMaster
-Hollow Knight Mod that adds abilities to the lore tablets. (Requires Item Changer)
+Hollow Knight Mod that adds abilities to the lore tablets. (Requires Item Changer and SFCore)
 
 ## How it works
 Reading a lore tablet displays the granted power name and a mostly vaguely description of what it does (or detailed description). The ability stays only active while you are in the zone, in which you found the lore tablet. If you have found all lore tablets in the zone, the powers are granted permanently. (Default)
