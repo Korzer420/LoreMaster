@@ -12,6 +12,7 @@ public class EternalValorPower : Power
     private bool _hasHitEnemy;
     private bool _currentlyRunning;
     private int _successfulHits = 0;
+    private float _heatTimer = 3f;
 
     #endregion
 
@@ -19,8 +20,8 @@ public class EternalValorPower : Power
 
     public EternalValorPower() : base("Eternal Valor", Area.FungalWastes)
     {
-        Hint = "The heat of the battle shall allow you to endure the pain.";
-        Description = "Each 30 hits on enemies, heal you for 1 mask.";
+        Hint = "The heat of the battle shall allow you to endure more pain.";
+        Description = "Each 12 hits on enemies, heal you for 1 mask. Not hitting an enemy for 3 seconds will take away a stack each second.";
     }
 
     #endregion
@@ -41,7 +42,7 @@ public class EternalValorPower : Power
             return;
 
         _currentlyRunning = true;
-        _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(HitCooldown());
+        LoreMaster.Instance.Handler.StartCoroutine(HitCooldown());
     }
 
     #endregion
@@ -69,8 +70,12 @@ public class EternalValorPower : Power
 
         if (_hasHitEnemy)
         {
+            _heatTimer = 3f;
+            if (_runningCoroutine == null)
+                _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(KeepHeat());
+            
             _successfulHits++;
-            if (_successfulHits >= 30 && PlayerData.instance.GetInt(nameof(PlayerData.instance.health)) < PlayerData.instance.GetInt(nameof(PlayerData.instance.maxHealth)))
+            if (_successfulHits >= 12 && PlayerData.instance.GetInt(nameof(PlayerData.instance.health)) < PlayerData.instance.GetInt(nameof(PlayerData.instance.maxHealth)))
             {
                 HeroController.instance.AddHealth(1);
                 _successfulHits = 0;
@@ -78,6 +83,30 @@ public class EternalValorPower : Power
         }
         _hasHitEnemy = false;
         _currentlyRunning = false;
+    }
+
+    /// <summary>
+    /// Handles the stack duration.
+    /// </summary>
+    private IEnumerator KeepHeat()
+    {
+        while(_heatTimer > 0)
+        {
+            _heatTimer -= Time.deltaTime;
+            yield return null;
+        }
+        _heatTimer = 0f;
+        float fadeTimer = 0f;
+        while(_heatTimer == 0 && _successfulHits > 0)
+        {
+            fadeTimer += Time.deltaTime;
+            if(fadeTimer >= 1f)
+            {
+                _successfulHits--;
+                fadeTimer = 0f;
+            }
+            yield return null;
+        }
     }
 
     #endregion

@@ -14,7 +14,6 @@ public class DiamantDashPower : Power
     private Sprite _corelessSprite;
     private Sprite _shelllessSprite;
     private Sprite _diamondSprite;
-
     private bool _currentlyHold;
 
     #endregion
