@@ -1,5 +1,6 @@
 using LoreMaster.Enums;
 using LoreMaster.Helper;
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -35,7 +36,35 @@ public class DiamantDashPower : Power
 
     #region Properties
 
+    /// <summary>
+    /// Gets the indicator if diamond core has also been acquired.
+    /// </summary>
     public bool HasDiamondCore => LoreMaster.Instance.ActivePowers.ContainsKey("QUIRREL") && LoreMaster.Instance.ActivePowers["QUIRREL"].Active;
+
+    /// <inheritdoc/>
+    public override Action SceneAction => () =>
+    { 
+        if(_crystalHeartSprite == null)
+        {
+            _crystalHeartSprite = GameObject.Find("_GameCameras").transform.Find("HudCamera/Inventory/Inv/Equipment/Super Dash").GetComponent<SpriteRenderer>();
+            if (_crystalHeartSprite != null)
+            {
+                _crystalHeartSprite.sprite = HasDiamondCore ? _diamondSprite : _corelessSprite;
+                _originalSprite = _crystalHeartSprite?.sprite;
+            }
+        }
+    };
+
+    #endregion
+
+    #region Event handler
+
+    private void HeroController_Update(On.HeroController.orig_Update orig, HeroController self)
+    {
+        orig(self);
+        if (!_currentlyHold && HeroController.instance.cState.superDashing && InputHandler.Instance.inputActions.up.IsPressed)
+            _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(HoldPosition());
+    }
 
     #endregion
 
@@ -45,7 +74,7 @@ public class DiamantDashPower : Power
     protected override void Initialize()
     {
         _crystalHeartSprite = GameObject.Find("_GameCameras").transform.Find("HudCamera/Inventory/Inv/Equipment/Super Dash").GetComponent<SpriteRenderer>();
-        _originalSprite = _crystalHeartSprite.sprite;
+        _originalSprite = _crystalHeartSprite?.sprite;
         _corelessSprite = SpriteHelper.CreateSprite("DiamondHeart_Coreless");
         _shelllessSprite = SpriteHelper.CreateSprite("DiamondHeart_Shellless");
         _diamondSprite = SpriteHelper.CreateSprite("DiamondHeart");
@@ -54,22 +83,17 @@ public class DiamantDashPower : Power
     /// <inheritdoc/>
     protected override void Enable()
     {
-        _crystalHeartSprite.sprite = HasDiamondCore ? _diamondSprite : _corelessSprite;
+        if (_crystalHeartSprite != null)
+            _crystalHeartSprite.sprite = HasDiamondCore ? _diamondSprite : _corelessSprite;
         HeroController.instance.superDash.FsmVariables.FindFsmFloat("Charge Time").Value = HasDiamondCore ? .2f : .5f;
         On.HeroController.Update += HeroController_Update;
-    }
-
-    private void HeroController_Update(On.HeroController.orig_Update orig, HeroController self)
-    {
-        orig(self);
-        if (!_currentlyHold && HeroController.instance.cState.superDashing && InputHandler.Instance.inputActions.up.IsPressed)
-            _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(HoldPosition());
     }
 
     /// <inheritdoc/>
     protected override void Disable()
     {
-        _crystalHeartSprite.sprite = HasDiamondCore ? _shelllessSprite : _originalSprite;
+        if (_crystalHeartSprite != null)
+            _crystalHeartSprite.sprite = HasDiamondCore ? _shelllessSprite : _originalSprite;
         HeroController.instance.superDash.FsmVariables.FindFsmFloat("Charge Time").Value = .8f;
         _currentlyHold = false;
         On.HeroController.Update -= HeroController_Update;

@@ -2,6 +2,7 @@ using HutongGames.PlayMaker.Actions;
 using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
 using LoreMaster.Enums;
+using System;
 using UnityEngine;
 
 namespace LoreMaster.LorePowers.WhitePalace;
@@ -10,7 +11,7 @@ public class ShadowForgedPower : Power
 {
     #region Members
 
-    private GameObject _shadow;
+    private tk2dSpriteAnimationClip _shadow;
 
     #endregion
 
@@ -18,9 +19,25 @@ public class ShadowForgedPower : Power
 
     public ShadowForgedPower() : base("Shadow Forged", Area.WhitePalace)
     {
-        Hint = "Your void energy return quicker to you.";
-        Description = "Decrease the cooldown of shade cloak by 0.4 seconds and increases sharp shadow damage by 100%.";
+        Hint = "The void energy return quicker to you.";
+        Description = "Decrease the cooldown of shade cloak by 0.2 seconds and increases sharp shadow damage by 100%.";
     }
+
+    #endregion
+
+    #region Properties
+
+    /// <inheritdoc/>
+    public override Action SceneAction => () =>
+    {
+        // Each scene we try to find the shade cloak clip and adjust it, since it isn't loaded by default.
+        if (_shadow == null)
+        {
+            _shadow = GameObject.Find("Knight/Effects").transform.Find("Shadow Recharge").gameObject.GetComponent<tk2dSpriteAnimator>().CurrentClip;
+            if(_shadow != null)
+                _shadow.fps += 10f;
+        }
+    };
 
     #endregion
 
@@ -29,53 +46,37 @@ public class ShadowForgedPower : Power
     /// <inheritdoc/>
     protected override void Initialize()
     {
-        try
+        PlayMakerFSM fsm = GameObject.Find("Knight/Effects").transform.Find("Shadow Recharge").gameObject.LocateMyFSM("Recharge Effect");
+        _shadow = fsm.gameObject.GetComponent<tk2dSpriteAnimator>().CurrentClip;
+        fsm.GetState("Init").AddLastAction(new Lambda(() =>
         {
-            _shadow = GameObject.Find("Knight/Effects").transform.Find("Shadow Recharge").gameObject;
-            PlayMakerFSM fsm = _shadow.LocateMyFSM("Recharge Effect");
-
-            fsm.GetState("Init").AddLastAction(new Lambda(() =>
-            {
-                if (Active)
-                    fsm.FsmVariables.GetFsmFloat("Wait time").Value -= .4f;
-            }));
-
-            fsm = GameObject.Find("Knight/Attacks").LocateMyFSM("Set Sharp Shadow Damage");
-            fsm.GetState("Set").RemoveFirstActionOfType<SetFsmInt>();
-            fsm.GetState("Set").AddLastAction(new Lambda(() =>
-            {
-                int damage = fsm.FsmVariables.FindFsmInt("nailDamage").Value;
-                if (Active)
-                    damage *= 2;
-                fsm.transform.Find("Sharp Shadow").gameObject.LocateMyFSM("damages_enemy").FsmVariables.FindFsmInt("damageDealt").Value = damage;
-
-            }));
-        }
-        catch
+            fsm.FsmVariables.GetFsmFloat("Wait time").Value = Active ? .2f : .4f;
+        }));
+        fsm = GameObject.Find("Knight/Attacks").LocateMyFSM("Set Sharp Shadow Damage");
+        fsm.GetState("Set").RemoveFirstActionOfType<SetFsmInt>();
+        fsm.GetState("Set").AddLastAction(new Lambda(() =>
         {
-            _initialized = false;
-        }
+            int damage = fsm.FsmVariables.FindFsmInt("nailDamage").Value;
+            if (Active)
+                damage *= 2;
+            fsm.transform.Find("Sharp Shadow").gameObject.LocateMyFSM("damages_enemy").FsmVariables.FindFsmInt("damageDealt").Value = damage;
+        }));
     }
 
     /// <inheritdoc/>
     protected override void Enable()
     {
-        try
-        {
-            HeroController.instance.SHADOW_DASH_COOLDOWN -= .4f;
-            _shadow.GetComponent<tk2dSpriteAnimator>().CurrentClip.fps += 10f;
-        }
-        catch
-        {
-            Active = false;
-        }
+        HeroController.instance.SHADOW_DASH_COOLDOWN -= .2f;
+        if (_shadow != null)
+            _shadow.fps += 10f;
     }
 
     /// <inheritdoc/>
     protected override void Disable()
     {
-        HeroController.instance.SHADOW_DASH_COOLDOWN += .4f;
-        _shadow.GetComponent<tk2dSpriteAnimator>().CurrentClip.fps -= 10f;
+        HeroController.instance.SHADOW_DASH_COOLDOWN += .2f;
+        if (_shadow != null)
+            _shadow.fps -= 10f;
     }
 
     #endregion

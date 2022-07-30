@@ -38,7 +38,6 @@ public class HotStreakPower : Power
         // To prevent running multiple coroutines
         if (_currentlyRunning)
             return;
-
         _currentlyRunning = true;
         _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(HitCooldown());
     }
@@ -69,6 +68,10 @@ public class HotStreakPower : Power
     {
         ModHooks.SlashHitHook -= NailSlash;
         ModHooks.GetPlayerIntHook -= EmpowerNail;
+        _damageStacks = 0;
+        _currentlyRunning = false;
+        _hasHitEnemy = false;
+        UpdateNail();
     }
 
     #endregion

@@ -16,8 +16,6 @@ public class DreamBlessingPower : Power
 
     private List<GameObject> _spawnedWeavers = new();
 
-    private Coroutine _weaverRoutine;
-
     #endregion
 
     #region Constructors
@@ -45,7 +43,7 @@ public class DreamBlessingPower : Power
         // Herrah... don't ask.
         if (PlayerData.instance.GetBool(nameof(PlayerData.instance.hegemolDefeated)))
         {
-            if (_spawnedWeavers.Count > 40)
+            if (_spawnedWeavers.Count < 40)
             {
                 _spawnedWeavers.Add(GameObject.Instantiate(_weaverlingPrefab, HeroController.instance.transform.position, Quaternion.identity));
                 _spawnedWeavers.Add(GameObject.Instantiate(_weaverlingPrefab, HeroController.instance.transform.position, Quaternion.identity));

@@ -10,7 +10,7 @@ public class MaskCharge : MonoBehaviour
 {
     #region Members
 
-    private GameObject _rune;
+    private GameObject[] _rune = new GameObject[2];
 
     private GameObject _hitbox;
 
@@ -46,15 +46,17 @@ public class MaskCharge : MonoBehaviour
             }), 0);
         }
 
-        GameObject ring = GameObject.Instantiate(LoreMaster.Instance.PreloadedObjects["Battle Scene/HK Prime/Focus Blast/focus_ring"], transform);
-        ring.name = "Charge Ring";
-        ring.transform.localPosition = new(0, 0, 0);
-        ring.transform.localScale = new(1.5f, 1.5f, 1.5f);
+        _rune[0] = GameObject.Instantiate(LoreMaster.Instance.PreloadedObjects["Battle Scene/HK Prime/Focus Blast/focus_ring"], transform);
+        _rune[0].name = "Charge Ring";
+        _rune[0].transform.localPosition = new(0, 0, 0);
+        _rune[0].transform.localScale = new(1.5f, 1.5f, 1.5f);
+        _rune[0].SetActive(true);
 
-        _rune = GameObject.Instantiate(LoreMaster.Instance.PreloadedObjects["Battle Scene/HK Prime/Focus Blast/focus_rune"], transform);
-        _rune.name = "Charge Rune";
-        _rune.transform.localPosition = new(0, 0, 0);
-        _rune.transform.localScale = new(1.5f, 1.5f, 1.5f);
+        _rune[1] = GameObject.Instantiate(LoreMaster.Instance.PreloadedObjects["Battle Scene/HK Prime/Focus Blast/focus_rune"], transform);
+        _rune[1].name = "Charge Rune";
+        _rune[1].transform.localPosition = new(0, 0, 0);
+        _rune[1].transform.localScale = new(1.5f, 1.5f, 1.5f);
+        _rune[1].SetActive(true);
     }
 
     private void OnEnable()
@@ -81,7 +83,7 @@ public class MaskCharge : MonoBehaviour
             currentRotation += 2;
             if (currentRotation >= 360)
                 currentRotation = 0;
-            _rune.transform.SetRotationZ(currentRotation);
+            _rune[1].transform.SetRotationZ(currentRotation);
         }
     }
 

@@ -45,7 +45,8 @@ public class ReturnToUnnPower : Power
     /// <inheritdoc/>
     protected override void Disable()
     {
-        LoreMaster.Instance.Handler.StopCoroutine(_runningCoroutine);
+        if (_runningCoroutine != null)
+            LoreMaster.Instance.Handler.StopCoroutine(_runningCoroutine);
         if (_movementSpeedBuff)
         {
             HeroController.instance.WALK_SPEED -= 3f;

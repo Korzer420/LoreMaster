@@ -43,6 +43,15 @@ public class JonisProtectionPower : Power
     /// </summary>
     public bool IsDialogueOpen => _immune || _dialogueFSM.Any(x => x.ActiveStateName.Equals("Box Up")) || !HeroController.instance.CanInput();
 
+    /// <inheritdoc/>
+    public override Action SceneAction => () =>
+    {
+        _immune = false;
+        if (_runningCoroutine != null)
+            LoreMaster.Instance.Handler.StopCoroutine(_runningCoroutine);
+        _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(FadingLifeblood());
+    };
+
     #endregion
 
     #region Event handler
@@ -76,49 +85,6 @@ public class JonisProtectionPower : Power
                 _currentLifebloodBonus -= damage;
         }
         return damage;
-    }
-
-    #endregion
-
-    #region Protected Methods
-
-    /// <inheritdoc/>
-    protected override void Initialize()
-    {
-        _dialogueFSM[0] = GameObject.Find("_GameCameras/HudCamera/DialogueManager").LocateMyFSM("Box Open");
-        _dialogueFSM[1] = GameObject.Find("_GameCameras/HudCamera/DialogueManager").LocateMyFSM("Box Open YN");
-        _dialogueFSM[2] = GameObject.Find("_GameCameras/HudCamera/DialogueManager").LocateMyFSM("Box Open Dream");
-
-        PlayMakerFSM fsm = GameObject.Find("Knight").LocateMyFSM("ProxyFSM");
-        fsm.GetState("Flower?").ReplaceAction(new Lambda(() =>
-        {
-            if ((Active && _takingJoniBonus)
-            || !PlayerData.instance.GetBool(nameof(PlayerData.instance.hasXunFlower))
-            || PlayerData.instance.GetBool(nameof(PlayerData.instance.xunFlowerBroken)))
-            {
-                if (_takingJoniBonus)
-                    _takingJoniBonus = false;
-                fsm.SendEvent("FINISHED");
-            }
-        })
-        { Name = "Joni Block" }, 0);
-    }
-
-    /// <inheritdoc/>
-    protected override void Enable()
-    {
-        LoreMaster.Instance.SceneActions.Add(PowerName, () =>
-        {
-            _immune = false;
-            if (_runningCoroutine != null)
-                LoreMaster.Instance.Handler.StopCoroutine(_runningCoroutine);
-            _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(FadingLifeblood());
-        });
-        ModHooks.CharmUpdateHook += CharmUpdate;
-        ModHooks.TakeHealthHook += TakeHealth;
-        On.PlayMakerFSM.OnEnable += PlayMakerFSM_OnEnable;
-        On.InvAnimateUpAndDown.AnimateUp += InvAnimateUpAndDown_AnimateUp;
-        On.InvAnimateUpAndDown.AnimateDown += InvAnimateUpAndDown_AnimateDown;
     }
 
     private void InvAnimateUpAndDown_AnimateDown(On.InvAnimateUpAndDown.orig_AnimateDown orig, InvAnimateUpAndDown self)
@@ -165,10 +131,45 @@ public class JonisProtectionPower : Power
         orig(self);
     }
 
+    #endregion
+
+    #region Protected Methods
+
+    /// <inheritdoc/>
+    protected override void Initialize()
+    {
+        _dialogueFSM[0] = GameObject.Find("_GameCameras/HudCamera/DialogueManager").LocateMyFSM("Box Open");
+        _dialogueFSM[1] = GameObject.Find("_GameCameras/HudCamera/DialogueManager").LocateMyFSM("Box Open YN");
+        _dialogueFSM[2] = GameObject.Find("_GameCameras/HudCamera/DialogueManager").LocateMyFSM("Box Open Dream");
+
+        PlayMakerFSM fsm = GameObject.Find("Knight").LocateMyFSM("ProxyFSM");
+        fsm.GetState("Flower?").ReplaceAction(new Lambda(() =>
+        {
+            if ((Active && _takingJoniBonus)
+            || !PlayerData.instance.GetBool(nameof(PlayerData.instance.hasXunFlower))
+            || PlayerData.instance.GetBool(nameof(PlayerData.instance.xunFlowerBroken)))
+            {
+                if (_takingJoniBonus)
+                    _takingJoniBonus = false;
+                fsm.SendEvent("FINISHED");
+            }
+        })
+        { Name = "Joni Block" }, 0);
+    }
+
+    /// <inheritdoc/>
+    protected override void Enable()
+    {
+        ModHooks.CharmUpdateHook += CharmUpdate;
+        ModHooks.TakeHealthHook += TakeHealth;
+        On.PlayMakerFSM.OnEnable += PlayMakerFSM_OnEnable;
+        On.InvAnimateUpAndDown.AnimateUp += InvAnimateUpAndDown_AnimateUp;
+        On.InvAnimateUpAndDown.AnimateDown += InvAnimateUpAndDown_AnimateDown;
+    }
+
     /// <inheritdoc/>
     protected override void Disable()
     {
-        LoreMaster.Instance.SceneActions.Remove(PowerName);
         ModHooks.CharmUpdateHook -= CharmUpdate;
         ModHooks.TakeHealthHook -= TakeHealth;
         On.PlayMakerFSM.OnEnable -= PlayMakerFSM_OnEnable;

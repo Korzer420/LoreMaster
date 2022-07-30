@@ -1,6 +1,7 @@
 using LoreMaster.Enums;
 using Modding;
 using System.Collections;
+using System.Linq;
 using UnityEngine;
 
 namespace LoreMaster.LorePowers.CityOfTears;
@@ -117,6 +118,8 @@ public class HappyFatePower : Power
 
     private void HappynessChange()
     {
+        if (_nailObjects.Any(x => x == null))
+            Initialize();
         if (_isHappy)
         {
             foreach (Transform child in _nailObjects)
@@ -131,7 +134,6 @@ public class HappyFatePower : Power
             HeroController.instance.RUN_SPEED_CH_COMBO += 1.5f;
             HeroController.instance.DASH_COOLDOWN -= .2f;
             HeroController.instance.DASH_COOLDOWN_CH -= .2f;
-            HeroController.instance.superDash.FsmVariables.FindFsmFloat("Charge Time").Value -= .1f;
             _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(GainHappySoul());
         }
         else
@@ -147,8 +149,8 @@ public class HappyFatePower : Power
             HeroController.instance.RUN_SPEED_CH_COMBO -= 1.5f;
             HeroController.instance.DASH_COOLDOWN += .2f;
             HeroController.instance.DASH_COOLDOWN_CH += .2f;
-            HeroController.instance.superDash.FsmVariables.FindFsmFloat("Charge Time").Value += .1f;
-            LoreMaster.Instance.Handler.StopCoroutine(_runningCoroutine);
+            if (_runningCoroutine != null)
+                LoreMaster.Instance.Handler.StopCoroutine(_runningCoroutine);
         }
         PlayMakerFSM.BroadcastEvent("UPDATE NAIL DAMAGE");
     }

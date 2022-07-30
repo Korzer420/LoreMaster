@@ -4,7 +4,6 @@ using LoreMaster.Enums;
 using Modding;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace LoreMaster.LorePowers.Dirtmouth;
@@ -26,6 +25,39 @@ public class TrueFormPower : Power
         Hint = "While the true form is revealed, its vessels nail gets more powerful. Especially near your true self.";
         Description = "While your shade is active, you deal 30% more damage and increase your nail length by 25%. The effects are doubled, if you are in the same room as your shade.";
     }
+
+    #endregion
+
+    #region Properties
+
+    /// <inheritdoc/>
+    public override Action SceneAction => () => 
+    {
+        if (!PlayerData.instance.GetString(nameof(PlayerData.instance.shadeScene)).Equals("None"))
+        {
+            float multiplier = .25f;
+            // If we are going in the shade room, we increase the range buff
+            if (PlayerData.instance.GetString(nameof(PlayerData.instance.shadeScene)).Equals(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name))
+            {
+                // If we have been already in the shade room (like dying in a room with the save bench), we ignore the multiplier.
+                if (_shadeState == 2)
+                    return;
+                multiplier *= _shadeState == 1 ? 1 : 2;
+                _shadeState = 2;
+            }
+            else if (_shadeState != 1)
+            {
+                // Depending where we are getting from, we lower or increase the range
+                multiplier *= _shadeState == 2 ? -1 : 1;
+                _shadeState = 1;
+            }
+            else
+                return;
+            ModifyNailLength(multiplier);
+            PlayMakerFSM.BroadcastEvent("UPDATE NAIL DAMAGE");
+            return;
+        }
+    };
 
     #endregion
 
@@ -79,35 +111,7 @@ public class TrueFormPower : Power
     {
         On.PlayMakerFSM.OnEnable += PlayMakerFSM_OnEnable;
         ModHooks.GetPlayerIntHook += NailDamageUpdate;
-        LoreMaster.Instance.SceneActions.Add(PowerName, () =>
-        {
-            if (!PlayerData.instance.GetString(nameof(PlayerData.instance.shadeScene)).Equals("None"))
-            {
-                float multiplier = .25f;
-                // If we are going in the shade room, we increase the range buff
-                if (PlayerData.instance.GetString(nameof(PlayerData.instance.shadeScene)).Equals(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name))
-                {
-                    // If we have been already in the shade room (like dying in a room with the save bench), we ignore the multiplier.
-                    if (_shadeState == 2)
-                        return;
-                    multiplier *= _shadeState == 1 ? 1 : 2;
-                    _shadeState = 2;
-                }
-                else if (_shadeState != 1)
-                {
-                    // Depending where we are getting from, we lower or increase the range
-                    multiplier *= _shadeState == 2 ? -1 : 1;
-                    _shadeState = 1;
-                }
-                else
-                    return;
-                ModifyNailLength(multiplier);
-                PlayMakerFSM.BroadcastEvent("UPDATE NAIL DAMAGE");
-                return;
-            }
-        });
-
-        LoreMaster.Instance.SceneActions[PowerName].Invoke();
+        SceneAction.Invoke();
     }
 
     /// <inheritdoc/>
@@ -115,7 +119,6 @@ public class TrueFormPower : Power
     {
         On.PlayMakerFSM.OnEnable -= PlayMakerFSM_OnEnable;
         ModHooks.GetPlayerIntHook -= NailDamageUpdate;
-        LoreMaster.Instance.SceneActions.Remove(PowerName);
         if (_shadeState != 0)
             ModifyNailLength(_shadeState == 1 ? -.25f : -.5f);
         _shadeState = 0;

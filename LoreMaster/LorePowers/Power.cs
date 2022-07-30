@@ -67,6 +67,11 @@ public abstract class Power
     /// </summary>
     public PowerTag DefaultTag { get; set; } = PowerTag.Local;
 
+    /// <summary>
+    /// Gets or sets the action the power should execute on a scene change (gameplay scene only)
+    /// </summary>
+    public virtual Action SceneAction { get; set; }
+
     #endregion
 
     #region Methods
@@ -87,6 +92,26 @@ public abstract class Power
     protected virtual void Disable() { }
 
     /// <summary>
+    /// Wrapper to initialize the power
+    /// </summary>
+    private bool InitializePower()
+    {
+        try
+        {
+            if (_initialized)
+                return true;
+            Initialize();
+            _initialized = true;
+            return true;
+        }
+        catch (Exception exception)
+        {
+            LoreMaster.Instance.LogError("Error when initializing " + PowerName+": "+exception.Message+exception.StackTrace);
+        }
+        return false;
+    }
+
+    /// <summary>
     /// Wrapper to activate the power and control the needed values.
     /// </summary>
     internal void EnablePower()
@@ -95,19 +120,16 @@ public abstract class Power
             return;
         try
         {
-            if (!_initialized)
+            if (InitializePower())
             {
-                _initialized = true;
-                Initialize();
+                Active = true;
+                Enable();
+                LoreMaster.Instance.LogDebug("Enabled " + PowerName);
             }
-            Active = true;
-            Enable();
-            LoreMaster.Instance.LogDebug("Enabled " + PowerName);
         }
         catch (Exception exception)
         {
             LoreMaster.Instance.LogError("Error while loading " + PowerName + ": " + exception.Message);
-            LoreMaster.Instance.LogError("Error while loading " + PowerName + ": " + exception);
             LoreMaster.Instance.LogError("Error while loading " + PowerName + ": " + exception.Source);
             LoreMaster.Instance.LogError("Error while loading " + PowerName + ": " + exception.StackTrace);
             Active = false;
@@ -122,18 +144,21 @@ public abstract class Power
     {
         if (!Active)
             return;
-        // Disabling power could cause problems when returning to the menu, we ignore them.
         try
         {
+            if (_runningCoroutine != null)
+                LoreMaster.Instance.Handler.StopCoroutine(_runningCoroutine);
             Disable();
             LoreMaster.Instance.LogDebug("Disabled " + PowerName);
+            Active = false;
+            _initialized = !backToMenu;
         }
         catch (Exception exception)
         {
             LoreMaster.Instance.LogError("Error while disabling " + PowerName + ": " + exception.Message);
+            LoreMaster.Instance.LogError("Error while loading " + PowerName + ": " + exception.Source);
+            LoreMaster.Instance.LogError("Error while loading " + PowerName + ": " + exception.StackTrace);
         }
-        Active = false;
-        _initialized = !backToMenu;
     }
 
     #endregion

@@ -44,6 +44,8 @@ public class QueenThornsPower : Power
     private void EnemyTakeDamage(On.HealthManager.orig_TakeDamage orig, HealthManager self, HitInstance hitInstance)
     {
         orig(self, hitInstance);
+        if (_thorns == null)
+            Initialize();
         if (_thorns.activeSelf)
             HeroController.instance.AddMPCharge(7);
     }

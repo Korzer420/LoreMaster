@@ -1,4 +1,5 @@
 using LoreMaster.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -45,27 +46,21 @@ public class ElderbugHitListPower : Power
 
     public bool CanAchieveReward => CanAchieveGeo || CanAchieveMask || CanAchieveNail || CanAchieveReward || CanAchieveVessel;
 
+    public override Action SceneAction => () => 
+    {
+        _currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+        _enemies.Clear();
+        if (!_currentScene.Contains("GG") && !ElderbugRewards.ContainsKey(_currentScene) && CanAchieveReward)
+        {
+            _enemies = GameObject.FindObjectsOfType<HealthManager>().ToList();
+            if (_enemies.Count > 0)
+                MarkEnemy();
+        }
+    };
+
     #endregion
 
-    #region Protected Methods
-
-    /// <inheritdoc/>
-    protected override void Enable()
-    {
-        LoreMaster.Instance.SceneActions.Add(PowerName, () =>
-        {
-            _currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
-            _enemies.Clear();
-            if (!_currentScene.Contains("GG") && !ElderbugRewards.ContainsKey(_currentScene) && CanAchieveReward)
-            {
-                _enemies = GameObject.FindObjectsOfType<HealthManager>().ToList();
-                if (_enemies.Count > 0)
-                    MarkEnemy();
-            }
-        });
-
-        On.HealthManager.Die += HealthManager_Die;
-    }
+    #region Event handler
 
     private void HealthManager_Die(On.HealthManager.orig_Die orig, HealthManager self, float? attackDirection, AttackTypes attackType, bool ignoreEvasion)
     {
@@ -85,6 +80,22 @@ public class ElderbugHitListPower : Power
             if (markedEnemy != null)
                 GameObject.Destroy(markedEnemy.GetComponent<Outline>());
         }
+    }
+
+    #endregion
+
+    #region Protected Methods
+
+    /// <inheritdoc/>
+    protected override void Enable()
+    {
+        On.HealthManager.Die += HealthManager_Die;
+    }
+
+    /// <inheritdoc/>
+    protected override void Disable()
+    {
+        On.HealthManager.Die -= HealthManager_Die;
     }
 
     #endregion

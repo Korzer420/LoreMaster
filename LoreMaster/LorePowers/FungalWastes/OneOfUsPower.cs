@@ -35,7 +35,11 @@ public class OneOfUsPower : Power
     protected override void Enable() => _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(EmitCloud());
 
     /// <inheritdoc/>
-    protected override void Disable() => LoreMaster.Instance.Handler.StopCoroutine(_runningCoroutine);
+    protected override void Disable()
+    {
+        if (_runningCoroutine != null)
+            LoreMaster.Instance.Handler.StopCoroutine(_runningCoroutine);
+    }
 
     #endregion
 

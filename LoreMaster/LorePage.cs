@@ -3,14 +3,11 @@ using HutongGames.PlayMaker.Actions;
 using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
 using LoreMaster.Enums;
-using LoreMaster.Extensions;
 using LoreMaster.Helper;
 using LoreMaster.LorePowers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 
@@ -44,7 +41,7 @@ internal class LorePage
         {Area.FogCanyon, new(.75f, 0f, 1f) },
         {Area.QueensGarden, new(.1f, 1f, .3f) },
         {Area.Crossroads, new(.4f,.25f,.25f) },
-        {Area.Cliffs, new(.2f,1f,0f) },
+        {Area.Cliffs, new(.2f,.5f,0f) },
         {Area.Deepnest, new(.3f,0f,.6f)},
         {Area.KingdomsEdge, new(.2f,.4f,.6f) }
     };
@@ -58,54 +55,73 @@ internal class LorePage
         _emptySprite = GameObject.Find("_GameCameras").transform.Find("HudCamera/Inventory/Charms/Backboards/BB 3").GetComponent<SpriteRenderer>().sprite;
         _loreSprite = SpriteHelper.CreateSprite("Lore");
         _notActive = SpriteHelper.CreateSprite("DisabledPower");
-        On.HeroController.CanOpenInventory += UpdateLorePage;
-    }
-
-    private static bool UpdateLorePage(On.HeroController.orig_CanOpenInventory orig, HeroController self)
-    {
-        if (orig(self))
-        {
-            try
-            {
-
-                for (int i = 0; i < _loreObjects.Length; i++)
-                {
-                    if (_loreObjects[i] == null)
-                        continue;
-                    if (_powers[i].Tag == PowerTag.Disable || _powers[i].Tag == PowerTag.Remove)
-                    {
-                        _loreObjects[i].GetComponent<SpriteRenderer>().sprite = _notActive;
-                        _loreObjects[i].GetComponent<SpriteRenderer>().color = LoreMaster.Instance.ActivePowers.ContainsValue(_powers[i])
-                            ? Color.red
-                            : Color.grey;
-                    }
-                    else
-                    {
-                        _loreObjects[i].GetComponent<SpriteRenderer>().sprite = LoreMaster.Instance.ActivePowers.ContainsValue(_powers[i])
-                                ? _loreSprite
-                                : _emptySprite;
-                        _loreObjects[i].GetComponent<SpriteRenderer>().color = LoreMaster.Instance.ActivePowers.ContainsValue(_powers[i])
-                            ? _colors[_powers[i].Location]
-                            : Color.white;
-                    }
-                }
-            }
-            catch (Exception exception)
-            {
-                LoreMaster.Instance.Log("Error when updating inventory: " + exception.Message);
-            }
-            return true;
-        }
-        return false;
     }
 
     #endregion
 
     #region Methods
 
+    /// <summary>
+    /// Passes the power to the inventory page.
+    /// </summary>
     internal static void PassPowers(List<Power> powers)
         => _powers = powers;
 
+    /// <summary>
+    /// Updates the inventory page according to the acquired and currently active powers.
+    /// </summary>
+    /// <returns></returns>
+    internal static bool UpdateLorePage()
+    {
+        try
+        {
+
+            for (int i = 0; i < _loreObjects.Length; i++)
+            {
+                if (_loreObjects[i] == null)
+                {
+                    LoreMaster.Instance.Log("Lore Object " + i + " doesn't exist");
+                    continue;
+                }
+
+                if (_powers[i].Tag == PowerTag.Disable || _powers[i].Tag == PowerTag.Remove)
+                {
+                    _loreObjects[i].GetComponent<SpriteRenderer>().sprite = _notActive;
+                    _loreObjects[i].GetComponent<SpriteRenderer>().color = LoreMaster.Instance.ActivePowers.ContainsValue(_powers[i])
+                        ? Color.red
+                        : Color.grey;
+                }
+                else
+                {
+                    if (_powers[i].Active)
+                    {
+                        _loreObjects[i].GetComponent<SpriteRenderer>().sprite = _loreSprite;
+                        _loreObjects[i].GetComponent<SpriteRenderer>().color = _colors[_powers[i].Location];
+                    }
+                    else if (LoreMaster.Instance.ActivePowers.ContainsValue(_powers[i]))
+                    {
+                        _loreObjects[i].GetComponent<SpriteRenderer>().sprite = _notActive;
+                        _loreObjects[i].GetComponent<SpriteRenderer>().color = Color.red;
+                    }
+                    else
+                    {
+                        _loreObjects[i].GetComponent<SpriteRenderer>().sprite = _emptySprite;
+                        _loreObjects[i].GetComponent<SpriteRenderer>().color = Color.white;
+                    }
+
+                }
+            }
+        }
+        catch (Exception exception)
+        {
+            LoreMaster.Instance.Log("Error when updating inventory: " + exception.Message);
+        }
+        return true;
+    }
+
+    /// <summary>
+    /// Generates the inventory page.
+    /// </summary>
     internal static void GeneratePage(GameObject lorePage)
     {
         try
@@ -141,7 +157,7 @@ internal class LorePage
             GameObject confirmButton = GameObject.Instantiate(GameObject.Find("_GameCameras").transform.Find("HudCamera/Inventory/Charms/Confirm Action").gameObject);
             confirmButton.transform.SetParent(lorePage.transform);
             UnityEngine.Object.Destroy(confirmButton.GetComponent<PlayMakerFSM>());
-            confirmButton.transform.localPosition = new(3.72f,-3.36f,-30.13f);
+            confirmButton.transform.localPosition = new(3.72f, -3.36f, -30.13f);
             confirmButton.transform.Find("Text").GetComponent<TextMeshPro>().text = "Toggle Power";
             confirmButton.SetActive(false);
 

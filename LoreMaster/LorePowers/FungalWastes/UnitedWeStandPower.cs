@@ -60,7 +60,8 @@ public class UnitedWeStandPower : Power
     /// <inheritdoc/>
     protected override void Disable()
     {
-        LoreMaster.Instance.Handler.StopCoroutine(_runningCoroutine);
+        if (_runningCoroutine != null)
+            LoreMaster.Instance.Handler.StopCoroutine(_runningCoroutine);
         On.KnightHatchling.OnEnable -= HatchlingSpawn;
     }
 

@@ -98,7 +98,8 @@ public class TouchGrassPower : Power
         On.GrassSpriteBehaviour.OnTriggerEnter2D -= GrassSpriteBehaviour_OnTriggerEnter2D;
         On.GrassWind.OnTriggerEnter2D -= GrassWind_OnTriggerEnter2D;
         On.GrassCut.OnTriggerEnter2D -= GrassCut_OnTriggerEnter2D;
-        LoreMaster.Instance.Handler.StopCoroutine(_runningCoroutine);
+        if (_runningCoroutine != null)
+            LoreMaster.Instance.Handler.StopCoroutine(_runningCoroutine);
         _currentlyRunning = false;
     }
 

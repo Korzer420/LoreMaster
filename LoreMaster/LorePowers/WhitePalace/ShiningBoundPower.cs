@@ -26,13 +26,7 @@ public class ShiningBoundPower : Power
     #region Protected Methods
 
     /// <inheritdoc/>
-    protected override void Initialize() => _charmHolder = GameObject.Find("_GameCameras/HudCamera/Inventory").transform.Find("Charms/Equipped Charms/Charms").gameObject;
-
-    /// <inheritdoc/>
     protected override void Enable() => _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(GatherShiningSoul());
-
-    /// <inheritdoc/>
-    protected override void Disable() => LoreMaster.Instance.Handler.StopCoroutine(_runningCoroutine);
 
     #endregion
 
@@ -47,7 +41,7 @@ public class ShiningBoundPower : Power
         while (true)
         {
             yield return new WaitForSeconds(2f);
-            HeroController.instance.AddMPCharge(_charmHolder.transform.childCount);
+            HeroController.instance.AddMPCharge(PlayerData.instance.equippedCharms.Count);
         }
     }
 

@@ -87,7 +87,7 @@
     <Compile Include="LorePowers\Greenpath\TouchGrassPower.cs" />
     <Compile Include="LorePowers\Greenpath\MindblastOfUnnPower.cs" />
     <Compile Include="LorePowers\HowlingCliffs\JonisProtectionPower.cs" />
-    <Compile Include="LorePowers\HowlingCliffs\LifebloodWingsPower.cs" />
+    <Compile Include="LorePowers\HowlingCliffs\LifebloodOmenPower.cs" />
     <Compile Include="LorePowers\KingdomsEdge\ConcussiveStrikePower.cs" />
     <Compile Include="LorePowers\KingdomsEdge\WisdomOfTheSagePower.cs" />
     <Compile Include="LorePowers\KingdomsEdge\YouLikeJazzPower.cs" />

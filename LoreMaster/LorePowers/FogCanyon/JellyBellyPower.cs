@@ -52,6 +52,8 @@ public class JellyBellyPower : Power
     {
         ModHooks.HeroUpdateHook -= Float;
         HeroController.instance.BIG_FALL_TIME /= 3;
+        if (HeroController.instance.BIG_FALL_TIME < 3.3f)
+            HeroController.instance.BIG_FALL_TIME = 3.3f;
         _playerRigidBody.gravityScale = .79f;
     }
 

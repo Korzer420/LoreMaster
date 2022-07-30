@@ -58,10 +58,9 @@ public class MaskOverchargePower : Power
     /// <inheritdoc/>
     protected override void Initialize()
     {
-        _overcharge = new();
+        _overcharge = new("Mask Overcharge");
         _overcharge.transform.SetParent(GameObject.Find("Knight").transform);
         _overcharge.transform.localPosition = new(0, 0);
-        _overcharge.name = "Mask Overcharge";
         _overcharge.AddComponent<MaskCharge>();
     }
 
@@ -78,7 +77,8 @@ public class MaskOverchargePower : Power
     protected override void Disable()
     {
         On.HeroController.FixedUpdate -= HeroController_FixedUpdate;
-        LoreMaster.Instance.Handler.StopCoroutine(_runningCoroutine);
+        if (_runningCoroutine != null)
+            LoreMaster.Instance.Handler.StopCoroutine(_runningCoroutine);
         _overcharge.SetActive(false);
         // Reset mask color.
         foreach (tk2dSprite sprite in _healthSprites)

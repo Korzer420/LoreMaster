@@ -40,7 +40,7 @@ public class ConcussiveStrikePower : Power
             // Only apply concussion on great slash or dash slash hit
             if (hitInstance.AttackType == AttackTypes.Nail && (_nailArts[0].activeSelf || _nailArts[1].activeSelf))
             {
-                GameObject child = GameObject.Instantiate(LoreMaster.Instance.PreloadedObjects["Shot Mantis"], self.transform);
+                GameObject child = GameObject.Instantiate(LoreMaster.Instance.PreloadedObjects["Mantis Heavy Flyer"], self.transform);
                 child.name = "Concussion";
                 child.AddComponent<ConcussionEffect>();
                 // This should place the concussive sprite on top of the enemy.

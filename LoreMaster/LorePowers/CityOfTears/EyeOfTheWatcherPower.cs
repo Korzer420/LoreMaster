@@ -3,6 +3,7 @@ using ItemChanger.FsmStateActions;
 using LoreMaster.Enums;
 using LoreMaster.Extensions;
 using LoreMaster.Helper;
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -33,6 +34,19 @@ public class EyeOfTheWatcherPower : Power
     #endregion
 
     #region Properties
+
+    /// <inheritdoc/>
+    public override Action SceneAction => () =>
+    {
+        if (_darknessLevel > 0)
+        {
+            HeroController.instance.wieldingLantern = true;
+            if (_eye.activeSelf)
+                _eye.GetComponent<SpriteRenderer>().color = new(1f, 1f, 0f);
+        }
+        else if (_eye.activeSelf)
+            _eye.GetComponent<SpriteRenderer>().color = Color.white;
+    };
 
     /// <summary>
     /// Gets or sets the indicator if the player can be revived.
@@ -95,17 +109,6 @@ public class EyeOfTheWatcherPower : Power
         On.HeroController.SetDarkness += HeroController_SetDarkness;
         On.PlayMakerFSM.OnEnable += RefreshEyeOfTheWatcher;
         On.HeroController.Die += HeroController_Die;
-        LoreMaster.Instance.SceneActions.Add(PowerName, () =>
-        {
-            if (_darknessLevel > 0)
-            {
-                HeroController.instance.wieldingLantern = true;
-                if (_eye.activeSelf)
-                    _eye.GetComponent<SpriteRenderer>().color = new(1f, 1f, 0f);
-            }
-            else if (_eye.activeSelf)
-                _eye.GetComponent<SpriteRenderer>().color = Color.white;
-        });
         _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(Blink());
         _eye?.SetActive(true);
     }
@@ -116,8 +119,6 @@ public class EyeOfTheWatcherPower : Power
         On.HeroController.SetDarkness -= HeroController_SetDarkness;
         On.PlayMakerFSM.OnEnable -= RefreshEyeOfTheWatcher;
         On.HeroController.Die -= HeroController_Die;
-        LoreMaster.Instance.SceneActions.Remove(PowerName);
-        LoreMaster.Instance.Handler.StopCoroutine(_runningCoroutine);
         _eye?.SetActive(false);
     }
 

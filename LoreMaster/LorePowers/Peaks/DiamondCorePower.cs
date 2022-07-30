@@ -4,6 +4,7 @@ using ItemChanger.FsmStateActions;
 using LoreMaster.Enums;
 using LoreMaster.Extensions;
 using LoreMaster.Helper;
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -44,6 +45,20 @@ public class DiamondCorePower : Power
 
     public bool HasDiamondDash => LoreMaster.Instance.ActivePowers.ContainsKey("MYLA") && LoreMaster.Instance.ActivePowers["MYLA"].Active;
 
+    public override Action SceneAction => () =>
+    {
+        _enemies = GameObject.FindObjectsOfType<HealthManager>();
+        if (_crystalHeartSprite == null)
+        {
+            _crystalHeartSprite = GameObject.Find("_GameCameras").transform.Find("HudCamera/Inventory/Inv/Equipment/Super Dash").GetComponent<SpriteRenderer>();
+            if (_crystalHeartSprite != null)
+            {
+                _crystalHeartSprite.sprite = HasDiamondDash ? _diamondSprite : _corelessSprite;
+                _originalSprite = _crystalHeartSprite?.sprite;
+            }
+        }
+    };
+    
     #endregion
 
     #region Event Handler
@@ -109,11 +124,9 @@ public class DiamondCorePower : Power
         try
         {
             _enemies = GameObject.FindObjectsOfType<HealthManager>();
-            LoreMaster.Instance.SceneActions.Add(PowerName, () =>
-            {
-                _enemies = GameObject.FindObjectsOfType<HealthManager>();
-            });
             _crystalHeartSprite.sprite = HasDiamondDash ? _diamondSprite : _shelllessSprite;
+            if (HasDiamondDash)
+                HeroController.instance.superDash.FsmVariables.FindFsmFloat("Charge Time").Value = .2f;
             On.HeroController.CanTakeDamage += HeroController_CanTakeDamage;
         }
         catch (System.Exception exception)
@@ -125,9 +138,11 @@ public class DiamondCorePower : Power
     /// <inheritdoc/>
     protected override void Disable()
     {
-        LoreMaster.Instance.SceneActions.Remove(PowerName);
         if (HasDiamondDash)
+        {
             _crystalHeartSprite.sprite = _corelessSprite;
+            HeroController.instance.superDash.FsmVariables.FindFsmFloat("Charge Time").Value = .5f;
+        }
         else
             _crystalHeartSprite.sprite = _originalSprite;
         _enemies = null;
@@ -150,7 +165,7 @@ public class DiamondCorePower : Power
     private IEnumerator StunEnemy(GameObject enemy)
     {
         float passedTime = 0f;
-        // Max speed is 90 so stun time can be 10 seconds.
+        // Max speed is 60 so stun time can be 10 seconds.
         float stunTime = 1f + (((_speed < 0 ? _speed * -1 : _speed) - 30) / 3);
 
         Vector3 positionToLock = enemy.transform.localPosition;

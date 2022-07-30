@@ -220,15 +220,8 @@ public class BagOfMushroomsPower : Power
     protected override void Disable()
     {
         ModHooks.HeroUpdateHook -= ShroomControl;
-        LoreMaster.Instance.Handler.StopCoroutine(_runningCoroutine);
         if (_activeEffect != 0)
             RevertMushroom();
-        _activeEffect = 0;
-        _selectedEffect = 1;
-        _mushroomBag.GetComponent<SpriteRenderer>().color = Color.white;
-        _pressed = false;
-        _lastMushrooms[0] = -1;
-        _lastMushrooms[1] = -1;
         _mushroomBag.SetActive(false);
     }
 
@@ -422,7 +415,7 @@ public class BagOfMushroomsPower : Power
             HeroController.instance.BIG_FALL_TIME *= HasEatenTwice ? 10 : 20;
             _baseGravity = HeroController.instance.GetComponent<Rigidbody2D>().gravityScale;
             // Tries to prevent being clipped in the ground.
-            HeroController.instance.transform.localPosition += new Vector3(0f, .25f, 0f);
+            HeroController.instance.transform.localPosition += new Vector3(0f, 1f, 0f);
             ModHooks.HeroUpdateHook += MiniMushroomAdjustments;
         }
         else
@@ -432,8 +425,11 @@ public class BagOfMushroomsPower : Power
             ModHooks.HeroUpdateHook -= MiniMushroomAdjustments;
             HeroController.instance.transform.localScale = new(HeroController.instance.cState.facingRight ? -1f : 1f, 1f, 1f);
             HeroController.instance.BIG_FALL_TIME /= HasEatenTwice ? 10 : 20;
+            // To ensure the fall time is never under the default one.
+            if (HeroController.instance.BIG_FALL_TIME < 3.3f)
+                HeroController.instance.BIG_FALL_TIME = 3.3f;
             // Tries to prevent being clipped in the ground.
-            HeroController.instance.transform.localPosition += new Vector3(0f, .25f, 0f);
+            HeroController.instance.transform.localPosition += new Vector3(0f, 1f, 0f);
             HeroController.instance.GetComponent<Rigidbody2D>().gravityScale = _baseGravity;
         }
     }

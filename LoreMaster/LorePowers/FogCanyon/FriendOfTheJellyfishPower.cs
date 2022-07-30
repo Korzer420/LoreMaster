@@ -1,4 +1,5 @@
 using LoreMaster.Enums;
+using System;
 using UnityEngine;
 
 namespace LoreMaster.LorePowers.FogCanyon;
@@ -13,6 +14,13 @@ public class FriendOfTheJellyfishPower : Power
         Hint = "Jellyfishs and explosions may no longer harm you.";
         Description = "You're immune to jellyfishs enemies and explosions. Note: Non Jellyfish explosion enemies, \"could\" still deal 2 damage on contact. You're just immune to the explosion itself.";
     }
+
+    #endregion
+
+    #region Properties
+
+    /// <inheritdoc/>
+    public override Action SceneAction => () => MakeJellyfishHarmless();
 
     #endregion
 
@@ -37,6 +45,8 @@ public class FriendOfTheJellyfishPower : Power
                 damageHero.hazardType = 1;
             }
         }
+        else if (self.FsmName.Equals("Lil Jelly"))
+            self.GetComponent<DamageHero>().damageDealt = 0;
         else if (self.FsmName.Equals("Jellyfish") && self.gameObject.name.Contains("Jellyfish GG"))
         {
             HeroController.Destroy(self.GetComponent<DamageHero>());
@@ -54,13 +64,6 @@ public class FriendOfTheJellyfishPower : Power
     protected override void Enable()
     {
         On.PlayMakerFSM.OnEnable += PlayMakerFSM_OnEnable;
-        LoreMaster.Instance.PreloadedObjects["Lil Jellyfish"].GetComponent<DamageHero>().damageDealt = 0;
-
-        LoreMaster.Instance.SceneActions.Add(PowerName, () =>
-        {
-            MakeJellyfishHarmless();
-        });
-
         // For the room where you obtained this power.
         MakeJellyfishHarmless();
     }
@@ -69,8 +72,6 @@ public class FriendOfTheJellyfishPower : Power
     protected override void Disable()
     {
         On.PlayMakerFSM.OnEnable -= PlayMakerFSM_OnEnable;
-        LoreMaster.Instance.PreloadedObjects["Lil Jellyfish"].GetComponent<DamageHero>().damageDealt = 2;
-        LoreMaster.Instance.SceneActions.Remove(PowerName);
     }
 
     #endregion
