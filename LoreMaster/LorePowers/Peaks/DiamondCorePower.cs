@@ -53,12 +53,12 @@ public class DiamondCorePower : Power
             _crystalHeartSprite = GameObject.Find("_GameCameras").transform.Find("HudCamera/Inventory/Inv/Equipment/Super Dash").GetComponent<SpriteRenderer>();
             if (_crystalHeartSprite != null)
             {
-                _crystalHeartSprite.sprite = HasDiamondDash ? _diamondSprite : _corelessSprite;
                 _originalSprite = _crystalHeartSprite?.sprite;
+                _crystalHeartSprite.sprite = HasDiamondDash ? _diamondSprite : _corelessSprite;
             }
         }
     };
-    
+
     #endregion
 
     #region Event Handler
@@ -121,18 +121,12 @@ public class DiamondCorePower : Power
     /// <inheritdoc/>
     protected override void Enable()
     {
-        try
-        {
-            _enemies = GameObject.FindObjectsOfType<HealthManager>();
+        _enemies = GameObject.FindObjectsOfType<HealthManager>();
+        if (_crystalHeartSprite != null)
             _crystalHeartSprite.sprite = HasDiamondDash ? _diamondSprite : _shelllessSprite;
-            if (HasDiamondDash)
-                HeroController.instance.superDash.FsmVariables.FindFsmFloat("Charge Time").Value = .2f;
-            On.HeroController.CanTakeDamage += HeroController_CanTakeDamage;
-        }
-        catch (System.Exception exception)
-        {
-            LoreMaster.Instance.LogError("Error in Enable: " + exception.Message);
-        }
+        if (HasDiamondDash)
+            HeroController.instance.superDash.FsmVariables.FindFsmFloat("Charge Time").Value = .2f;
+        On.HeroController.CanTakeDamage += HeroController_CanTakeDamage;
     }
 
     /// <inheritdoc/>

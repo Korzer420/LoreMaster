@@ -222,6 +222,7 @@ public class BagOfMushroomsPower : Power
         ModHooks.HeroUpdateHook -= ShroomControl;
         if (_activeEffect != 0)
             RevertMushroom();
+        _activeEffect = 0;
         _mushroomBag.SetActive(false);
     }
 

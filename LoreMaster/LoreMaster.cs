@@ -263,6 +263,14 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
             else if (key.Equals("CHARM_DESC_12"))
                 return text + "<br>Blessed by the white lady, which causes them to drain soul and sometimes energy from their victims. Leash out more agile.";
         }
+        else if (key.Equals("ELDERBUG_INTRO_MAIN"))
+            text = "This town may not hold the most interesting wisdom, but the kingdom below sure does. There a plenty of tablets and creatures which you can learn from. " +
+                "Maybe someday, I'll be able to call you \"Loremaster\". Oh what a thought, excuse me. Anyway, if you want to explore the world below, keeping track of " +
+                "every knowledge that you acquired might be hard. Let me help you with that. This is a relic which tracks every bit of information that you've collected so far. " +
+                "Sometimes, the knowledge can be more of a threat than a blessing. In those cases, touching the ability on the relic may disable them, until you touch it again. " +
+                "Maybe you should not waste too much time though. I heard legends that this artifact might lock it's " +
+                "power behind a test or something once the one in the time event \"Patch 1.2\" happens... whatever that might be. I hope, you've listened to me, I'll not repeat myself " +
+                "again with this information. See this, as a test to see if you can step up to the challenge. Don't forget \"Knowledge is power\".";
         return text;
     }
 
@@ -747,12 +755,12 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
                     power = ActivePowers[key];
                 if (UseCustomText && !string.IsNullOrEmpty(power.CustomText))
                     text = power.CustomText;
-                text += "<br>[" + power.PowerName + "]";
+                text += "<page>[" + power.PowerName + "]";
                 text += "<br>" + (UseHints ? power.Hint : power.Description);
                 if (key.Equals("PLAQUE_WARN"))
                 {
                     Power popPower = _powerList["EndOfPathOfPain"];
-                    text += "<br>For those, that reveals the secret, awaits the power:";
+                    text += "<page>For those, that reveals the secret, awaits the power:";
                     text += "<br>[" + popPower.PowerName + "] ";
                     text += "<br>" + (UseHints ? popPower.Hint : popPower.Description);
                 }

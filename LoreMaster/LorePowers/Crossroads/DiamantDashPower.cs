@@ -49,8 +49,8 @@ public class DiamantDashPower : Power
             _crystalHeartSprite = GameObject.Find("_GameCameras").transform.Find("HudCamera/Inventory/Inv/Equipment/Super Dash").GetComponent<SpriteRenderer>();
             if (_crystalHeartSprite != null)
             {
+                _originalSprite = _crystalHeartSprite.sprite;
                 _crystalHeartSprite.sprite = HasDiamondCore ? _diamondSprite : _corelessSprite;
-                _originalSprite = _crystalHeartSprite?.sprite;
             }
         }
     };
