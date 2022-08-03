@@ -10,8 +10,8 @@ I mostly oriented on the wiki page of lore tablets to see what actually counts. 
 - Any of Bretta's diary entries does count for her power.
 - Midwife and the mask maker grant abilities.
 - The traitor's grave, Moss prophet and the queen grant abilites.
-- Badoon and Hive Queen Vesper grant an ability. WARNING: Dreamnailing her before talking, denies the power forever.
-- Joni grants an ability (same conditions as Hive Queen Vesper).
+- Badoon and Hive Queen Vesper grant an ability.
+- Joni grants an ability.
 - Poggy (The ghost in the elevator room of Pleasure Houses) grants an ability.
 - The Gravedigger grants an ability.
 - The journal entry at the end of PoP grant an ability (Ability is only shown at the lore tablet at the start of PoP. This is the only power that by default is excluded (see below for more details))
@@ -114,8 +114,8 @@ Here are all powers listed with their description (This contains the detailed de
 
 ### Deepnest:
 
-- Infested!: Killing an enemy grants 1 to 5 weaverlings that assist you in the current room. (Capped at 50)
-- Mask Overcharge: Overcharge one of your mask (it glows in different colors), while you have exactly that much health, a circle gathers around you that deal damage and restore 5 soul each second. The overcharged mask changes every 30 seconds and may never select the full hp mask. Inactive while you have Joni's Blessing equipped.
+- Infested!: Killing an enemy grants 1 to 5 weaverlings that assist you in the current room, despawn after 15 seconds or leaving the room
+- Mask Overcharge: Overcharge one of your mask (it glows in different colors), while you have exactly that much health, a circle gathers around you that deal damage and restore 8 soul each second. The overcharged mask changes every 30 seconds and may never select the full hp mask. Inactive while you have Joni's Blessing equipped.
 
 ### Dirtmouth:
 
@@ -123,7 +123,7 @@ Here are all powers listed with their description (This contains the detailed de
 - Screw the Rules: Fury of the Fallen is now also active with 2 hp, but the damage buff is decreased to 50%. Grubberfly Beams are only nerfed by 40%.
 - True Form: While your shade is active, you deal 30% more damage and increase your nail length by 25%. The effects are doubled, if you are in the same room as your shade.
 - Well Focused: Focus is cast 30% faster.
-- Requiem: Holding focus, while you dying will spawn you in dirtmouth instead of your bench. Holding dream nail will spawn you at spirit's glade instead (when the glade is open).
+- Requiem: Holding focus, while you dying will spawn you in dirtmouth instead of your bench. Holding dream nail will spawn you at spirit's glade instead (when the glade is open). Holding cDash will spawn you at hallownests crown.
 
 ### Fog Canyon:
 
@@ -147,7 +147,7 @@ Here are all powers listed with their description (This contains the detailed de
 - Camouflage: After standing still for 5 seconds, you gain invincibility until you do something. If you are wearing Shape of Unn, you keep the invincibility while focusing and moving as a slug.
 - Gift on Unn: Gain the shape of Unn effect for focusing. If you're wearing Shape of Unn, focus restores 15 soul on a successful cast.
 - Mindblast of Unn: Hitting an enemy with the dream nail permanently increases the taken damage by 2. Bonus for wearing charm: (+1 Dreamwielder; +2 Dreamshield; +3 Shape of Unn)
-- Rooted: Currently does nothing.
+- Grasp of Life: While running on the ground spawn a grass patch each second. Every 10th one is pale grass which, upon destroying, causes all other spawned grass by you to cast wraith that deal 10 damage (20 if shape of unn is equipped). Grass despawns after 10 seconds..
 - Return to Unn: Your Movement speed is increased by 3 and your dash cooldown is reduces by 0.5 seconds, while you facing left.
 - Touch Grass: Every 10 seconds standing on grass, you heal 1 mask. Decreased to 5 seconds if wearing Shape of Unn.
 
