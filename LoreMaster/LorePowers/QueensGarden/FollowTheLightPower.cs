@@ -4,6 +4,7 @@ using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
 using LoreMaster.Enums;
 using LoreMaster.Extensions;
+using System;
 using UnityEngine;
 
 namespace LoreMaster.LorePowers.QueensGarden;
@@ -24,8 +25,8 @@ public class FollowTheLightPower : Power
     {
         Hint = "Allows you to weave with the pure essence of light to form a portal which you can travel to. Moving to far away will destroy the unstable portal. " +
             "Hold left while swinging the artifact of the light to weave the portal and hold right to travel through it. As long as the artifact has not its full potential, " +
-            "travelling will consume the energy of the dreams and destroy the portal once entered. If not, the portal will remain at your entry point.";
-        Description = "When you hold left while casting dreamnail, it will spawn an orange portal by your side, which you can travel to from anywhere in the room. Hold right while casting " +
+            "travelling will consume the energy of the dreams and destroy the portal once entered. If not, the portal will remain at your entry point. (Requires dream gate to work)";
+        Description = "When you hold left while casting dreamnail, it will spawn an orange portal by your side, which you can travel to from anywhere in the room (Requires dream gate to work). Hold right while casting " +
             "dreamnail to warp to the portal. Warping will consume 1 essence and the portal. Neither get's consumed if you have awoken Dreamnail (the portal will swap position with you instead).";
     }
 
@@ -80,9 +81,11 @@ public class FollowTheLightPower : Power
                         }
                         else
                         {
-                            HeroController.instance.transform.localPosition = _gatePosition;
                             _dreamGate.transform.localPosition = HeroController.instance.transform.localPosition;
-                            _gatePosition = HeroController.instance.transform.localPosition;
+                            // Adjust to place the portal on the ground
+                            _dreamGate.transform.localPosition -= new Vector3(0f,1.4f,0f);
+                            HeroController.instance.transform.localPosition = _gatePosition;
+                            _gatePosition = _dreamGate.transform.localPosition;
                         }
                     }
                 })

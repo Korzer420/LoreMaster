@@ -83,7 +83,7 @@
     <Compile Include="LorePowers\Greenpath\CamouflagePower.cs" />
     <Compile Include="LorePowers\Greenpath\GiftOfUnnPower.cs" />
     <Compile Include="LorePowers\Greenpath\ReturnToUnnPower.cs" />
-    <Compile Include="LorePowers\Greenpath\RootedPower.cs" />
+    <Compile Include="LorePowers\Greenpath\GraspOfLifePower.cs" />
     <Compile Include="LorePowers\Greenpath\TouchGrassPower.cs" />
     <Compile Include="LorePowers\Greenpath\MindblastOfUnnPower.cs" />
     <Compile Include="LorePowers\HowlingCliffs\JonisProtectionPower.cs" />

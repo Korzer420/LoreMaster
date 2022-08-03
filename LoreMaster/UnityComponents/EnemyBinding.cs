@@ -45,7 +45,7 @@ public class EnemyBinding : MonoBehaviour
         // This is used to let the enemy blink every 0.25 seconds.
         float blinkMilestone = 0f;
 
-        while (passedTime <= 3f)
+        while (passedTime <= (PlayerData.instance.GetBool(nameof(PlayerData.instance.dreamNailUpgraded)) ? 5f : 2.5f))
         {
             transform.position = _positionToHold;
             passedTime += Time.deltaTime;

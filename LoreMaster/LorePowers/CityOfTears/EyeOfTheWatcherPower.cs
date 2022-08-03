@@ -49,9 +49,9 @@ public class EyeOfTheWatcherPower : Power
     };
 
     /// <summary>
-    /// Gets or sets the indicator if the player can be revived.
+    /// Gets the indicator if the player can be revived.
     /// </summary>
-    public bool CanRevive => _eye.activeSelf && PlayerData.instance.GetBool("hasLantern");
+    public bool CanRevive => _eye.activeSelf && PlayerData.instance.GetBool(nameof(PlayerData.instance.hasLantern));
 
     #endregion
 

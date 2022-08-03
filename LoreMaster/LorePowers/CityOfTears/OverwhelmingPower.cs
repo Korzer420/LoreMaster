@@ -133,16 +133,17 @@ public class OverwhelmingPower : Power
                 continue;
             spellDamageFSM.GetState("Finished").ReplaceAction(new Lambda(() =>
             {
-                if (_hasFullSoulMeter && Active)
+                // The transform checks are for the case that this modifications get applied before acquiring Grasp of Life.
+                if (_hasFullSoulMeter && Active && spellObject.transform.parent != null && spellObject.transform.parent.parent != null && spellObject.transform.parent.parent.name.Equals("Spells"))
                 {
                     spellObject.LocateMyFSM("damages_enemy").FsmVariables.GetFsmInt("damageDealt").Value *= 2;
                     spell.transform.localScale = new(2, 2);
-                    spell.GetComponent<tk2dSprite>().color = Color.cyan;
+                    spellObject.transform.parent.GetComponent<tk2dSprite>().color = Color.cyan;
                 }
-                else
+                else if(spellObject.transform.parent != null && spellObject.transform.parent.parent != null && spellObject.transform.parent.parent.name.Equals("Spells"))
                 {
                     spell.transform.localScale = new(1, 1);
-                    spell.GetComponent<tk2dSprite>().color = Color.white;
+                    spellObject.transform.parent.GetComponent<tk2dSprite>().color = Color.white;
                 }
 
                 if (!PlayerData.instance.GetBool(nameof(PlayerData.instance.equippedCharm_19)))

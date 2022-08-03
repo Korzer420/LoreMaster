@@ -41,41 +41,20 @@ public class MindblastOfUnnPower : Power
     private void UpdateDreamNailColor(PlayerData data, HeroController controller)
     {
         string colorCode = string.Empty;
-        HitInstance instance = new();
         colorCode += PlayerData.instance.GetBool("equippedCharm_30") ? 1 : 0;
         colorCode += PlayerData.instance.GetBool("equippedCharm_38") ? 1 : 0;
         colorCode += PlayerData.instance.GetBool("equippedCharm_28") ? 1 : 0;
-
-        Color dreamNailColor;
-        switch (colorCode)
+        Color dreamNailColor = colorCode switch
         {
-            case "001":
-                dreamNailColor = Color.green;
-                break;
-            case "010":
-                dreamNailColor = Color.red;
-                break;
-            case "011":
-                dreamNailColor = Color.blue;
-                break;
-            case "100":
-                dreamNailColor = Color.yellow;
-                break;
-            case "101":
-                dreamNailColor = Color.cyan;
-                break;
-            case "110":
-                // Orange
-                dreamNailColor = new(1f, 0.4f, 0f);
-                break;
-            case "111":
-                // Purple
-                dreamNailColor = new(1f, 0f, 1f);
-                break;
-            default:
-                dreamNailColor = Color.white;
-                break;
-        }
+            "001" => Color.green,
+            "010" => Color.red,
+            "011" => Color.blue,
+            "100" => Color.yellow,
+            "101" => Color.cyan,
+            "110" => new(1f, 0.4f, 0f),// Orange
+            "111" => new(1f, 0f, 1f),// Purple
+            _ => Color.white,
+        };
 
         // Color all dream nail components accordingly (just for fun)
         foreach (tk2dSprite dreamNailComponent in _dreamNailSprites)
@@ -94,16 +73,20 @@ public class MindblastOfUnnPower : Power
         if (mindBlast == null)
             mindBlast = self.gameObject.AddComponent<MindBlast>();
 
-        mindBlast.ExtraDamage += 2;
+        int extraDamage = 2;
         // 1 extra damage if dream wielder is equipped
         if (PlayerData.instance.GetBool("equippedCharm_30"))
-            mindBlast.ExtraDamage++;
+            extraDamage++;
         // 2 extra damage if dream shield is equipped (like if this is ever going to happen)
         if (PlayerData.instance.GetBool("equippedCharm_38"))
-            mindBlast.ExtraDamage += 2;
+            extraDamage += 2;
         // 3 extra damage if shape of unn is equipped
         if (PlayerData.instance.GetBool("equippedCharm_28"))
-            mindBlast.ExtraDamage += 3;
+            extraDamage += 3;
+        // Double the damage if awoken dreamnail has been acquired.
+        if (PlayerData.instance.GetBool(nameof(PlayerData.instance.dreamNailUpgraded)))
+            extraDamage *= 2;
+        mindBlast.ExtraDamage += extraDamage;
     }
 
     #endregion

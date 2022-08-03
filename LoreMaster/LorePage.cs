@@ -5,6 +5,7 @@ using ItemChanger.FsmStateActions;
 using LoreMaster.Enums;
 using LoreMaster.Helper;
 using LoreMaster.LorePowers;
+using LoreMaster.LorePowers.CityOfTears;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -75,12 +76,11 @@ internal class LorePage
     {
         try
         {
-
             for (int i = 0; i < _loreObjects.Length; i++)
             {
                 if (_loreObjects[i] == null)
                 {
-                    LoreMaster.Instance.Log("Lore Object " + i + " doesn't exist");
+                    LoreMaster.Instance.LogDebug("Lore Object " + i + " doesn't exist");
                     continue;
                 }
 
@@ -114,7 +114,7 @@ internal class LorePage
         }
         catch (Exception exception)
         {
-            LoreMaster.Instance.Log("Error when updating inventory: " + exception.Message);
+            LoreMaster.Instance.LogError("Error when updating inventory: " + exception.Message);
         }
         return true;
     }
@@ -317,13 +317,16 @@ internal class LorePage
             currentWorkingState.AddTransition("FINISHED", "Powers");
             currentWorkingState.AddLastAction(new Lambda(() =>
             {
-                if (LoreMaster.Instance.ActivePowers.ContainsValue(_powers[indexVariable.Value]))
+                if (PlayerData.instance.GetBool(nameof(PlayerData.instance.atBench)) && LoreMaster.Instance.ActivePowers.ContainsValue(_powers[indexVariable.Value]))
                 {
                     Power power = _powers[indexVariable.Value];
 
                     if (power.Active)
                     {
-                        power.DisablePower(false);
+                        if (power is MarissasAudiencePower audience && audience.IsMarissaDead)
+                            return;
+
+                        power.DisablePower();
                         _loreObjects[indexVariable.Value].GetComponent<SpriteRenderer>().sprite = _notActive;
                         _loreObjects[indexVariable.Value].GetComponent<SpriteRenderer>().color = Color.red;
                         power.Tag = power.DefaultTag != PowerTag.Remove && power.DefaultTag != PowerTag.Disable

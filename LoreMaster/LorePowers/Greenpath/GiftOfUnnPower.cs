@@ -46,7 +46,7 @@ public class GiftOfUnnPower : Power
         // If the player has shape of unn equipped, it gives 15 mp on a successful cast (this is added, to prevent making the charm useless)
         FsmHelper.GetState(spellFsm, "Focus Heal 2").ReplaceAction(new Lambda(() =>
         {
-            if (Active && PlayerData.instance.GetBool("equippedCharm_28"))
+            if (Active && PlayerData.instance.GetBool(nameof(PlayerData.instance.equippedCharm_28)))
                 HeroController.instance.AddMPCharge(15);
             spellFsm.FsmVariables.FindFsmInt("Max HP").Value = PlayerData.instance.GetInt(nameof(PlayerData.instance.maxHealth));
         })

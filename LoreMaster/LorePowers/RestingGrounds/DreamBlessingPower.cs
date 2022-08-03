@@ -42,15 +42,11 @@ public class DreamBlessingPower : Power
 
         // Herrah... don't ask.
         if (PlayerData.instance.GetBool(nameof(PlayerData.instance.hegemolDefeated)))
-        {
             if (_spawnedWeavers.Count < 40)
-            {
-                _spawnedWeavers.Add(GameObject.Instantiate(_weaverlingPrefab, HeroController.instance.transform.position, Quaternion.identity));
-                _spawnedWeavers.Add(GameObject.Instantiate(_weaverlingPrefab, HeroController.instance.transform.position, Quaternion.identity));
-            }
-        }
+                for (int i = 0; i < (PlayerData.instance.GetBool(nameof(PlayerData.instance.dreamNailUpgraded)) ? 4 : 2); i++)
+                    _spawnedWeavers.Add(GameObject.Instantiate(_weaverlingPrefab, HeroController.instance.transform.position, Quaternion.identity));
 
-        if (PlayerData.instance.GetBool(nameof(PlayerData.instance.monomonDefeated)))
+        if (PlayerData.instance.GetBool(nameof(PlayerData.instance.monomonDefeated)) && !self.gameObject.name.Contains("Prayer Slug"))
         {
             int essence = PlayerData.instance.GetInt(nameof(PlayerData.instance.dreamOrbs));
 
@@ -61,8 +57,9 @@ public class DreamBlessingPower : Power
             {
                 // This assumes that the component is on the same object, if not we ignore it. (It isn't worth the hussle to account for that currently)
                 HealthManager healthManager = self.GetComponent<HealthManager>();
+                int damageAmount = PlayerData.instance.GetBool(nameof(PlayerData.instance.dreamNailUpgraded)) ? 350 : 175;
                 if (healthManager != null)
-                    healthManager.ApplyExtraDamage(200);
+                    healthManager.ApplyExtraDamage(damageAmount);
             }
         }
     }

@@ -91,13 +91,13 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         {"GREEN_TABLET_03", new MindblastOfUnnPower() },
         {"GREEN_TABLET_05", new CamouflagePower() },
         {"GREEN_TABLET_06", new ReturnToUnnPower() },
-        {"GREEN_TABLET_07", new RootedPower() },
+        {"GREEN_TABLET_07", new GraspOfLifePower() },
         // Howling Cliffs
         {"CLIFF_TAB_02", new LifebloodOmenPower() },
         {"JONI", new JonisProtectionPower() },
         // Kingdom's Edge
         {"MR_MUSH_RIDDLE_TAB_NORMAL", new WisdomOfTheSagePower() },
-        {"BADOON", new ConcussiveStrikePower() },
+        {"BARDOON", new ConcussiveStrikePower() },
         {"HIVEQUEEN", new YouLikeJazzPower() },
         // Queen's Garden
         {"XUN_GRAVE_INSPECT", new FlowerRingPower() },
@@ -297,6 +297,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
             secondPlacement.Add(new TouristMagnetItem("Temple_Teleporter"));
             teleportItems.Add(secondPlacement);
             ItemChangerMod.AddPlacements(teleportItems);
+            GloryOfTheWealthPower.GloryCost = 0;
             orig(self, permaDeath, bossRush);
             ModHooks.SetPlayerBoolHook += TrackPathOfPain;
             _fromMenu = true;
@@ -394,6 +395,12 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
                     else
                         ModHooks.SetPlayerBoolHook += TrackPathOfPain;
 
+                    if (arg1.name.ToLower().Equals("town"))
+                    {
+                        Transform elderbug = GameObject.Find("_NPCs/Elderbug").transform;
+                        elderbug.localScale = new(2f, 2f, 2f);
+                        elderbug.localPosition = new(126.36f, 12.35f, 0f);
+                    }
                     ModHooks.LanguageGetHook += GetText;
                     On.PlayMakerFSM.OnEnable += FsmEdits;
                     On.DeactivateIfPlayerdataTrue.OnEnable += ForceMyla;
@@ -418,6 +425,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
                         AbstractItem.BeforeGiveGlobal += GiveLoreItem;
                     }
                 }
+
                 Handler.StartCoroutine(ManageSceneActions());
             }
         }
@@ -462,6 +470,62 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         {
             self.gameObject.FindChild("corpse0000").SetActive(false);
         }
+        else if (self.gameObject.name.Contains("Radiance") && self.FsmName.Equals("Control"))
+        {
+            // This disables all powers when the player defeats radiance.
+            // The main purpose is to ensure, that the player is not killed by revek (Marissas Audience) or grimmkin (Lifeblood Omen).
+            try
+            {
+                self.GetState("Final Impact").ReplaceAction(new Lambda(() =>
+                {
+                    PlayerData.instance.SetInt(nameof(PlayerData.instance.killsFinalBoss), 0);
+                    foreach (Power power in ActivePowers.Values)
+                        power.DisablePower();
+
+                })
+                { Name = "Deactivate Lore powers." }, 5);
+            }
+            catch (Exception exception)
+            {
+                LogError("Couldn't modify radiance fsm: " + exception.Message);
+            }
+        }
+        else if (self.gameObject.name.Equals("Elderbug") && self.FsmName.Equals("npc_control"))
+        {
+            self.transform.localScale = new(2f, 2f, 2f);
+            self.transform.localPosition = new(126.36f, 12.35f, 0f);
+        }
+        else if (self.FsmName.Equals("ghost_npc_death"))
+        {
+            try
+            {
+                string ghostName = self.gameObject.LocateMyFSM("Conversation Control").FsmVariables.FindFsmString("Ghost Name").Value.ToUpper();
+                if (ghostName.Equals("POGGY") || ghostName.Equals("HIVEQUEEN") || ghostName.Equals("JONI") || ghostName.Equals("GRAVEDIGGER"))
+                {
+                    self.GetState("Revek?").ReplaceAction(new Lambda(() =>
+                    {
+                        if (!ActivePowers.ContainsKey(ghostName))
+                            self.SendEvent("IMMUNE");
+                        else
+                            self.SendEvent(self.FsmVariables.FindFsmBool("z_Revek").Value ? "REVEK" : "FINISHED");
+                    })
+                    { Name = "Prevent Death" }, 0);
+                    self.GetState("Revek?").AddTransition("IMMUNE", "Idle");
+                }
+            }
+            catch (Exception exception)
+            {
+                LogError("Error while modifying ghosts: " + exception.Message);
+            }
+        }
+        else if (self.FsmName.Equals("Phase Control") && self.gameObject.name.Equals("Hollow Knight Boss"))
+            self.GetState("Die").ReplaceAction(new Lambda(() =>
+            {
+                foreach (Power power in ActivePowers.Values)
+                    power.DisablePower();
+                PlayerData.instance.SetBool(nameof(PlayerData.instance.killedHollowKnight), true);
+            })
+            { Name = "Deactivate Lore Powers" }, 2);
         orig(self);
     }
 
@@ -538,9 +602,13 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
     {
         ("RestingGrounds_08", "Ghost Battle Revek"),
         ("Deepnest_43", "Mantis Heavy Flyer"), // Deepnest_43 Mantis Heavy Flyer -> PersonalObjectPool -> StartUpPool [0] is shot
-        ("Ruins1_28","Flamebearer Spawn"),
+        ("Ruins1_28","Flamebearer Spawn"), // Small Ghost
+        ("RestingGrounds_06","Flamebearer Spawn"), // Medium Ghost
+        ("Hive_03","Flamebearer Spawn"), // Large Ghost
         ("GG_Hollow_Knight", "Battle Scene/HK Prime/Focus Blast/focus_ring"),
-        ("GG_Hollow_Knight", "Battle Scene/HK Prime/Focus Blast/focus_rune")
+        ("GG_Hollow_Knight", "Battle Scene/HK Prime/Focus Blast/focus_rune"),
+        ("Fungus1_01b","green_grass_1"),
+        ("White_Palace_09","ash_grass_02")
     };
 
     /// <summary>
@@ -557,13 +625,23 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         On.UIManager.ContinueGame += ContinueGame;
         On.GameManager.ReturnToMainMenu += ReturnToMenu;
 
+        int grimmkinIndex = 1;
         foreach (string key in preloadedObjects.Keys)
             foreach (string subKey in preloadedObjects[key].Keys)
-                if (!PreloadedObjects.ContainsKey(subKey))
+                if (!PreloadedObjects.ContainsKey(subKey) || subKey.Equals("Flamebearer Spawn"))
                 {
                     GameObject toAdd = preloadedObjects[key][subKey];
                     if (subKey.Equals("Mantis Heavy Flyer"))
                         toAdd = preloadedObjects[key][subKey].GetComponent<PersonalObjectPool>().startupPool[0].prefab;
+                    else if (subKey.Equals("Flamebearer Spawn"))
+                    {
+                        string realKey = grimmkinIndex == 1 ? "Small Ghost" : (grimmkinIndex == 2 ? "Medium Ghost" : "Large Ghost");
+                        toAdd = toAdd.LocateMyFSM("Spawn Control").FsmVariables.FindFsmGameObject("Grimmkin Obj").Value;
+                        PreloadedObjects.Add(realKey, toAdd);
+                        GameObject.DontDestroyOnLoad(toAdd);
+                        grimmkinIndex++;
+                        continue;
+                    }
                     PreloadedObjects.Add(subKey, toAdd);
                     GameObject.DontDestroyOnLoad(toAdd);
                 }
@@ -683,7 +761,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         On.GameManager.ReturnToMainMenu -= ReturnToMenu;
         Handler.StopAllCoroutines();
         foreach (Power power in ActivePowers.Values)
-            power.DisablePower(false);
+            power.DisablePower();
     }
 
     #endregion
@@ -707,7 +785,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         }
         catch (Exception exception)
         {
-            LogError("Failed adding " + power.PowerName+". Error: "+exception.Message);
+            LogError("Failed adding " + power.PowerName + ". Error: " + exception.Message);
         }
         return false;
     }
@@ -786,7 +864,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         else if (IsMidwife(key))
             key = "MIDWIFE";
         else if (IsBardoon(key))
-            key = "BADOON";
+            key = "BARDOON";
         else if (key.Equals("HIVEQUEEN_TALK") || key.Equals("HIVEQUEEN_REPEAT"))
             key = "HIVEQUEEN";
         else if (key.Equals("JONI_TALK") || key.Equals("JONI_REPEAT"))
@@ -860,17 +938,11 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
                     if (area != newArea && !IsAreaGlobal(area))
                         foreach (Power power in ActivePowers.Values.Where(x => x.Location == area))
                             if (power.Tag == PowerTag.Local || power.Tag == PowerTag.Exclude)
-                            {
-                                // Requiem is a special case. This has to be disabled later to prevent getting locked in an animation.
-                                if (power.PowerName.Equals("Requiem"))
-                                    Handler.StartCoroutine(((RequiemPower)power).DeactivateRequiem());
-                                else
-                                    power.DisablePower(false);
-                            }
+                                power.DisablePower();
             }
             catch (Exception exception)
             {
-                LogError("An error occured in the area change: "+exception.Message);
+                LogError("An error occured in the area change: " + exception.Message);
             }
             UpdateTracker(newArea);
         }
@@ -896,14 +968,14 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
 
         // Execute all actions that powers want to do when the scene changes.
         foreach (Power powers in ActivePowers.Values)
-            if(powers.Active && powers.SceneAction != null)
+            if (powers.Active && powers.SceneAction != null)
                 try
                 {
                     powers.SceneAction.Invoke();
                 }
                 catch (Exception exception)
                 {
-                    LogError("Error while executing scene action for " + powers.PowerName + ": " + exception.Message +"StackTrace: "+exception.StackTrace);
+                    LogError("Error while executing scene action for " + powers.PowerName + ": " + exception.Message + "StackTrace: " + exception.StackTrace);
                 }
         _currentArea = newArea;
     }
@@ -1036,6 +1108,8 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
 
             foreach (string key in saveData.AcquiredPowersKey)
                 ActivePowers.Add(key, _powerList[key]);
+
+            GloryOfTheWealthPower.GloryCost = saveData.GloryCost;
         }
         catch (Exception exception)
         {
@@ -1055,6 +1129,8 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
 
         foreach (string key in ActivePowers.Keys)
             saveData.AcquiredPowersKey.Add(key);
+
+        saveData.GloryCost = GloryOfTheWealthPower.GloryCost;
 
         return saveData;
     }

@@ -70,7 +70,7 @@ public abstract class Power
     /// <summary>
     /// Gets or sets the action the power should execute on a scene change (gameplay scene only)
     /// </summary>
-    public virtual Action SceneAction { get; set; }
+    public virtual Action SceneAction => () => { };
 
     #endregion
 
@@ -140,8 +140,9 @@ public abstract class Power
     /// Wrapper to disable the power.
     /// </summary>
     /// <param name="backToMenu">This is used to tell <see cref="EnablePower"/> to do the initialize again, if you reload the game.</param>
-    internal void DisablePower(bool backToMenu)
+    internal void DisablePower(bool backToMenu = false)
     {
+        _initialized = !backToMenu;
         if (!Active)
             return;
         try
@@ -151,7 +152,6 @@ public abstract class Power
             Disable();
             LoreMaster.Instance.LogDebug("Disabled " + PowerName);
             Active = false;
-            _initialized = !backToMenu;
         }
         catch (Exception exception)
         {

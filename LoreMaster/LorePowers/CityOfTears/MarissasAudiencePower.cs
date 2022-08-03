@@ -90,15 +90,20 @@ public class MarissasAudiencePower : Power
         {
             if (IsMarissaDead)
             {
-                yield return new WaitForSeconds(LoreMaster.Instance.Generator.Next(45, 181));
+                Tag = PowerTag.Global;
+                yield return new WaitForSeconds(LoreMaster.Instance.Generator.Next(45, 121));
                 _revek = GameObject.Instantiate(LoreMaster.Instance.PreloadedObjects["Ghost Battle Revek"], HeroController.instance.transform.position, Quaternion.identity);
                 _revek.SetActive(true);
                 PlayMakerFSM revekFSM = _revek.LocateMyFSM("Control");
-
                 yield return null;
-
                 revekFSM.SetState("Appear Pause");
-                yield return new WaitForSeconds(LoreMaster.Instance.Generator.Next(20, 61));
+                float passedTime = 0f;
+                float activeTime = LoreMaster.Instance.Generator.Next(20, 91);
+                while (passedTime < activeTime && _revek != null)
+                {
+                    passedTime += Time.deltaTime;
+                    yield return null;
+                }
                 if (_revek != null)
                     GameObject.Destroy(_revek);
             }

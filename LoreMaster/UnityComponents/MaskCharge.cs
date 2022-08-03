@@ -26,7 +26,7 @@ public class MaskCharge : MonoBehaviour
         foreach (Transform thorn in transform.parent.Find("Charm Effects/Thorn Hit"))
         {
             GameObject hitbox = GameObject.Instantiate(thorn.gameObject, _hitbox.transform);
-            hitbox.transform.localScale = new(1.2f, 1.2f);
+            hitbox.transform.localScale = new(1f, 1f);
 
             PlayMakerFSM damageFSM = hitbox.LocateMyFSM("damages_enemy");
             // Remove the knockback
@@ -39,7 +39,7 @@ public class MaskCharge : MonoBehaviour
             fsm.FsmName = "set_ring_damage";
             fsm.GetState("Set").ReplaceAction(new Lambda(() =>
             {
-                int nailDamage = PlayerData.instance.GetInt(nameof(PlayerData.instance.nailDamage));
+                int nailDamage = PlayerData.instance.GetInt(nameof(PlayerData.instance.nailDamage)) / 2;
                 if (nailDamage > 20)
                     nailDamage = 20;
                 fsm.FsmVariables.FindFsmInt("Damage").Value = nailDamage;
@@ -51,6 +51,7 @@ public class MaskCharge : MonoBehaviour
         _rune[0].transform.localPosition = new(0, 0, 0);
         _rune[0].transform.localScale = new(1.5f, 1.5f, 1.5f);
         _rune[0].SetActive(true);
+        _rune[0].GetComponent<SpriteRenderer>().color = new(1f, 1f, 1f, .1f);
 
         _rune[1] = GameObject.Instantiate(LoreMaster.Instance.PreloadedObjects["Battle Scene/HK Prime/Focus Blast/focus_rune"], transform);
         _rune[1].name = "Charge Rune";
@@ -91,10 +92,10 @@ public class MaskCharge : MonoBehaviour
     {
         while (true)
         {
-            yield return new WaitForSeconds(0.25f);
+            yield return new WaitForSeconds(0.5f);
             _hitbox.SetActive(true);
-            HeroController.instance.AddMPCharge(2);
-            yield return null;
+            HeroController.instance.AddMPCharge(4);
+            yield return new WaitForSeconds(0.1f);
             _hitbox.SetActive(false);
         }
     }

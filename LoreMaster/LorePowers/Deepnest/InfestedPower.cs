@@ -113,7 +113,7 @@ public class InfestedPower : Power
     private void Infest(GameObject gameObject)
     {
         // The hollow knight can trigger it's death multiple times. To make true ending more accessable thk doesn't spawn weavers.
-        if (!gameObject.name.Equals("Hollow Knight Boss") && !gameObject.name.Contains("Collector"))
+        if (!gameObject.name.Equals("Hollow Knight Boss"))
         {
             Infested infested = gameObject.GetComponent<Infested>();
             if (infested == null)
@@ -126,12 +126,10 @@ public class InfestedPower : Power
     /// <summary>
     /// Handles the life time of weavers.
     /// </summary>
-    /// <param name="weaver"></param>
-    /// <returns></returns>
     private IEnumerator WeaverLife(GameObject weaver)
     {
         float passedTime = 0f;
-        while(passedTime < 30f && weaver != null)
+        while(passedTime < 15f && weaver != null)
         {
             yield return null;
             passedTime += Time.deltaTime;

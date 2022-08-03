@@ -41,7 +41,7 @@ public class JonisProtectionPower : Power
     /// <summary>
     /// Gets the indicator if the bonus health can be taken.
     /// </summary>
-    public bool IsDialogueOpen => _immune || _dialogueFSM.Any(x => x.ActiveStateName.Equals("Box Up")) || !HeroController.instance.CanInput();
+    public bool ShouldEffectFreeze => _immune || _dialogueFSM.Any(x => x.ActiveStateName.Equals("Box Up")) || !HeroController.instance.CanInput();
 
     /// <inheritdoc/>
     public override Action SceneAction => () =>
@@ -87,20 +87,27 @@ public class JonisProtectionPower : Power
         return damage;
     }
 
+    /// <summary>
+    /// Remove the inventory invincibility.
+    /// </summary>
     private void InvAnimateUpAndDown_AnimateDown(On.InvAnimateUpAndDown.orig_AnimateDown orig, InvAnimateUpAndDown self)
     {
         _immune = false;
         orig(self);
     }
 
+    /// <summary>
+    /// Grants immunity while the inventory is up, to prevent cancelling it.
+    /// </summary>
     private void InvAnimateUpAndDown_AnimateUp(On.InvAnimateUpAndDown.orig_AnimateUp orig, InvAnimateUpAndDown self)
     {
         _immune = true;
         orig(self);
     }
 
-    private void PlayMakerFSM_OnEnable(On.PlayMakerFSM.orig_OnEnable orig, PlayMakerFSM self)
+    private void ModifyFSM(On.PlayMakerFSM.orig_OnEnable orig, PlayMakerFSM self)
     {
+        // Shops and Stags should not be interrupted by this effect.
         if (self.FsmName.Equals("Shop Region") || self.FsmName.Equals("Stag Control"))
         {
             if (self.GetState("Take Control").GetFirstActionOfType<Lambda>() == null)
@@ -142,6 +149,7 @@ public class JonisProtectionPower : Power
         _dialogueFSM[1] = GameObject.Find("_GameCameras/HudCamera/DialogueManager").LocateMyFSM("Box Open YN");
         _dialogueFSM[2] = GameObject.Find("_GameCameras/HudCamera/DialogueManager").LocateMyFSM("Box Open Dream");
 
+        // Ensures that the flower doesn't get destroyed instantly.
         PlayMakerFSM fsm = GameObject.Find("Knight").LocateMyFSM("ProxyFSM");
         fsm.GetState("Flower?").ReplaceAction(new Lambda(() =>
         {
@@ -162,7 +170,7 @@ public class JonisProtectionPower : Power
     {
         ModHooks.CharmUpdateHook += CharmUpdate;
         ModHooks.TakeHealthHook += TakeHealth;
-        On.PlayMakerFSM.OnEnable += PlayMakerFSM_OnEnable;
+        On.PlayMakerFSM.OnEnable += ModifyFSM;
         On.InvAnimateUpAndDown.AnimateUp += InvAnimateUpAndDown_AnimateUp;
         On.InvAnimateUpAndDown.AnimateDown += InvAnimateUpAndDown_AnimateDown;
     }
@@ -172,7 +180,9 @@ public class JonisProtectionPower : Power
     {
         ModHooks.CharmUpdateHook -= CharmUpdate;
         ModHooks.TakeHealthHook -= TakeHealth;
-        On.PlayMakerFSM.OnEnable -= PlayMakerFSM_OnEnable;
+        On.PlayMakerFSM.OnEnable -= ModifyFSM;
+        On.InvAnimateUpAndDown.AnimateUp -= InvAnimateUpAndDown_AnimateUp;
+        On.InvAnimateUpAndDown.AnimateDown -= InvAnimateUpAndDown_AnimateDown;
     }
 
     #endregion
@@ -194,9 +204,9 @@ public class JonisProtectionPower : Power
         while (_currentLifebloodBonus > 0)
         {
             yield return new WaitForSeconds(3f);
-            if (IsDialogueOpen)
-                yield return new WaitWhile(() => IsDialogueOpen);
-            // This is an extra check for the case, that the last lifeblood gets taken to prevent removing real masks.
+            if (ShouldEffectFreeze)
+                yield return new WaitWhile(() => ShouldEffectFreeze);
+            // This is an extra check for the case, that the lifeblood gets taken from other sources to prevent removing real masks.
             if (_currentLifebloodBonus > 0 && PlayerData.instance.GetInt(nameof(PlayerData.instance.healthBlue)) > 0)
             {
                 _takingJoniBonus = true;

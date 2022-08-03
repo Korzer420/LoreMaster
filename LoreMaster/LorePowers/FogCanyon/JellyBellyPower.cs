@@ -29,7 +29,6 @@ public class JellyBellyPower : Power
     {
         if (_playerRigidBody.gravityScale == 0)
             return;
-
         _playerRigidBody.gravityScale = HeroController.instance.transitionState == GlobalEnums.HeroTransitionState.WAITING_TO_TRANSITION ? 0.64f : 0.79f;
     }
 
@@ -43,7 +42,7 @@ public class JellyBellyPower : Power
     /// <inheritdoc/>
     protected override void Enable()
     {
-        HeroController.instance.BIG_FALL_TIME *= 3;
+        HeroController.instance.BIG_FALL_TIME += 6.6f;
         ModHooks.HeroUpdateHook += Float;
     }
 
@@ -51,7 +50,7 @@ public class JellyBellyPower : Power
     protected override void Disable()
     {
         ModHooks.HeroUpdateHook -= Float;
-        HeroController.instance.BIG_FALL_TIME /= 3;
+        HeroController.instance.BIG_FALL_TIME -= 6.6f;
         if (HeroController.instance.BIG_FALL_TIME < 3.3f)
             HeroController.instance.BIG_FALL_TIME = 3.3f;
         _playerRigidBody.gravityScale = .79f;
