@@ -45,7 +45,8 @@ public class EternalSentinelPower : Power
 
     private void PlayMakerFSM_OnEnable(On.PlayMakerFSM.orig_OnEnable orig, PlayMakerFSM self)
     {
-        if (self.gameObject.name.Equals("Knight Dung Trail(Clone)") && self.FsmName.Equals("Control"))
+        if (self.gameObject.name.Contains("Knight Dung Trail(Clone)") && self.FsmName.Equals("Control"))
+        {
             self.GetState("Init").ReplaceAction(new Lambda(() =>
             {
                 self.transform.localPosition = HeroController.instance.transform.position;
@@ -56,6 +57,7 @@ public class EternalSentinelPower : Power
                 self.GetComponent<DamageEffectTicker>().SetDamageInterval(Active ? .3f : .15f);
             })
             { Name = "Extend Cloud" });
+        }
         
         orig(self);
     }

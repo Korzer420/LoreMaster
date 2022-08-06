@@ -414,11 +414,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
 
                     // Load in changes from the options file (if it exists)
                     LoadOptions();
-#if DEBUG
-                    foreach (string powerKey in _powerList.Keys)
-                        if (!ActivePowers.ContainsKey(powerKey))
-                            ActivePowers.Add(powerKey, _powerList[powerKey]);
-#endif
+
                     if (ModHooks.GetMod("Randomizer 4", true) is Mod mod)
                     {
                         Log("Detected Randomizer. Adding compability.");
@@ -467,9 +463,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         }
         // Deactives moss prophet corpse, so that it doesn't block the living one.
         else if (self.gameObject.name.Equals("corpse set") && self.FsmName.Equals("FSM"))
-        {
             self.gameObject.FindChild("corpse0000").SetActive(false);
-        }
         else if (self.gameObject.name.Contains("Radiance") && self.FsmName.Equals("Control"))
         {
             // This disables all powers when the player defeats radiance.
@@ -497,9 +491,10 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         }
         else if (self.FsmName.Equals("ghost_npc_death"))
         {
+            string ghostName = "";
             try
             {
-                string ghostName = self.gameObject.LocateMyFSM("Conversation Control").FsmVariables.FindFsmString("Ghost Name").Value.ToUpper();
+                ghostName = self.gameObject.LocateMyFSM("Conversation Control").FsmVariables.FindFsmString("Ghost Name").Value.ToUpper();
                 if (ghostName.Equals("POGGY") || ghostName.Equals("HIVEQUEEN") || ghostName.Equals("JONI") || ghostName.Equals("GRAVEDIGGER"))
                 {
                     self.GetState("Revek?").ReplaceAction(new Lambda(() =>
@@ -515,7 +510,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
             }
             catch (Exception exception)
             {
-                LogError("Error while modifying ghosts: " + exception.Message);
+                LogError("Error while modifying ghost: " + ghostName + ": " + exception.Message);
             }
         }
         else if (self.FsmName.Equals("Phase Control") && self.gameObject.name.Equals("Hollow Knight Boss"))
@@ -833,7 +828,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
                     power = ActivePowers[key];
                 if (UseCustomText && !string.IsNullOrEmpty(power.CustomText))
                     text = power.CustomText;
-                text += "<page>[" + power.PowerName + "]";
+                text += "<br>[" + power.PowerName + "]";
                 text += "<br>" + (UseHints ? power.Hint : power.Description);
                 if (key.Equals("PLAQUE_WARN"))
                 {

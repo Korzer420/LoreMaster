@@ -51,13 +51,14 @@ public class MaskCharge : MonoBehaviour
         _rune[0].transform.localPosition = new(0, 0, 0);
         _rune[0].transform.localScale = new(1.5f, 1.5f, 1.5f);
         _rune[0].SetActive(true);
-        _rune[0].GetComponent<SpriteRenderer>().color = new(1f, 1f, 1f, .1f);
+        _rune[0].GetComponent<SpriteRenderer>().color = new(1f, 1f, 1f);
 
         _rune[1] = GameObject.Instantiate(LoreMaster.Instance.PreloadedObjects["Battle Scene/HK Prime/Focus Blast/focus_rune"], transform);
         _rune[1].name = "Charge Rune";
         _rune[1].transform.localPosition = new(0, 0, 0);
         _rune[1].transform.localScale = new(1.5f, 1.5f, 1.5f);
         _rune[1].SetActive(true);
+        _rune[1].GetComponent<SpriteRenderer>().color = new(1f, 1f, 1f, .1f);
     }
 
     private void OnEnable()
@@ -92,9 +93,9 @@ public class MaskCharge : MonoBehaviour
     {
         while (true)
         {
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(1f);
             _hitbox.SetActive(true);
-            HeroController.instance.AddMPCharge(4);
+            HeroController.instance.AddMPCharge(8);
             yield return new WaitForSeconds(0.1f);
             _hitbox.SetActive(false);
         }

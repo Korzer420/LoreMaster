@@ -1,4 +1,7 @@
+using ItemChanger.Extensions;
+using ItemChanger.FsmStateActions;
 using LoreMaster.Enums;
+using LoreMaster.Extensions;
 using System.Collections;
 using UnityEngine;
 
@@ -55,12 +58,15 @@ public class OneOfUsPower : Power
             yield return new WaitForSeconds(12f);
             if (!InputHandler.Instance.inputActions.superDash.IsPressed && !GameManager.instance.isPaused)
             {
-                var newc = GameObject.Instantiate(_cloud, HeroController.instance.transform.position,
+                GameObject newCloud = GameObject.Instantiate(_cloud, HeroController.instance.transform.position,
                 Quaternion.identity);
-                newc.SetActive(true);
-                newc.SetActiveChildren(true);
+                newCloud.LocateMyFSM("Control").GetState("Init").ReplaceAction(new Lambda(() => 
+                {
+                    newCloud.LocateMyFSM("Control").SendEvent("DEEP");
+                }) { Name = "Force Deep Cloud" }, 2);
+                newCloud.SetActive(true);
                 yield return new WaitForSeconds(4.5f);
-                GameObject.Destroy(newc);
+                GameObject.Destroy(newCloud);
             }
         }
     }

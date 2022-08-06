@@ -24,8 +24,8 @@ public class DreamBlessingPower : Power
     {
         Hint = "The dream artifact uses the power it absorbs from their powerful victims to use it's hidden power.<br>Monomon: Through her knowledge she exposes the foes biggest weakness.<br>" +
             "Lurien: His gaze may freeze the enemy in place.<br>Herrah: Invoking her children from the victim.";
-        Description = "Defeated Dreamers grant the dream nail an additional effect.<br/>Lurien: Roots the target for 3 seconds (15 seconds cooldown)<br/>Herrah: Spawn 2 weavers." +
-            "<br/>Monomon: Per 100 Essence you have a 1% chance to instant kill the enemy (capped at 200 damage). Capped at 2400 Essence for 24%.";
+        Description = "Defeated Dreamers grant the dream nail an additional effect (doubled with awoken dreamnail).<br/>Lurien: Roots the target for 3 seconds (15 seconds cooldown)<br/>Herrah: Spawn 2 weavers." +
+            "<br/>Monomon: Per 100 Essence you have a 1% chance to instant kill the enemy (capped at 175 damage). Capped at 2400 Essence for 24%.";
     }
 
     #endregion
@@ -41,7 +41,7 @@ public class DreamBlessingPower : Power
                 self.gameObject.AddComponent<EnemyBinding>();
 
         // Herrah... don't ask.
-        if (PlayerData.instance.GetBool(nameof(PlayerData.instance.hegemolDefeated)))
+        if (PlayerData.instance.GetBool(nameof(PlayerData.instance.hegemolDefeated)) && !self.gameObject.name.Contains("Prayer Slug"))
             if (_spawnedWeavers.Count < 40)
                 for (int i = 0; i < (PlayerData.instance.GetBool(nameof(PlayerData.instance.dreamNailUpgraded)) ? 4 : 2); i++)
                     _spawnedWeavers.Add(GameObject.Instantiate(_weaverlingPrefab, HeroController.instance.transform.position, Quaternion.identity));

@@ -21,7 +21,7 @@ public class EternalValorPower : Power
     public EternalValorPower() : base("Eternal Valor", Area.FungalWastes)
     {
         Hint = "The heat of the battle shall allow you to endure more pain.";
-        Description = "Each 12 hits on enemies, heal you for 1 mask. Not hitting an enemy for 3 seconds will take away a stack each second.";
+        Description = "Each 12 hits on enemies, heal you for 1 mask. Not hitting an enemy for 3 seconds will take away a stack each half of a second.";
     }
 
     #endregion
@@ -74,11 +74,15 @@ public class EternalValorPower : Power
             if (_runningCoroutine == null)
                 _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(KeepHeat());
             
+            if(_successfulHits < 24)
             _successfulHits++;
             if (_successfulHits >= 12 && PlayerData.instance.GetInt(nameof(PlayerData.instance.health)) < PlayerData.instance.GetInt(nameof(PlayerData.instance.maxHealth)))
             {
                 HeroController.instance.AddHealth(1);
-                _successfulHits = 0;
+                _successfulHits -= 12;
+                // Honestly, this shouldn't be possible, but I want to make sure, just in case, that everything works.
+                if (_successfulHits < 0)
+                    _successfulHits = 0;
             }
         }
         _hasHitEnemy = false;
@@ -100,7 +104,7 @@ public class EternalValorPower : Power
         while(_heatTimer == 0 && _successfulHits > 0)
         {
             fadeTimer += Time.deltaTime;
-            if(fadeTimer >= 1f)
+            if(fadeTimer >= .5f)
             {
                 _successfulHits--;
                 fadeTimer = 0f;

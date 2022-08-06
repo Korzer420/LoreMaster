@@ -29,8 +29,8 @@ public class MarissasAudiencePower : Power
     public MarissasAudiencePower() : base("Marissas Audience", Area.CityOfTears)
     {
         Hint = "While Marissa sings on stage, occasionally spawns a crowd that helps you. If you killed her however... you will be haunted by her biggest fan.";
-        Description = "After 20 to 60 seconds spawn multiple companions (Weavers, Hatchlings, Grimmchilds) that persist in the current room or for 30 to 90 seconds. If Marissa is dead," +
-            " spawns Revek each 45 to 180 seconds, that persist in the current room or 20 to 60 seconds.";
+        Description = "After 45 to 120 seconds spawn multiple companions (Weavers, Hatchlings, Grimmchilds) that persist in the current room or for 30 to 90 seconds. If Marissa is dead," +
+            " spawns Revek each 45 to 120 seconds, that persist in the current room or 20 to 90 seconds.";
     }
 
     #endregion
@@ -109,7 +109,7 @@ public class MarissasAudiencePower : Power
             }
             else
             {
-                yield return new WaitForSeconds(LoreMaster.Instance.Generator.Next(20, 61));
+                yield return new WaitForSeconds(LoreMaster.Instance.Generator.Next(45, 121));
                 for (int companionIndex = 0; companionIndex < 3; companionIndex++)
                 {
                     for (int companionCopy = 0; companionCopy < LoreMaster.Instance.Generator.Next(_minCompanionAmount[companionIndex], _maxCompanionAmounts[companionIndex]); companionCopy++)

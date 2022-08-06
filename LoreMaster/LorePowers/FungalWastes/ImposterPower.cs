@@ -22,7 +22,7 @@ public class ImposterPower : Power
     /// </summary>
     private void ExtraHeal(On.HeroController.orig_AddHealth orig, HeroController self, int amount)
     {
-        if (PlayerData.instance.GetBool("equippedCharm_17") && LoreMaster.Instance.Generator.Next(0, 5) == 0 && PlayerData.instance.healthBlue < 3)
+        if (PlayerData.instance.GetBool("equippedCharm_17") && LoreMaster.Instance.Generator.Next(0, 5) == 0 && PlayerData.instance.healthBlue < 5)
             EventRegister.SendEvent("ADD BLUE HEALTH");
 
         orig(self, amount);

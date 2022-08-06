@@ -29,7 +29,7 @@ public class DeliciousMealPower : Power
     public DeliciousMealPower() : base("Delicious Meal", Area.CityOfTears)
     {
         Hint = "You can now consume the \"delicious\" eggs to provide you a temporarily saturation effect to make your nail stronger and regenerate your wounds. Press jump to consume the egg.";
-        Description = "You can consume a rancid egg to heal you for 1 mask every 12 seconds and gain a +20% damage buff for 3 minutes. Press jump to consume the egg.";
+        Description = "You can consume a rancid egg to heal you for 1 mask every 8 seconds and gain a +20% damage buff for 3 minutes. Press jump to consume the egg.";
     }
 
     #endregion
@@ -120,7 +120,7 @@ public class DeliciousMealPower : Power
         {
             passedTime += Time.deltaTime;
             healTimer += Time.deltaTime;
-            if(healTimer >= 12f)
+            if(healTimer >= 8f)
             {
                 healTimer = 0f;
                 if (PlayerData.instance.GetInt(nameof(PlayerData.instance.health)) < PlayerData.instance.GetInt(nameof(PlayerData.instance.maxHealth)))

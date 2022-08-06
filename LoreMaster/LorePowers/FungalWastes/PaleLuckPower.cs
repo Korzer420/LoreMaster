@@ -10,7 +10,7 @@ public class PaleLuckPower : Power
     public PaleLuckPower() : base("Pale Luck", Area.FungalWastes)
     {
         Hint = "When someone casts harm on you, sometimes you are blessed by the higher being instead. Especially if you have some artefacts related to him.";
-        Description = "When you would take damage, you have a 1% chance to be healed instead. Increased by 2% for each King's Brand and Kingssoul.";
+        Description = "When you would take damage, you have a 2% chance to be healed instead. Increased by 4% for each King's Brand and Kingssoul. Also increased by 1 % for each king's idol you have.";
     }
 
     #endregion
@@ -24,13 +24,14 @@ public class PaleLuckPower : Power
     {
         if (damage <= 0)
             return damage;
-        int chance = 1;
+        float chance = 2f;
 
         // Chance increases with king's brand and kingssoul
         if (PlayerData.instance.GetBool(nameof(PlayerData.instance.hasKingsBrand)))
-            chance += 2;
+            chance += 4f;
         if (PlayerData.instance.GetBool("equippedCharm_36"))
-            chance += 2;
+            chance += 4f;
+        chance += PlayerData.instance.GetInt(nameof(PlayerData.instance.trinket3));
 
         int rolledValue = LoreMaster.Instance.Generator.Next(1, 101);
         if (rolledValue <= chance)

@@ -40,9 +40,9 @@ public class MantisStylePower : Power
         {
             Vector3 currentScale = _attackTransform[i].GetComponent<NailSlash>().scale;
             if (i < 2)
-                _attackTransform[i].GetComponent<NailSlash>().scale = new Vector3(currentScale.x + .5f, currentScale.y, currentScale.z);
+                _attackTransform[i].GetComponent<NailSlash>().scale = new Vector3(currentScale.x + .4f, currentScale.y, currentScale.z);
             else
-                _attackTransform[i].GetComponent<NailSlash>().scale = new Vector3(currentScale.x, currentScale.y + .5f, currentScale.z);
+                _attackTransform[i].GetComponent<NailSlash>().scale = new Vector3(currentScale.x, currentScale.y + .4f, currentScale.z);
         }
     }
 
@@ -53,9 +53,9 @@ public class MantisStylePower : Power
         {
             Vector3 currentScale = _attackTransform[i].GetComponent<NailSlash>().scale;
             if (i < 2)
-                _attackTransform[i].GetComponent<NailSlash>().scale = new Vector3(currentScale.x - .5f, currentScale.y, currentScale.z);
+                _attackTransform[i].GetComponent<NailSlash>().scale = new Vector3(currentScale.x - .4f, currentScale.y, currentScale.z);
             else
-                _attackTransform[i].GetComponent<NailSlash>().scale = new Vector3(currentScale.x, currentScale.y - .5f, currentScale.z);
+                _attackTransform[i].GetComponent<NailSlash>().scale = new Vector3(currentScale.x, currentScale.y - .4f, currentScale.z);
         }
     }
 

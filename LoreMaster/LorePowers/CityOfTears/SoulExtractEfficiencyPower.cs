@@ -20,8 +20,6 @@ public class SoulExtractEfficiencyPower : Power
     /// <summary>
     /// Handles the soul gain on hit for enemies.
     /// </summary>
-    /// <param name="soulToGain"></param>
-    /// <returns></returns>
     private int OnSoulGain(int soulToGain) => soulToGain + 5;
 
     #endregion

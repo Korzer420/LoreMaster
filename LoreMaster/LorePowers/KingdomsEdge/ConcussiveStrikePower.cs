@@ -13,7 +13,7 @@ public class ConcussiveStrikePower : Power
 
     private GameObject[] _nailArts = new GameObject[3];
 
-    private MethodInfo _invulnableCall;
+    private MethodInfo _invulnerableCall;
 
     #endregion
 
@@ -25,7 +25,7 @@ public class ConcussiveStrikePower : Power
             "My arms crush everything harmful that comes close to them. That's why I'm glad a fellow traveler found their way to me. Let me teach you the secret of my strikes as a sign of friendship.";
         Hint = "Your huge nail swings cause Concussion on their target, which will cause the target to suffer more from your nail and extend the concussion.";
         Description = "Great Slash and Dash Slash cause Concussion on their target for 3 seconds. Concussed enemies take 10% more damage from nail attacks and increase their knockback by 50% (66% of Heavy Blow)." +
-            " Nail hits on the target extend the duration by 0.5 seconds each. Cyclone Slash is not counted as a nail slash in this case. Also cause enemies to glance 10% of their hits, decreasing their damage by 1.";
+            " Nail hits on the target extend the duration by 0.5 seconds each. Cyclone Slash is not counted as a nail slash in this case. Also cause enemies to glance 50% of their hits, decreasing their damage by 1.";
     }
 
     #endregion
@@ -64,14 +64,14 @@ public class ConcussiveStrikePower : Power
 
     private void TakeDamage(On.HeroController.orig_TakeDamage orig, HeroController self, GameObject go, GlobalEnums.CollisionSide damageSide, int damageAmount, int hazardType)
     {
-        if (damageAmount > 0 && go.GetComponentInChildren<ConcussionEffect>(true) != null && LoreMaster.Instance.Generator.Next(1, 11) == 1)
+        if (damageAmount > 0 && go.GetComponentInChildren<ConcussionEffect>(true) != null && LoreMaster.Instance.Generator.Next(1, 3) == 1)
         {
             damageAmount--;
             if (damageAmount <= 0)
             {
                 // If the enemy deals no damage it will not trigger the i frames and cause the knight to take the damage next frame, which would make this rather pointless.
                 // Therefore we doing some witchcraft to trigger the i frames manually if no damage is applied because of this.
-                _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine((IEnumerator)_invulnableCall.Invoke(HeroController.instance, new object[] { 1.5f }));
+                _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine((IEnumerator)_invulnerableCall.Invoke(HeroController.instance, new object[] { 1.5f }));
             }
         }
 
@@ -89,7 +89,7 @@ public class ConcussiveStrikePower : Power
         _nailArts[0] = attacks.transform.Find("Great Slash").gameObject;
         _nailArts[1] = attacks.transform.Find("Dash Slash").gameObject;
         _nailArts[2] = attacks.transform.Find("Cyclone Slash").gameObject;
-        _invulnableCall = HeroController.instance.GetType().GetMethod("Invulnerable", BindingFlags.NonPublic | BindingFlags.Instance);
+        _invulnerableCall = HeroController.instance.GetType().GetMethod("Invulnerable", BindingFlags.NonPublic | BindingFlags.Instance);
     }
 
     /// <inheritdoc/>
