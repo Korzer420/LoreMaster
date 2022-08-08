@@ -352,9 +352,6 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
     /// <summary>
     /// Event handler, for the PoP power.
     /// </summary>
-    /// <param name="name"></param>
-    /// <param name="orig"></param>
-    /// <returns></returns>
     private bool TrackPathOfPain(string name, bool orig)
     {
         if (name.Equals("killedBindingSeal") && orig)

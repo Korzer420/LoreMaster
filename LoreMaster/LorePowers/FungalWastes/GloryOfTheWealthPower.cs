@@ -77,7 +77,7 @@ public class GloryOfTheWealthPower : Power
     /// <summary>
     /// Gets the cost of the glory effect.
     /// </summary>
-    public static int GloryCost { get; set; }
+    public static int GloryCost { get; set; } = 0;
 
     #endregion
 
@@ -187,6 +187,7 @@ public class GloryOfTheWealthPower : Power
             }
             _active = false;
             _payObject.SetActive(false);
+            yield return null;
         }
     }
 
