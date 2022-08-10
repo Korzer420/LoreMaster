@@ -50,6 +50,7 @@
     <Compile Include="Helper\RandomizerHelper.cs" />
     <Compile Include="LorePowers\Peaks\DiamondCorePower.cs" />
     <Compile Include="LorePowers\QueensGarden\FollowTheLightPower.cs" />
+    <Compile Include="LorePowers\QueensGarden\GrassBombardementPower.cs" />
     <Compile Include="UnityComponents\ConcussionEffect.cs" />
     <Compile Include="UnityComponents\CoroutineHandler.cs" />
     <Compile Include="CustomItem\TicketCost.cs" />
