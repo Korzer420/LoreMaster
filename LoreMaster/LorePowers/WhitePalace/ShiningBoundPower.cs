@@ -6,12 +6,6 @@ namespace LoreMaster.LorePowers.WhitePalace;
 
 public class ShiningBoundPower : Power
 {
-    #region Members
-
-    private GameObject _charmHolder;
-
-    #endregion
-
     #region Constructors
 
     public ShiningBoundPower() : base("Shining Bound", Area.WhitePalace)

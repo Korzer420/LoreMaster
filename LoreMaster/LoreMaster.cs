@@ -26,6 +26,7 @@ using LoreMaster.LorePowers.QueensGarden;
 using LoreMaster.LorePowers.RestingGrounds;
 using LoreMaster.LorePowers.Waterways;
 using LoreMaster.LorePowers.WhitePalace;
+using LoreMaster.Randomizer;
 using LoreMaster.SaveManagement;
 using LoreMaster.UnityComponents;
 using Modding;
@@ -84,7 +85,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         {"MANTIS_PLAQUE_01", new MantisStylePower() },
         {"MANTIS_PLAQUE_02", new EternalValorPower() },
         {"PILGRIM_TAB_02", new GloryOfTheWealthPower() },
-        {"WILLOW", new BagOfMushroomsPower() },
+        {"WILLOH", new BagOfMushroomsPower() },
         // Greenpath
         {"GREEN_TABLET_01", new TouchGrassPower() },
         {"GREEN_TABLET_02", new GiftOfUnnPower() },
@@ -209,6 +210,21 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
     /// </summary>
     public Area CurrentArea => _currentArea;
 
+    /// <summary>
+    /// Gets or sets the value, that indicates if the player can read lore tablets. (Rando only)
+    /// </summary>
+    public bool CanRead { get; set; } = true;
+
+    /// <summary>
+    /// Gets or sets the value, that indicates if the player can listen to npc.
+    /// </summary>
+    public bool CanListen { get; set; } = true;
+
+    /// <summary>
+    /// Gets or sets the value which indicates what has to be done, to open the black egg temple.
+    /// </summary>
+    public RandomizerEndCondition EndCondition { get; set; }
+
     #endregion
 
     #region Event Handler
@@ -307,6 +323,21 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
                 _powerList[key].Tag = _powerList[key].DefaultTag;
             // Unsure if this is needed, but just in case.
             ActivePowers.Clear();
+            ModHooks.LanguageGetHook += GetText;
+            On.PlayMakerFSM.OnEnable += FsmEdits;
+            On.DeactivateIfPlayerdataTrue.OnEnable += ForceMyla;
+            On.DeactivateIfPlayerdataFalse.OnEnable += PreventMylaZombie;
+            if (ModHooks.GetMod("Randomizer 4") is not Mod mod)
+            {
+                CanRead = true;
+                CanListen = true;
+            }
+            else
+            {
+                
+                Log("Detected Randomizer. Adding compability.");
+                AbstractItem.BeforeGiveGlobal += GiveLoreItem;
+            }
         }
         catch (Exception exception)
         {
@@ -322,6 +353,29 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
     private void ContinueGame(On.UIManager.orig_ContinueGame orig, UIManager self)
     {
         _fromMenu = true;
+        if (PlayerData.instance.GetBool("killedBindingSeal") && !_powerList.ContainsKey("EndOfPathOfPain"))
+        {
+            Power power = _powerList["EndOfPathOfPain"];
+            power.EnablePower();
+            ActivePowers.Add("EndOfPathOfPain", power);
+        }
+        else
+            ModHooks.SetPlayerBoolHook += TrackPathOfPain;
+
+        ModHooks.LanguageGetHook += GetText;
+        On.PlayMakerFSM.OnEnable += FsmEdits;
+        On.DeactivateIfPlayerdataTrue.OnEnable += ForceMyla;
+        On.DeactivateIfPlayerdataFalse.OnEnable += PreventMylaZombie;
+        if (ModHooks.GetMod("Randomizer 4") is not Mod)
+        {
+            CanRead = true;
+            CanListen = true;
+        }
+        else
+        {
+            Log("Detected Randomizer. Adding compability.");
+            AbstractItem.BeforeGiveGlobal += GiveLoreItem;
+        }
         orig(self);
     }
 
@@ -383,25 +437,12 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
             {
                 if (_fromMenu)
                 {
-                    if (PlayerData.instance.GetBool("killedBindingSeal") && !_powerList.ContainsKey("EndOfPathOfPain"))
-                    {
-                        Power power = _powerList["EndOfPathOfPain"];
-                        power.EnablePower();
-                        ActivePowers.Add("EndOfPathOfPain", power);
-                    }
-                    else
-                        ModHooks.SetPlayerBoolHook += TrackPathOfPain;
-
                     if (arg1.name.ToLower().Equals("town"))
                     {
                         Transform elderbug = GameObject.Find("_NPCs/Elderbug").transform;
                         elderbug.localScale = new(2f, 2f, 2f);
                         elderbug.localPosition = new(126.36f, 12.35f, 0f);
                     }
-                    ModHooks.LanguageGetHook += GetText;
-                    On.PlayMakerFSM.OnEnable += FsmEdits;
-                    On.DeactivateIfPlayerdataTrue.OnEnable += ForceMyla;
-                    On.DeactivateIfPlayerdataFalse.OnEnable += PreventMylaZombie;
 
                     // Allow the player to read the resting grounds tablet.
                     if (ItemChangerMod.Modules.Modules.FirstOrDefault(x => x.Name.Equals("DreamNailCutsceneEvent")) is not DreamNailCutsceneEvent cutscene)
@@ -411,15 +452,14 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
 
                     // Load in changes from the options file (if it exists)
                     LoadOptions();
-
-                    if (ModHooks.GetMod("Randomizer 4", true) is Mod mod)
-                    {
-                        Log("Detected Randomizer. Adding compability.");
-                        AbstractItem.BeforeGiveGlobal += GiveLoreItem;
-                    }
                 }
-
                 Handler.StartCoroutine(ManageSceneActions());
+            }
+            // Reset curses (in case a rando is done and then a normal game)
+            else if(arg1.name.Equals("Menu_Title"))
+            {
+                CanRead = true;
+                CanListen = true;
             }
         }
         catch (Exception error)
@@ -485,7 +525,10 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         {
             self.transform.localScale = new(2f, 2f, 2f);
             self.transform.localPosition = new(126.36f, 12.35f, 0f);
+            if (!CanListen)
+                self.GetState("Idle").ClearTransitions();
         }
+        // Prevent killing ghosts with abilities.
         else if (self.FsmName.Equals("ghost_npc_death"))
         {
             string ghostName = "";
@@ -496,7 +539,8 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
                 {
                     self.GetState("Revek?").ReplaceAction(new Lambda(() =>
                     {
-                        if (!ActivePowers.ContainsKey(ghostName))
+                        // If rando is used, to prevent locking out of progress, ghost with abilities will became immune entirely.
+                        if (!ActivePowers.ContainsKey(ghostName) || ModHooks.GetMod("Randomizer 4", true) is Mod)
                             self.SendEvent("IMMUNE");
                         else
                             self.SendEvent(self.FsmVariables.FindFsmBool("z_Revek").Value ? "REVEK" : "FINISHED");
@@ -510,6 +554,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
                 LogError("Error while modifying ghost: " + ghostName + ": " + exception.Message);
             }
         }
+        // Disable all powers in the end sequence.
         else if (self.FsmName.Equals("Phase Control") && self.gameObject.name.Equals("Hollow Knight Boss"))
             self.GetState("Die").ReplaceAction(new Lambda(() =>
             {
@@ -518,6 +563,31 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
                 PlayerData.instance.SetBool(nameof(PlayerData.instance.killedHollowKnight), true);
             })
             { Name = "Deactivate Lore Powers" }, 2);
+        // Prevent the player from reading lore tablets without the item (rando only)
+        else if (self.FsmName.Equals("Inspection") && !CanRead && _powerList.ContainsKey(self.FsmVariables.FindFsmString("Convo Name")?.Value))
+            self.GetState("Init").ClearTransitions();
+        // Prevent the player from reading lore tablets without the item (rando only)
+        else if (self.FsmName.Equals("inspect_region") && !CanRead && _powerList.ContainsKey(self.FsmVariables.FindFsmString("Game Text Convo")?.Value))
+            self.GetState("Init").ClearTransitions();
+        else if (self.FsmName.Equals("npc_control") && ((!CanListen && (!self.gameObject.name.Equals("Dreamer Plaque Inspect") && !self.gameObject.name.Equals("Fountain Inspect")))
+            || (!CanRead && (self.gameObject.name.Equals("Dreamer Plaque Inspect") || self.gameObject.name.Equals("Fountain Inspect")))))
+        {
+            // There are a few exceptions with npc which we want to ignore.
+            if (self.gameObject.LocateMyFSM("Conversation Control") != null && !(self.gameObject.name.Equals("Moth NPC")
+                || self.gameObject.name.Equals("Nailsmith") || self.gameObject.name.Equals("Corpse Inspect")
+                || self.gameObject.name.Equals("Dream Nail Get") || self.gameObject.name.Equals("Centipede Inspect")
+                || self.gameObject.name.Equals("Goam Inspect") || self.gameObject.name.Equals("Zap Bug Inspect")
+                || self.gameObject.name.Equals("End Scene")
+                || (self.transform.parent != null && self.transform.parent.name.Equals("Dreamer Monomon"))))
+                self.GetState("Idle").ClearTransitions();
+
+        }
+        else if (self.FsmName.Equals("Stag Control") && !CanListen)
+            self.GetState("Idle").ClearTransitions();
+        else if (self.FsmName.Equals("Shop Region") && !CanListen)
+            self.GetState("Out Of Range").ClearTransitions();
+        else if (self.FsmName.Equals("Control") && self.gameObject.name.Equals("Final Boss Door") && ModHooks.GetMod("Randomizer 4", true) is Mod mod)
+            RandomizerManager.ModifyTempleDoor(self);
         orig(self);
     }
 
@@ -574,6 +644,8 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
             if (itemData.Item.UIDef is MsgUIDef msg)
                 msg.name = new BoxedString(_powerList[tabletName].PowerName);
         }
+        else if (itemData.Item.name.Equals("Journal_Entry-Seal_of_Binding") && itemData.Item.UIDef is MsgUIDef msg)
+            msg.name = new BoxedString("Sacred Shell (PoP)");
     }
 
     #endregion
@@ -585,6 +657,11 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
     /// </summary>
     /// <returns></returns>
     public override string GetVersion() => Assembly.GetExecutingAssembly().GetName().Version.ToString();
+
+    /// <summary>
+    /// Gets the load priority of the mod. This is -1 to ensure the randomizer is initialized by the time this mod is called.
+    /// </summary>
+    public override int LoadPriority() => -1;
 
     /// <summary>
     /// Gets the names (objects) that need to be preloaded.
@@ -640,6 +717,18 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         GameObject loreManager = new("LoreManager");
         GameObject.DontDestroyOnLoad(loreManager);
         Handler = loreManager.AddComponent<CoroutineHandler>();
+        try
+        {
+            if (ModHooks.GetMod("Randomizer 4") is Mod mod)
+                RandomizerManager.AttachRandomizer();
+            else
+                Log("Couldn't find rando");
+        }
+        catch (Exception exception)
+        {
+            LogError("Error while setting up rando: " + exception.Message);
+        }
+
     }
 
     /// <summary>
@@ -808,7 +897,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
     /// <returns></returns>
     private bool CheckForPower(string key, ref string text)
     {
-        if (_powerList.ContainsKey(key))
+        if (_powerList.ContainsKey(key.ToUpper()))
         {
             try
             {
@@ -871,8 +960,8 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
             key = "QUEEN";
         else if (IsMaskMaker(key))
             key = "MASKMAKER";
-        else if (IsWillow(key))
-            key = "WILLOW";
+        else if (IsWilloh(key))
+            key = "WILLOH";
         else if (IsMyla(key))
             key = "MYLA";
         else if (IsQuirrel(key))
@@ -1038,7 +1127,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
             || key.Equals("QUEEN_GRIMMCHILD") || key.Equals(" QUEEN_GRIMMCHILD_FULL");
     }
 
-    private bool IsWillow(string key)
+    private bool IsWilloh(string key)
     {
         return key.Equals("GIRAFFE_MEET") || key.Equals("GIRAFFE_LOWER") || key.Equals("GIRAFFE_LOWER_REPEAT");
     }
@@ -1102,6 +1191,8 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
                 ActivePowers.Add(key, _powerList[key]);
 
             GloryOfTheWealthPower.GloryCost = saveData.GloryCost;
+            CanRead = ModHooks.GetMod("Randomizer 4") is not Mod mod || saveData.HasReadAbility;
+            CanListen = ModHooks.GetMod("Randomizer 4") is not Mod mod2 || saveData.HasListenAbility;
         }
         catch (Exception exception)
         {
@@ -1123,7 +1214,8 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
             saveData.AcquiredPowersKey.Add(key);
 
         saveData.GloryCost = GloryOfTheWealthPower.GloryCost;
-
+        saveData.HasReadAbility = CanRead;
+        saveData.HasListenAbility = CanListen;
         return saveData;
     }
 

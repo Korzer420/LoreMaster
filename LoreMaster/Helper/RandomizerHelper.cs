@@ -4,7 +4,7 @@ namespace LoreMaster.Helper;
 
 internal static class RandomizerHelper
 {
-    private static readonly Dictionary<string, string> _tabletNames = new()
+    public static Dictionary<string, string> TabletNames { get; } = new()
     {
          {"City_Entrance","RUINS_TAB_01"},
          {"Pleasure_House","RUINS_MARISSA_POSTER"},
@@ -39,6 +39,22 @@ internal static class RandomizerHelper
          {"Palace_Workshop","WP_WORKSHOP_01"},
          {"Palace_Throne","WP_THRONE_01"},
          {"Path_of_Pain_Entrance","PLAQUE_WARN"},
+         {"Elderbug", "ELDERBUG" },
+         {"Gravedigger", "GRAVEDIGGER" },
+         {"Poggy", "POGGY" },
+         {"Emilitia", "EMILITIA" },
+         {"Quirrel", "QUIRREL" },
+         {"Joni", "JONI" },
+         {"Vespa", "HIVEQUEEN" },
+         {"Bardoon", "BARDOON" },
+         {"Moss_Prophet", "MOSSPROPHET" },
+         {"Queen", "QUEEN" },
+         {"Myla", "MYLA" },
+         {"Fluke_Hermit", "FLUKE_HERMIT" },
+         {"Bretta", "BRETTA" },
+         {"Midwife", "MIDWIFE" },
+         {"Mask_Maker", "MASKMAKER" },
+         {"Willoh", "WILLOH" }
     };
 
     /// <summary>
@@ -48,11 +64,11 @@ internal static class RandomizerHelper
     /// <returns></returns>
     internal static string TranslateRandoName(string tabletName)
     {
-        if (_tabletNames.ContainsKey(tabletName))
-            return _tabletNames[tabletName];
+        if (TabletNames.ContainsKey(tabletName))
+            return TabletNames[tabletName];
         else
         {
-            LoreMaster.Instance.LogError("Unrecognizable lore tablet name: "+tabletName+". Please report this to the mod maker.");
+            LoreMaster.Instance.LogError("Unrecognizable lore tablet name: " + tabletName + ". Please report this to the mod maker.");
             return null;
         }
     }

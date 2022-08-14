@@ -2,23 +2,31 @@ using UnityEngine;
 using System.Reflection;
 using ItemChanger.Internal;
 using ItemChanger;
+using LoreMaster.Helper;
+using System;
 
 namespace LoreMaster.CustomItem;
 
+[Serializable]
 internal class EmbeddedSprite : ISprite
 {
-    private const string _key = "Lore";
+    private string _key = "Lore";
 
-    private static SpriteManager _manager;
+    private static SpriteManager _manager = new(Assembly.GetExecutingAssembly(), "LoreMaster.Resources.");
 
-    static EmbeddedSprite()
+    public EmbeddedSprite()
     {
-        _manager = new(Assembly.GetExecutingAssembly(), "LoreMaster.Resources.");
-    }
-    
-    public Sprite Value 
-        => _manager.GetSprite(_key);
 
-    public ISprite Clone() 
-        => new EmbeddedSprite();
+    }
+
+    public EmbeddedSprite(string key)
+    {
+        if (!string.IsNullOrEmpty(key))
+            _key = key;
+    }
+
+    [Newtonsoft.Json.JsonIgnore]
+    public Sprite Value => SpriteHelper.CreateSprite(_key);
+
+    public ISprite Clone() => new EmbeddedSprite(_key);
 }
