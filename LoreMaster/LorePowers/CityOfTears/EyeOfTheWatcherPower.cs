@@ -101,6 +101,7 @@ public class EyeOfTheWatcherPower : Power
         _eye.AddComponent<SpriteRenderer>().sprite = _eyeSprite;
         _eye.transform.localPosition = new(0, 2f);
         _eye.transform.localScale = new(.5f, .5f);
+        GameObject.DontDestroyOnLoad(_eye);
     }
 
     /// <inheritdoc/>
@@ -110,7 +111,8 @@ public class EyeOfTheWatcherPower : Power
         On.PlayMakerFSM.OnEnable += RefreshEyeOfTheWatcher;
         On.HeroController.Die += HeroController_Die;
         _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(Blink());
-        _eye?.SetActive(true);
+        if (_eye != null && !_eye.activeSelf)
+            _eye?.SetActive(true);
     }
 
     /// <inheritdoc/>

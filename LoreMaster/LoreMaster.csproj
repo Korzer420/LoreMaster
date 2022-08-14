@@ -50,6 +50,16 @@
     <Compile Include="Helper\RandomizerHelper.cs" />
     <Compile Include="LorePowers\Peaks\DiamondCorePower.cs" />
     <Compile Include="LorePowers\QueensGarden\FollowTheLightPower.cs" />
+    <Compile Include="Randomizer\Items\AbilityItem.cs" />
+    <Compile Include="Randomizer\Items\AbilityLocation.cs" />
+    <Compile Include="Randomizer\Items\NpcItem.cs" />
+    <Compile Include="Randomizer\Items\NpcLocation.cs" />
+    <Compile Include="Randomizer\LogicManager.cs" />
+    <Compile Include="Randomizer\RandomizerEndCondition.cs" />
+    <Compile Include="Randomizer\RandomizerManager.cs" />
+    <Compile Include="Randomizer\RandomizerMenu.cs" />
+    <Compile Include="Randomizer\RandomizerRequestModifier.cs" />
+    <Compile Include="Randomizer\RandomizerSettings.cs" />
     <Compile Include="LorePowers\QueensGarden\GrassBombardementPower.cs" />
     <Compile Include="UnityComponents\ConcussionEffect.cs" />
     <Compile Include="UnityComponents\CoroutineHandler.cs" />
@@ -127,6 +137,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Mod Dll\ItemChanger.dll</HintPath>
     </Reference>
+    <Reference Include="MenuChanger">
+      <HintPath>..\..\Mod Dll\MenuChanger.dll</HintPath>
+    </Reference>
     <Reference Include="MMHOOK_Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\Program Files\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\MMHOOK_Assembly-CSharp.dll</HintPath>
@@ -154,6 +167,12 @@
     <Reference Include="PlayMaker, Version=1.6.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\Program Files\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\PlayMaker.dll</HintPath>
+    </Reference>
+    <Reference Include="RandomizerCore">
+      <HintPath>..\..\Mod Dll\RandomizerCore.dll</HintPath>
+    </Reference>
+    <Reference Include="RandomizerMod">
+      <HintPath>..\..\Mod Dll\RandomizerMod.dll</HintPath>
     </Reference>
     <Reference Include="SFCore, Version=1.5.3.2, Culture=neutral, PublicKeyToken=723094b6adc0e8b9, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -223,6 +242,66 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\EyeOfLurien.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Randomizer\Bardoon.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Randomizer\Bretta.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Randomizer\Elderbug.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Randomizer\Emilitia.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Randomizer\Fluke_Hermit.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Randomizer\Gravedigger.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Randomizer\Joni.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Randomizer\Mask_Maker.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Randomizer\Midwife.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Randomizer\Moss_Prophet.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Randomizer\Myla.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Randomizer\Poggy.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Randomizer\Queen.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Randomizer\Quirrel.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Randomizer\Vespa.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Randomizer\Willoh.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\ReadLogicModifier.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\ListenLogicModifier.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>

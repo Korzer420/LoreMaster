@@ -22,4 +22,14 @@ public class LoreMasterLocalSaveData
     /// Gets or sets the current cost of glory of the wealth.
     /// </summary>
     public int GloryCost { get; set; }
+
+    /// <summary>
+    /// Gets or sets the value which indicates, if the player can read lore tablets. (Rando only)
+    /// </summary>
+    public bool HasReadAbility { get; set; }
+
+    /// <summary>
+    /// Gets or sets the value which indicates, if the player can read lore tablets. (Rando only)
+    /// </summary>
+    public bool HasListenAbility { get; set; }
 }
