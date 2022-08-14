@@ -60,6 +60,7 @@
     <Compile Include="Randomizer\RandomizerMenu.cs" />
     <Compile Include="Randomizer\RandomizerRequestModifier.cs" />
     <Compile Include="Randomizer\RandomizerSettings.cs" />
+    <Compile Include="LorePowers\QueensGarden\GrassBombardementPower.cs" />
     <Compile Include="UnityComponents\ConcussionEffect.cs" />
     <Compile Include="UnityComponents\CoroutineHandler.cs" />
     <Compile Include="CustomItem\TicketCost.cs" />
