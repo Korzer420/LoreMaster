@@ -580,7 +580,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         {
             // There are a few exceptions with npc which we want to ignore.
             if (self.gameObject.LocateMyFSM("Conversation Control") != null && !(self.gameObject.name.Equals("Moth NPC")
-                || self.gameObject.name.Equals("Nailsmith") || self.gameObject.name.Equals("Corpse Inspect")
+                || self.gameObject.name.Equals("Nailsmith") || self.gameObject.name.Contains("Mr Mushroom") || self.gameObject.name.Equals("Corpse Inspect")
                 || self.gameObject.name.Equals("Dream Nail Get") || self.gameObject.name.Equals("Centipede Inspect")
                 || self.gameObject.name.Equals("Goam Inspect") || self.gameObject.name.Equals("Zap Bug Inspect")
                 || self.gameObject.name.Equals("AbyssTendril Inspect") || self.gameObject.name.Equals("End Scene")
