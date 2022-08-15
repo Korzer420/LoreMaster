@@ -74,6 +74,15 @@ public class EyeOfTheWatcherPower : Power
     {
         if (self.gameObject.name.Equals("Telescope Inspect") && self.FsmName.Equals("Conversation Control"))
             self.GetState("Stop").ReplaceAction(new Lambda(() => _eye.SetActive(true)) { Name = "Restore Eye" });
+        else if (self.gameObject.name.Contains("Toll Gate Machine") && self.FsmName.Equals("Disable if No Lantern"))
+            self.GetState("Check").ReplaceAction(new Lambda(() => 
+            {
+                if (Active && _eye != null && _eye.activeSelf)
+                    self.SendEvent("FINISHED");
+                else if(!PlayerData.instance.GetBool(nameof(PlayerData.instance.hasLantern)))
+                    self.SendEvent("DISABLE");
+            })
+            { Name = "Enable Toll"},0);
         orig(self);
     }
 
