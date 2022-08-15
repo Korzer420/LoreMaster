@@ -36,6 +36,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Enums\Area.cs" />
+    <Compile Include="Enums\CustomItemType.cs" />
     <Compile Include="Enums\ElderbugReward.cs" />
     <Compile Include="Extensions\ExtensionMethods.cs" />
     <Compile Include="Helper\PowerHelper.cs" />

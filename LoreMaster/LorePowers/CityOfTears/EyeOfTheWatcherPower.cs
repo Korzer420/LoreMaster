@@ -3,6 +3,7 @@ using ItemChanger.FsmStateActions;
 using LoreMaster.Enums;
 using LoreMaster.Extensions;
 using LoreMaster.Helper;
+using MonoMod.Cil;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -38,14 +39,7 @@ public class EyeOfTheWatcherPower : Power
     /// <inheritdoc/>
     public override Action SceneAction => () =>
     {
-        if (_darknessLevel > 0)
-        {
-            HeroController.instance.wieldingLantern = true;
-            if (_eye.activeSelf)
-                _eye.GetComponent<SpriteRenderer>().color = new(1f, 1f, 0f);
-        }
-        else if (_eye.activeSelf)
-            _eye.GetComponent<SpriteRenderer>().color = Color.white;
+        _eye.GetComponent<SpriteRenderer>().color = Color.white;
     };
 
     /// <summary>
@@ -56,12 +50,6 @@ public class EyeOfTheWatcherPower : Power
     #endregion
 
     #region Event Handler
-
-    private void HeroController_SetDarkness(On.HeroController.orig_SetDarkness orig, HeroController self, int darkness)
-    {
-        orig(self, darkness);
-        _darknessLevel = darkness;
-    }
 
     private IEnumerator HeroController_Die(On.HeroController.orig_Die orig, HeroController self)
     {
@@ -96,6 +84,42 @@ public class EyeOfTheWatcherPower : Power
     /// <inheritdoc/>
     protected override void Initialize()
     {
+        // Modify all darkness checks
+        PlayMakerFSM fsm = HeroController.instance.transform.Find("Vignette").gameObject.LocateMyFSM("Darkness Control");
+        fsm.GetState("Scene Reset").ReplaceAction(new Lambda(() =>
+        {
+            if ((Active && _eye != null && _eye.activeSelf) || PlayerData.instance.GetBool(nameof(PlayerData.instance.hasLantern)))
+            {
+                _eye.GetComponent<SpriteRenderer>().color = new(1f, 1f, 0f);
+                fsm.SendEvent("LANTERN");
+            }
+        })
+        { Name = "Force Lantern" }, 1);
+
+        fsm.GetState("Scene Reset 2").AddTransition("LANTERN", "Lantern 2");
+        fsm.GetState("Scene Reset 2").ReplaceAction(new Lambda(() =>
+        {
+            if (Active && _eye != null && _eye.activeSelf)
+            {
+                _eye.GetComponent<SpriteRenderer>().color = new(1f, 1f, 0f);
+                fsm.SendEvent("LANTERN");
+            }
+            else if (fsm.FsmVariables.FindFsmInt("Darkness Level").Value == 0)
+                fsm.SendEvent("NORMAL");
+            else if (fsm.FsmVariables.FindFsmInt("Darkness Level").Value == 0)
+                fsm.SendEvent("DARK -1");
+        })
+        { Name = "Force Lantern" }, 1);
+
+        fsm.GetState("Dark Lev Check").ReplaceAction(new Lambda(() =>
+        {
+            if ((Active && _eye != null && _eye.activeSelf) || PlayerData.instance.GetBool(nameof(PlayerData.instance.hasLantern)))
+            {
+                _eye.GetComponent<SpriteRenderer>().color = new(1f, 1f, 0f);
+                fsm.SendEvent("LANTERN");
+            }
+        })
+        { Name = "Force Lantern" }, 3);
         _eye = new("Eye of Lurien");
         _eye.transform.SetParent(HeroController.instance.transform);
         _eye.AddComponent<SpriteRenderer>().sprite = _eyeSprite;
@@ -107,7 +131,6 @@ public class EyeOfTheWatcherPower : Power
     /// <inheritdoc/>
     protected override void Enable()
     {
-        On.HeroController.SetDarkness += HeroController_SetDarkness;
         On.PlayMakerFSM.OnEnable += RefreshEyeOfTheWatcher;
         On.HeroController.Die += HeroController_Die;
         _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(Blink());
@@ -118,7 +141,6 @@ public class EyeOfTheWatcherPower : Power
     /// <inheritdoc/>
     protected override void Disable()
     {
-        On.HeroController.SetDarkness -= HeroController_SetDarkness;
         On.PlayMakerFSM.OnEnable -= RefreshEyeOfTheWatcher;
         On.HeroController.Die -= HeroController_Die;
         _eye?.SetActive(false);

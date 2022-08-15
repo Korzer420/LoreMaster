@@ -23,7 +23,7 @@ public class OverwhelmingPower : Power
     public OverwhelmingPower() : base("Overwhelming Power", Area.CityOfTears)
     {
         Hint = "Casting spells with full capacity will grant your spell much more power";
-        Description = "When you cast a spell while your soul vessel is full (not counting additional soul vessels), they deal twice as much damage and are twice as big.";
+        Description = "When you cast a spell while your soul vessel is full (not counting additional soul vessels), they deal twice as much damage and are twice as big. (Fireball damage is only increased by 40%)";
     }
 
     #endregion

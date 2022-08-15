@@ -22,15 +22,15 @@ public class RandomizerSettings
     /// <summary>
     /// Gets or sets the value which indicates, if the ability to talk to npc's, should be randomized.
     /// </summary>
-    public bool CursedTalking { get; set; }
+    public bool CursedListening { get; set; }
 
     /// <summary>
     /// Gets or sets the value which indicates, what condition the black egg temple has.
     /// </summary>
-    public RandomizerEndCondition TempleCondition { get; set; }
+    public RandomizerEndCondition BlackEggTempleCondition { get; set; }
 
     /// <summary>
-    /// Gets or set the amount of lore needed if <see cref="TempleCondition"/> is not <see cref="RandomizerEndCondition.Dreamers"/> for opening black egg temple.
+    /// Gets or set the amount of lore needed if <see cref="BlackEggTempleCondition"/> is not <see cref="RandomizerEndCondition.Dreamers"/> for opening black egg temple.
     /// </summary>
     public int NeededLore { get; set; } = 10;
 

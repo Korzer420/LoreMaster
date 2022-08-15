@@ -49,6 +49,20 @@ public class GreaterMindPower : Power
 
     #endregion
 
+    /// <summary>
+    /// Desperate attempt to make the tracker work, if it doesn't work before...
+    /// </summary>
+    public override Action SceneAction => () => 
+    {
+        try
+        {
+            if (_loreTracker == null)
+                Initialize();
+        }
+        catch (Exception)
+        { }
+    };
+
     #region Protected Methods
 
     /// <inheritdoc/>
@@ -64,8 +78,11 @@ public class GreaterMindPower : Power
     /// <inheritdoc/>
     protected override void Enable() 
     {
-        _loreTracker?.SetActive(true);
-        UpdateLoreCounter(LoreMaster.Instance.ActivePowers.Values, LoreMaster.Instance.AllPowers.Values, LoreMaster.Instance.CurrentArea, LoreMaster.Instance.IsAreaGlobal(LoreMaster.Instance.CurrentArea));
+        if(_loreTracker != null)
+        {
+            _loreTracker.SetActive(true);
+            UpdateLoreCounter(LoreMaster.Instance.ActivePowers.Values, LoreMaster.Instance.AllPowers.Values, LoreMaster.Instance.CurrentArea, LoreMaster.Instance.IsAreaGlobal(LoreMaster.Instance.CurrentArea));
+        }
     }
 
     /// <inheritdoc/>

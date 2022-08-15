@@ -112,7 +112,7 @@ public class DiamondCorePower : Power
             { Name = "Wall Crash" }, 8);
             _trailSprite = GameObject.Find("Knight").transform.Find("Effects/SD Trail").GetComponent<tk2dSprite>();
         }
-        catch (System.Exception exception)
+        catch (Exception exception)
         {
             LoreMaster.Instance.LogError("Error in initialize: " + exception.Message);
         }
@@ -177,7 +177,9 @@ public class DiamondCorePower : Power
         int defaultDamage = damage.Value;
         FsmFloat speed = HeroController.instance.superDash.FsmVariables.FindFsmFloat("Current SD Speed");
         float passedTime = 0f;
-        speed.Value = _carryingSpeed;
+        speed.Value = (_carryingSpeed < 0 && HeroController.instance.cState.facingRight) || (_carryingSpeed > 0 && !HeroController.instance.cState.facingRight)
+            ? -_carryingSpeed
+            : _carryingSpeed;
         _speed = speed.Value;
         damage.Value = _carryingDamage;
         while (HeroController.instance.cState.superDashing)

@@ -1,4 +1,7 @@
+using ItemChanger.Extensions;
+using ItemChanger.FsmStateActions;
 using LoreMaster.Enums;
+using LoreMaster.Extensions;
 using Modding;
 using System;
 using UnityEngine;
@@ -11,8 +14,8 @@ public class WeDontTalkAboutShadePower : Power
 
     public WeDontTalkAboutShadePower() : base("We don't talk about the Shade", Area.AncientBasin)
     {
-        Hint = "Shade? What should that be? Can you prove, that the \"Shade\" exist? Your soul vessel? What are you talking about?";
-        Description = "You don't get the soul limit punishment, when dying. Your geo will still be on the shade.";
+        Hint = "Shade? What should that be? Can you prove, that the \"Shade\" exist? Your soul vessel and geo? What are you talking about?";
+        Description = "You don't get the soul limit punishment, when dying. Your geo will still be on the shade. When dying while the shade is active, your shade only loose 50% of your geo.";
     }
 
     #endregion
@@ -41,6 +44,26 @@ public class WeDontTalkAboutShadePower : Power
     #endregion
 
     #region Protected Methods
+
+    /// <inheritdoc/>
+    protected override void Initialize()
+    {
+        HeroController.instance.transform.Find("Hero Death").gameObject.LocateMyFSM("Hero Death Anim").GetState("Remove Geo").ReplaceAction(new Lambda(() =>
+        {
+            if (Active)
+            { 
+                int shadeGeo = PlayerData.instance.GetInt(nameof(PlayerData.instance.geoPool));
+                PlayerData.instance.SetInt(nameof(PlayerData.instance.geoPool), PlayerData.instance.GetInt(nameof(PlayerData.instance.geo)) + (shadeGeo > 1 
+                    ? shadeGeo / 2
+                    : 0));
+            }
+            else
+                PlayerData.instance.SetInt(nameof(PlayerData.instance.geoPool), PlayerData.instance.GetInt(nameof(PlayerData.instance.geo)));
+        })
+        {
+            Name = "Diminish geo punishment"
+        }, 1);
+    }
 
     /// <inheritdoc/>
     protected override void Enable()

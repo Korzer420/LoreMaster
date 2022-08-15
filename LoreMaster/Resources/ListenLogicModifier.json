@@ -24,6 +24,22 @@
         "logic": "(ORIG) + LISTEN"
     },
     {
+        "Name": "Egg_Shop",
+        "Logic": "(ORIG) + LISTEN"
+    },
+    {
+        "Name": "Unbreakable_Greed",
+        "Logic": "(ORIG) + LISTEN"
+    },
+    {
+        "Name": "Unbreakable_Heart",
+        "Logic": "(ORIG) + LISTEN"
+    },
+    {
+        "Name": "Unbreakable_Strength",
+        "Logic": "(ORIG) + LISTEN"
+    },
+    {
         "name": "Dash_Slash",
         "logic": "(ORIG) + LISTEN"
     },
@@ -149,6 +165,18 @@
     },
     {
         "Name": "Deepnest_East_Hornet[left2]",
+        "Logic": "(ORIG) + LISTEN"
+    },
+    {
+        "Name": "Egg_Shop",
+        "Logic": "(ORIG) + LISTEN"
+    },
+    {
+        "Name": "Focus",
+        "Logic": "(ORIG) + LISTEN"
+    },
+    {
+        "Name": "World_Sense",
         "Logic": "(ORIG) + LISTEN"
     }
 ]

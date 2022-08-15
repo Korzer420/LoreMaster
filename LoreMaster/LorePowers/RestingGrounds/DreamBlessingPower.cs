@@ -24,8 +24,8 @@ public class DreamBlessingPower : Power
     {
         Hint = "The dream artifact uses the power it absorbs from their powerful victims to use it's hidden power.<br>Monomon: Through her knowledge she exposes the foes biggest weakness.<br>" +
             "Lurien: His gaze may freeze the enemy in place.<br>Herrah: Invoking her children from the victim.";
-        Description = "Defeated Dreamers grant the dream nail an additional effect (doubled with awoken dreamnail).<br/>Lurien: Roots the target for 3 seconds (15 seconds cooldown)<br/>Herrah: Spawn 2 weavers." +
-            "<br/>Monomon: Per 100 Essence you have a 1% chance to instant kill the enemy (capped at 175 damage). Capped at 2400 Essence for 24%.";
+        Description = "Defeated Dreamers grant the dream nail an additional effect (doubled with awoken dreamnail).<br>Lurien: Roots the target for 3 seconds (15 seconds cooldown)<br>Herrah: Spawn 2 weavers." +
+            "<br>Monomon: Per 100 Essence you have a 1% chance to instant kill the enemy (capped at 175 damage). Capped at 2400 Essence for 24%.";
     }
 
     #endregion
@@ -71,13 +71,13 @@ public class DreamBlessingPower : Power
     public string GetExtraText(string key)
     {
         if (key.Equals("DREAMERS_INSPECT_RG2"))
-            return LoreMaster.Instance.UseHints ? " Through her knowledge she exposes the foes biggest weakness." : " Per 100 Essence you have a 1% chance to instant kill the enemy (capped at 200 damage).";
+            return LoreMaster.Instance.UseHints ? " Through her knowledge she exposes the foes biggest weakness." : " Per 100 Essence you have a 1% chance to instant kill the enemy (capped at 175 damage).";
         else if (key.Equals("DREAMERS_INSPECT_RG3"))
             return LoreMaster.Instance.UseHints ? " His gaze may freeze the enemy in place." : " Roots the target for 3 seconds (15 seconds cooldown)";
         else if (key.Equals("DREAMERS_INSPECT_RG4"))
-            return LoreMaster.Instance.UseHints ? " Invoking her children from the victim." : " Spawn 2 weavers for 30 seconds.";
+            return LoreMaster.Instance.UseHints ? " Invoking her children from her victim." : " Spawn 2 weavers for the current room.";
         else if (key.Equals("DREAMERS_INSPECT_RG5"))
-            return " [" + PowerName + "] " + (LoreMaster.Instance.UseHints ? "The dream artifact uses the power it absorbs from their powerful victims to use it's hidden power." : "Defeated Dreamers grant the dream nail an additional effect.");
+            return " [" + PowerName + "] " + (LoreMaster.Instance.UseHints ? "The dream artifact uses the power it absorbs from their powerful victims to use it's hidden power." : "Defeated Dreamers grant the dream nail an additional effect (doubled with awoken dreamnail).");
         return string.Empty;
     }
 

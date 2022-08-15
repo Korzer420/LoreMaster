@@ -57,10 +57,13 @@ public static class RandomizerManager
 
     #region Methods
 
-    public static void AttachRandomizer()
+    /// <summary>
+    /// Attach the lore master to randomizer
+    /// </summary>
+    public static void AttachToRandomizer()
     {
         RandomizerMenu.AttachMenu();
-        RandomizerRequestModifier.Attach();
+        RandomizerRequestModifier.ModifyRequest();
         LogicManager.AttachLogic();
     }
 
@@ -84,6 +87,25 @@ public static class RandomizerManager
             Finder.DefineCustomItem(NpcItem.CreateItem("Fluke_Hermit", "FLUKE_HERMIT_IDLE_1", "The words spoken by the child of the A L L U R I N G mother.", "Randomizer/Fluke_Hermit", "CP3"));
             Finder.DefineCustomItem(NpcItem.CreateItem("Quirrel", "QUIRREL_MINES_1", "The wisdom of a real adventurer, which can swim fairly good. :)", "Randomizer/Quirrel"));
             Finder.DefineCustomItem(NpcItem.CreateItem("Queen", "QUEEN_MEET", "The queen sent this through the kingdom for the day, someone like you arrives. How do I know? Well... don't ask.", "Randomizer/Queen"));
+            
+            // The lore page will also be randomized, since elderbug cannot be talked to.
+            Finder.DefineCustomItem(new AbilityItem() 
+            { 
+                name = "Lore_Page", 
+                Item = Enums.CustomItemType.LoreControl,
+                UIDef = new BigUIDef()
+                {
+                    name = new BoxedString("Lore Page"),
+                    shopDesc = new BoxedString("This will be very helpful. Trust me on this one."),
+                    sprite = (Finder.GetItem("Hunter's_Journal").UIDef.Clone() as BigUIDef).sprite,
+                    descOne = new BoxedString("You can now sense which knowledge you acquired."),
+                    descTwo = new BoxedString("Additionally, you can toggle on/off unwanted powers while you rest."),
+                    take = new BoxedString("You got:"),
+                    bigSprite = (Finder.GetItem("Hunter's_Journal").UIDef.Clone() as BigUIDef).bigSprite
+                },
+                boolName = "Unused", // The bool logic gets executed seperately. This is just for avoiding Serialization errors.
+                moduleName = "Unused" // Same as boolName.
+            });
 
             Finder.DefineCustomLocation(NpcLocation.CreateLocation("Bretta", "Room_Bretta", "Diary"));
             Finder.DefineCustomLocation(NpcLocation.CreateLocation("Elderbug", "Town", "Elderbug"));
@@ -101,6 +123,14 @@ public static class RandomizerManager
             Finder.DefineCustomLocation(NpcLocation.CreateLocation("Fluke_Hermit", "Room_GG_Shortcut", "Fluke Hermit"));
             Finder.DefineCustomLocation(NpcLocation.CreateLocation("Quirrel", "Mines_13", "Quirrel Mines"));
             Finder.DefineCustomLocation(NpcLocation.CreateLocation("Queen", "Room_Queen", "Queen"));
+            Finder.DefineCustomLocation(new AbilityLocation() 
+            {
+                forceShiny = true,
+                sceneName = "Town",
+                name = "Town_Lore_Page",
+                x = 107.61f,
+                y = 11.41f
+            });
         }
 
         if (Settings.CursedReading && Finder.GetItem("Reading") == null)
@@ -109,7 +139,7 @@ public static class RandomizerManager
             Finder.DefineCustomItem(new AbilityItem()
             {
                 name = "Reading",
-                IsReading = true,
+                Item = Enums.CustomItemType.Reading,
                 UIDef = new BigUIDef()
                 {
                     name = new BoxedString("Reading"),
@@ -127,19 +157,19 @@ public static class RandomizerManager
             {
                 forceShiny = true,
                 sceneName = "Town",
-                name = "Read_Town",
-                x = 135.61f,
+                name = "Town_Read",
+                x = 115.61f,
                 y = 11.41f
             });
         }
 
-        if (Settings.CursedTalking && Finder.GetItem("Listening") == null)
+        if (Settings.CursedListening && Finder.GetItem("Listening") == null)
         {
             LoreMaster.Instance.CanListen = false;
             Finder.DefineCustomItem(new AbilityItem()
             {
                 name = "Listening",
-                IsReading = false,
+                Item = Enums.CustomItemType.Listening,
                 UIDef = new BigUIDef()
                 {
                     name = new BoxedString("Listening"),
@@ -158,7 +188,7 @@ public static class RandomizerManager
             {
                 forceShiny = true,
                 sceneName = "Town",
-                name = "Listen_Town",
+                name = "Town_Listen",
                 x = 111.62f,
                 y = 11.41f
             });
@@ -167,12 +197,12 @@ public static class RandomizerManager
 
     internal static void ModifyTempleDoor(PlayMakerFSM door)
     {
-        if (Settings.TempleCondition != RandomizerEndCondition.Dreamers)
+        if (Settings.BlackEggTempleCondition != RandomizerEndCondition.Dreamers)
             door.GetState("Init").ReplaceAction(new Lambda(() =>
             {
-                if ((Settings.TempleCondition == RandomizerEndCondition.Lore
+                if ((Settings.BlackEggTempleCondition == RandomizerEndCondition.Lore
                 && LoreMaster.Instance.ActivePowers.Count >= Settings.NeededLore)
-                || (Settings.TempleCondition == RandomizerEndCondition.DreamersAndLore && door.FsmVariables.FindFsmInt("Guardians Defeated").Value > 2
+                || (Settings.BlackEggTempleCondition == RandomizerEndCondition.DreamersAndLore && door.FsmVariables.FindFsmInt("Guardians Defeated").Value > 2
                 && LoreMaster.Instance.ActivePowers.Count >= Settings.NeededLore))
                     door.SendEvent("READY");
                 else

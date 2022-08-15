@@ -283,10 +283,9 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
             text = "This town may not hold the most interesting wisdom, but the kingdom below sure does. There a plenty of tablets and creatures which you can learn from. " +
                 "Maybe someday, I'll be able to call you \"Loremaster\". Oh what a thought, excuse me. Anyway, if you want to explore the world below, keeping track of " +
                 "every knowledge that you acquired might be hard. Let me help you with that. This is a relic which tracks every bit of information that you've collected so far. " +
-                "Sometimes, the knowledge can be more of a threat than a blessing. In those cases, touching the ability on the relic may disable them, until you touch it again. " +
+                "Sometimes, the knowledge can be more of a threat than a blessing. In those cases, touching the ability on the relic while resting may disable them, until you touch it again. " +
                 "Maybe you should not waste too much time though. I heard legends that this artifact might lock it's " +
-                "power behind a test or something once the one in the time event \"Patch 1.3\" happens... whatever that might be. I hope, you've listened to me, I'll not repeat myself " +
-                "again with this information. See this, as a test to see if you can step up to the challenge. Don't forget \"Knowledge is power\".";
+                "power behind a test or something once the one in the time event \"Patch 1.3\" happens... whatever that might be. Don't forget \"Knowledge is power\".";
         return text;
     }
 
@@ -333,11 +332,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
                 CanListen = true;
             }
             else
-            {
-                
-                Log("Detected Randomizer. Adding compability.");
                 AbstractItem.BeforeGiveGlobal += GiveLoreItem;
-            }
         }
         catch (Exception exception)
         {
@@ -372,10 +367,8 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
             CanListen = true;
         }
         else
-        {
-            Log("Detected Randomizer. Adding compability.");
             AbstractItem.BeforeGiveGlobal += GiveLoreItem;
-        }
+
         orig(self);
     }
 
@@ -433,8 +426,9 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
     {
         try
         {
-            if (GameManager.instance.IsGameplayScene() && !arg1.name.Equals("Quit_To_Menu"))
+            if (GameManager.instance != null && GameManager.instance.IsGameplayScene() && !arg1.name.Equals("Quit_To_Menu"))
             {
+                Log("Lore scene changed");
                 if (_fromMenu)
                 {
                     if (arg1.name.ToLower().Equals("town"))
@@ -450,15 +444,13 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
                     else
                         cutscene.Faster = false;
 
-                    if (ModHooks.GetMod("Randomizer 4") is Mod mod)
-                        PlayerData.instance.SetBool(nameof(PlayerData.instance.metElderbug), true);
                     // Load in changes from the options file (if it exists)
                     LoadOptions();
                 }
                 Handler.StartCoroutine(ManageSceneActions());
             }
             // Reset curses (in case a rando is done and then a normal game)
-            else if(arg1.name.Equals("Menu_Title"))
+            else if (arg1.name.Equals("Menu_Title"))
             {
                 CanRead = true;
                 CanListen = true;
@@ -523,12 +515,24 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
                 LogError("Couldn't modify radiance fsm: " + exception.Message);
             }
         }
-        else if (self.gameObject.name.Equals("Elderbug") && self.FsmName.Equals("npc_control"))
+        else if (self.gameObject.name.Equals("Elderbug"))
         {
-            self.transform.localScale = new(2f, 2f, 2f);
-            self.transform.localPosition = new(126.36f, 12.35f, 0f);
-            if (!CanListen)
-                self.GetState("Idle").ClearTransitions();
+            if (self.FsmName.Equals("npc_control"))
+            {
+                self.transform.localScale = new(2f, 2f, 2f);
+                self.transform.localPosition = new(126.36f, 12.35f, 0f);
+                if (!CanListen)
+                    self.GetState("Idle").ClearTransitions();
+            }
+            else if (self.FsmName.Equals("Conversation Control"))
+            {
+                self.GetState("Convo Choice").ClearTransitions();
+                self.GetState("Convo Choice").Actions = new HutongGames.PlayMaker.FsmStateAction[]
+                {
+                    new Lambda(() => self.SendEvent("FINISHED"))
+                };
+                self.GetState("Convo Choice").AddTransition("FINISHED", "Meeting Choice");
+            }    
         }
         // Prevent killing ghosts with abilities.
         else if (self.FsmName.Equals("ghost_npc_death"))
@@ -579,10 +583,9 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
                 || self.gameObject.name.Equals("Nailsmith") || self.gameObject.name.Equals("Corpse Inspect")
                 || self.gameObject.name.Equals("Dream Nail Get") || self.gameObject.name.Equals("Centipede Inspect")
                 || self.gameObject.name.Equals("Goam Inspect") || self.gameObject.name.Equals("Zap Bug Inspect")
-                || self.gameObject.name.Equals("End Scene")
+                || self.gameObject.name.Equals("AbyssTendril Inspect") || self.gameObject.name.Equals("End Scene")
                 || (self.transform.parent != null && self.transform.parent.name.Equals("Dreamer Monomon"))))
                 self.GetState("Idle").ClearTransitions();
-
         }
         else if (self.FsmName.Equals("Stag Control") && !CanListen)
             self.GetState("Idle").ClearTransitions();
@@ -722,15 +725,15 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         try
         {
             if (ModHooks.GetMod("Randomizer 4") is Mod mod)
-                RandomizerManager.AttachRandomizer();
-            else
-                Log("Couldn't find rando");
+            {
+                Log("Detected Randomizer. Adding compability.");
+                RandomizerManager.AttachToRandomizer();
+            }
         }
         catch (Exception exception)
         {
             LogError("Error while setting up rando: " + exception.Message);
         }
-
     }
 
     /// <summary>
@@ -983,7 +986,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
     {
         yield return new WaitForFinishedEnteringScene();
         // Just to make sure the controller exist. A desperate attempt.
-        if (HeroController.instance == null || !HeroController.instance.acceptingInput)
+        if (_fromMenu && (HeroController.instance == null || !HeroController.instance.acceptingInput))
             yield return new WaitUntil(() => HeroController.instance != null && HeroController.instance.acceptingInput);
 
         Area newArea = _currentArea;
