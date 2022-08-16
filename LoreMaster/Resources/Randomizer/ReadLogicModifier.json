@@ -134,5 +134,13 @@
     {
         "name": "Dream_Nail",
         "logic": "(ORIG) + READ"
+    },
+    {
+        "Name": "Focus",
+        "Logic": "(ORIG) + READ"
+    },
+    {
+        "Name": "World_Sense",
+        "Logic": "(ORIG) + READ"
     }
 ]

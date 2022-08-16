@@ -428,7 +428,6 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         {
             if (GameManager.instance != null && GameManager.instance.IsGameplayScene() && !arg1.name.Equals("Quit_To_Menu"))
             {
-                Log("Lore scene changed");
                 if (_fromMenu)
                 {
                     if (arg1.name.ToLower().Equals("town"))
@@ -910,6 +909,8 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
                 if (!ActivePowers.ContainsKey(key))
                 {
                     power = _powerList[key];
+                    if (power is EyeOfTheWatcherPower watcherPower)
+                        watcherPower.EyeActive = true;
                     power.EnablePower();
                     ActivePowers.Add(key, power);
                     UpdateTracker(_currentArea);

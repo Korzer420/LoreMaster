@@ -1,4 +1,4 @@
-using ItemChanger;
+using LoreMaster.Enums;
 using LoreMaster.Helper;
 using RandomizerCore.Logic;
 using RandomizerCore.LogicItems;
@@ -66,7 +66,7 @@ public class LogicManager
             Term readAbility = builder.GetOrAddTerm("READ");
             builder.AddLogicDef(new("Town_Read", "Town[left1] | Town[bot1] | Town[right1]"));
             builder.AddItem(new BoolItem("Reading", readAbility));
-            using Stream stream = typeof(LogicManager).Assembly.GetManifestResourceStream("LoreMaster.Resources.ReadLogicModifier.json");
+            using Stream stream = typeof(LogicManager).Assembly.GetManifestResourceStream("LoreMaster.Resources.Randomizer.ReadLogicModifier.json");
             builder.DeserializeJson(LogicManagerBuilder.JsonType.LogicEdit, stream);
         }
         if(RandomizerManager.Settings.CursedListening)
@@ -74,7 +74,7 @@ public class LogicManager
             Term listenAbility = builder.GetOrAddTerm("LISTEN");
             builder.AddLogicDef(new("Town_Listen", "Town[left1] | Town[bot1] | Town[right1]"));
             builder.AddItem(new BoolItem("Listening", listenAbility));
-            using Stream stream = typeof(LogicManager).Assembly.GetManifestResourceStream("LoreMaster.Resources.ListenLogicModifier.json");
+            using Stream stream = typeof(LogicManager).Assembly.GetManifestResourceStream("LoreMaster.Resources.Randomizer.ListenLogicModifier.json");
             builder.DeserializeJson(LogicManagerBuilder.JsonType.LogicEdit, stream);
         }
     }

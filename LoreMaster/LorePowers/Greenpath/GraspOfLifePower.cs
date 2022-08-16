@@ -162,7 +162,7 @@ public class GraspOfLifePower : Power
                 if (currentTick > 10)
                     currentTick = 1;
                 _grasses.RemoveAll(x => x == null);
-                if (_grasses.Count > 10)
+                if (_grasses.Count > 5)
                 {
                     GameObject.Destroy(_grasses[0]);
                     _grasses.RemoveAt(0);

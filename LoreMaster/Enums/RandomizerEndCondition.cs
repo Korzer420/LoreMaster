@@ -1,4 +1,4 @@
-namespace LoreMaster.Randomizer;
+namespace LoreMaster.Enums;
 
 /// <summary>
 /// Specifies the conditions, which allows the player to enter the black egg temple.

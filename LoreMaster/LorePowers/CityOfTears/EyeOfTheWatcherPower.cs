@@ -3,7 +3,6 @@ using ItemChanger.FsmStateActions;
 using LoreMaster.Enums;
 using LoreMaster.Extensions;
 using LoreMaster.Helper;
-using MonoMod.Cil;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -17,9 +16,7 @@ public class EyeOfTheWatcherPower : Power
     private Sprite _eyeSprite;
 
     private GameObject _eye;
-
-    private int _darknessLevel = 0;
-
+    
     #endregion
 
     #region Constructors
@@ -45,7 +42,12 @@ public class EyeOfTheWatcherPower : Power
     /// <summary>
     /// Gets the indicator if the player can be revived.
     /// </summary>
-    public bool CanRevive => _eye.activeSelf && PlayerData.instance.GetBool(nameof(PlayerData.instance.hasLantern));
+    public bool CanRevive => EyeActive && PlayerData.instance.GetBool(nameof(PlayerData.instance.hasLantern));
+
+    /// <summary>
+    /// Gets or sets the value that indicates if the eye is active.
+    /// </summary>
+    public bool EyeActive { get; set; } = true;
 
     #endregion
 
@@ -57,7 +59,7 @@ public class EyeOfTheWatcherPower : Power
             yield return orig(self);
         else
         {
-            _eye.SetActive(false);
+            EyeActive = false;
             if (PlayerData.instance.GetBool("equippedCharm_27"))
             {
                 HeroController.instance.AddHealth(1);
@@ -73,11 +75,12 @@ public class EyeOfTheWatcherPower : Power
     private void RefreshEyeOfTheWatcher(On.PlayMakerFSM.orig_OnEnable orig, PlayMakerFSM self)
     {
         if (self.gameObject.name.Equals("Telescope Inspect") && self.FsmName.Equals("Conversation Control"))
-            self.GetState("Stop").ReplaceAction(new Lambda(() => _eye.SetActive(true)) { Name = "Restore Eye" });
+            self.GetState("Stop").ReplaceAction(new Lambda(() => EyeActive = true) { Name = "Restore Eye" });
+        // Enable the peak toll.
         else if (self.gameObject.name.Contains("Toll Gate Machine") && self.FsmName.Equals("Disable if No Lantern"))
             self.GetState("Check").ReplaceAction(new Lambda(() => 
             {
-                if (Active && _eye != null && _eye.activeSelf)
+                if (Active && EyeActive)
                     self.SendEvent("FINISHED");
                 else if(!PlayerData.instance.GetBool(nameof(PlayerData.instance.hasLantern)))
                     self.SendEvent("DISABLE");
@@ -97,7 +100,7 @@ public class EyeOfTheWatcherPower : Power
         PlayMakerFSM fsm = HeroController.instance.transform.Find("Vignette").gameObject.LocateMyFSM("Darkness Control");
         fsm.GetState("Scene Reset").ReplaceAction(new Lambda(() =>
         {
-            if ((Active && _eye != null && _eye.activeSelf) || PlayerData.instance.GetBool(nameof(PlayerData.instance.hasLantern)))
+            if ((Active && EyeActive) || PlayerData.instance.GetBool(nameof(PlayerData.instance.hasLantern)))
             {
                 _eye.GetComponent<SpriteRenderer>().color = new(1f, 1f, 0f);
                 fsm.SendEvent("LANTERN");
@@ -108,21 +111,21 @@ public class EyeOfTheWatcherPower : Power
         fsm.GetState("Scene Reset 2").AddTransition("LANTERN", "Lantern 2");
         fsm.GetState("Scene Reset 2").ReplaceAction(new Lambda(() =>
         {
-            if (Active && _eye != null && _eye.activeSelf)
+            if (Active && EyeActive)
             {
                 _eye.GetComponent<SpriteRenderer>().color = new(1f, 1f, 0f);
                 fsm.SendEvent("LANTERN");
             }
             else if (fsm.FsmVariables.FindFsmInt("Darkness Level").Value == 0)
                 fsm.SendEvent("NORMAL");
-            else if (fsm.FsmVariables.FindFsmInt("Darkness Level").Value == 0)
+            else if (fsm.FsmVariables.FindFsmInt("Darkness Level").Value == -1)
                 fsm.SendEvent("DARK -1");
         })
         { Name = "Force Lantern" }, 1);
 
         fsm.GetState("Dark Lev Check").ReplaceAction(new Lambda(() =>
         {
-            if ((Active && _eye != null && _eye.activeSelf) || PlayerData.instance.GetBool(nameof(PlayerData.instance.hasLantern)))
+            if ((Active && EyeActive) || PlayerData.instance.GetBool(nameof(PlayerData.instance.hasLantern)))
             {
                 _eye.GetComponent<SpriteRenderer>().color = new(1f, 1f, 0f);
                 fsm.SendEvent("LANTERN");
@@ -143,8 +146,8 @@ public class EyeOfTheWatcherPower : Power
         On.PlayMakerFSM.OnEnable += RefreshEyeOfTheWatcher;
         On.HeroController.Die += HeroController_Die;
         _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(Blink());
-        if (_eye != null && !_eye.activeSelf)
-            _eye?.SetActive(true);
+        if (_eye != null)
+            _eye?.SetActive(EyeActive);
     }
 
     /// <inheritdoc/>
@@ -166,12 +169,16 @@ public class EyeOfTheWatcherPower : Power
         while (true)
         {
             yield return null;
-            if (!_eye.activeSelf)
-                yield return new WaitUntil(() => _eye.activeSelf);
+            if (!EyeActive)
+            {
+                _eye.SetActive(false);
+                yield return new WaitUntil(() => EyeActive);
+                _eye.SetActive(true);
+            }
             currentScale += .3f * Time.deltaTime * (upscale ? 1f : -1f);
-            if (currentScale >= 1.3f)
+            if (currentScale >= 1.2f)
                 upscale = false;
-            else if (currentScale <= .8f)
+            else if (currentScale <= .5f)
                 upscale = true;
             _eye.transform.localScale = new(currentScale, currentScale);
         }

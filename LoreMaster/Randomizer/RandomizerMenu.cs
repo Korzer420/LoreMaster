@@ -1,3 +1,4 @@
+using LoreMaster.Enums;
 using MenuChanger;
 using MenuChanger.Extensions;
 using MenuChanger.MenuElements;

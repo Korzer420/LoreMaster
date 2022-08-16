@@ -1,6 +1,7 @@
 using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
 using LoreMaster.Enums;
+using LoreMaster.Extensions;
 using System.Collections;
 using UnityEngine;
 
@@ -58,7 +59,7 @@ public class LifebloodOmenPower : Power
     {
         while (true)
         {
-            yield return new WaitForSeconds(120f);
+            yield return new WaitForSeconds(180f);
             // If a player sits a bench herocontroller doesn't accept input, which makes the first part redundant... I think. I still keep it, just in case.
             if (PlayerData.instance.GetBool(nameof(PlayerData.instance.atBench)) || !HeroController.instance.acceptingInput)
                 yield return new WaitUntil(() => !PlayerData.instance.GetBool(nameof(PlayerData.instance.atBench)) && HeroController.instance.acceptingInput);
@@ -82,11 +83,12 @@ public class LifebloodOmenPower : Power
             fsm.GetState("Fanfare 1").RemoveAction(0);
 
             // Reward
-            fsm.GetState("Destroy").AddFirstAction(new Lambda(() =>
+            fsm.GetState("Explode").ReplaceAction(new Lambda(() =>
             {
+                fsm.FsmVariables.FindFsmGameObject("Explode Effects").Value.SetActive(true);
                 for (int i = 0; i < 3 * (index + 1); i++)
                     EventRegister.SendEvent("ADD BLUE HEALTH");
-            }));
+            }),4);
             fsm.SendEvent("START");
             float activeTime = 0f;
             while(activeTime < 90f && _ghost != null)

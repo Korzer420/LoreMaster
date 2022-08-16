@@ -170,13 +170,5 @@
     {
         "Name": "Egg_Shop",
         "Logic": "(ORIG) + LISTEN"
-    },
-    {
-        "Name": "Focus",
-        "Logic": "(ORIG) + LISTEN"
-    },
-    {
-        "Name": "World_Sense",
-        "Logic": "(ORIG) + LISTEN"
     }
 ]

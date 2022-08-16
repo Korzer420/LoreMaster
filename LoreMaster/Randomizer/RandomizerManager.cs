@@ -4,6 +4,7 @@ using ItemChanger.FsmStateActions;
 using ItemChanger.Placements;
 using ItemChanger.UIDefs;
 using LoreMaster.CustomItem;
+using LoreMaster.Enums;
 using LoreMaster.Extensions;
 using LoreMaster.Helper;
 using LoreMaster.Randomizer.Items;
