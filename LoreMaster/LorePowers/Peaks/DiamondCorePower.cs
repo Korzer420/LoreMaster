@@ -4,6 +4,7 @@ using ItemChanger.FsmStateActions;
 using LoreMaster.Enums;
 using LoreMaster.Extensions;
 using LoreMaster.Helper;
+using LoreMaster.Manager;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -32,7 +33,7 @@ public class DiamondCorePower : Power
     public DiamondCorePower() : base("Diamond Core", Area.Peaks)
     {
         Hint = "The crystal heart's core absorbed the power of diamond and got even stronger. If you hit a wall, all foes may be stunned shortly. The power of the diamond increases over time, makes you unstoppable once you got enough power.";
-        Description = "Crystal Heart snares all enemies in the room if you hit a wall. The duration of the stun and c dash damage increases with the c dash duration. " +
+        Description = "Crystal Heart snares all enemies in the room if you hit a wall. The duration of the stun and cdash damage increases with the c dash duration. " +
             "(Stun duration is capped at 10 seconds, gain 5 damage and 10% speed per second, gain invincibility after 3 seconds.)";
         CustomText = "Isn't the view just beautiful? When I just look at this, all my thought feel way less heavier than before. It feels almost... empty. Have you already looked around here a bit? " +
             "These crystals here contain an mysterious power. Although it seemed to me, that they people actually looked for something even more powerful. Here, I found that crystal from the remains of another adventurer." +
@@ -43,7 +44,7 @@ public class DiamondCorePower : Power
 
     #region Properties
 
-    public bool HasDiamondDash => LoreMaster.Instance.ActivePowers.ContainsKey("MYLA") && LoreMaster.Instance.ActivePowers["MYLA"].Active;
+    public bool HasDiamondDash => PowerManager.HasObtainedPower("MYLA");
 
     public override Action SceneAction => () =>
     {

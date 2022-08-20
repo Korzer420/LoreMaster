@@ -1,6 +1,7 @@
 using ItemChanger;
 using ItemChanger.Items;
 using LoreMaster.Enums;
+using LoreMaster.Manager;
 
 namespace LoreMaster.Randomizer.Items;
 
@@ -19,15 +20,15 @@ internal class AbilityItem : CustomSkillItem
     public override void GiveImmediate(GiveInfo info)
     {
         if (Item == CustomItemType.Reading)
-            LoreMaster.Instance.CanRead = true;
+            LoreManager.Instance.CanRead = true;
         else if (Item == CustomItemType.Listening)
-            LoreMaster.Instance.CanListen = true;
+            LoreManager.Instance.CanListen = true;
         else
             PlayerData.instance.SetBool(nameof(PlayerData.instance.metElderbug), true);
     }
 
     public override bool Redundant()
     {
-        return (Item == CustomItemType.Reading && LoreMaster.Instance.CanRead) || (Item == CustomItemType.Listening && LoreMaster.Instance.CanListen);
+        return (Item == CustomItemType.Reading && LoreManager.Instance.CanRead) || (Item == CustomItemType.Listening && LoreManager.Instance.CanListen);
     }
 }

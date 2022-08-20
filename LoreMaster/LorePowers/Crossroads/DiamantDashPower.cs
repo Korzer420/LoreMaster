@@ -1,5 +1,6 @@
 using LoreMaster.Enums;
 using LoreMaster.Helper;
+using LoreMaster.Manager;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -39,7 +40,7 @@ public class DiamantDashPower : Power
     /// <summary>
     /// Gets the indicator if diamond core has also been acquired.
     /// </summary>
-    public bool HasDiamondCore => LoreMaster.Instance.ActivePowers.ContainsKey("QUIRREL") && LoreMaster.Instance.ActivePowers["QUIRREL"].Active;
+    public bool HasDiamondCore => PowerManager.HasObtainedPower("QUIRREL");
 
     /// <inheritdoc/>
     public override Action SceneAction => () =>

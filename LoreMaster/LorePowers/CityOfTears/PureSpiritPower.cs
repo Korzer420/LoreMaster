@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace LoreMaster.LorePowers.CityOfTears;
 
-internal class PureFocusPower : Power
+internal class PureSpiritPower : Power
 {
     #region Members
 
@@ -33,7 +33,7 @@ internal class PureFocusPower : Power
 
     #region Constructor
 
-    public PureFocusPower() : base("Pure Focus", Area.CityOfTears)
+    public PureSpiritPower() : base("Pure Spirit", Area.CityOfTears)
     {
         Hint = "Using the last resort of your soul will purify it's vessel and spawn an orb out of pure light. If you channeled three orbs, they will follow your powerful spell " +
             "and detonate upon contact, returning their gathered soul to you.";

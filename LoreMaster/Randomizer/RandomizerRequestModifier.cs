@@ -1,3 +1,4 @@
+using LoreMaster.Manager;
 using RandomizerMod.RC;
 
 namespace LoreMaster.Randomizer;
@@ -24,19 +25,19 @@ internal class RandomizerRequestModifier
         }
         if (RandomizerManager.Settings.CursedReading)
         {
-            LoreMaster.Instance.CanRead = false;
+            LoreManager.Instance.CanRead = false;
             requestBuilder.AddItemByName("Reading");
             requestBuilder.AddLocationByName("Town_Read");
         }
         else
-            LoreMaster.Instance.CanRead = true;
+            LoreManager.Instance.CanRead = true;
         if (RandomizerManager.Settings.CursedListening)
         {
-            LoreMaster.Instance.CanListen = false;
+            LoreManager.Instance.CanListen = false;
             requestBuilder.AddItemByName("Listening");
             requestBuilder.AddLocationByName("Town_Listen");
         }
         else
-            LoreMaster.Instance.CanListen = true;
+            LoreManager.Instance.CanListen = true;
     }
 }

@@ -4,6 +4,7 @@ using ItemChanger.FsmStateActions;
 using LoreMaster.Enums;
 using LoreMaster.Extensions;
 using LoreMaster.Helper;
+using LoreMaster.Manager;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ using UnityEngine;
 
 namespace LoreMaster.LorePowers.CityOfTears;
 
-public class OverwhelmingPower : Power
+public class OverwhelmingPowerPower : Power
 {
     #region Members
 
@@ -21,10 +22,10 @@ public class OverwhelmingPower : Power
 
     #region Constructors
 
-    public OverwhelmingPower() : base("Overwhelming Power", Area.CityOfTears)
+    public OverwhelmingPowerPower() : base("Overwhelming Power", Area.CityOfTears)
     {
-        Hint = "Casting spells with full capacity will grant your spell much more power";
-        Description = "When you cast a spell while your soul vessel is full (not counting additional soul vessels), they deal twice as much damage and are twice as big. (Fireball damage is only increased by 40%)";
+        Hint = "Casting spells with full capacity will grant your spell much more power.";
+        Description = "When you cast a spell while your soul vessel is full (not counting additional soul vessels), they deal twice as much damage and are twice as big.";
     }
 
     #endregion
@@ -180,7 +181,7 @@ public class OverwhelmingPower : Power
         yield return new WaitForSeconds(LoreMaster.Instance.Generator.Next(30, 121));
         // The shade spawn is determined by the soul limiter, which means to prevent the shade from spawning until the effect is over.
         if (string.Equals(PlayerData.instance.shadeScene, "None")
-            || (LoreMaster.Instance.ActivePowers.ContainsKey("ABYSS_TUT_TAB_01") && LoreMaster.Instance.ActivePowers["ABYSS_TUT_TAB_01"].Active))
+            || (PowerManager.HasObtainedPower("ABYSS_TUT_TAB_01")))
         { 
             PlayerData.instance.EndSoulLimiter();
             PlayMakerFSM.BroadcastEvent("SOUL LIMITER DOWN");

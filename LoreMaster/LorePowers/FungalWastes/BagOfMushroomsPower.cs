@@ -1,5 +1,6 @@
 using LoreMaster.Enums;
 using LoreMaster.Helper;
+using LoreMaster.Manager;
 using Modding;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
@@ -369,7 +370,7 @@ public class BagOfMushroomsPower : Power
     {
         if (active)
         {
-            if (LoreMaster.Instance.DisableYellowMushroom)
+            if (SettingManager.Instance.DisableYellowMushroom)
                 HeroController.instance.AddMPCharge(HasEatenTwice ? 5 : 10);
             else
             {

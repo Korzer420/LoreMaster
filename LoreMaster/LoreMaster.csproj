@@ -118,6 +118,39 @@
     </Reference>
   </ItemGroup>
   
+  <ItemGroup>
+    <Compile Update="Properties\AdditionalText.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>AdditionalText.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Properties\PowerDescriptions.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>PowerDescriptions.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Properties\PowerHints.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>PowerHints.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\AdditionalText.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>AdditionalText.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Properties\PowerDescriptions.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>PowerDescriptions.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Properties\PowerHints.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>PowerHints.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  
   <Target Name="CopyMod" AfterTargets="PostBuildEvent">
     <Copy SourceFiles="$(TargetPath);$(TargetDir)$(TargetName).pdb" DestinationFolder="$(HollowKnightRefs)\Mods\$(TargetName)" OverwriteReadOnlyFiles="true" />
 	<Copy SourceFiles="@(_CopyItems)" DestinationFolder="$(HollowKnightRefs)\Mods\$(TargetName)\Resources\Base" SkipUnchangedFiles="true" />

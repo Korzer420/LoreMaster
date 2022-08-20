@@ -121,7 +121,7 @@ public abstract class Power
     /// </summary>
     internal void EnablePower()
     {
-        if (Active || Tag == PowerTag.Disable || Tag == PowerTag.Remove)
+        if (Active || Tag == PowerTag.Disable || Tag == PowerTag.Remove || GameManager.instance == null || !GameManager.instance.IsGameplayScene())
             return;
         try
         {

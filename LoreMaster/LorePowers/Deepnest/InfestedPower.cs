@@ -25,7 +25,8 @@ public class InfestedPower : Power
     public InfestedPower() : base("Infested!", Area.Deepnest)
     {
         Hint = "Plant spider eggs in the wounds of your victims, that burst open on death.";
-        Description = "Hitting an enemy with the nail plants an egg to the enemy (Capped at 5), which spawns a weaver once the enemy died. Weavers also apply eggs. (Capped at 75)";
+        Description = "Hitting an enemy with the nail plants an egg to the enemy (Capped at 5), which spawns a weaver once the enemy died. Weavers also apply eggs. (Capped at 25) " +
+            "Weavers despawn after 15 seconds or upon leaving the room.";
     }
 
     #endregion

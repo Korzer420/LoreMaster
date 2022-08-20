@@ -4,6 +4,7 @@ using ItemChanger.FsmStateActions;
 using ItemChanger.UIDefs;
 using LoreMaster.Enums;
 using LoreMaster.Extensions;
+using LoreMaster.Manager;
 using LoreMaster.Randomizer.Items;
 using System.Collections.Generic;
 
@@ -126,7 +127,7 @@ public static class RandomizerManager
 
         if (Settings.CursedReading && Finder.GetItem("Reading") == null)
         {
-            LoreMaster.Instance.CanRead = false;
+            LoreManager.Instance.CanRead = false;
             Finder.DefineCustomItem(new AbilityItem()
             {
                 name = "Reading",
@@ -156,7 +157,7 @@ public static class RandomizerManager
 
         if (Settings.CursedListening && Finder.GetItem("Listening") == null)
         {
-            LoreMaster.Instance.CanListen = false;
+            LoreManager.Instance.CanListen = false;
             Finder.DefineCustomItem(new AbilityItem()
             {
                 name = "Listening",
@@ -192,9 +193,9 @@ public static class RandomizerManager
             door.GetState("Init").ReplaceAction(new Lambda(() =>
             {
                 if ((Settings.BlackEggTempleCondition == RandomizerEndCondition.Lore
-                && LoreMaster.Instance.ActivePowers.Count >= Settings.NeededLore)
+                && PowerManager.ActivePowers.Count >= Settings.NeededLore)
                 || (Settings.BlackEggTempleCondition == RandomizerEndCondition.DreamersAndLore && door.FsmVariables.FindFsmInt("Guardians Defeated").Value > 2
-                && LoreMaster.Instance.ActivePowers.Count >= Settings.NeededLore))
+                && PowerManager.ActivePowers.Count >= Settings.NeededLore))
                     door.SendEvent("READY");
                 else
                     door.SendEvent("FINISHED");
@@ -206,9 +207,8 @@ public static class RandomizerManager
     { 
         if (!RandomizerMod.RandomizerMod.IsRandoSave)
         {
-            LoreMaster.Instance.Log("Give ability");
-            LoreMaster.Instance.CanListen = true;
-            LoreMaster.Instance.CanRead = true;
+            LoreManager.Instance.CanListen = true;
+            LoreManager.Instance.CanRead = true;
         }
     }
 

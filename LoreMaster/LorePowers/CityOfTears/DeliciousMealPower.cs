@@ -1,14 +1,7 @@
-using ItemChanger.Extensions;
-using ItemChanger.FsmStateActions;
 using LoreMaster.Enums;
-using LoreMaster.Extensions;
 using Modding;
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 

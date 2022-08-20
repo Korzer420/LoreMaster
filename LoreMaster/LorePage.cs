@@ -6,6 +6,7 @@ using LoreMaster.Enums;
 using LoreMaster.Helper;
 using LoreMaster.LorePowers;
 using LoreMaster.LorePowers.CityOfTears;
+using LoreMaster.Manager;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -87,7 +88,7 @@ internal class LorePage
                 if (_powers[i].Tag == PowerTag.Disable || _powers[i].Tag == PowerTag.Remove)
                 {
                     _loreObjects[i].GetComponent<SpriteRenderer>().sprite = _notActive;
-                    _loreObjects[i].GetComponent<SpriteRenderer>().color = LoreMaster.Instance.ActivePowers.ContainsValue(_powers[i])
+                    _loreObjects[i].GetComponent<SpriteRenderer>().color = PowerManager.ActivePowers.Contains(_powers[i])
                         ? Color.red
                         : Color.grey;
                 }
@@ -98,7 +99,7 @@ internal class LorePage
                         _loreObjects[i].GetComponent<SpriteRenderer>().sprite = _loreSprite;
                         _loreObjects[i].GetComponent<SpriteRenderer>().color = _colors[_powers[i].Location];
                     }
-                    else if (LoreMaster.Instance.ActivePowers.ContainsValue(_powers[i]))
+                    else if (PowerManager.ActivePowers.Contains(_powers[i]))
                     {
                         _loreObjects[i].GetComponent<SpriteRenderer>().sprite = _notActive;
                         _loreObjects[i].GetComponent<SpriteRenderer>().color = Color.red;
@@ -215,10 +216,10 @@ internal class LorePage
                     new Lambda(() => fsm.gameObject.LocateMyFSM("Update Cursor").SendEvent("UPDATE CURSOR")),
                     new Lambda(() =>
                     {
-                        if (LoreMaster.Instance.ActivePowers.ContainsValue(_powers[indexVariable.Value]))
+                        if (PowerManager.ActivePowers.Contains(_powers[indexVariable.Value]))
                         {
                             powerTitle.GetComponent<TextMeshPro>().text = _powers[indexVariable.Value].PowerName;
-                            powerDescription.GetComponent<TextMeshPro>().text = LoreMaster.Instance.UseHints
+                            powerDescription.GetComponent<TextMeshPro>().text = LoreManager.Instance.UseHints
                             ? _powers[indexVariable.Value].Hint.Replace("<br>","\r\n")
                             :_powers[indexVariable.Value].Description.Replace("<br>","\r\n");
                             confirmButton.SetActive(true);
@@ -317,7 +318,7 @@ internal class LorePage
             currentWorkingState.AddTransition("FINISHED", "Powers");
             currentWorkingState.AddLastAction(new Lambda(() =>
             {
-                if (PlayerData.instance.GetBool(nameof(PlayerData.instance.atBench)) && LoreMaster.Instance.ActivePowers.ContainsValue(_powers[indexVariable.Value]))
+                if (PlayerData.instance.GetBool(nameof(PlayerData.instance.atBench)) && PowerManager.ActivePowers.Contains(_powers[indexVariable.Value]))
                 {
                     Power power = _powers[indexVariable.Value];
 

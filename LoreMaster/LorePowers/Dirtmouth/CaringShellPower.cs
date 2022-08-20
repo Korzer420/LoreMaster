@@ -14,7 +14,7 @@ public class CaringShellPower : Power
             "Then while I cried, why all this bad things happened to me, everything faded to orange. But then, at the lowest point of my life, a mighty knight appeared and saved me. Someone with this strength is the first " +
             "person to acknowledge me after such a long time. In just that moment, all my sadness just disappeared. I'm the happiest girl in the world. UwU";
         Hint = "No hazard shall cast harm onto you... UwU";
-        Description = "Enviroment Hazards (like spikes) don't deal damage to you anymore.";
+        Description = "Enviroment hazards (like spikes) don't deal damage to you anymore.";
     }
 
     #endregion

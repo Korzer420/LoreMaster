@@ -1,5 +1,6 @@
 using LoreMaster.Enums;
 using LoreMaster.Helper;
+using LoreMaster.Manager;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -81,7 +82,7 @@ public class GreaterMindPower : Power
         if(_loreTracker != null)
         {
             _loreTracker.SetActive(true);
-            UpdateLoreCounter(LoreMaster.Instance.ActivePowers.Values, LoreMaster.Instance.AllPowers.Values, LoreMaster.Instance.CurrentArea, LoreMaster.Instance.IsAreaGlobal(LoreMaster.Instance.CurrentArea));
+            UpdateLoreCounter(PowerManager.ActivePowers, PowerManager.GetAllPowers(), SettingManager.Instance.CurrentArea, PowerManager.IsAreaGlobal(SettingManager.Instance.CurrentArea));
         }
     }
 

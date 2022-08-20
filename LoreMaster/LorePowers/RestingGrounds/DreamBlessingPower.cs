@@ -1,6 +1,7 @@
 using HutongGames.PlayMaker.Actions;
 using ItemChanger.Extensions;
 using LoreMaster.Enums;
+using LoreMaster.Manager;
 using LoreMaster.UnityComponents;
 using System.Collections;
 using System.Collections.Generic;
@@ -71,13 +72,13 @@ public class DreamBlessingPower : Power
     public string GetExtraText(string key)
     {
         if (key.Equals("DREAMERS_INSPECT_RG2"))
-            return LoreMaster.Instance.UseHints ? " Through her knowledge she exposes the foes biggest weakness." : " Per 100 Essence you have a 1% chance to instant kill the enemy (capped at 175 damage).";
+            return LoreManager.Instance.UseHints ? " Through her knowledge she exposes the foes biggest weakness." : " Per 100 Essence you have a 1% chance to instant kill the enemy (capped at 175 damage).";
         else if (key.Equals("DREAMERS_INSPECT_RG3"))
-            return LoreMaster.Instance.UseHints ? " His gaze may freeze the enemy in place." : " Roots the target for 3 seconds (15 seconds cooldown)";
+            return LoreManager.Instance.UseHints ? " His gaze may freeze the enemy in place." : " Roots the target for 3 seconds (15 seconds cooldown)";
         else if (key.Equals("DREAMERS_INSPECT_RG4"))
-            return LoreMaster.Instance.UseHints ? " Invoking her children from her victim." : " Spawn 2 weavers for the current room.";
+            return LoreManager.Instance.UseHints ? " Invoking her children from her victim." : " Spawn 2 weavers for the current room.";
         else if (key.Equals("DREAMERS_INSPECT_RG5"))
-            return " [" + PowerName + "] " + (LoreMaster.Instance.UseHints ? "The dream artifact uses the power it absorbs from their powerful victims to use it's hidden power." : "Defeated Dreamers grant the dream nail an additional effect (doubled with awoken dreamnail).");
+            return " [" + PowerName + "] " + (LoreManager.Instance.UseHints ? "The dream artifact uses the power it absorbs from their powerful victims to use it's hidden power." : "Defeated Dreamers grant the dream nail an additional effect (doubled with awoken dreamnail).");
         return string.Empty;
     }
 

@@ -1,4 +1,3 @@
-using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
 using LoreMaster.Enums;
 using LoreMaster.Extensions;
@@ -21,7 +20,7 @@ public class GiftOfUnnPower : Power
     #region Protected Methods
 
     /// <inheritdoc/>
- protected override void Initialize()
+    protected override void Initialize()
     {
         PlayMakerFSM spellFsm = FsmHelper.GetFSM("Knight", "Spell Control");
 
@@ -31,7 +30,7 @@ public class GiftOfUnnPower : Power
             if (!Active && !PlayerData.instance.GetBool(nameof(PlayerData.instance.equippedCharm_28)))
                 spellFsm.SendEvent("FINISHED");
         })
-        { Name = "Gift of Unn"}, 1);
+        { Name = "Gift of Unn" }, 1);
 
         FsmHelper.GetState(spellFsm, "Slug?").ReplaceAction(new Lambda(() =>
         {
@@ -39,10 +38,10 @@ public class GiftOfUnnPower : Power
                 spellFsm.SendEvent("SLUG");
             else
                 spellFsm.SendEvent("FINISHED");
-            
+
         })
-        { Name = "Force Unn"},0);
-        
+        { Name = "Force Unn" }, 0);
+
         // If the player has shape of unn equipped, it gives 15 mp on a successful cast (this is added, to prevent making the charm useless)
         FsmHelper.GetState(spellFsm, "Focus Heal 2").ReplaceAction(new Lambda(() =>
         {
@@ -50,7 +49,7 @@ public class GiftOfUnnPower : Power
                 HeroController.instance.AddMPCharge(15);
             spellFsm.FsmVariables.FindFsmInt("Max HP").Value = PlayerData.instance.GetInt(nameof(PlayerData.instance.maxHealth));
         })
-        { Name = "Soul Recover"}, 14);
+        { Name = "Soul Recover" }, 14);
     }
 
     #endregion

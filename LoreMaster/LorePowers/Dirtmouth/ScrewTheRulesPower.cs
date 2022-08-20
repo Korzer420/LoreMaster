@@ -19,7 +19,7 @@ public class ScrewTheRulesPower : Power
 
     public ScrewTheRulesPower() : base("Screw the Rules", Area.Dirtmouth)
     {
-        Hint = "You rage is weaker but quicker. Still deadly.";
+        Hint = "Your rage is weaker but grows quicker.";
         Description = "Fury of the Fallen is now also active with 2 hp, but the damage buff is decreased to 50%. Grubberfly Beams are only nerfed by 40%.";
     }
 
