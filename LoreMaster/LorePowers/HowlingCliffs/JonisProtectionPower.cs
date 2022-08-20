@@ -21,8 +21,6 @@ public class JonisProtectionPower : Power
 
     private bool _immune;
 
-    private bool _takingJoniBonus;
-
     #endregion
 
     #region Constructors
@@ -148,21 +146,6 @@ public class JonisProtectionPower : Power
         _dialogueFSM[0] = GameObject.Find("_GameCameras/HudCamera/DialogueManager").LocateMyFSM("Box Open");
         _dialogueFSM[1] = GameObject.Find("_GameCameras/HudCamera/DialogueManager").LocateMyFSM("Box Open YN");
         _dialogueFSM[2] = GameObject.Find("_GameCameras/HudCamera/DialogueManager").LocateMyFSM("Box Open Dream");
-
-        // Ensures that the flower doesn't get destroyed instantly.
-        PlayMakerFSM fsm = GameObject.Find("Knight").LocateMyFSM("ProxyFSM");
-        fsm.GetState("Flower?").ReplaceAction(new Lambda(() =>
-        {
-            if ((Active && _takingJoniBonus)
-            || !PlayerData.instance.GetBool(nameof(PlayerData.instance.hasXunFlower))
-            || PlayerData.instance.GetBool(nameof(PlayerData.instance.xunFlowerBroken)))
-            {
-                if (_takingJoniBonus)
-                    _takingJoniBonus = false;
-                fsm.SendEvent("FINISHED");
-            }
-        })
-        { Name = "Joni Block" }, 0);
     }
 
     /// <inheritdoc/>
@@ -183,6 +166,7 @@ public class JonisProtectionPower : Power
         On.PlayMakerFSM.OnEnable -= ModifyFSM;
         On.InvAnimateUpAndDown.AnimateUp -= InvAnimateUpAndDown_AnimateUp;
         On.InvAnimateUpAndDown.AnimateDown -= InvAnimateUpAndDown_AnimateDown;
+        FakeDamage = false;
     }
 
     #endregion
@@ -209,7 +193,7 @@ public class JonisProtectionPower : Power
             // This is an extra check for the case, that the lifeblood gets taken from other sources to prevent removing real masks.
             if (_currentLifebloodBonus > 0 && PlayerData.instance.GetInt(nameof(PlayerData.instance.healthBlue)) > 0)
             {
-                _takingJoniBonus = true;
+                FakeDamage = true;
                 HeroController.instance.TakeHealth(1);
             }
         }

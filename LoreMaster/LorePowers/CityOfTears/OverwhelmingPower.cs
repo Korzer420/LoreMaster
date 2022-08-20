@@ -5,6 +5,7 @@ using LoreMaster.Enums;
 using LoreMaster.Extensions;
 using LoreMaster.Helper;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -50,9 +51,12 @@ public class OverwhelmingPower : Power
                 float direction = self.FsmVariables.FindFsmFloat("X Scale").Value > 0 ? -.8f : .8f;
                 if (_hasFullSoulMeter && Active)
                 {
-                    self.gameObject.LocateMyFSM("damages_enemy").FsmVariables.GetFsmInt("damageDealt").Value = Convert.ToInt32(self.gameObject.LocateMyFSM("damages_enemy").FsmVariables.GetFsmInt("damageDealt").Value * 1.4f);
-                    self.transform.localScale = new(self.transform.localScale.x + .8f, self.transform.localScale.y + .8f);
+                    self.gameObject.LocateMyFSM("damages_enemy").FsmVariables.GetFsmInt("damageDealt").Value *= 2;
+                    self.transform.localScale = new(self.transform.localScale.x + 1f, self.transform.localScale.y + 1f);
                     self.GetComponent<tk2dSprite>().color = Color.cyan;
+                    // Roll to determine if the player takes damage.
+                    if (LoreMaster.Instance.Generator.Next(1, 21) == 1)
+                        LoreMaster.Instance.Handler.StartCoroutine(Overload());
                 }
                 else
                     self.GetComponent<tk2dSprite>().color = Color.white;
@@ -70,10 +74,12 @@ public class OverwhelmingPower : Power
             {
                 if (_hasFullSoulMeter && Active)
                 {
-                    self.gameObject.LocateMyFSM("damages_enemy").FsmVariables.GetFsmInt("damageDealt").Value = Convert.ToInt32(self.gameObject.LocateMyFSM("damages_enemy").FsmVariables.GetFsmInt("damageDealt").Value * 1.4f);
-
-                    self.transform.localScale = new(self.transform.localScale.x + .8f, self.transform.localScale.y + .8f);
+                    self.gameObject.LocateMyFSM("damages_enemy").FsmVariables.GetFsmInt("damageDealt").Value *= 2;
+                    self.transform.localScale = new(self.transform.localScale.x + 1f, self.transform.localScale.y + 1f);
                     self.GetComponent<tk2dSprite>().color = Color.cyan;
+                    // Roll to determine if the player takes damage.
+                    if (LoreMaster.Instance.Generator.Next(1, 21) == 1)
+                        LoreMaster.Instance.Handler.StartCoroutine(Overload());
                 }
                 else
                     self.GetComponent<tk2dSprite>().color = Color.white;
@@ -139,6 +145,9 @@ public class OverwhelmingPower : Power
                     spellObject.LocateMyFSM("damages_enemy").FsmVariables.GetFsmInt("damageDealt").Value *= 2;
                     spell.transform.localScale = new(2, 2);
                     spellObject.transform.parent.GetComponent<tk2dSprite>().color = Color.cyan;
+                    // Roll to determine if the player takes damage.
+                    if (LoreMaster.Instance.Generator.Next(1, 21) == 1)
+                        LoreMaster.Instance.Handler.StartCoroutine(Overload());
                 }
                 else if(spellObject.transform.parent != null && spellObject.transform.parent.parent != null && spellObject.transform.parent.parent.name.Equals("Spells"))
                 {
@@ -158,6 +167,25 @@ public class OverwhelmingPower : Power
 
     /// <inheritdoc/>
     protected override void Disable() => On.PlayMakerFSM.OnEnable -= CheckFireball;
+
+    #endregion
+
+    #region Private Methods
+
+    private IEnumerator Overload()
+    {
+        HeroController.instance.TakeDamage(HeroController.instance.gameObject, GlobalEnums.CollisionSide.top, 2, 0);
+        PlayerData.instance.StartSoulLimiter();
+        PlayMakerFSM.BroadcastEvent("SOUL LIMITER UP");
+        yield return new WaitForSeconds(LoreMaster.Instance.Generator.Next(30, 121));
+        // The shade spawn is determined by the soul limiter, which means to prevent the shade from spawning until the effect is over.
+        if (string.Equals(PlayerData.instance.shadeScene, "None")
+            || (LoreMaster.Instance.ActivePowers.ContainsKey("ABYSS_TUT_TAB_01") && LoreMaster.Instance.ActivePowers["ABYSS_TUT_TAB_01"].Active))
+        { 
+            PlayerData.instance.EndSoulLimiter();
+            PlayMakerFSM.BroadcastEvent("SOUL LIMITER DOWN");
+        }
+    }
 
     #endregion
 }

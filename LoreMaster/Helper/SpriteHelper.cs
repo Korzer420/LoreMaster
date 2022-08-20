@@ -5,9 +5,9 @@ namespace LoreMaster.Helper;
 
 public static class SpriteHelper
 {
-    public static Sprite CreateSprite(string spriteName)
+    public static Sprite CreateSprite(string spriteName, bool randoResource = false)
     {
-        string imageFile = Path.Combine(Path.GetDirectoryName(typeof(LoreMaster).Assembly.Location), "Resources/"+spriteName+".png");
+        string imageFile = Path.Combine(Path.GetDirectoryName(typeof(LoreMaster).Assembly.Location), "Resources/"+(randoResource ? "Randomizer/" : "Base/")+spriteName+".png");
         byte[] imageData = File.ReadAllBytes(imageFile);
         Texture2D tex = new(1, 1, TextureFormat.RGBA32, false);
         ImageConversion.LoadImage(tex, imageData, true);

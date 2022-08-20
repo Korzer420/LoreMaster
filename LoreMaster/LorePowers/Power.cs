@@ -72,6 +72,11 @@ public abstract class Power
     /// </summary>
     public virtual Action SceneAction => () => { };
 
+    /// <summary>
+    /// Gets or sets the indicator, if fake damage is applied. This is used to prevent some powers to break the flower.
+    /// </summary>
+    public static bool FakeDamage { get; set; }
+
     #endregion
 
     #region Methods

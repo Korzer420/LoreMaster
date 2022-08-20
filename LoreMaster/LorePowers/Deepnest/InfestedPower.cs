@@ -65,7 +65,7 @@ public class InfestedPower : Power
 
     private void PlayMakerFSM_OnEnable(On.PlayMakerFSM.orig_OnEnable orig, PlayMakerFSM self)
     {
-        if (self.FsmName.Equals("Attack") && self.transform.parent.name.Equals("Weaverling(Clone)"))
+        if (self.FsmName.Equals("Attack") && string.Equals(self.transform.parent?.name, "Weaverling(Clone)"))
         {
             self.GetState("Hit").ReplaceAction(new Lambda(() =>
             {

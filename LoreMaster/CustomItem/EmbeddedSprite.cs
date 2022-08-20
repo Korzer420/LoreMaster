@@ -26,7 +26,7 @@ internal class EmbeddedSprite : ISprite
     }
 
     [Newtonsoft.Json.JsonIgnore]
-    public Sprite Value => SpriteHelper.CreateSprite(_key);
+    public Sprite Value => SpriteHelper.CreateSprite(_key, !string.Equals(_key, "Lore"));
 
     public ISprite Clone() => new EmbeddedSprite(_key);
 }

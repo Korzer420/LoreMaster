@@ -42,7 +42,7 @@ public class JellyBellyPower : Power
     /// <inheritdoc/>
     protected override void Enable()
     {
-        HeroController.instance.BIG_FALL_TIME += 6.6f;
+        HeroController.instance.BIG_FALL_TIME += 2.2f;
         ModHooks.HeroUpdateHook += Float;
     }
 
@@ -50,9 +50,9 @@ public class JellyBellyPower : Power
     protected override void Disable()
     {
         ModHooks.HeroUpdateHook -= Float;
-        HeroController.instance.BIG_FALL_TIME -= 6.6f;
-        if (HeroController.instance.BIG_FALL_TIME < 3.3f)
-            HeroController.instance.BIG_FALL_TIME = 3.3f;
+        HeroController.instance.BIG_FALL_TIME -= 2.2f;
+        if (HeroController.instance.BIG_FALL_TIME < 1.1f)
+            HeroController.instance.BIG_FALL_TIME = 1.1f;
         _playerRigidBody.gravityScale = .79f;
     }
 

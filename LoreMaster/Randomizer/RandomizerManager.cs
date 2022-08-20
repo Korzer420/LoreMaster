@@ -1,21 +1,11 @@
 using ItemChanger;
 using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
-using ItemChanger.Placements;
 using ItemChanger.UIDefs;
-using LoreMaster.CustomItem;
 using LoreMaster.Enums;
 using LoreMaster.Extensions;
-using LoreMaster.Helper;
 using LoreMaster.Randomizer.Items;
-using RandomizerMod.IC;
-using RandomizerMod.RC;
-using RandomizerMod.Settings;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LoreMaster.Randomizer;
 
@@ -210,6 +200,16 @@ public static class RandomizerManager
                     door.SendEvent("FINISHED");
             })
             { Name = "End Condition" }, 10);
+    }
+
+    internal static void CheckForRandoFile() 
+    { 
+        if (!RandomizerMod.RandomizerMod.IsRandoSave)
+        {
+            LoreMaster.Instance.Log("Give ability");
+            LoreMaster.Instance.CanListen = true;
+            LoreMaster.Instance.CanRead = true;
+        }
     }
 
     #endregion

@@ -1,134 +1,36 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<ProjectGuid>{D92EF200-4F1A-4279-96EE-CF68EB5E1FA9}</ProjectGuid>
+		<TargetFramework>net472</TargetFramework>
+		<RootNamespace>LoreMaster</RootNamespace>
+		<AssemblyTitle>LoreMaster</AssemblyTitle>
+		<AssemblyVersion>1.3.0.0</AssemblyVersion>
+		<Deterministic>true</Deterministic>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<LangVersion>latest</LangVersion>
+    </PropertyGroup>
+  
   <PropertyGroup>
-    <LangVersion>latest</LangVersion>
+    <HollowKnightRefs>E:/Program Files/Steam/steamapps/common/Hollow Knight/hollow_knight_Data/Managed/</HollowKnightRefs>
+    <ExportDir>bin\Publish</ExportDir>
   </PropertyGroup>
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{D92EF200-4F1A-4279-96EE-CF68EB5E1FA9}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>LoreMaster</RootNamespace>
-    <AssemblyName>LoreMaster</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <Deterministic>true</Deterministic>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>..\..\..\..\Program Files\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\Mods\LoreMaster\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>..\..\..\..\Program Files\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\Mods\LoreMaster\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\..\..\..\Program Files\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\Mods\LoreMaster\LoreMaster.xml</DocumentationFile>
-  </PropertyGroup>
+  
   <ItemGroup>
-    <Compile Include="Enums\Area.cs" />
-    <Compile Include="Enums\CustomItemType.cs" />
-    <Compile Include="Enums\ElderbugReward.cs" />
-    <Compile Include="Extensions\ExtensionMethods.cs" />
-    <Compile Include="Helper\PowerHelper.cs" />
-    <Compile Include="Helper\SpriteHelper.cs" />
-    <Compile Include="LorePage.cs" />
-    <Compile Include="LorePowers\CityOfTears\DeliciousMealPower.cs" />
-    <Compile Include="LorePowers\CityOfTears\HappyFatePower.cs" />
-    <Compile Include="LorePowers\Crossroads\DiamantDashPower.cs" />
-    <Compile Include="LorePowers\Dirtmouth\ElderbugHitListPower.cs" />
-    <Compile Include="LorePowers\Dirtmouth\RequiemPower.cs" />
-    <Compile Include="LorePowers\FungalWastes\BagOfMushroomsPower.cs" />
-    <Compile Include="Helper\RandomizerHelper.cs" />
-    <Compile Include="LorePowers\Peaks\DiamondCorePower.cs" />
-    <Compile Include="LorePowers\QueensGarden\FollowTheLightPower.cs" />
-    <Compile Include="Randomizer\Items\AbilityItem.cs" />
-    <Compile Include="Randomizer\Items\AbilityLocation.cs" />
-    <Compile Include="Randomizer\Items\NpcItem.cs" />
-    <Compile Include="Randomizer\Items\NpcLocation.cs" />
-    <Compile Include="Randomizer\LogicManager.cs" />
-    <Compile Include="Enums\RandomizerEndCondition.cs" />
-    <Compile Include="Randomizer\RandomizerManager.cs" />
-    <Compile Include="Randomizer\RandomizerMenu.cs" />
-    <Compile Include="Randomizer\RandomizerRequestModifier.cs" />
-    <Compile Include="Randomizer\RandomizerSettings.cs" />
-    <Compile Include="LorePowers\QueensGarden\GrassBombardementPower.cs" />
-    <Compile Include="UnityComponents\ConcussionEffect.cs" />
-    <Compile Include="UnityComponents\CoroutineHandler.cs" />
-    <Compile Include="CustomItem\TicketCost.cs" />
-    <Compile Include="CustomItem\EmbeddedSprite.cs" />
-    <Compile Include="UnityComponents\EnemyBinding.cs" />
-    <Compile Include="Helper\FsmHelper.cs" />
-    <Compile Include="LoreMaster.cs" />
-    <Compile Include="LorePowers\Ancient Basin\WeDontTalkAboutShadePower.cs" />
-    <Compile Include="LorePowers\CityOfTears\EyeOfTheWatcherPower.cs" />
-    <Compile Include="LorePowers\CityOfTears\HotStreakPower.cs" />
-    <Compile Include="LorePowers\CityOfTears\MarissasAudiencePower.cs" />
-    <Compile Include="LorePowers\CityOfTears\OverwhelmingPower.cs" />
-    <Compile Include="LorePowers\CityOfTears\SoulExtractEfficiencyPower.cs" />
-    <Compile Include="LorePowers\CityOfTears\TouristPower.cs" />
-    <Compile Include="LorePowers\Crossroads\GreaterMindPower.cs" />
-    <Compile Include="LorePowers\Crossroads\ReluctantPilgrimPower.cs" />
-    <Compile Include="LorePowers\Deepnest\InfestedPower.cs" />
-    <Compile Include="LorePowers\Deepnest\MaskOverchargePower.cs" />
-    <Compile Include="LorePowers\Dirtmouth\WellFocusedPower.cs" />
-    <Compile Include="LorePowers\Dirtmouth\CaringShellPower.cs" />
-    <Compile Include="LorePowers\FogCanyon\JellyBellyPower.cs" />
-    <Compile Include="LorePowers\FogCanyon\JellyfishFlowPower.cs" />
-    <Compile Include="LorePowers\FogCanyon\FriendOfTheJellyfishPower.cs" />
-    <Compile Include="LorePowers\FungalWastes\EternalValorPower.cs" />
-    <Compile Include="LorePowers\FungalWastes\GloryOfTheWealthPower.cs" />
-    <Compile Include="LorePowers\FungalWastes\ImposterPower.cs" />
-    <Compile Include="LorePowers\FungalWastes\MantisStylePower.cs" />
-    <Compile Include="LorePowers\FungalWastes\OneOfUsPower.cs" />
-    <Compile Include="LorePowers\FungalWastes\PaleLuckPower.cs" />
-    <Compile Include="LorePowers\FungalWastes\UnitedWeStandPower.cs" />
-    <Compile Include="LorePowers\Greenpath\CamouflagePower.cs" />
-    <Compile Include="LorePowers\Greenpath\GiftOfUnnPower.cs" />
-    <Compile Include="LorePowers\Greenpath\ReturnToUnnPower.cs" />
-    <Compile Include="LorePowers\Greenpath\GraspOfLifePower.cs" />
-    <Compile Include="LorePowers\Greenpath\TouchGrassPower.cs" />
-    <Compile Include="LorePowers\Greenpath\MindblastOfUnnPower.cs" />
-    <Compile Include="LorePowers\HowlingCliffs\JonisProtectionPower.cs" />
-    <Compile Include="LorePowers\HowlingCliffs\LifebloodOmenPower.cs" />
-    <Compile Include="LorePowers\KingdomsEdge\ConcussiveStrikePower.cs" />
-    <Compile Include="LorePowers\KingdomsEdge\WisdomOfTheSagePower.cs" />
-    <Compile Include="LorePowers\KingdomsEdge\YouLikeJazzPower.cs" />
-    <Compile Include="LorePowers\Power.cs" />
-    <Compile Include="LorePowers\Dirtmouth\ScrewTheRulesPower.cs" />
-    <Compile Include="LorePowers\Dirtmouth\TrueFormPower.cs" />
-    <Compile Include="LorePowers\QueensGarden\FlowerRingPower.cs" />
-    <Compile Include="LorePowers\QueensGarden\QueenThornsPower.cs" />
-    <Compile Include="LorePowers\RestingGrounds\DreamBlessingPower.cs" />
-    <Compile Include="LorePowers\Waterways\RelentlessSwarmPower.cs" />
-    <Compile Include="LorePowers\Waterways\EternalSentinelPower.cs" />
-    <Compile Include="LorePowers\WhitePalace\DiminishingCursePower.cs" />
-    <Compile Include="LorePowers\WhitePalace\SacredShellPower.cs" />
-    <Compile Include="LorePowers\WhitePalace\ShadowForgedPower.cs" />
-    <Compile Include="LorePowers\WhitePalace\ShiningBoundPower.cs" />
-    <Compile Include="UnityComponents\Infested.cs" />
-    <Compile Include="UnityComponents\MaskCharge.cs" />
-    <Compile Include="UnityComponents\MindBlast.cs" />
-    <Compile Include="Enums\PowerTag.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SaveManagement\LoreMasterGlobalSaveData.cs" />
-    <Compile Include="SaveManagement\LoreMasterLocalSaveData.cs" />
-    <Compile Include="CustomItem\TouristMagnetItem.cs" />
+    <None Remove="Resources\**\*.png" />
+    <None Remove="Resources\**\*.json" />
+    <None Remove="Resources\**\*.xml" />
   </ItemGroup>
+  
   <ItemGroup>
-    <EmbeddedResource Include="Resources\Lore.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\**\*.png" />
+    <EmbeddedResource Include="Resources\**\*.json" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <_CopyItems Include="Resources\Base\*.*" />
+	<_RandoItems Include="Resources\Randomizer\*.*" />
+  </ItemGroup>
+  
   <ItemGroup>
     <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -215,96 +117,37 @@
       <HintPath>..\..\..\..\Program Files\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\UnityEngine.UI.dll</HintPath>
     </Reference>
   </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\Queens_Thorns.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\MushroomChoice.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\DiamondHeart.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\DiamondHeart_Coreless.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\DiamondHeart_Shellless.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\DisabledPower.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\EyeOfLurien.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\Randomizer\Bardoon.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\Randomizer\Bretta.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\Randomizer\Elderbug.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\Randomizer\Emilitia.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\Randomizer\Fluke_Hermit.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\Randomizer\Gravedigger.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\Randomizer\Joni.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\Randomizer\Mask_Maker.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\Randomizer\Midwife.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\Randomizer\Moss_Prophet.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\Randomizer\Myla.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\Randomizer\Poggy.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\Randomizer\Queen.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\Randomizer\Quirrel.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\Randomizer\Vespa.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\Randomizer\Willoh.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\Randomizer\ReadLogicModifier.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\Randomizer\ListenLogicModifier.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  
+  <Target Name="CopyMod" AfterTargets="PostBuildEvent">
+    <Copy SourceFiles="$(TargetPath);$(TargetDir)$(TargetName).pdb" DestinationFolder="$(HollowKnightRefs)\Mods\$(TargetName)" OverwriteReadOnlyFiles="true" />
+	<Copy SourceFiles="@(_CopyItems)" DestinationFolder="$(HollowKnightRefs)\Mods\$(TargetName)\Resources\Base" SkipUnchangedFiles="true" />
+	<Copy SourceFiles="@(_RandoItems)" DestinationFolder="$(HollowKnightRefs)\Mods\$(TargetName)\Resources\Randomizer" SkipUnchangedFiles="true" />
+  </Target>
+
+  <Target Name="CreateReleaseZip" AfterTargets="PostBuildEvent" Condition="'$(Configuration)' == 'Release'">
+    <RemoveDir Directories="$(ExportDir)/$(TargetName)/" />
+    <MakeDir Directories="$(ExportDir)/$(TargetName)/" />
+    <MakeDir Directories="$(ExportDir)/$(TargetName)/zip/" />
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(ExportDir)/$(TargetName)/" />
+    <Copy SourceFiles="..\README.md;$(TargetPath);$(TargetDir)/$(TargetName).pdb" DestinationFolder="$(ExportDir)/$(TargetName)/zip/" />
+    <ZipDirectory SourceDirectory="$(ExportDir)/$(TargetName)/zip/" DestinationFile="$(ExportDir)/$(TargetName)/$(TargetName).zip" />
+
+    <GetFileHash Files="$(ExportDir)/$(TargetName)/$(TargetName).zip" Algorithm="SHA256">
+      <Output TaskParameter="Items" ItemName="FilesWithHashes" />
+    </GetFileHash>
+    <Message Importance="High" Text="@(FilesWithHashes->'%(Identity): %(FileHash)')" />
+    <WriteLinesToFile File="$(ExportDir)/$(TargetName)/metadata/SHA.txt" Lines="@(FilesWithHashes->'%(FileHash)')" Overwrite="true" Encoding="UTF-8" />
+
+    <GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
+      <Output TaskParameter="Assemblies" ItemName="Targets" />
+    </GetAssemblyIdentity>
+    <ItemGroup>
+      <VersionNumber Include="@(Targets->'%(Version)')" />
+    </ItemGroup>
+    <WriteLinesToFile File="$(ExportDir)/$(TargetName)/metadata/version.txt" Lines="@(VersionNumber)" Overwrite="true" Encoding="UTF-8" />
+  </Target>
+
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="cd $(HollowKnightRefs)\Mods\$(TargetName)&#xD;&#xA;del *.dll&#xD;&#xA;del *.pdb" />
+  </Target>  
 </Project>

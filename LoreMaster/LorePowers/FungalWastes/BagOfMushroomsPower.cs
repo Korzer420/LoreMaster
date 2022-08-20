@@ -63,14 +63,23 @@ public class BagOfMushroomsPower : Power
     /// </summary>
     private void ShroomControl()
     {
-        if (_activeEffect == 0 && _mushroomBag.activeSelf && !_pressed && InputHandler.Instance.inputActions.quickMap.IsPressed)
+        try
         {
-            _pressed = true;
-            LoreMaster.Instance.Handler.StartCoroutine(ChangeChoice());
-        }
+            if (_activeEffect == 0 && _mushroomBag.activeSelf && !_pressed && InputHandler.Instance.inputActions.quickMap.IsPressed)
+            {
+                _pressed = true;
+                LoreMaster.Instance.Handler.StartCoroutine(ChangeChoice());
+            }
 
-        if (_selectedEffect != 0 && InputHandler.Instance.inputActions.superDash.IsPressed && InputHandler.Instance.inputActions.dash.IsPressed)
-            _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(Saturation());
+            if (_selectedEffect != 0 && InputHandler.Instance.inputActions.superDash.IsPressed && InputHandler.Instance.inputActions.dash.IsPressed)
+                _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(Saturation());
+        }
+        catch (Exception exception)
+        {
+            LoreMaster.Instance.LogError("Error in Hero Update (Bag of Mushrooms): " + exception.Message);
+            LoreMaster.Instance.LogError("Disable mushroom bag.");
+            DisablePower();
+        }
     }
 
     /// <summary>

@@ -5,7 +5,9 @@ using ItemChanger.FsmStateActions;
 using LoreMaster.Enums;
 using LoreMaster.Extensions;
 using LoreMaster.Helper;
+using Modding;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
@@ -65,6 +67,80 @@ public class QueenThornsPower : Power
 
     #endregion
 
+    #region Internal Methods
+
+    /// <summary>
+    /// Modify thorns.
+    /// </summary>
+    internal void ModifyThorns(PlayMakerFSM fsm)
+    {
+        // Add transition to queen variant.
+        fsm.GetState("Check Equipped").ReplaceAction(new Lambda(() =>
+        {
+            if (PlayerData.instance.GetBool(nameof(PlayerData.instance.equippedCharm_12)))
+                fsm.SendEvent(Active ? "QUEEN" : "EQUIPPED");
+            else
+                fsm.SendEvent("CANCEL");
+        })
+        {
+            Name = "Check for Queen"
+        }, 0);
+
+        // Create a copy of the counter start for the queen variant.
+        FsmState currentWorkingState = fsm.GetState("Counter Start");
+        fsm.AddState(new(fsm.Fsm)
+        {
+            Name = "Queen Counter Start",
+            Actions = new FsmStateAction[]
+            {
+                currentWorkingState.Actions[0], //Get position from thorns
+                // currentWorkingState.Actions[1], Set position of hero
+                currentWorkingState.Actions[2], //Set velocity
+                // currentWorkingState.Actions[3], Remove gravity
+                // currentWorkingState.Actions[4], Relinquish control
+                currentWorkingState.Actions[5], // Stop Animation Control
+                currentWorkingState.Actions[6], // Play Audio
+                currentWorkingState.Actions[7], // Play Thorn Attack
+                currentWorkingState.Actions[8], // Wait
+            }
+        });
+        fsm.GetState("Check Equipped").AddTransition("QUEEN", "Queen Counter Start");
+        fsm.GetState("Queen Counter Start").AddTransition("FINISHED", "Set Thorn Scale");
+
+        // Create a copy of the counter for the queen variant.
+        currentWorkingState = fsm.GetState("Counter");
+        fsm.AddState(new(fsm.Fsm)
+        {
+            Name = "Queen Counter",
+            Actions = new FsmStateAction[]
+            {
+                currentWorkingState.Actions[0], // Wait for animation
+                // currentWorkingState.Actions[1], Set position of hero
+                currentWorkingState.Actions[2], // Screen shake
+                currentWorkingState.Actions[3], //Set Velocity
+                currentWorkingState.Actions[4], //Activate thorn hit
+                currentWorkingState.Actions[5], // Wait
+            }
+        });
+
+        // Add a state to control if the normal or queen variant should be executed.
+        fsm.AddState(new(fsm.Fsm)
+        {
+            Name = "Queen?",
+            Actions = new FsmStateAction[]
+            {
+                new Lambda(() => fsm.SendEvent(Active ? "QUEEN" : "FINISHED"))
+            }
+        });
+        fsm.GetState("Set Thorn Scale").RemoveTransitionsTo("Counter");
+        fsm.GetState("Set Thorn Scale").AddTransition("FINISHED", "Queen?");
+        fsm.GetState("Queen?").AddTransition("QUEEN", "Queen Counter");
+        fsm.GetState("Queen?").AddTransition("FINISHED", "Counter");
+        fsm.GetState("Queen Counter").AddTransition("FINISHED", "Counter End");
+    }
+
+    #endregion
+
     #region Protected Methods
 
     /// <inheritdoc/>
@@ -80,34 +156,8 @@ public class QueenThornsPower : Power
             }
 
             PlayMakerFSM fsm = GameObject.Find("Knight/Charm Effects").LocateMyFSM("Thorn Counter");
-            FsmState currentWorkingState = fsm.GetState("Counter Start");
-            currentWorkingState.ReplaceAction(new Lambda(() =>
-            {
-                // Prevent the freeze in the air
-                currentWorkingState.GetFirstActionOfType<SetPosition>().Enabled = !Active;
-                // Prevent the gravity from getting removed (this would cause the hero to float until the thorns despawn... probably).
-                currentWorkingState.GetActionsOfType<SendMessage>().Take(2).ToList().ForEach(x => x.Enabled = !Active);
-                fsm.FsmVariables.FindFsmVector3("Thorn Pos").Value = HeroController.instance.transform.localPosition;
-            })
-            { Name = "Block freeze" }, 0);
-
-            currentWorkingState = fsm.GetState("Counter");
-            currentWorkingState.ReplaceAction(new Lambda(() =>
-            {
-                if (Active)
-                    // I'm unsure if this is needed, but it can't hurt, right?
-                    HeroController.instance.RegainControl();
-                else
-                    // The freeze in the air.
-                    HeroController.instance.transform.localPosition = fsm.FsmVariables.FindFsmVector3("Thorn Pos").Value;
-            })
-            {
-                Name = "Block freeze"
-            }, 1);
-
-            _thorns = fsm.transform.Find("Thorn Hit").gameObject;
-
             // Adjust thorn damage
+            _thorns = fsm.transform.Find("Thorn Hit").gameObject;
             foreach (Transform child in _thorns.transform)
             {
                 fsm = child.gameObject.LocateMyFSM("set_thorn_damage");

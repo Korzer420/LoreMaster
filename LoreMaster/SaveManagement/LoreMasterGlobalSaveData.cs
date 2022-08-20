@@ -7,4 +7,6 @@ public class LoreMasterGlobalSaveData
     public bool ShowHint { get; set; }
 
     public bool DisableNausea { get; set; }
+
+    public bool BombQuickCast { get; set; }
 }

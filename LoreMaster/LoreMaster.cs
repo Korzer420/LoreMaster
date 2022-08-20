@@ -54,9 +54,11 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         {"FOUNTAIN_PLAQUE_DESC", new TouristPower() {DefaultTag = PowerTag.Global } },
         {"RUINS_MARISSA_POSTER", new MarissasAudiencePower() },
         {"MAGE_COMP_03", new OverwhelmingPower() },
+        {"MAGE_COMP_02", new PureFocusPower() },
         {"MAGE_COMP_01", new SoulExtractEfficiencyPower() },
         {"LURIAN_JOURNAL", new EyeOfTheWatcherPower() },
         {"EMILITIA", new HappyFatePower() },
+        {"MARISSA", new BlessingOfTheButterflyPower() },
         {"POGGY", new DeliciousMealPower() },
         // Crossroads
         {"PILGRIM_TAB_01", new ReluctantPilgrimPower() },
@@ -104,6 +106,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         {"XUN_GRAVE_INSPECT", new FlowerRingPower() },
         {"QUEEN", new QueenThornsPower() },
         {"MOSSPROPHET", new FollowTheLightPower() },
+        {"GRASSHOPPER", new GrassBombardementPower() },
         // Resting Grounds
         {"DREAMERS_INSPECT_RG5", new DreamBlessingPower() },
         // Waterways
@@ -148,7 +151,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
     public LoreMaster()
     {
         LorePage.PassPowers(_powerList.Values.ToList());
-        InventoryHelper.AddInventoryPage(InventoryPageType.Empty, "Lore", "Loremaster", "Loremaster", "metElderbug", LorePage.GeneratePage);
+        InventoryHelper.AddInventoryPage(InventoryPageType.Empty, "Lore", "LoreMaster", "LoreMaster", "metElderbug", LorePage.GeneratePage);
     }
 
     #endregion
@@ -196,6 +199,11 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
     public bool DisableYellowMushroom { get; set; }
 
     /// <summary>
+    /// Gets or sets the flag that indicates if the <see cref="GrassBombardementPower"/> bombs can be cast via quickcast.
+    /// </summary>
+    public bool BombQuickCast { get; set; } = true;
+
+    /// <summary>
     /// Gets the flag for the toggle button to disable this mod.
     /// </summary>
     public bool ToggleButtonInsideMenu => true;
@@ -238,7 +246,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
     /// <returns></returns>
     private string GetText(string key, string sheetTitle, string text)
     {
-        if (key.Equals("Loremaster"))
+        if (key.Equals("LoreMaster"))
             return "Lore Powers";
         key = ModifyKey(key);
         if (key.Equals("INV_NAME_SUPERDASH"))
@@ -281,7 +289,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         }
         else if (key.Equals("ELDERBUG_INTRO_MAIN"))
             text = "This town may not hold the most interesting wisdom, but the kingdom below sure does. There a plenty of tablets and creatures which you can learn from. " +
-                "Maybe someday, I'll be able to call you \"Loremaster\". Oh what a thought, excuse me. Anyway, if you want to explore the world below, keeping track of " +
+                "Maybe someday, I'll be able to call you \"LoreMaster\". Oh what a thought, excuse me. Anyway, if you want to explore the world below, keeping track of " +
                 "every knowledge that you acquired might be hard. Let me help you with that. This is a relic which tracks every bit of information that you've collected so far. " +
                 "Sometimes, the knowledge can be more of a threat than a blessing. In those cases, touching the ability on the relic while resting may disable them, until you touch it again. " +
                 "Maybe you should not waste too much time though. I heard legends that this artifact might lock it's " +
@@ -313,6 +321,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
             teleportItems.Add(secondPlacement);
             ItemChangerMod.AddPlacements(teleportItems);
             GloryOfTheWealthPower.GloryCost = 0;
+            On.PlayMakerFSM.OnEnable += FsmEdits;
             orig(self, permaDeath, bossRush);
             ModHooks.SetPlayerBoolHook += TrackPathOfPain;
             _fromMenu = true;
@@ -323,15 +332,10 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
             // Unsure if this is needed, but just in case.
             ActivePowers.Clear();
             ModHooks.LanguageGetHook += GetText;
-            On.PlayMakerFSM.OnEnable += FsmEdits;
+
             On.DeactivateIfPlayerdataTrue.OnEnable += ForceMyla;
             On.DeactivateIfPlayerdataFalse.OnEnable += PreventMylaZombie;
-            if (ModHooks.GetMod("Randomizer 4") is not Mod mod)
-            {
-                CanRead = true;
-                CanListen = true;
-            }
-            else
+            if (ModHooks.GetMod("Randomizer 4") is Mod mod)
                 AbstractItem.BeforeGiveGlobal += GiveLoreItem;
         }
         catch (Exception exception)
@@ -361,14 +365,8 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         On.PlayMakerFSM.OnEnable += FsmEdits;
         On.DeactivateIfPlayerdataTrue.OnEnable += ForceMyla;
         On.DeactivateIfPlayerdataFalse.OnEnable += PreventMylaZombie;
-        if (ModHooks.GetMod("Randomizer 4") is not Mod)
-        {
-            CanRead = true;
-            CanListen = true;
-        }
-        else
+        if (ModHooks.GetMod("Randomizer 4") is Mod)
             AbstractItem.BeforeGiveGlobal += GiveLoreItem;
-
         orig(self);
     }
 
@@ -426,8 +424,23 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
     {
         try
         {
-            if (GameManager.instance != null && GameManager.instance.IsGameplayScene() && !arg1.name.Equals("Quit_To_Menu"))
+            if (GameManager.instance != null && GameManager.instance.IsGameplayScene() && !string.Equals(arg1.name, "Quit_To_Menu"))
             {
+                // Spawn extra lore tablet.
+                if (string.Equals(arg1.name, "Ruins1_30"))
+                {
+                    GameObject tablet = GameObject.Instantiate(PreloadedObjects["Glow Response Mage Computer"]);
+                    tablet.name = "Mage_Computer_2";
+                    tablet.transform.localPosition = new(70f, 6.21f, .02f);
+                    tablet.SetActive(true);
+
+                    GameObject inspectRegion = GameObject.Instantiate(PreloadedObjects["Inspect Region"]);
+                    inspectRegion.name = "Computer_2_Inspect";
+                    inspectRegion.transform.localPosition = new(70f, 4.31f, .006f);
+                    inspectRegion.SetActive(true);
+                    inspectRegion.LocateMyFSM("inspect_region").FsmVariables.FindFsmString("Game Text Convo").Value = "MAGE_COMP_02";
+                }
+                // Initialization
                 if (_fromMenu)
                 {
                     if (arg1.name.ToLower().Equals("town"))
@@ -438,18 +451,21 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
                     }
 
                     // Allow the player to read the resting grounds tablet.
-                    if (ItemChangerMod.Modules.Modules.FirstOrDefault(x => x.Name.Equals("DreamNailCutsceneEvent")) is not DreamNailCutsceneEvent cutscene)
+                    if (ItemChangerMod.Modules?.Modules?.FirstOrDefault(x => x.Name.Equals("DreamNailCutsceneEvent")) is not DreamNailCutsceneEvent cutscene)
                         ItemChangerMod.Modules.Modules.Add(new DreamNailCutsceneEvent() { Faster = false });
                     else
                         cutscene.Faster = false;
 
                     // Load in changes from the options file (if it exists)
                     LoadOptions();
+
+                    if (ModHooks.GetMod("Randomizer 4") is Mod)
+                        RandomizerManager.CheckForRandoFile();
                 }
                 Handler.StartCoroutine(ManageSceneActions());
             }
             // Reset curses (in case a rando is done and then a normal game)
-            else if (arg1.name.Equals("Menu_Title"))
+            else if (string.Equals(arg1.name, "Menu_Title"))
             {
                 CanRead = true;
                 CanListen = true;
@@ -531,7 +547,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
                     new Lambda(() => self.SendEvent("FINISHED"))
                 };
                 self.GetState("Convo Choice").AddTransition("FINISHED", "Meeting Choice");
-            }    
+            }
         }
         // Prevent killing ghosts with abilities.
         else if (self.FsmName.Equals("ghost_npc_death"))
@@ -540,7 +556,9 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
             try
             {
                 ghostName = self.gameObject.LocateMyFSM("Conversation Control").FsmVariables.FindFsmString("Ghost Name").Value.ToUpper();
-                if (ghostName.Equals("POGGY") || ghostName.Equals("HIVEQUEEN") || ghostName.Equals("JONI") || ghostName.Equals("GRAVEDIGGER"))
+                if (ghostName.Equals("POGGY") || ghostName.Equals("HIVEQUEEN")
+                    || ghostName.Equals("JONI") || ghostName.Equals("GRAVEDIGGER")
+                    || ghostName.Equals("GRASSHOPPER"))
                 {
                     self.GetState("Revek?").ReplaceAction(new Lambda(() =>
                     {
@@ -592,6 +610,8 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
             self.GetState("Out Of Range").ClearTransitions();
         else if (self.FsmName.Equals("Control") && self.gameObject.name.Equals("Final Boss Door") && ModHooks.GetMod("Randomizer 4", true) is Mod mod)
             RandomizerManager.ModifyTempleDoor(self);
+        else if (self.FsmName.Equals("Thorn Counter"))
+            ((QueenThornsPower)_powerList["QUEEN"]).ModifyThorns(self);
         orig(self);
     }
 
@@ -663,11 +683,6 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
     public override string GetVersion() => Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
     /// <summary>
-    /// Gets the load priority of the mod. This is -1 to ensure the randomizer is initialized by the time this mod is called.
-    /// </summary>
-    public override int LoadPriority() => -1;
-
-    /// <summary>
     /// Gets the names (objects) that need to be preloaded.
     /// </summary>
     /// <returns></returns>
@@ -675,13 +690,17 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
     {
         ("RestingGrounds_08", "Ghost Battle Revek"),
         ("Deepnest_43", "Mantis Heavy Flyer"), // Deepnest_43 Mantis Heavy Flyer -> PersonalObjectPool -> StartUpPool [0] is shot
-        ("Ruins1_28","Flamebearer Spawn"), // Small Ghost
-        ("RestingGrounds_06","Flamebearer Spawn"), // Medium Ghost
-        ("Hive_03","Flamebearer Spawn"), // Large Ghost
+        ("Ruins1_28", "Flamebearer Spawn"), // Small Ghost
+        ("RestingGrounds_06", "Flamebearer Spawn"), // Medium Ghost
+        ("Hive_03", "Flamebearer Spawn"), // Large Ghost
         ("GG_Hollow_Knight", "Battle Scene/HK Prime/Focus Blast/focus_ring"),
         ("GG_Hollow_Knight", "Battle Scene/HK Prime/Focus Blast/focus_rune"),
-        ("Fungus1_01b","green_grass_1"),
-        ("White_Palace_09","ash_grass_02")
+        ("Fungus1_01b", "green_grass_1"),
+        ("White_Palace_09", "ash_grass_02"),
+        ("Ruins1_01", "Ceiling Dropper"),
+        ("Ruins1_23", "Glow Response Mage Computer"), // Soul sanctum lore tablet.
+        ("Ruins1_23", "Inspect Region"), // Inspect region for soul sanctum tablet.
+        ("Ruins1_23", "Mage")
     };
 
     /// <summary>
@@ -690,6 +709,9 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
     /// <param name="preloadedObjects"></param>
     public override void Initialize(Dictionary<string, Dictionary<string, GameObject>> preloadedObjects)
     {
+        GameObject loreManager = new("LoreManager");
+        GameObject.DontDestroyOnLoad(loreManager);
+        Handler = loreManager.AddComponent<CoroutineHandler>();
         if (Instance != null)
             return;
         Instance = this;
@@ -699,28 +721,34 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         On.GameManager.ReturnToMainMenu += ReturnToMenu;
 
         int grimmkinIndex = 1;
-        foreach (string key in preloadedObjects.Keys)
-            foreach (string subKey in preloadedObjects[key].Keys)
-                if (!PreloadedObjects.ContainsKey(subKey) || subKey.Equals("Flamebearer Spawn"))
-                {
-                    GameObject toAdd = preloadedObjects[key][subKey];
-                    if (subKey.Equals("Mantis Heavy Flyer"))
-                        toAdd = preloadedObjects[key][subKey].GetComponent<PersonalObjectPool>().startupPool[0].prefab;
-                    else if (subKey.Equals("Flamebearer Spawn"))
+        try
+        {
+            foreach (string key in preloadedObjects.Keys)
+                foreach (string subKey in preloadedObjects[key].Keys)
+                    if (!PreloadedObjects.ContainsKey(subKey) || subKey.Equals("Flamebearer Spawn"))
                     {
-                        string realKey = grimmkinIndex == 1 ? "Small Ghost" : (grimmkinIndex == 2 ? "Medium Ghost" : "Large Ghost");
-                        toAdd = toAdd.LocateMyFSM("Spawn Control").FsmVariables.FindFsmGameObject("Grimmkin Obj").Value;
-                        PreloadedObjects.Add(realKey, toAdd);
+                        GameObject toAdd = preloadedObjects[key][subKey];
+                        if (subKey.Equals("Mantis Heavy Flyer"))
+                            toAdd = toAdd.GetComponent<PersonalObjectPool>().startupPool[0].prefab;
+                        else if (subKey.Equals("Flamebearer Spawn"))
+                        {
+                            string realKey = grimmkinIndex == 1 ? "Small Ghost" : (grimmkinIndex == 2 ? "Medium Ghost" : "Large Ghost");
+                            toAdd = toAdd.LocateMyFSM("Spawn Control").FsmVariables.FindFsmGameObject("Grimmkin Obj").Value;
+                            PreloadedObjects.Add(realKey, toAdd);
+                            GameObject.DontDestroyOnLoad(toAdd);
+                            grimmkinIndex++;
+                            continue;
+                        }
+                        else if(subKey.Equals("Mage"))
+                            toAdd = toAdd.GetComponent<PersonalObjectPool>().startupPool[0].prefab;
+                        PreloadedObjects.Add(subKey, toAdd);
                         GameObject.DontDestroyOnLoad(toAdd);
-                        grimmkinIndex++;
-                        continue;
                     }
-                    PreloadedObjects.Add(subKey, toAdd);
-                    GameObject.DontDestroyOnLoad(toAdd);
-                }
-        GameObject loreManager = new("LoreManager");
-        GameObject.DontDestroyOnLoad(loreManager);
-        Handler = loreManager.AddComponent<CoroutineHandler>();
+        }
+        catch (Exception exception)
+        {
+            LogError("Error while preloading: " + exception.Message);
+        }
         try
         {
             if (ModHooks.GetMod("Randomizer 4") is Mod mod)
@@ -829,6 +857,15 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
             Values = new string[] { "On", "Off" },
             Saver = option => DisableYellowMushroom = option == 0,
             Loader = () => DisableYellowMushroom ? 0 : 1
+        });
+
+        menu.Add(new()
+        {
+            Name = "Allow Bomb quick cast",
+            Description = "If on, the bomb spell can cast via quickcast.",
+            Values = new string[] { "On", "Off" },
+            Saver = option => BombQuickCast = option == 0,
+            Loader = () => BombQuickCast ? 0 : 1
         });
 
         return menu;
@@ -960,6 +997,8 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
             key = "POGGY";
         else if (key.Equals("GRAVEDIGGER_TALK") || key.Equals("GRAVEDIGGER_REPEAT"))
             key = "GRAVEDIGGER";
+        else if (key.Equals("GRASSHOPPER_TALK") || key.Equals("GRASSHOPPER_REPEAT"))
+            key = "GRASSHOPPER";
         else if (IsFlukeHermit(key))
             key = "FLUKE_HERMIT";
         else if (IsQueen(key))
@@ -1037,6 +1076,21 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         // Initialization taken when we entered from the menu.
         if (_fromMenu)
         {
+            // Ensures that the flower doesn't get destroyed instantly when powers apply fake damage.
+            PlayMakerFSM fsm = HeroController.instance.proxyFSM;
+            fsm.GetState("Flower?").ReplaceAction(new Lambda(() =>
+            {
+                if (Power.FakeDamage
+                || !PlayerData.instance.GetBool(nameof(PlayerData.instance.hasXunFlower))
+                || PlayerData.instance.GetBool(nameof(PlayerData.instance.xunFlowerBroken)))
+                {
+                    if (Power.FakeDamage)
+                        Power.FakeDamage = false;
+                    fsm.SendEvent("FINISHED");
+                }
+            })
+            { Name = "Fake Damage" }, 0);
+
             _fromMenu = false;
             // Enables the powers beforehand. This has to be done because otherwise the effects will only stay permanent once the player enters the area.
             List<Power> toActivate = new();
@@ -1172,14 +1226,14 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         UseHints = globalSaveData.ShowHint;
         UseCustomText = globalSaveData.EnableCustomText;
         DisableYellowMushroom = globalSaveData.DisableNausea;
+        BombQuickCast = globalSaveData.BombQuickCast;
     }
 
     /// <summary>
     /// Saves the data for the global mod settings.
     /// </summary>
-    /// <returns></returns>
     LoreMasterGlobalSaveData IGlobalSettings<LoreMasterGlobalSaveData>.OnSaveGlobal()
-        => new() { ShowHint = UseHints, EnableCustomText = UseCustomText, DisableNausea = DisableYellowMushroom };
+        => new() { ShowHint = UseHints, EnableCustomText = UseCustomText, DisableNausea = DisableYellowMushroom, BombQuickCast = BombQuickCast };
 
     /// <summary>
     /// Loads the data from the save file.
