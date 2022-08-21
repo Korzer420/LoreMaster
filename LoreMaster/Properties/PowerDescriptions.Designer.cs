@@ -394,7 +394,7 @@ namespace LoreMaster.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die If you have 0 soul after casting a spell you will gain an rotating orb around you that deals 5 contact damage. If you have 3 orbs active, the next fireball will increase their size, let them explode upon contact for 20 damage and restore 10 soul. Soul Snatcher and Soul Eater will increase the soul gained by the orb. Shaman Stone will increase the orb explosion damage. ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die If you have 0 soul after casting a spell you will gain an rotating orb around you that deals 2 contact damage (4 with shamans), up to 3 at a time. If you have 3 orbs active, the next fireball will attach the orbs to it, let them explode upon contact with enemies for 20 damage and restore 10 soul. Soul Snatcher and Soul Eater will increase the soul gained by the orb. Shaman Stone will increase the orb explosion damage. ähnelt.
         /// </summary>
         internal static string PureSpirit {
             get {

@@ -229,7 +229,7 @@
     <value>When you would take damage, you have a 2% chance to be healed instead. Increased by 4% for each King's Brand and Kingssoul. Also increased by 1 % for each king's idol you have.</value>
   </data>
   <data name="PureSpirit" xml:space="preserve">
-    <value>If you have 0 soul after casting a spell you will gain an rotating orb around you that deals 5 contact damage. If you have 3 orbs active, the next fireball will increase their size, let them explode upon contact for 20 damage and restore 10 soul. Soul Snatcher and Soul Eater will increase the soul gained by the orb. Shaman Stone will increase the orb explosion damage.</value>
+    <value>If you have 0 soul after casting a spell you will gain an rotating orb around you that deals 2 contact damage (4 with shamans), up to 3 at a time. If you have 3 orbs active, the next fireball will attach the orbs to it, let them explode upon contact with enemies for 20 damage and restore 10 soul. Soul Snatcher and Soul Eater will increase the soul gained by the orb. Shaman Stone will increase the orb explosion damage.</value>
   </data>
   <data name="QueenThorns" xml:space="preserve">
     <value>Thorns of Agony are now "Queen Thorns", which removes the freeze on hit. restore soul if it hits an enemy and has a 33% chance to restore 1 hp if it kills an enemy.</value>
