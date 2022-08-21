@@ -10,10 +10,7 @@ I mostly oriented on the wiki page of lore tablets to see what actually counts. 
 - Any of Bretta's diary entries does count for her power.
 - Midwife and the mask maker grant abilities.
 - The traitor's grave, Moss prophet and the queen grant abilites.
-- Badoon and Hive Queen Vesper grant an ability.
-- Joni grants an ability.
-- Poggy (The ghost in the elevator room of Pleasure Houses) grants an ability.
-- The Gravedigger grants an ability.
+- Badoon grant an ability.
 - The journal entry at the end of PoP grant an ability (Ability is only shown at the lore tablet at the start of PoP. This is the only power that by default is excluded (see below for more details))
 - The world sense tablet in the black egg temple does count.
 - Willow grants an ability.
@@ -21,6 +18,8 @@ I mostly oriented on the wiki page of lore tablets to see what actually counts. 
 - Quirrel in Crystal Peaks grants an ability. (Always present)
 - Emilitia in the city grants a power.
 - The statue of the Hollow Knight in the city grants a ability.
+- All ghosts outside glade except Cloth grant abilities.
+- Record Bela grants an ability (extra lore tablet)
 
 Currently not implemented:
 - The shield on iselda's shop grants you a bonus but not ability. (Is not required for the dirtmouth loremaster)
