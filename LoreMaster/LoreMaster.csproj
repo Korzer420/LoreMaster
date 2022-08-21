@@ -13,6 +13,8 @@
   <PropertyGroup>
     <HollowKnightRefs>E:/Program Files/Steam/steamapps/common/Hollow Knight/hollow_knight_Data/Managed/</HollowKnightRefs>
     <ExportDir>bin\Publish</ExportDir>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <DocumentationFile></DocumentationFile>
   </PropertyGroup>
   
   <ItemGroup>
