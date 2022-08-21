@@ -17,11 +17,7 @@ public class HappyFatePower : Power
 
     #region Constructors
 
-    public HappyFatePower() : base("Happy Fate", Area.CityOfTears)
-    {
-        Hint = "[Beta] Your \"happiness\" increases all your abilities slightly. Getting hit makes you sad :c A good rest may restore your hapiness.";
-        Description = "After sitting on a bench, your nail damage, nail range, running speed, dash speed and cdash charge up speed is increased. You also gain 1 soul per second.";
-    }
+    public HappyFatePower() : base("Happy Fate", Area.CityOfTears) { }
 
     #endregion
 

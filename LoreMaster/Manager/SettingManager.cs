@@ -28,7 +28,7 @@ namespace LoreMaster.Manager;
 
 
 /// <summary>
-/// Game manager for modifying all things besides the lore and powers.
+/// Game manager for modifying all things besides the lore and powers. (Fsm and stuff)
 /// </summary>
 internal class SettingManager
 {
@@ -85,6 +85,9 @@ internal class SettingManager
     /// </summary>
     public RandomizerEndCondition EndCondition { get; set; }
 
+    /// <summary>
+    /// The running instance of this manager.
+    /// </summary>
     public static SettingManager Instance { get; set; }
 
     #endregion
@@ -93,17 +96,11 @@ internal class SettingManager
 
     #region Game Management
 
-    /// <summary>
-    /// Event handler, when a new game is started.
-    /// </summary>
-    /// <param name="orig"></param>
-    /// <param name="self"></param>
-    /// <param name="permaDeath"></param>
-    /// <param name="bossRush"></param>
     private void StartNewGame(On.UIManager.orig_StartNewGame orig, UIManager self, bool permaDeath, bool bossRush)
     {
         try
         {
+            // Add items for the black egg temple teleporter.
             ItemChangerMod.CreateSettingsProfile(false);
             List<MutablePlacement> teleportItems = new();
             MutablePlacement teleportPlacement = new CoordinateLocation() { x = 35.0f, y = 5.4f, elevation = 0, sceneName = "Ruins1_27", name = "City_Teleporter" }.Wrap() as MutablePlacement;
@@ -116,6 +113,8 @@ internal class SettingManager
             secondPlacement.Add(new TouristMagnetItem("Temple_Teleporter"));
             teleportItems.Add(secondPlacement);
             ItemChangerMod.AddPlacements(teleportItems);
+
+
             GloryOfTheWealthPower.GloryCost = 0;
             On.PlayMakerFSM.OnEnable += FsmEdits;
             orig(self, permaDeath, bossRush);
@@ -124,11 +123,18 @@ internal class SettingManager
 
             PowerManager.ResetPowers();
             ModHooks.LanguageGetHook += LoreManager.Instance.GetText;
-
             On.DeactivateIfPlayerdataTrue.OnEnable += ForceMyla;
             On.DeactivateIfPlayerdataFalse.OnEnable += PreventMylaZombie;
-            if (ModHooks.GetMod("Randomizer 4") is Mod mod)
+            if (ModHooks.GetMod("Randomizer 4") is Mod)
+            {
                 AbstractItem.BeforeGiveGlobal += GiveLoreItem;
+                RandomizerManager.CheckForRandoFile();
+            }
+            else
+            {
+                LoreManager.Instance.CanRead = true;
+                LoreManager.Instance.CanListen = true;
+            }
         }
         catch (Exception exception)
         {
@@ -136,11 +142,6 @@ internal class SettingManager
         }
     }
 
-    /// <summary>
-    /// Event handler, when a game is continued (from the save file).
-    /// </summary>
-    /// <param name="orig"></param>
-    /// <param name="self"></param>
     private void ContinueGame(On.UIManager.orig_ContinueGame orig, UIManager self)
     {
         _fromMenu = true;
@@ -154,18 +155,18 @@ internal class SettingManager
         On.DeactivateIfPlayerdataTrue.OnEnable += ForceMyla;
         On.DeactivateIfPlayerdataFalse.OnEnable += PreventMylaZombie;
         if (ModHooks.GetMod("Randomizer 4") is Mod)
+        {
             AbstractItem.BeforeGiveGlobal += GiveLoreItem;
+            RandomizerManager.CheckForRandoFile();
+        }
+        else
+        {
+            LoreManager.Instance.CanRead = true;
+            LoreManager.Instance.CanListen = true;
+        }
         orig(self);
     }
 
-    /// <summary>
-    /// Event handler used for returning to the menu.
-    /// </summary>
-    /// <param name="orig"></param>
-    /// <param name="self"></param>
-    /// <param name="saveMode"></param>
-    /// <param name="callback"></param>
-    /// <returns></returns>
     private IEnumerator ReturnToMenu(On.GameManager.orig_ReturnToMainMenu orig, GameManager self, GameManager.ReturnToMainMenuSaveModes saveMode, Action<bool> callback)
     {
         PowerManager.DisableAllPowers();
@@ -202,8 +203,6 @@ internal class SettingManager
     /// <summary>
     /// Event handler used for adjusting the active powers.
     /// </summary>
-    /// <param name="arg0"></param>
-    /// <param name="arg1"></param>
     private void SceneChanged(UnityEngine.SceneManagement.Scene arg0, UnityEngine.SceneManagement.Scene arg1)
     {
         try
@@ -227,37 +226,46 @@ internal class SettingManager
                 // Initialization
                 if (_fromMenu)
                 {
-                    if (arg1.name.ToLower().Equals("town"))
+                    if (string.Equals(arg1.name.ToLower(), "town"))
                     {
                         Transform elderbug = GameObject.Find("_NPCs/Elderbug").transform;
                         elderbug.localScale = new(2f, 2f, 2f);
                         elderbug.localPosition = new(126.36f, 12.35f, 0f);
                     }
 
-                    // Allow the player to read the resting grounds tablet.
-                    if (ItemChangerMod.Modules?.Modules?.FirstOrDefault(x => x.Name.Equals("DreamNailCutsceneEvent")) is not DreamNailCutsceneEvent cutscene)
-                        ItemChangerMod.Modules.Modules.Add(new DreamNailCutsceneEvent() { Faster = false });
-                    else
-                        cutscene.Faster = false;
+                    try
+                    {
+                        // Allow the player to read the resting grounds tablet.
+                        if (ItemChangerMod.Modules != null && ItemChangerMod.Modules.Modules != null)
+                        {
+                            if (ItemChangerMod.Modules.Modules.FirstOrDefault(x => string.Equals(x?.Name, "DreamNailCutsceneEvent")) is not DreamNailCutsceneEvent cutscene)
+                                ItemChangerMod.Modules.Modules.Add(new DreamNailCutsceneEvent() { Faster = false });
+                            else
+                                cutscene.Faster = false;
+                        }
+                        else
+                            LoreMaster.Instance.LogWarn("Couldn't find item changer modules. This might cause the dreamer tablet to be unreadable!");
+                    }
+                    catch (Exception exception)
+                    {
+                        LoreMaster.Instance.LogError("An error occured while modifying IC: " + exception.Message);
+                    }
 
                     // Load in changes from the options file (if it exists)
                     LoadOptions();
-
-                    if (ModHooks.GetMod("Randomizer 4") is Mod)
-                        RandomizerManager.CheckForRandoFile();
                 }
                 LoreMaster.Instance.Handler.StartCoroutine(ManageSceneActions());
             }
             // Reset curses (in case a rando is done and then a normal game)
             else if (string.Equals(arg1.name, "Menu_Title"))
             {
-               LoreManager.Instance.CanRead = true;
-               LoreManager.Instance.CanListen = true;
+                LoreManager.Instance.CanRead = true;
+                LoreManager.Instance.CanListen = true;
             }
         }
         catch (Exception error)
         {
-           LoreMaster.Instance.LogError("Error while trying to load new scene: " + error.Message);
+            LoreMaster.Instance.LogError("Error while trying to load new scene: " + error.Message);
             LoreMaster.Instance.LogError(error.StackTrace);
         }
     }
@@ -265,36 +273,34 @@ internal class SettingManager
     /// <summary>
     /// Event handler that handles the fsm edits.
     /// </summary>
-    /// <param name="orig"></param>
-    /// <param name="self"></param>
     private void FsmEdits(On.PlayMakerFSM.orig_OnEnable orig, PlayMakerFSM self)
     {
         // The quirrel in peaks has 3 fsm (don't ask) that indicates if he can be there: If he has been encountered in archives, if you have superdash or if he has just left the mines.
         // We remove all those checks.
-        if (self.gameObject.name.Equals("Quirrel Mines") && self.FsmName.Equals("FSM"))
+        if (string.Equals(self.gameObject.name, "Quirrel Mines") && string.Equals(self.FsmName, "FSM"))
             self.GetState("Check").RemoveTransitionsTo("Destroy");
         // The game asks for the language key for the fountain once you entered the room. To not give the power immediatly, we bind it on the inspect instead.
-        else if (self.gameObject.name.Equals("Fountain Inspect") && self.FsmName.Equals("Conversation Control"))
+        else if (string.Equals(self.gameObject.name, "Fountain Inspect") && string.Equals(self.FsmName, "Conversation Control"))
         {
             string placeHolder = string.Empty;
             self.GetState("Anim End").ReplaceAction(new Lambda(() => PowerManager.GetPowerByKey("FOUNTAIN_PLAQUE_DESC", out Power power)) { Name = "Fountain Power" });
         }
         // The game asks for the language key for the dreamer tablet once you entered the room. To not give the power immediatly, we bind it on the inspect instead.
-        else if (self.gameObject.name.Equals("Dreamer Plaque Inspect") && self.FsmName.Equals("Conversation Control"))
+        else if (string.Equals(self.gameObject.name, "Dreamer Plaque Inspect") && string.Equals(self.FsmName, "Conversation Control"))
         {
             string placeHolder = string.Empty;
             self.GetState("Anim End").ReplaceAction(new Lambda(() => PowerManager.GetPowerByKey("DREAMERS_INSPECT_RG5", out Power power)) { Name = "Dreamer Power" });
         }
         // Prevent Moss Prophet from dying
-        else if (self.gameObject.name.Equals("Moss Cultist") && self.FsmName.Equals("FSM"))
+        else if (string.Equals(self.gameObject.name, "Moss Cultist") && string.Equals(self.FsmName, "FSM"))
         {
             self.GetState("Check").RemoveTransitionsTo("Destroy");
             self.gameObject.GetComponent<BoxCollider2D>().enabled = true;
         }
         // Deactives moss prophet corpse, so that it doesn't block the living one.
-        else if (self.gameObject.name.Equals("corpse set") && self.FsmName.Equals("FSM"))
+        else if (string.Equals(self.gameObject.name, "corpse set") && string.Equals(self.FsmName, "FSM"))
             self.gameObject.FindChild("corpse0000").SetActive(false);
-        else if (self.gameObject.name.Contains("Radiance") && self.FsmName.Equals("Control"))
+        else if (self.gameObject.name.Contains("Radiance") && string.Equals(self.FsmName, "Control"))
         {
             // This disables all powers when the player defeats radiance.
             // The main purpose is to ensure, that the player is not killed by revek (Marissas Audience) or grimmkin (Lifeblood Omen).
@@ -309,19 +315,19 @@ internal class SettingManager
             }
             catch (Exception exception)
             {
-               LoreMaster.Instance.LogError("Couldn't modify radiance fsm: " + exception.Message);
+                LoreMaster.Instance.LogError("Couldn't modify radiance fsm: " + exception.Message);
             }
         }
-        else if (self.gameObject.name.Equals("Elderbug"))
+        else if (string.Equals(self.gameObject.name, "Elderbug"))
         {
-            if (self.FsmName.Equals("npc_control"))
+            if (string.Equals(self.FsmName, "npc_control"))
             {
                 self.transform.localScale = new(2f, 2f, 2f);
                 self.transform.localPosition = new(126.36f, 12.35f, 0f);
                 if (!LoreManager.Instance.CanListen)
                     self.GetState("Idle").ClearTransitions();
             }
-            else if (self.FsmName.Equals("Conversation Control"))
+            else if (string.Equals(self.FsmName, "Conversation Control"))
             {
                 self.GetState("Convo Choice").ClearTransitions();
                 self.GetState("Convo Choice").Actions = new HutongGames.PlayMaker.FsmStateAction[]
@@ -332,20 +338,20 @@ internal class SettingManager
             }
         }
         // Prevent killing ghosts with abilities.
-        else if (self.FsmName.Equals("ghost_npc_death"))
+        else if (string.Equals(self.FsmName, "ghost_npc_death"))
         {
             string ghostName = "";
             try
             {
                 ghostName = self.gameObject.LocateMyFSM("Conversation Control").FsmVariables.FindFsmString("Ghost Name").Value.ToUpper();
-                if (ghostName.Equals("POGGY") || ghostName.Equals("HIVEQUEEN")
-                    || ghostName.Equals("JONI") || ghostName.Equals("GRAVEDIGGER")
-                    || ghostName.Equals("GRASSHOPPER"))
+                if (string.Equals(ghostName, "POGGY") || string.Equals(ghostName, "HIVEQUEEN")
+                    || string.Equals(ghostName, "JONI") || string.Equals(ghostName, "GRAVEDIGGER")
+                    || string.Equals(ghostName, "GRASSHOPPER") || string.Equals(ghostName, "MARISSA"))
                 {
                     self.GetState("Revek?").ReplaceAction(new Lambda(() =>
                     {
                         // If rando is used, to prevent locking out of progress, ghost with abilities will became immune entirely.
-                        if (!PowerManager.HasObtainedPower(ghostName, false) || ModHooks.GetMod("Randomizer 4", true) is Mod)
+                        if (!PowerManager.HasObtainedPower(ghostName, false))
                             self.SendEvent("IMMUNE");
                         else
                             self.SendEvent(self.FsmVariables.FindFsmBool("z_Revek").Value ? "REVEK" : "FINISHED");
@@ -360,7 +366,7 @@ internal class SettingManager
             }
         }
         // Disable all powers in the end sequence.
-        else if (self.FsmName.Equals("Phase Control") && self.gameObject.name.Equals("Hollow Knight Boss"))
+        else if (string.Equals(self.FsmName, "Phase Control") && string.Equals(self.gameObject.name, "Hollow Knight Boss"))
             self.GetState("Die").ReplaceAction(new Lambda(() =>
             {
                 PowerManager.DisableAllPowers();
@@ -368,32 +374,33 @@ internal class SettingManager
             })
             { Name = "Deactivate Lore Powers" }, 2);
         // Prevent the player from reading lore tablets without the item (rando only)
-        else if (self.FsmName.Equals("Inspection") && !LoreManager.Instance.CanRead && PowerManager.HasObtainedPower(self.FsmVariables.FindFsmString("Convo Name")?.Value, false))
+        else if (string.Equals(self.FsmName, "Inspection") && !LoreManager.Instance.CanRead && PowerManager.GetPowerByKey(self.FsmVariables.FindFsmString("Convo Name")?.Value, out Power power, false))
             self.GetState("Init").ClearTransitions();
         // Prevent the player from reading lore tablets without the item (rando only)
-        else if (self.FsmName.Equals("inspect_region") && !LoreManager.Instance.CanRead && PowerManager.HasObtainedPower(self.FsmVariables.FindFsmString("Game Text Convo")?.Value, false))
+        else if (string.Equals(self.FsmName, "inspect_region") && !LoreManager.Instance.CanRead && (PowerManager.GetPowerByKey(self.FsmVariables.FindFsmString("Game Text Convo")?.Value, out power, false)
+            || string.Equals(self.gameObject.name,"Inspect Ghost Region")))
             self.GetState("Init").ClearTransitions();
-        else if (self.FsmName.Equals("npc_control") && ((!LoreManager.Instance.CanListen && (!self.gameObject.name.Equals("Dreamer Plaque Inspect") && !self.gameObject.name.Equals("Fountain Inspect")))
-            || (!LoreManager.Instance.CanRead && (self.gameObject.name.Equals("Dreamer Plaque Inspect") || self.gameObject.name.Equals("Fountain Inspect")))))
+        else if (string.Equals(self.FsmName, "npc_control") && ((!LoreManager.Instance.CanListen && (!string.Equals(self.gameObject.name, "Dreamer Plaque Inspect") && !string.Equals(self.gameObject.name, "Fountain Inspect")))
+            || (!LoreManager.Instance.CanRead && (string.Equals(self.gameObject.name, "Dreamer Plaque Inspect") || string.Equals(self.gameObject.name, "Fountain Inspect")))))
         {
             // There are a few exceptions with npc which we want to ignore.
-            if (self.gameObject.LocateMyFSM("Conversation Control") != null && !(self.gameObject.name.Equals("Moth NPC")
-                || self.gameObject.name.Equals("Nailsmith") || self.gameObject.name.Contains("Mr Mushroom") || self.gameObject.name.Equals("Corpse Inspect")
-                || self.gameObject.name.Equals("Dream Nail Get") || self.gameObject.name.Equals("Centipede Inspect")
-                || self.gameObject.name.Equals("Goam Inspect") || self.gameObject.name.Equals("Zap Bug Inspect")
-                || self.gameObject.name.Equals("AbyssTendril Inspect") || self.gameObject.name.Equals("End Scene")
-                || (self.transform.parent != null && self.transform.parent.name.Equals("Dreamer Monomon"))))
+            if (self.gameObject.LocateMyFSM("Conversation Control") != null && !(string.Equals(self.gameObject.name, "Moth NPC")
+                || string.Equals(self.gameObject.name, "Nailsmith") || self.gameObject.name.Contains("Mr Mushroom") || string.Equals(self.gameObject.name, "Corpse Inspect")
+                || string.Equals(self.gameObject.name, "Dream Nail Get") || string.Equals(self.gameObject.name, "Centipede Inspect")
+                || string.Equals(self.gameObject.name, "Goam Inspect") || string.Equals(self.gameObject.name, "Zap Bug Inspect")
+                || string.Equals(self.gameObject.name, "AbyssTendril Inspect") || string.Equals(self.gameObject.name, "End Scene")
+                || (string.Equals(self.transform.parent?.name, "Dreamer Monomon"))))
                 self.GetState("Idle").ClearTransitions();
         }
-        else if (self.FsmName.Equals("Stag Control") && !LoreManager.Instance.CanListen)
+        else if (string.Equals(self.FsmName, "Stag Control") && !LoreManager.Instance.CanListen)
             self.GetState("Idle").ClearTransitions();
-        else if (self.FsmName.Equals("Shop Region") && !LoreManager.Instance.CanListen)
+        else if (string.Equals(self.FsmName, "Shop Region") && !LoreManager.Instance.CanListen)
             self.GetState("Out Of Range").ClearTransitions();
-        else if (self.FsmName.Equals("Control") && self.gameObject.name.Equals("Final Boss Door") && ModHooks.GetMod("Randomizer 4", true) is Mod mod)
+        else if (string.Equals(self.FsmName, "Control") && string.Equals(self.gameObject.name, "Final Boss Door") && ModHooks.GetMod("Randomizer 4", true) is Mod mod)
             RandomizerManager.ModifyTempleDoor(self);
-        else if (self.FsmName.Equals("Thorn Counter"))
+        else if (string.Equals(self.FsmName, "Thorn Counter"))
         {
-            PowerManager.GetPowerByKey("QUEEN", out Power power, false);
+            PowerManager.GetPowerByKey("QUEEN", out power, false);
             ((QueenThornsPower)power).ModifyThorns(self);
         }
         orig(self);
@@ -404,7 +411,7 @@ internal class SettingManager
     /// </summary>
     private void PreventMylaZombie(On.DeactivateIfPlayerdataFalse.orig_OnEnable orig, DeactivateIfPlayerdataFalse self)
     {
-        if (self.gameObject.name.Contains("Zombie Myla") || self.gameObject.name.Equals("Myla Crazy NPC"))
+        if (self.gameObject.name.Contains("Zombie Myla") || string.Equals(self.gameObject.name, "Myla Crazy NPC"))
         {
             self.gameObject.SetActive(false);
             return;
@@ -417,7 +424,7 @@ internal class SettingManager
     /// </summary>
     private void ForceMyla(On.DeactivateIfPlayerdataTrue.orig_OnEnable orig, DeactivateIfPlayerdataTrue self)
     {
-        if (self.gameObject.name.Equals("Miner") && (self.boolName.Equals("hasSuperDash") || self.boolName.Equals("mageLordDefeated")))
+        if (string.Equals(self.gameObject.name, "Miner") && (self.boolName.Equals("hasSuperDash") || self.boolName.Equals("mageLordDefeated")))
             return;
         orig(self);
     }
@@ -447,6 +454,13 @@ internal class SettingManager
         else if (itemData.Item.name.Contains("Lore_Tablet-"))
         {
             string tabletName = RandomizerHelper.TranslateRandoName(itemData.Item.name.Substring("Lore_Tablet-".Length));
+            // If the tablet name is empty, a "fake lore tablet" has been obtained.
+            if (string.IsNullOrEmpty(tabletName))
+            {
+                // We add a fake power
+                PowerManager.ActivePowers.Add(new PlaceholderPower());
+                return; 
+            }
             string placeHolder = string.Empty;
             LoreManager.Instance.ModifyText(tabletName, ref placeHolder);
             PowerManager.GetPowerByKey(tabletName, out Power power, false);
@@ -469,19 +483,6 @@ internal class SettingManager
         On.UIManager.StartNewGame += StartNewGame;
         On.UIManager.ContinueGame += ContinueGame;
         On.GameManager.ReturnToMainMenu += ReturnToMenu;
-
-        try
-        {
-            if (ModHooks.GetMod("Randomizer 4") is Mod mod)
-            {
-                LoreMaster.Instance.Log("Detected Randomizer. Adding compability.");
-                RandomizerManager.AttachToRandomizer();
-            }
-        }
-        catch (Exception exception)
-        {
-            LoreMaster.Instance.LogError("Error while setting up rando: " + exception.Message);
-        }
     }
 
     /// <summary>
@@ -501,7 +502,7 @@ internal class SettingManager
                     PowerManager.ActivePowers.Clear();
                 else if (!headline.ToLower().Contains("%modify%"))
                 {
-                   LoreMaster.Instance.LogError("Invalid option file. Use %override% or %modify% in the first line.");
+                    LoreMaster.Instance.LogError("Invalid option file. Use %override% or %modify% in the first line.");
                     return;
                 };
                 LoreMaster.Instance.Log("Apply option file");
@@ -519,7 +520,7 @@ internal class SettingManager
                         powerName += letter;
                     }
 
-                    if (PowerManager.GetPowerByName(powerName, out Power power, false))
+                    if (!PowerManager.GetPowerByName(powerName, out Power power, false, false) && !PowerManager.GetPowerByKey(powerName, out power, false))
                         continue;
                     // Skip the name
                     currentLine = currentLine.Substring(powerName.Length + 1);
@@ -535,7 +536,7 @@ internal class SettingManager
                 }
             }
             else
-               LoreMaster.Instance.LogDebug("Couldn't find option file");
+                LoreMaster.Instance.LogDebug("Couldn't find option file");
         }
         catch (Exception exception)
         {
@@ -571,7 +572,7 @@ internal class SettingManager
                     break;
                 }
             if (!foundResult)
-               LoreMaster.Instance.LogError("Couldn't find area: " + newMapZone);
+                LoreMaster.Instance.LogError("Couldn't find area: " + newMapZone);
         }
 
         if (CurrentArea != newArea)
@@ -597,7 +598,6 @@ internal class SettingManager
 
             _fromMenu = false;
             PowerManager.FirstPowerInitialization();
-            
             PowerManager.UpdateTracker(newArea);
         }
         LorePage.UpdateLorePage();

@@ -10,12 +10,6 @@ namespace LoreMaster.Randomizer.Items;
 
 internal class NpcLocation : AutoLocation
 {
-    #region Constructors
-
-    public NpcLocation() { }
-
-    #endregion
-
     #region Properties
 
     public string ObjectName { get; set; }
@@ -49,6 +43,10 @@ internal class NpcLocation : AutoLocation
             if (startState == null)
                 startState = fsm.GetState("Hero Look");
             transitionEnd = "Talk Finish";
+
+            // If not all items are obtained ghost npc are unkillable.
+            if(fsm.gameObject.LocateMyFSM("ghost_npc_death") is PlayMakerFSM ghostDeath && !Placement.Items.All(x => x.IsObtained()))
+                ghostDeath.GetState("Idle").ClearTransitions();
         }
         startState.ClearTransitions();
         // We make sure to wait until the item give is done to prevent giving the player control to early. This is just for the case a npc actually has a lore item.

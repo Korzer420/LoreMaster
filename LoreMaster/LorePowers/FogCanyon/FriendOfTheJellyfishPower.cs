@@ -11,8 +11,6 @@ public class FriendOfTheJellyfishPower : Power
     public FriendOfTheJellyfishPower() : base("Friend of the Jellyfishes", Area.FogCanyon)
     {
         CustomText = "He's my twelfth catch of the day. I'm gonna call him \"Twelvey.\"  Coochie coochie coo! Bye, Twelvey! Oh! It's him! Well, it's just him and me again, I've caught and named every jellyfish in Fog Canyon at least once. Except you, No Name.";
-        Hint = "Jellyfishs and explosions may no longer harm you.";
-        Description = "You're immune to jellyfishs enemies and explosions. Note: Non Jellyfish explosion enemies, \"could\" still deal 2 damage on contact. You're just immune to the explosion itself.";
     }
 
     #endregion
@@ -28,7 +26,7 @@ public class FriendOfTheJellyfishPower : Power
 
     private void PlayMakerFSM_OnEnable(On.PlayMakerFSM.orig_OnEnable orig, PlayMakerFSM self)
     {
-        if (self.FsmName.Equals("Explosion Control"))
+        if (string.Equals(self.FsmName,"Explosion Control"))
         {
             if (Active)
             {
@@ -45,9 +43,9 @@ public class FriendOfTheJellyfishPower : Power
                 damageHero.hazardType = 1;
             }
         }
-        else if (self.FsmName.Equals("Lil Jelly"))
+        else if (string.Equals(self.FsmName,"Lil Jelly"))
             self.GetComponent<DamageHero>().damageDealt = 0;
-        else if (self.FsmName.Equals("Jellyfish") && self.gameObject.name.Contains("Jellyfish GG"))
+        else if (string.Equals(self.FsmName,"Jellyfish") && self.gameObject.name.Contains("Jellyfish GG"))
         {
             HeroController.Destroy(self.GetComponent<DamageHero>());
             HeroController.Destroy(self.transform.Find("Tentacle Box").GetComponent<DamageHero>());

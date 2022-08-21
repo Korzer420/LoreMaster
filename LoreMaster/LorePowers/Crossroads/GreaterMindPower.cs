@@ -43,8 +43,6 @@ public class GreaterMindPower : Power
 
     public GreaterMindPower() : base("Greater Mind", Area.Crossroads)
     {
-        Hint = "You can now sense, which knowledge of the world you're missing.";
-        Description = "Activates the tracker, to show you how many powers you are missing. If the counter is green, you have global access to the power in the area.";
         _loreSprite = SpriteHelper.CreateSprite("Lore");
     }
 

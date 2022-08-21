@@ -9,11 +9,7 @@ public class GiftOfUnnPower : Power
 {
     #region Constructors
 
-    public GiftOfUnnPower() : base("Gift of Unn", Area.Greenpath)
-    {
-        Hint = "Grants you the power of Unn.";
-        Description = "Gain the shape of Unn effect for focusing. If you're wearing Shape of Unn, focus restores 15 soul on a successful cast.";
-    }
+    public GiftOfUnnPower() : base("Gift of Unn", Area.Greenpath) { }
 
     #endregion
 

@@ -54,7 +54,9 @@ internal static class RandomizerHelper
          {"Bretta", "BRETTA" },
          {"Midwife", "MIDWIFE" },
          {"Mask_Maker", "MASKMAKER" },
-         {"Willoh", "WILLOH" }
+         {"Willoh", "WILLOH" },
+         {"Grasshopper", "GRASSHOPPER" },
+         {"Marissa", "MARISSA" }
     };
 
     /// <summary>
@@ -67,9 +69,6 @@ internal static class RandomizerHelper
         if (TabletNames.ContainsKey(tabletName))
             return TabletNames[tabletName];
         else
-        {
-            LoreMaster.Instance.LogError("Unrecognizable lore tablet name: " + tabletName + ". Please report this to the mod maker.");
             return null;
-        }
     }
 }

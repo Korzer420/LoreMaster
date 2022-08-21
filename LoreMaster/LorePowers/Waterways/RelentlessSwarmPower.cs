@@ -7,11 +7,7 @@ public class RelentlessSwarmPower : Power
 {
     #region Constructors
 
-    public RelentlessSwarmPower() : base("Relentless Swarm", Area.WaterWays)
-    {
-        Hint = "Flukes rip the soul out of there victims.";
-        Description = "Hits with flukes restore 2 soul, or 5 if the enemy died.";
-    }
+    public RelentlessSwarmPower() : base("Relentless Swarm", Area.WaterWays) { }
 
     #endregion
 

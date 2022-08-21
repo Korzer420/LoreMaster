@@ -10,11 +10,7 @@ public class SoulExtractEfficiencyPower : Power
 {
     #region Constructors
 
-    public SoulExtractEfficiencyPower() : base("Soul Extract Efficiency", Area.CityOfTears)
-    {
-        Hint = "Allows you to drain soul more efficient from your foes and draw you reserve more quickly.";
-        Description = "You gain 5 more soul per hit on enemies and your extra soul vessel soul will be added instantly to be used for spells after casting spell. This does NOT affect focus, unless you do the wind up again.";
-    }
+    public SoulExtractEfficiencyPower() : base("Soul Extract Efficiency", Area.CityOfTears) { }
 
     #endregion
 

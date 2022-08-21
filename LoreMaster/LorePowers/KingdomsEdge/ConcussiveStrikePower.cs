@@ -23,9 +23,6 @@ public class ConcussiveStrikePower : Power
     {
         CustomText = "Oh hello little thing. Are you the one you tickled my earlier? Don't worry if that's the case, a big guy like me can take this without a problem. These foes here never would dare approach my face. " +
             "My arms crush everything harmful that comes close to them. That's why I'm glad a fellow traveler found their way to me. Let me teach you the secret of my strikes as a sign of friendship.";
-        Hint = "Your huge nail swings cause Concussion on their target, which will cause the target to suffer more from your nail and extend the concussion.";
-        Description = "Great Slash and Dash Slash cause Concussion on their target for 3 seconds. Concussed enemies take 10% more damage from nail attacks and increase their knockback by 50% (66% of Heavy Blow)." +
-            " Nail hits on the target extend the duration by 0.5 seconds each. Cyclone Slash is not counted as a nail slash in this case. Also cause enemies to glance 50% of their hits, decreasing their damage by 1.";
     }
 
     #endregion

@@ -32,9 +32,6 @@ public class DiamondCorePower : Power
 
     public DiamondCorePower() : base("Diamond Core", Area.Peaks)
     {
-        Hint = "The crystal heart's core absorbed the power of diamond and got even stronger. If you hit a wall, all foes may be stunned shortly. The power of the diamond increases over time, makes you unstoppable once you got enough power.";
-        Description = "Crystal Heart snares all enemies in the room if you hit a wall. The duration of the stun and cdash damage increases with the c dash duration. " +
-            "(Stun duration is capped at 10 seconds, gain 5 damage and 10% speed per second, gain invincibility after 3 seconds.)";
         CustomText = "Isn't the view just beautiful? When I just look at this, all my thought feel way less heavier than before. It feels almost... empty. Have you already looked around here a bit? " +
             "These crystals here contain an mysterious power. Although it seemed to me, that they people actually looked for something even more powerful. Here, I found that crystal from the remains of another adventurer." +
             " It emits a power far beyond everything else that you probably can mine here. It only needs a fitting vessel, but for an adventurer like you, this shouldn't be a problem.";

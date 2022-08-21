@@ -21,11 +21,7 @@ public class QueenThornsPower : Power
 
     #region Constructors
 
-    public QueenThornsPower() : base("Queen's Thorns", Area.QueensGarden)
-    {
-        Hint = "The thorns of agony have received the blessing of the queen.";
-        Description = "Thorns of Agony are now \"Queen Thorns\", which removes the freeze on hit. restore soul if it hits an enemy and has a 33% chance to restore 1 hp if it kills an enemy.";
-    }
+    public QueenThornsPower() : base("Queen's Thorns", Area.QueensGarden) { }
 
     #endregion
 

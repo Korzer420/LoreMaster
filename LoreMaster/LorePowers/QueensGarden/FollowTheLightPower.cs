@@ -19,14 +19,7 @@ public class FollowTheLightPower : Power
 
     #region Constructors
 
-    public FollowTheLightPower() : base("Follow the Light", Area.QueensGarden)
-    {
-        Hint = "Allows you to weave with the pure essence of light to form a portal which you can travel to. Moving to far away will destroy the unstable portal. " +
-            "Hold left while swinging the artifact of the light to weave the portal and hold right to travel through it. As long as the artifact has not its full potential, " +
-            "travelling will consume the energy of the dreams and destroy the portal once entered. If not, the portal will remain at your entry point. (Requires dream gate to work)";
-        Description = "When you hold left while casting dreamnail, it will spawn an orange portal by your side, which you can travel to from anywhere in the room (Requires dream gate to work). Hold right while casting " +
-            "dreamnail to warp to the portal. Warping will consume 1 essence and the portal. Neither get's consumed if you have awoken Dreamnail (the portal will swap position with you instead).";
-    }
+    public FollowTheLightPower() : base("Follow the Light", Area.QueensGarden) { }
 
     #endregion
 

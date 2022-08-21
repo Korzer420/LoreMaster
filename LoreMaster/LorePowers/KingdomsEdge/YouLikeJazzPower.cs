@@ -17,8 +17,6 @@ internal class YouLikeJazzPower : Power
     public YouLikeJazzPower() : base("You like Jazz?", Area.KingdomsEdge)
     {
         CustomText = GetCustomText();
-        Hint = "Your hatchlings hatch way more aggressive and don't need that much soul to grow.";
-        Description = "You can now have 10 hatchlings at a time, they spawn twice at fast and cost only 25% of their normal soul.";
         Hint += " How long did it took you for mashing throw the textbox? :)";
         Description += " How long did it took you for mashing throw the textbox? :)";
     }

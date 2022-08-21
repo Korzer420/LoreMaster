@@ -18,11 +18,7 @@ public class TouchGrassPower : Power
 
     #region Constructors
 
-    public TouchGrassPower() : base("Touch Grass", Area.Greenpath)
-    {
-        Hint = "The flora may nourish your shell, if you stand long enough near it.";
-        Description = "Every 8 seconds standing on grass, you heal 1 mask. Decreased to 4 seconds if wearing Shape of Unn.";
-    }
+    public TouchGrassPower() : base("Touch Grass", Area.Greenpath) { }
 
     #endregion
 

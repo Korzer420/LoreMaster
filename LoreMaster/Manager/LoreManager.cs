@@ -83,7 +83,7 @@ internal class LoreManager
         }
         else if (key.Contains("DREAMERS_INSPECT_RG"))
         {
-            PowerManager.GetPowerByKey(key, out Power dreamer, false);
+            PowerManager.GetPowerByKey("DREAMERS_INSPECT_RG5", out Power dreamer, false);
             text += ((DreamBlessingPower)dreamer).GetExtraText(key);
         }
         else if (!ModifyText(key, ref text) && PowerManager.HasObtainedPower("QUEEN"))

@@ -17,11 +17,7 @@ public class OneOfUsPower : Power
 
     #region Constructors
 
-    public OneOfUsPower() : base("One of Us", Area.FungalWastes)
-    {
-        Hint = "Occasionally you emit a spore cloud. (Hold the super dash button to prevent the cloud.)";
-        Description = "Every twelve seconds you cast the deep focus spore cloud. Hold the crystal dash button to prevent that (in case you want to do pogos for example).";
-    }
+    public OneOfUsPower() : base("One of Us", Area.FungalWastes) { }
 
     #endregion
 

@@ -1,5 +1,6 @@
 using LoreMaster.LorePowers.FungalWastes;
 using LoreMaster.Manager;
+using LoreMaster.Randomizer;
 using LoreMaster.SaveManagement;
 using LoreMaster.UnityComponents;
 using Modding;
@@ -18,9 +19,8 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
 
     public LoreMaster()
     {
-        LoreManager loreManager = new();
-        SettingManager settingManager = new();
-        settingManager.Initialize();
+        if (LoreManager.Instance == null)
+            InitializeManager();
         LorePage.PassPowers(PowerManager.GetAllPowers().ToList());
         InventoryHelper.AddInventoryPage(InventoryPageType.Empty, "Lore", "LoreMaster", "LoreMaster", "metElderbug", LorePage.GeneratePage);
     }
@@ -124,6 +124,21 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
                         PreloadedObjects.Add(subKey, toAdd);
                         GameObject.DontDestroyOnLoad(toAdd);
                     }
+
+            try
+            {
+                if (ModHooks.GetMod("Randomizer 4") is Mod mod)
+                {
+                    LoreMaster.Instance.Log("Detected Randomizer. Adding compability.");
+                    RandomizerManager.AttachToRandomizer();
+                }
+                else
+                    Log("Couldn't find randomizer");
+            }
+            catch (Exception exception)
+            {
+                LoreMaster.Instance.LogError("Error while setting up rando: " + exception.Message);
+            }
         }
         catch (Exception exception)
         {
@@ -181,6 +196,13 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         return menu;
     }
 
+    public void InitializeManager()
+    {
+        LoreManager loreManager = new();
+        SettingManager settingManager = new();
+        settingManager.Initialize();
+    }
+
     /// <summary>
     /// Unloads the mod. (Currently unused)
     /// </summary>
@@ -207,10 +229,13 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
     public void OnLoadGlobal(LoreMasterGlobalSaveData globalSaveData)
     {
         Log("Loaded global data");
+        if (LoreManager.Instance == null)
+            InitializeManager();
         LoreManager.Instance.UseHints = globalSaveData.ShowHint;
         LoreManager.Instance.UseCustomText = globalSaveData.EnableCustomText;
         SettingManager.Instance.DisableYellowMushroom = globalSaveData.DisableNausea;
         SettingManager.Instance.BombQuickCast = globalSaveData.BombQuickCast;
+
     }
 
     /// <summary>
@@ -249,7 +274,6 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
     LoreMasterLocalSaveData ILocalSettings<LoreMasterLocalSaveData>.OnSaveLocal()
     {
         LoreMasterLocalSaveData saveData = new();
-
         PowerManager.SavePowers(ref saveData);
         saveData.GloryCost = GloryOfTheWealthPower.GloryCost;
         saveData.HasReadAbility = LoreManager.Instance.CanRead;

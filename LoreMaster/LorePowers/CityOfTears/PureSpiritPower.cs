@@ -33,14 +33,7 @@ internal class PureSpiritPower : Power
 
     #region Constructor
 
-    public PureSpiritPower() : base("Pure Spirit", Area.CityOfTears)
-    {
-        Hint = "Using the last resort of your soul will purify it's vessel and spawn an orb out of pure light. If you channeled three orbs, they will follow your powerful spell " +
-            "and detonate upon contact, returning their gathered soul to you.";
-        Description = "If you have 0 soul after casting a spell you will gain an rotating orb around you that deals 5 contact damage. If you have 3 orbs active, the next fireball will " +
-            "increase their size, let them explode upon contact for 20 damage and restore 10 soul. Soul Snatcher and Soul Eater will increase the soul gained by the orb. Shaman Stone will increase " +
-            "the orb explosion damage.";
-    }
+    public PureSpiritPower() : base("Pure Spirit", Area.CityOfTears) { }
 
     #endregion
 

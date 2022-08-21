@@ -5,15 +5,6 @@ using UnityEngine;
 
 namespace LoreMaster.LorePowers.Deepnest;
 
-/* Mask elements:
-         * Under _GameCameras/HudCamera/Hud Canvas/Health
-         * Health -> Background
-         * Idle -> Normal health
-         * Idle Hive -> Hive blood health
-         * Idle Bound -> Health Binding GG DLC (Needs to be considered)
-         * Hive Recovery Blob -> Hive Blood Recover Sprite
-         */
-// Maske leuchtet noch
 public class MaskOverchargePower : Power
 {
     #region Members
@@ -22,18 +13,13 @@ public class MaskOverchargePower : Power
 
     private int _overchargeHealth = -1;
 
-    private tk2dSprite[] _healthSprites = new tk2dSprite[4];
+    private tk2dSprite[] _healthSprites = new tk2dSprite[3];
 
     #endregion
 
     #region Constructors
 
-    public MaskOverchargePower() : base("Mask Overcharge", Area.Deepnest)
-    {
-        Hint = "Let one your mask occasionly overcharge. If it is the one that protects you, it emits a searing circle, that also absorbs the loose soul around you.";
-        Description = "Overcharge one of your mask (it glows in different colors), while you have exactly that much health, a circle gathers around you that deal damage and restore 8 soul each second. " +
-            "The overcharged mask changes every 30 seconds and may never select the full hp mask. Inactive while you have Joni's Blessing equipped.";
-    }
+    public MaskOverchargePower() : base("Mask Overcharge", Area.Deepnest) { }
 
     #endregion
 
@@ -99,7 +85,6 @@ public class MaskOverchargePower : Power
         GameObject parent = GameObject.Find("_GameCameras/HudCamera/Hud Canvas/Health");
         Color[] colors = new Color[] { Color.yellow, Color.blue, Color.red, Color.cyan, Color.green, new(1f, 0.4f, 0f), new(1f, 0f, 1f), Color.black };
         bool firstTime = true;
-        _healthSprites[3] = parent.transform.Find("Hive Recovery Blob").GetComponent<tk2dSprite>();
 
         while (true)
         {

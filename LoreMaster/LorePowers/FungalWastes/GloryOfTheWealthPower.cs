@@ -21,15 +21,7 @@ public class GloryOfTheWealthPower : Power
 
     #region Constructors
 
-    public GloryOfTheWealthPower() : base("Glory of the Wealth", Area.FungalWastes)
-    {
-        Hint = "Your enemies may \"share\" more of their wealth with you. Your wealth may protect you from the hits of those peasant... for a fee of course. Press Quick Map + Up to activate the effect" +
-            " and Quick Map + Down to cancel the effect. (In case you forget this input combination, the effect also deactivates itself once the leave the room). " +
-            "The cost increase fast over time while the effect is active and slowly decrease once inactive. If you are really greedy, the cost decrease faster. The great civilians of Hallownest call this " +
-            "power \"Pay 2 Win\".";
-        Description = "Enemies drop double geo. Press Quick Map + Up to become invincible. For each second this is active it drains 1 more geo. Press Quick Map + Down to cancel the effect (or leave the room). " +
-            "While the effect is inactive the cost decrease by 1 each 5 second (or each 2.5 seconds if you have Fragile/Unbreakable Greed equipped).";
-    }
+    public GloryOfTheWealthPower() : base("Glory of the Wealth", Area.FungalWastes) { }
 
     #endregion
 

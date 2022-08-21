@@ -16,7 +16,7 @@ public class LoreMasterLocalSaveData
     /// <summary>
     /// Get or set the acquired powers key.
     /// </summary>
-    public List<string> AcquiredPowersKey { get; set; } = new();
+    public List<string> AcquiredPowersKeys { get; set; } = new();
 
     /// <summary>
     /// Gets or sets the current cost of glory of the wealth.

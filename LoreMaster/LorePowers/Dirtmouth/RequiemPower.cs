@@ -16,13 +16,7 @@ public class RequiemPower : Power
 
     #region Constructors
 
-    public RequiemPower() : base("Requiem", Area.Dirtmouth)
-    {
-        Hint = "When your shell breaks, holding a pure focus may arise you at the home of death. Holding the light's artifact will instead catch you in the protecting wings of the last one, if she opened her secret. " +
-            "Holding the shiny stone vessel, will drop your soul onto the now abandoned place, where the light started its revenge.";
-        Description = "Holding focus, while you dying will spawn you in dirtmouth instead of your bench. Holding dream nail will spawn you at spirit's glade instead (when the glade is open). " +
-            "Holding Crystal Dash will spawn you at Hallownests Crown (?), requires Crystal Heart to work.";
-    }
+    public RequiemPower() : base("Requiem", Area.Dirtmouth) { }
 
     #endregion
 

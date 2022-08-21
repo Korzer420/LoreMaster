@@ -28,8 +28,6 @@ public class JonisProtectionPower : Power
     public JonisProtectionPower() : base("Joni's Protection", Area.Cliffs)
     {
         CustomText = "Did you just took my blessing? How rude of you. First you banish me here and now that? Not cool, dude. Well, now that you have already took it, my prayers are with you....................... please don't dream nail me, dude.";
-        Hint = "When going to a new area, you will receive the gift of Joni, which will quickly fade away.";
-        Description = "When going to another area, you will be granted 5 life blood (10 if you have Joni's equipped). Each 3 seconds a lifeblood will fade away.";
     }
 
     #endregion
@@ -106,7 +104,7 @@ public class JonisProtectionPower : Power
     private void ModifyFSM(On.PlayMakerFSM.orig_OnEnable orig, PlayMakerFSM self)
     {
         // Shops and Stags should not be interrupted by this effect.
-        if (self.FsmName.Equals("Shop Region") || self.FsmName.Equals("Stag Control"))
+        if (string.Equals(self.FsmName,"Shop Region") || string.Equals(self.FsmName,"Stag Control"))
         {
             if (self.GetState("Take Control").GetFirstActionOfType<Lambda>() == null)
                 self.GetState("Take Control").AddLastAction(new Lambda(() =>
@@ -114,7 +112,7 @@ public class JonisProtectionPower : Power
                     _immune = true;
                 }));
         }
-        else if (self.FsmName.Equals("Inspection") && self.gameObject.name.Contains("tablet"))
+        else if (string.Equals(self.FsmName,"Inspection") && self.gameObject.name.Contains("tablet"))
         {
             FsmState fsmState = self.GetState("Prompt Up");
             fsmState.ReplaceAction(new Lambda(() =>

@@ -100,6 +100,10 @@
         "logic": "(ORIG) + LISTEN"
     },
     {
+        "name": "Boss_Essence-Lost_Kin",
+        "logic": "(ORIG) + LISTEN"
+    },
+    {
         "name": "Queen's_Gardens_Map",
         "logic": "(ORIG) + LISTEN"
     },

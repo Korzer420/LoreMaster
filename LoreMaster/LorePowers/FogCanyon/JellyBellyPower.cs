@@ -17,8 +17,6 @@ public class JellyBellyPower : Power
     public JellyBellyPower() : base("Belly of the Jelly(fish)", Area.FogCanyon)
     {
         CustomText = "Aren't my jelly fish cute little things? The way the float in the air and fall so slowly, it has something... calming to it. I wish I could navigate to the air like that.";
-        Hint = "You are feeling light, like a feather.";
-        Description = "Decrease your falling speed by about 20% and triples the time needed in air, for a hard fall.";
     }
 
     #endregion

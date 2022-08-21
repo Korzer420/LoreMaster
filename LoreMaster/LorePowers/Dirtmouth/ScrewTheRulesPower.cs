@@ -17,11 +17,7 @@ public class ScrewTheRulesPower : Power
 {
     #region Constructors
 
-    public ScrewTheRulesPower() : base("Screw the Rules", Area.Dirtmouth)
-    {
-        Hint = "Your rage is weaker but grows quicker.";
-        Description = "Fury of the Fallen is now also active with 2 hp, but the damage buff is decreased to 50%. Grubberfly Beams are only nerfed by 40%.";
-    }
+    public ScrewTheRulesPower() : base("Screw the Rules", Area.Dirtmouth) { }
 
     #endregion
 
@@ -29,9 +25,9 @@ public class ScrewTheRulesPower : Power
 
     private void PlayMakerFSM_OnEnable(On.PlayMakerFSM.orig_OnEnable orig, PlayMakerFSM self)
     {
-        if (self.FsmName.Equals("nailart_damage"))
+        if (string.Equals(self.FsmName,"nailart_damage"))
             self.GetState("Fury?").ReplaceAction(new Lambda(() => self.FsmVariables.FindFsmFloat("Damage Float").Value *= Active ? 1.5f : 1.75f) { Name = "Fury Nerf" }, 1);
-        else if (self.gameObject.name.Contains("Grubberfly Beam") && self.FsmName.Equals("Control"))
+        else if (self.gameObject.name.Contains("Grubberfly Beam") && string.Equals(self.FsmName,"Control"))
             self.GetState("Fury Multiplier").ReplaceAction(new Lambda(() => self.FsmVariables.FindFsmFloat("Dmg Float").Value *= Active ? 1.3f : 1.5f) { Name = "Fury Amplifier" }, 2);
         orig(self);
     }

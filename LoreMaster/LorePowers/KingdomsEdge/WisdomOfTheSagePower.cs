@@ -17,11 +17,7 @@ public class WisdomOfTheSagePower : Power
 
     #region Constructors
 
-    public WisdomOfTheSagePower() : base("Wisdom of the Sage", Area.KingdomsEdge)
-    {
-        Hint = "Guide the Sage through his journey to learn how to use your spells more efficient.";
-        Description = "For each Mr. Mushroom stage that you completed, spells cost 1 soul less.";
-    }
+    public WisdomOfTheSagePower() : base("Wisdom of the Sage", Area.KingdomsEdge) { }
 
     #endregion
 

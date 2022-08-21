@@ -19,12 +19,7 @@ public class LifebloodOmenPower : Power
 
     #region Constructors
 
-    public LifebloodOmenPower() : base("Lifeblood Omen", Area.Cliffs)
-    {
-        Hint = "Sometimes you will be haunted by a ghost from a distant land. Killing it will grant you the essence of it's soul. A more powerful weapon may attract more powerful foes.";
-        Description = "Spawns a grimmkin every 180 seconds. Killing the ghost grants 3/6/9 lifeblood (based on ghost level). The ghost disappears if you leave the room or if 90 seconds passed. The chances for the ghost " +
-            "adjust based on your current nail level. I'll will not list the chances here. Look at the repository, if you want to know.";
-    }
+    public LifebloodOmenPower() : base("Lifeblood Omen", Area.Cliffs) { }
 
     #endregion
 

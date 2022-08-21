@@ -17,11 +17,7 @@ public class WellFocusedPower : Power
 
     #region Constructors
 
-    public WellFocusedPower() : base("Well Focused", Area.Dirtmouth)
-    {
-        Hint = "You gain pure focus faster.";
-        Description = "Focus is cast 30% faster.";
-    }
+    public WellFocusedPower() : base("Well Focused", Area.Dirtmouth) { }
 
     #endregion
 

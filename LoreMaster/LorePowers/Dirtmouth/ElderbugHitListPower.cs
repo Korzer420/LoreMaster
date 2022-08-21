@@ -21,12 +21,7 @@ public class ElderbugHitListPower : Power
 
     #region Constructors
 
-    public ElderbugHitListPower() : base("Elderbug Hit List", Area.Dirtmouth)
-    {
-        Hint = "[Not Implemented] When entering a new room with enemies the list marks enemies. If you succeed the \"talk\" with them, you are granted a reward. Be careful, elderbug demands a clean execution.";
-        Description = "[Not Implemented] When entering a new room marks a random enemy with a red outline. If you kill that enemy FIRST another one gets marked. If all enemies are killed in the right order you receive a" +
-            " soul vessel fragment, mask shard, charm notch, 200 geo, or a small damage buff.";
-    }
+    public ElderbugHitListPower() : base("Elderbug Hit List", Area.Dirtmouth) { }
 
     #endregion
 

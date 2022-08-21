@@ -7,11 +7,7 @@ public class PaleLuckPower : Power
 {
     #region Constructors
 
-    public PaleLuckPower() : base("Pale Luck", Area.FungalWastes)
-    {
-        Hint = "When someone casts harm on you, sometimes you are blessed by the higher being instead. Especially if you have some artefacts related to him.";
-        Description = "When you would take damage, you have a 2% chance to be healed instead. Increased by 4% for each King's Brand and Kingssoul. Also increased by 1 % for each king's idol you have.";
-    }
+    public PaleLuckPower() : base("Pale Luck", Area.FungalWastes) { }
 
     #endregion
 

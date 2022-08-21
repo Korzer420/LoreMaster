@@ -181,8 +181,7 @@
     <value>Forms the grass in Hallownest with the power of the soul to a "special delivery" which explodes shortly after creation, dealing huge damage. The disruption may break loose walls and floors. Requires soul to construct the bomb. Press (Quick)cast and left to drop the bomb. They say, that you also can channel the blue plague, to create an even stronger bomb which can even break the heaviest stones and emits a destruction shockwave through the room. Press (Quick)cast and right to consume the blue blood and spawn the powerful nuke.</value>
   </data>
   <data name="GreaterMind" xml:space="preserve">
-    <value>You can now sense, which knowledge of the world you're missing.";
-        Description = "Activates the tracker, to show you how many powers you are missing. If the counter is green, you have global access to the power in the area.</value>
+    <value>You can now sense, which knowledge of the world you're missing.</value>
   </data>
   <data name="HappyFate" xml:space="preserve">
     <value>Your "happiness" increases all your abilities slightly. Getting hit makes you sad. :c A good rest may restore your hapiness.</value>

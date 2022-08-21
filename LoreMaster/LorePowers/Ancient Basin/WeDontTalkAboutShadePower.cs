@@ -12,11 +12,7 @@ public class WeDontTalkAboutShadePower : Power
 {
     #region Constructors
 
-    public WeDontTalkAboutShadePower() : base("We don't talk about the Shade", Area.AncientBasin)
-    {
-        Hint = "Shade? What should that be? Can you prove, that the \"Shade\" exist? Your soul vessel and geo? What are you talking about?";
-        Description = "You don't get the soul limit punishment, when dying. Your geo will still be on the shade. When dying while the shade is active, your shade only loose 50% of your geo.";
-    }
+    public WeDontTalkAboutShadePower() : base("We don't talk about the Shade", Area.AncientBasin) { }
 
     #endregion
 

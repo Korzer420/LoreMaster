@@ -25,7 +25,7 @@ public static class RandomizerManager
     /// </summary>
     public static RandomizerSettings Settings => _settings ??= new();
 
-    public static List<string> ItemNames => new()
+    public static List<string> NpcItemNames => new()
     {
         "Bretta",
         "Elderbug",
@@ -42,7 +42,20 @@ public static class RandomizerManager
         "Moss_Prophet",
         "Fluke_Hermit",
         "Quirrel",
+        "Grasshopper",
+        "Marissa",
         "Queen"
+    };
+
+    public static List<string> StatueItemNames => new()
+    { 
+        "Xero",
+        "Elder_Hu",
+        "Gorb",
+        "Galien",
+        "Marmu",
+        "Markoth",
+        "No_Eyes"
     };
 
     #endregion
@@ -63,23 +76,25 @@ public static class RandomizerManager
     {
         if (Settings.RandomizeNpc && Finder.GetItem("Lore_Tablet-Bretta") == null)
         {
-            Finder.DefineCustomItem(NpcItem.CreateItem("Bretta", "BRETTA_DIARY_1", "This is a diary which I found on the street, seems to belong to some girl... No ehm, I didn't read it.", "Randomizer/Bretta"));
-            Finder.DefineCustomItem(NpcItem.CreateItem("Elderbug", "ELDERBUG_INTRO_MAIN", "The words of the most powerful being in this world. You should be glad, that it is so cheap.", "Randomizer/Elderbug"));
-            Finder.DefineCustomItem(NpcItem.CreateItem("Bardoon", "BIGCAT_TALK_01", "Some caterpillar guy told me this, maybe you can comprehent what this means.", "Randomizer/Bardoon"));
-            Finder.DefineCustomItem(NpcItem.CreateItem("Vespa", "HIVEQUEEN_TALK", "A queen from a distant land tortured me with this. Let me share my pain with you.", "Randomizer/Vespa", "Ghosts"));
-            Finder.DefineCustomItem(NpcItem.CreateItem("Mask_Maker", "MASK_MAKER_GREET", "From the creator of all those masks, these words shall extend your knowledge of the world.", "Randomizer/Mask_Maker"));
-            Finder.DefineCustomItem(NpcItem.CreateItem("Midwife", "SPIDER_MEET", "Please just take this... I don't want this in my shop anymore...", "Randomizer/Midwife"));
-            Finder.DefineCustomItem(NpcItem.CreateItem("Gravedigger", "GRAVEDIGGER_TALK", "You might be thinking: Can't I just go outside and talk to him myself? Hey, if people buy water bottles, it was worth a shot.", "Randomizer/Gravedigger", "Ghosts"));
-            Finder.DefineCustomItem(NpcItem.CreateItem("Poggy", "POGGY_TALK", "Want to know a secret? I've no clue who Poggy is.", "Randomizer/Poggy", "Ghosts"));
-            Finder.DefineCustomItem(NpcItem.CreateItem("Joni", "JONI_TALK", "The last words spoken by the heretic. Should probably cost more than 1000. Buy it now, before I change my mind.", "Randomizer/Joni", "Ghosts"));
-            Finder.DefineCustomItem(NpcItem.CreateItem("Myla", "MINER_MEET_1_B", "From the best girl in hallownest. Don't even dare, to hurt her...", "Randomizer/Myla"));
-            Finder.DefineCustomItem(NpcItem.CreateItem("Emilitia", "EMILITIA_MEET", "Just take it quick before she wants this back. She will probably pay 1000 times the amount it's worth. Nobody should think, she couldn't afford this, right?", "Randomizer/Emilitia"));
-            Finder.DefineCustomItem(NpcItem.CreateItem("Willoh", "GIRAFFE_MEET", "As a bug, I'd be scared of eating unknown mushrooms.", "Randomizer/Willoh"));
-            Finder.DefineCustomItem(NpcItem.CreateItem("Moss_Prophet", "MOSS_CULTIST_01", "I'm not sure about this... just take it away.", "Randomizer/Moss_Prophet"));
-            Finder.DefineCustomItem(NpcItem.CreateItem("Fluke_Hermit", "FLUKE_HERMIT_IDLE_1", "The words spoken by the child of the A L L U R I N G mother.", "Randomizer/Fluke_Hermit", "CP3"));
-            Finder.DefineCustomItem(NpcItem.CreateItem("Quirrel", "QUIRREL_MINES_1", "The wisdom of a real adventurer, which can swim fairly good. :)", "Randomizer/Quirrel"));
-            Finder.DefineCustomItem(NpcItem.CreateItem("Queen", "QUEEN_MEET", "The queen sent this through the kingdom for the day, someone like you arrives. How do I know? Well... don't ask.", "Randomizer/Queen"));
-            
+            Finder.DefineCustomItem(NpcItem.CreateItem("Bretta", "BRETTA_DIARY_1", "This is a diary which I found on the street, seems to belong to some girl... No ehm, I didn't read it.", "Bretta"));
+            Finder.DefineCustomItem(NpcItem.CreateItem("Elderbug", "ELDERBUG_INTRO_MAIN", "The words of the most powerful being in this world. You should be glad, that it is so cheap.", "Elderbug"));
+            Finder.DefineCustomItem(NpcItem.CreateItem("Bardoon", "BIGCAT_TALK_01", "Some caterpillar guy told me this, maybe you can comprehent what this means.", "Bardoon"));
+            Finder.DefineCustomItem(NpcItem.CreateItem("Vespa", "HIVEQUEEN_TALK", "A queen from a distant land tortured me with this. Let me share my pain with you.", "Vespa", "Ghosts"));
+            Finder.DefineCustomItem(NpcItem.CreateItem("Mask_Maker", "MASK_MAKER_GREET", "From the creator of all those masks, these words shall extend your knowledge of the world.", "Mask_Maker"));
+            Finder.DefineCustomItem(NpcItem.CreateItem("Midwife", "SPIDER_MEET", "Please just take this... I don't want this in my shop anymore...", "Midwife"));
+            Finder.DefineCustomItem(NpcItem.CreateItem("Gravedigger", "GRAVEDIGGER_TALK", "You might be thinking: Can't I just go outside and talk to him myself? Hey, if people buy water bottles, it was worth a shot.", "Gravedigger", "Ghosts"));
+            Finder.DefineCustomItem(NpcItem.CreateItem("Poggy", "POGGY_TALK", "Want to know a secret? I've no clue who Poggy is.", "Poggy", "Ghosts"));
+            Finder.DefineCustomItem(NpcItem.CreateItem("Joni", "JONI_TALK", "The last words spoken by the heretic. Should probably cost more than 1000. Buy it now, before I change my mind.", "Joni", "Ghosts"));
+            Finder.DefineCustomItem(NpcItem.CreateItem("Myla", "MINER_MEET_1_B", "From the best girl in hallownest. Don't even dare, to hurt her...", "Myla"));
+            Finder.DefineCustomItem(NpcItem.CreateItem("Emilitia", "EMILITIA_MEET", "Just take it quick before she wants this back. She will probably pay 1000 times the amount it's worth. Nobody should think, she couldn't afford this, right?", "Emilitia"));
+            Finder.DefineCustomItem(NpcItem.CreateItem("Willoh", "GIRAFFE_MEET", "As a bug, I'd be scared of eating unknown mushrooms.", "Willoh"));
+            Finder.DefineCustomItem(NpcItem.CreateItem("Moss_Prophet", "MOSS_CULTIST_01", "I'm not sure about this... just take it away.", "Moss_Prophet"));
+            Finder.DefineCustomItem(NpcItem.CreateItem("Fluke_Hermit", "FLUKE_HERMIT_IDLE_1", "The words spoken by the child of the A L L U R I N G mother.", "Fluke_Hermit", "CP3"));
+            Finder.DefineCustomItem(NpcItem.CreateItem("Quirrel", "QUIRREL_MINES_1", "The wisdom of a real adventurer, which can swim fairly good. :)", "Quirrel"));
+            Finder.DefineCustomItem(NpcItem.CreateItem("Queen", "QUEEN_MEET", "The queen sent this through the kingdom for the day, someone like you arrives. How do I know? Well... don't ask.", "Queen"));
+            Finder.DefineCustomItem(NpcItem.CreateItem("Marissa", "MARISSA_TALK", "From the most beautiful voice of the world besides me.", "Marissa", "Ghosts"));
+            Finder.DefineCustomItem(NpcItem.CreateItem("Grasshopper", "GRASSHOPPER_TALK", "Considering that these live in the garden, being an arsonist might not be the best for them.", "Grasshopper", "Ghosts"));
+
             // The lore page will also be randomized, since elderbug cannot be talked to.
             Finder.DefineCustomItem(new AbilityItem() 
             { 
@@ -115,6 +130,8 @@ public static class RandomizerManager
             Finder.DefineCustomLocation(NpcLocation.CreateLocation("Fluke_Hermit", "Room_GG_Shortcut", "Fluke Hermit"));
             Finder.DefineCustomLocation(NpcLocation.CreateLocation("Quirrel", "Mines_13", "Quirrel Mines"));
             Finder.DefineCustomLocation(NpcLocation.CreateLocation("Queen", "Room_Queen", "Queen"));
+            Finder.DefineCustomLocation(NpcLocation.CreateLocation("Marissa", "Ruins_Bathhouse", "Ghost NPC"));
+            Finder.DefineCustomLocation(NpcLocation.CreateLocation("Grasshopper", "Fungus1_24", "Ghost NPC"));
             Finder.DefineCustomLocation(new AbilityLocation() 
             {
                 forceShiny = true,
@@ -123,6 +140,25 @@ public static class RandomizerManager
                 x = 107.61f,
                 y = 11.41f
             });
+        }
+
+        if(Settings.RandomizeWarriorStatues && Finder.GetItem("Lore_Tablet-Xero") == null)
+        {
+            Finder.DefineCustomItem(NpcItem.CreateItem("Xero", "XERO_INSPECT", "The words of the king, for what happens with traitors.", "Xero", "Ghosts"));
+            Finder.DefineCustomItem(NpcItem.CreateItem("Elder_Hu", "HU_INSPECT", "The mantis buried him even after he attacked them. How nice of them.", "Elder_Hu", "Ghosts"));
+            Finder.DefineCustomItem(NpcItem.CreateItem("Galien", "GALIEN_INSPECT", "Something from an idiot who thought it would be a good idea to an area full a beasts. And then he died... \"Insert Surprised Pikachu Meme here\"", "Galien", "Ghosts"));
+            Finder.DefineCustomItem(NpcItem.CreateItem("Marmu", "MUMCAT_INSPECT", "They say the lore master creator hates this damn *****. Whatever that means.", "Marmu", "Ghosts"));
+            Finder.DefineCustomItem(NpcItem.CreateItem("Gorb", "ALADAR_INSPECT", "It's gorbin time! (to ascent!) (with Gorb) <br>- Gorb", "Gorb", "Ghosts"));
+            Finder.DefineCustomItem(NpcItem.CreateItem("Markoth", "MARKOTH_INSPECT", "Did the shade gate exists before he went in? If so, HOW could've he pass that? Is Markoth void? O.o", "Markoth", "Ghosts"));
+            Finder.DefineCustomItem(NpcItem.CreateItem("No_Eyes", "NOEYES_INSPECT", "I wonder what her name was before she... you know. If that's her real name, that is just asking for something to rip out your eyes.", "No_Eyes", "Ghosts"));
+
+            Finder.DefineCustomLocation(TabletLocation.CreateLocation("Xero", "RestingGrounds_02"));
+            Finder.DefineCustomLocation(TabletLocation.CreateLocation("Elder_Hu", "Fungus2_32"));
+            Finder.DefineCustomLocation(TabletLocation.CreateLocation("Galien", "Deepnest_40"));
+            Finder.DefineCustomLocation(TabletLocation.CreateLocation("Marmu", "Fungus3_40"));
+            Finder.DefineCustomLocation(TabletLocation.CreateLocation("Gorb", "Cliffs_02"));
+            Finder.DefineCustomLocation(TabletLocation.CreateLocation("Markoth", "Deepnest_East_10"));
+            Finder.DefineCustomLocation(TabletLocation.CreateLocation("No_Eyes", "Fungus1_35"));
         }
 
         if (Settings.CursedReading && Finder.GetItem("Reading") == null)
@@ -203,13 +239,16 @@ public static class RandomizerManager
             { Name = "End Condition" }, 10);
     }
 
-    internal static void CheckForRandoFile() 
-    { 
+    internal static LoreSetOption CheckForRandoFile() 
+    {
         if (!RandomizerMod.RandomizerMod.IsRandoSave)
         {
             LoreManager.Instance.CanListen = true;
             LoreManager.Instance.CanRead = true;
+            return LoreSetOption.Default;
         }
+        else
+            return Settings.PowerBehaviour;
     }
 
     #endregion

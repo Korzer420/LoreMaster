@@ -20,11 +20,7 @@ public class TrueFormPower : Power
 
     #region Constructors
 
-    public TrueFormPower() : base("True Form", Area.Dirtmouth)
-    {
-        Hint = "While the true form is revealed, its vessels nail gets more powerful. Especially near your true self.";
-        Description = "While your shade is active, you deal 30% more damage and increase your nail length by 25%. The effects are doubled, if you are in the same room as your shade.";
-    }
+    public TrueFormPower() : base("True Form", Area.Dirtmouth) { }
 
     #endregion
 
@@ -65,7 +61,7 @@ public class TrueFormPower : Power
 
     private void PlayMakerFSM_OnEnable(On.PlayMakerFSM.orig_OnEnable orig, PlayMakerFSM self)
     {
-        if (self.gameObject.name.Contains("Hollow Shade Death") && self.FsmName.Equals("Shade Control"))
+        if (self.gameObject.name.Contains("Hollow Shade Death") && string.Equals(self.FsmName,"Shade Control"))
             if (self.GetState("Blow").GetFirstActionOfType<Lambda>() == null)
             {
                 self.GetState("Blow").AddLastAction(new Lambda(() =>

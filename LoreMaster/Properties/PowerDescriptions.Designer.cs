@@ -286,7 +286,7 @@ namespace LoreMaster.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Hitting an enemy with the nail plants an egg to the enemy (Capped at 5), which spawns a weaver once the enemy died. Weavers also apply eggs (Capped at 25). Weavers despawn after 15 seconds or upon leaving the room. ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Hitting an enemy with the nail plants an egg to the enemy (Capped at 5), which spawns a weaver once the enemy died. Weavers also apply eggs (Capped at 25). Weavers despawn after 20 seconds or upon leaving the room. ähnelt.
         /// </summary>
         internal static string Infested {
             get {

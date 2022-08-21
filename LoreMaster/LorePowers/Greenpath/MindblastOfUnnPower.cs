@@ -15,11 +15,7 @@ public class MindblastOfUnnPower : Power
 
     #region Constructors
 
-    public MindblastOfUnnPower() : base("Mindblast of Unn", Area.Greenpath)
-    {
-        Hint = "Your dream nail emits the power of Unn to the target's mind, which causes their bodies to be more vulnerable.";
-        Description = "Hitting an enemy with the dream nail permanently increases the taken damage by 2. Bonus for wearing charm: (+1 Dreamwielder; +2 Dreamshield; +3 Shape of Unn)";
-    }
+    public MindblastOfUnnPower() : base("Mindblast of Unn", Area.Greenpath) { }
 
     #endregion
 

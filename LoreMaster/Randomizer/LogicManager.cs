@@ -11,7 +11,7 @@ namespace LoreMaster.Randomizer;
 
 public class LogicManager
 {
-    private static Dictionary<string, string> _locationLogic = new()
+    private static Dictionary<string, string> _npcLocationLogic = new()
     {
         {"Bretta", "Room_Bretta[right1] + Rescued_Bretta"},
         {"Elderbug", "Town[left1] | Town[bot1] | Town[right1]"},
@@ -28,7 +28,20 @@ public class LogicManager
         {"Moss_Prophet", "Fungus3_39[left1] | Fungus3_39[right1]"},
         {"Fluke_Hermit", "(Room_GG_Shortcut[top1] | (Room_GG_Shortcut[left1] + (LEFTCLAW | RIGHTCLAW))) + SWIM"},
         {"Quirrel", "(Mines_13[bot1] + (LEFTCLAW | RIGHTCLAW)) | Mines_13[top1] | Mines_13[right1]"},
+        {"Grasshopper", "Fungus1_24[left1] + (LEFTCLAW | RIGHTCLAW | WINGS) + DREAMNAIL" },
+        {"Marissa", "(Ruins_Bathhouse[door1] | Ruins_Bathhouse[right1]) + DREAMNAIL" },
         {"Queen", "Room_Queen[left1]"}
+    };
+
+    private static Dictionary<string, string> _warriorStatueLocationLogic = new()
+    {
+        {"Xero", "((RestingGrounds_02[left1] | RestingGrounds_02[right1] | RestingGrounds_02[bot1]) + (ENEMYPOGOS | RIGHTCLAW | LEFTCLAW | WINGS | RIGHTSUPERDASH)) | RestingGrounds_02[top1]" },
+        {"Elder_Hu", "Fungus2_32[left1]" },
+        {"Galien", "Deepnest_40[right1]" },
+        {"Marmu", "Fungus3_40[top1] | ((Can_Stag + Queen's_Gardens_Stag) | Fungus3_40[right1]) + (LEFTDASH | LEFTCLAW | WINGS)" },
+        {"Gorb", "((Cliffs_02[left2] | Cliffs_02[door1]) + (RIGHTCLAW | ENEMYPOGOS | WINGS | RIGHTDASH)) | Cliffs_02[left1] | Cliffs_02[bot1] + RIGHTCLAW" },
+        {"Markoth", "Deepnest_East_10[left1]" },
+        {"No_Eyes", "(Fungus1_35[left1] | Fungus1_35[right1]) + (DARKROOMS | LANTERN)" }
     };
 
     public static void AttachLogic()
@@ -48,11 +61,12 @@ public class LogicManager
             foreach (string key in RandomizerHelper.TabletNames.Keys)
                 builder.AddItem(new SingleItem("Lore_Tablet-" + key, new(loreAmount, 1)));
         }
+
         if (RandomizerManager.Settings.RandomizeNpc)
         {
-            foreach (string key in _locationLogic.Keys)
+            foreach (string key in _npcLocationLogic.Keys)
             {
-                builder.AddLogicDef(new(key + "_Dialogue", RandomizerManager.Settings.CursedListening ? $"({_locationLogic[key]}) + LISTEN" : _locationLogic[key]));
+                builder.AddLogicDef(new(key + "_Dialogue", RandomizerManager.Settings.CursedListening ? $"({_npcLocationLogic[key]}) + LISTEN" : _npcLocationLogic[key]));
                 if (RandomizerManager.Settings.BlackEggTempleCondition == RandomizerEndCondition.Dreamers)
                     builder.AddItem(new EmptyItem("Lore_Tablet-" + key));
                 else
@@ -61,6 +75,18 @@ public class LogicManager
             builder.AddLogicDef(new("Town_Lore_Page", "Town[left1] | Town[bot1] | Town[right1]"));
             builder.AddItem(new EmptyItem("Lore_Page"));
         }
+
+        if(RandomizerManager.Settings.RandomizeWarriorStatues)
+            foreach (string key in _warriorStatueLocationLogic.Keys)
+            {
+                builder.AddLogicDef(new(key + "_Inspect", RandomizerManager.Settings.CursedReading ? $"({_warriorStatueLocationLogic[key]}) + READ" : _warriorStatueLocationLogic[key]));
+                
+                if (RandomizerManager.Settings.BlackEggTempleCondition == RandomizerEndCondition.Dreamers)
+                    builder.AddItem(new EmptyItem("Lore_Tablet-" + key));
+                else
+                    builder.AddItem(new SingleItem("Lore_Tablet-" + key, new(builder.GetTerm("LORE"), 1)));
+            }
+        
         if (RandomizerManager.Settings.CursedReading)
         {
             Term readAbility = builder.GetOrAddTerm("READ");
@@ -69,6 +95,7 @@ public class LogicManager
             using Stream stream = typeof(LogicManager).Assembly.GetManifestResourceStream("LoreMaster.Resources.Randomizer.ReadLogicModifier.json");
             builder.DeserializeJson(LogicManagerBuilder.JsonType.LogicEdit, stream);
         }
+        
         if(RandomizerManager.Settings.CursedListening)
         {
             Term listenAbility = builder.GetOrAddTerm("LISTEN");

@@ -28,11 +28,9 @@ internal class BlessingOfTheButterflyPower : Power
 
     public BlessingOfTheButterflyPower() : base("Blessing of the Butterfly", Area.CityOfTears)
     {
-        Hint = "Your Wings have received the blessing of the butterfly, which allows them to crush enemies beneath them and repel even higher. While the wings rest on you, your enemies shall be shattered by your feet. From your best girl (besides Myla) c:";
-        Description = "Wings now deal 12 damage upon contact with enemy and apply massive knockback downwards. While your double jump is on cooldown, instead of taking damage from enemies below you, you deal 4 damage, regain soul and jump automatically again. (This does not restore wings)";
-        Hint += "You can 100% be sure, that I'd end your game immediatly if you kill her, if it wasn't for the audience power. Though for another power in the future I'll not be that kind, just a fair warning. " +
+        Hint += " You can 100% be sure, that I'd end your game immediatly if you kill her, if it wasn't for the audience power. Though for another power in the future I'll not be that kind, just a fair warning. " +
             "Don't mess with the innocent and happy bugs in this game. >:c";
-        Description += "You can 100% be sure, that I'd end your game immediatly if you kill her, if it wasn't for the audience power. Though for another power in the future I'll not be that kind, just a fair warning. " +
+        Description += " You can 100% be sure, that I'd end your game immediatly if you kill her, if it wasn't for the audience power. Though for another power in the future I'll not be that kind, just a fair warning. " +
             "Don't mess with the innocent and happy bugs in this game. >:c";
     }
 

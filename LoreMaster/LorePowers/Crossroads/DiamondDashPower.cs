@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace LoreMaster.LorePowers.Crossroads;
 
-public class DiamantDashPower : Power
+public class DiamondDashPower : Power
 {
     #region Members
 
@@ -22,11 +22,9 @@ public class DiamantDashPower : Power
 
     #region Constructors
 
-    public DiamantDashPower() : base("Diamond Dash", Area.Crossroads)
+    public DiamondDashPower() : base("Diamond Dash", Area.Crossroads)
     {
-        Hint = "The shell of crystal heart is powered with the might of diamonds, which causes a quicker energie cast and allows you to stop you mid air. Hold up to remain at your position. Drains souls rapidly.";
-        Description = "Crystal Heart is cast 0.3 seconds faster and can be hold midair while pressing up. Doubled, if you have Diamond Core unlocked. Drains 20 Soul per second (or 10 if you have Diamond Core).";
-        CustomText = "... You know the rules and so do I... Oh! Hello fellow adventurer! Are you also looking for the incredible rare diamond that should be somewhere in this mountain?" +
+       CustomText = "... You know the rules and so do I... Oh! Hello fellow adventurer! Are you also looking for the incredible rare diamond that should be somewhere in this mountain?" +
             " The tales of it's creation are really interesting. I've even made a small shell in which the stone can fit once I obtained it. If I lend you this, would you be helping me finding the stone?" +
             " For me it's just about finding the stone, I don't care how many hours it may take. Even if I have to dig to the core of the mountain. Let's get back to work, lalalala. " +
             "(After this myla lived a happy life for the following 50 years and died of old age." +

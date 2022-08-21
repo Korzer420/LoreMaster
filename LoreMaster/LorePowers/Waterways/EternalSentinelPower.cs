@@ -19,12 +19,7 @@ public class EternalSentinelPower : Power
 
     #region Constructors
 
-    public EternalSentinelPower() : base("Eternal Sentinel", Area.WaterWays)
-    {
-        Hint = "Increases your scent while wearing the sign of the protector. The shield of the ancient ones is more resistent and gather soul with the blessing of the protector.";
-        Description = "Defender's Crest clouds are 150% bigger and tick twice as fast. Baldur shell now takes seven hits instead of four (ten with defender's Crest. When getting hit, while baldur shell is up, you gain 15 soul " +
-            "if you are also wearing Defender's Crest.";
-    }
+    public EternalSentinelPower() : base("Eternal Sentinel", Area.WaterWays) { }
 
     #endregion
 
@@ -45,7 +40,7 @@ public class EternalSentinelPower : Power
 
     private void PlayMakerFSM_OnEnable(On.PlayMakerFSM.orig_OnEnable orig, PlayMakerFSM self)
     {
-        if (self.gameObject.name.Contains("Knight Dung Trail(Clone)") && self.FsmName.Equals("Control"))
+        if (self.gameObject.name.Contains("Knight Dung Trail(Clone)") && string.Equals(self.FsmName,"Control"))
         {
             self.GetState("Init").ReplaceAction(new Lambda(() =>
             {

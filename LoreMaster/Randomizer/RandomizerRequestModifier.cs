@@ -15,7 +15,7 @@ internal class RandomizerRequestModifier
     {
         if (RandomizerManager.Settings.RandomizeNpc)
         {
-            foreach (string name in RandomizerManager.ItemNames)
+            foreach (string name in RandomizerManager.NpcItemNames)
             {
                 requestBuilder.AddItemByName("Lore_Tablet-" + name);
                 requestBuilder.AddLocationByName(name + "_Dialogue");
@@ -23,6 +23,14 @@ internal class RandomizerRequestModifier
             requestBuilder.AddItemByName("Lore_Page");
             requestBuilder.AddLocationByName("Town_Lore_Page");
         }
+
+        if(RandomizerManager.Settings.RandomizeWarriorStatues)
+            foreach (string name in RandomizerManager.StatueItemNames)
+            {
+                requestBuilder.AddItemByName("Lore_Tablet-" + name);
+                requestBuilder.AddLocationByName(name + "_Inspect");
+            }
+
         if (RandomizerManager.Settings.CursedReading)
         {
             LoreManager.Instance.CanRead = false;
@@ -31,6 +39,7 @@ internal class RandomizerRequestModifier
         }
         else
             LoreManager.Instance.CanRead = true;
+
         if (RandomizerManager.Settings.CursedListening)
         {
             LoreManager.Instance.CanListen = false;

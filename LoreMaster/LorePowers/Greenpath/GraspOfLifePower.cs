@@ -28,13 +28,7 @@ public class GraspOfLifePower : Power
 
     #region Constructors
 
-    public GraspOfLifePower() : base("Grasp of Life", Area.Greenpath)
-    {
-        Hint = "While running on the ground, the breath of life shall grow grass below your feet. Sometimes, a pale blessed one may appear instead. " +
-            "Killing it, shall let your hear the cheers of the normal one.";
-        Description = "While running on the ground spawn a grass patch each second. Every 10th one is \"pale grass\" which, upon destroying, causes all other spawned grass by you to cast wraith " +
-            "that deal 10 damage (20 if shape of unn is equipped). Grass despawns after 10 seconds.";
-    }
+    public GraspOfLifePower() : base("Grasp of Life", Area.Greenpath) { }
 
     #endregion
 
@@ -52,7 +46,7 @@ public class GraspOfLifePower : Power
 
     private void GrassSpriteBehaviour_OnTriggerEnter2D(On.GrassSpriteBehaviour.orig_OnTriggerEnter2D orig, GrassSpriteBehaviour self, Collider2D collision)
     {
-        if (self.gameObject.name.Equals("Power grass"))
+        if (string.Equals(self.gameObject.name,"Power grass"))
         {
             bool isCut = ReflectionHelper.GetField<GrassSpriteBehaviour, bool>(self, "isCut");
             orig(self, collision);
@@ -92,7 +86,7 @@ public class GraspOfLifePower : Power
         }
         else
             orig(self, collision);
-        if (self.gameObject.name.Equals("Grasp grass"))
+        if (string.Equals(self.gameObject.name,"Grasp grass"))
             GameObject.Destroy(self.gameObject);
     }
 

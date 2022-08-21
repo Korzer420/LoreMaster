@@ -26,11 +26,6 @@ public class GrassBombardementPower : Power
 
     public GrassBombardementPower() : base("Grass Bombardement", Area.QueensGarden)
     {
-        Hint = "Forms the grass in Hallownest with the power of the soul to a \"special delivery\" which explodes shortly after creation, dealing huge damage. The disruption may break loose walls and floors. " +
-            "Requires soul to construct the bomb. Press (Quick)cast and left to drop the bomb. They say, that you also can channel the blue plague, to create an even stronger bomb which can even break the heaviest stones and emits a destruction shockwave through the room. " +
-            "Press (Quick)cast and right to consume the blue blood and spawn the powerful nuke.";
-        Description = "Pressing left while casting. spawns a bomb which explodes after 3 seconds, that deals 40 damage (60 with shaman stone) and breaks damaged walls/ground. Pressing right, will consum a " +
-            "lifeblood mask to spawn a more powerful bomb, with a bigger radius, 50 % more damage and the ability to break ALL damaged floors/walls in the room, even heavy floors and one way walls.";
         CustomText = "Hey hey, just one more time ok?<page>No, we can't do this anymore, you have to stop.<page>Oh come on, it's so much fun. Don't you feel the satisfaction?<page> " +
             "I said no! We don't blow up anymore buildings, creatures, plants or ANYTHING else, ok?<page>Man, you're lame. Why can't you appreciate the art that I'm doing here?<page>" +
             "You call this ART!? You just let your bombs explode!<page>Hey, as long as it works...";

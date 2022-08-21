@@ -22,12 +22,7 @@ public class InfestedPower : Power
 
     #region Constructors
 
-    public InfestedPower() : base("Infested!", Area.Deepnest)
-    {
-        Hint = "Plant spider eggs in the wounds of your victims, that burst open on death.";
-        Description = "Hitting an enemy with the nail plants an egg to the enemy (Capped at 5), which spawns a weaver once the enemy died. Weavers also apply eggs. (Capped at 25) " +
-            "Weavers despawn after 15 seconds or upon leaving the room.";
-    }
+    public InfestedPower() : base("Infested!", Area.Deepnest) { }
 
     #endregion
 
@@ -66,7 +61,7 @@ public class InfestedPower : Power
 
     private void PlayMakerFSM_OnEnable(On.PlayMakerFSM.orig_OnEnable orig, PlayMakerFSM self)
     {
-        if (self.FsmName.Equals("Attack") && string.Equals(self.transform.parent?.name, "Weaverling(Clone)"))
+        if (string.Equals(self.FsmName,"Attack") && string.Equals(self.transform.parent?.name, "Weaverling(Clone)"))
         {
             self.GetState("Hit").ReplaceAction(new Lambda(() =>
             {
@@ -130,7 +125,7 @@ public class InfestedPower : Power
     private IEnumerator WeaverLife(GameObject weaver)
     {
         float passedTime = 0f;
-        while(passedTime < 15f && weaver != null)
+        while(passedTime < 20f && weaver != null)
         {
             yield return null;
             passedTime += Time.deltaTime;

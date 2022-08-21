@@ -22,11 +22,7 @@ public class OverwhelmingPowerPower : Power
 
     #region Constructors
 
-    public OverwhelmingPowerPower() : base("Overwhelming Power", Area.CityOfTears)
-    {
-        Hint = "Casting spells with full capacity will grant your spell much more power.";
-        Description = "When you cast a spell while your soul vessel is full (not counting additional soul vessels), they deal twice as much damage and are twice as big.";
-    }
+    public OverwhelmingPowerPower() : base("Overwhelming Power", Area.CityOfTears) { }
 
     #endregion
 
@@ -39,7 +35,7 @@ public class OverwhelmingPowerPower : Power
     /// <param name="self"></param>
     private void CheckFireball(On.PlayMakerFSM.orig_OnEnable orig, PlayMakerFSM self)
     {
-        if (!self.FsmName.Equals("Fireball Control"))
+        if (!string.Equals(self.FsmName,"Fireball Control"))
         {
             orig(self);
             return;

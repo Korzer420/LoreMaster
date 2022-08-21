@@ -15,7 +15,9 @@ using LoreMaster.LorePowers.QueensGarden;
 using LoreMaster.LorePowers.RestingGrounds;
 using LoreMaster.LorePowers.Waterways;
 using LoreMaster.LorePowers.WhitePalace;
+using LoreMaster.Randomizer;
 using LoreMaster.SaveManagement;
+using Modding;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,7 +49,7 @@ internal static class PowerManager
         // Crossroads
         {"PILGRIM_TAB_01", new ReluctantPilgrimPower() },
         {"COMPLETION_RATE_UNLOCKED", new GreaterMindPower() { DefaultTag = PowerTag.Global } },
-        {"MYLA", new DiamantDashPower() },
+        {"MYLA", new DiamondDashPower() },
         // Crystal Peaks
         {"QUIRREL", new DiamondCorePower() },
         // Deepnest
@@ -116,7 +118,7 @@ internal static class PowerManager
     #region Methods
 
     #region Power Information
-    
+
     /// <summary>
     /// Check if the key is binded to a power and possibly add it.
     /// </summary>
@@ -126,7 +128,10 @@ internal static class PowerManager
     /// <returns>True if a matching power was found</returns>
     public static bool GetPowerByKey(string key, out Power power, bool collectIfPossible = true)
     {
-        if (_powerList.TryGetValue(key?.ToUpper(), out power))
+        power = null;
+        if (string.IsNullOrEmpty(key))
+            return false;
+        if (_powerList.TryGetValue(key.ToUpper(), out power))
             try
             {
                 if (collectIfPossible && !ActivePowers.Contains(power))
@@ -147,9 +152,12 @@ internal static class PowerManager
         return false;
     }
 
-    public static bool GetPowerByName(string name, out Power power, bool collectIfPossible = true)
+    public static bool GetPowerByName(string name, out Power power, bool ignoreWhiteSpaces = true, bool collectIfPossible = true)
     {
-        if (_powerList.Values.FirstOrDefault(x => string.Equals(name, x.PowerName, StringComparison.InvariantCultureIgnoreCase)) is Power foundPower)
+        power = null;
+        if (string.IsNullOrEmpty(name))
+            return false;
+        if (_powerList.Values.FirstOrDefault(x => string.Equals(name, ignoreWhiteSpaces ? x.PowerName.Replace(" ", "") : x.PowerName, StringComparison.InvariantCultureIgnoreCase)) is Power foundPower)
             try
             {
                 power = foundPower;
@@ -183,9 +191,31 @@ internal static class PowerManager
 
     internal static void ResetPowers()
     {
-        // Reset tags to default.
-        foreach (string key in _powerList.Keys)
-            _powerList[key].Tag = _powerList[key].DefaultTag;
+        if (ModHooks.GetMod("Randomizer 4", true) is Mod mod)
+            switch (RandomizerManager.CheckForRandoFile())
+            {
+                case LoreSetOption.Default:
+                    foreach (string key in _powerList.Keys)
+                        _powerList[key].Tag = _powerList[key].DefaultTag;
+                    break;
+                case LoreSetOption.AllGlobalPowers:
+                    foreach (string key in _powerList.Keys)
+                        _powerList[key].Tag = PowerTag.Global;
+                    break;
+                case LoreSetOption.RemoveAllPowersExceptTracker:
+                    foreach (string key in _powerList.Keys)
+                        _powerList[key].Tag = PowerTag.Remove;
+                    _powerList["COMPLETION_RATE_UNLOCKED"].Tag = PowerTag.Global;
+                    break;
+                case LoreSetOption.RemoveAllPowers:
+                    foreach (string key in _powerList.Keys)
+                        _powerList[key].Tag = PowerTag.Remove;
+                    break;
+            }
+        else
+            // Reset tags to default.
+            foreach (string key in _powerList.Keys)
+                _powerList[key].Tag = _powerList[key].DefaultTag;
         // Unsure if this is needed, but just in case.
         ActivePowers.Clear();
     }
@@ -194,7 +224,7 @@ internal static class PowerManager
     {
         foreach (Power power in ActivePowers)
             power.DisablePower(true);
-    } 
+    }
 
     internal static void LoadPowers(LoreMasterLocalSaveData saveData)
     {
@@ -202,22 +232,35 @@ internal static class PowerManager
         foreach (string key in saveData.Tags.Keys)
             _powerList[key].Tag = saveData.Tags[key];
 
-        foreach (string key in saveData.AcquiredPowersKey)
-            GetPowerByName(key, out Power pow);
+        foreach (string key in saveData.AcquiredPowersKeys)
+        {
+            // Since this method would normally activate the power instantly, we add the power later. This is because I'm unsure when local settings are loaded.
+            if (string.Equals(key, "dream warrior"))
+                ActivePowers.Add(new PlaceholderPower());
+            GetPowerByKey(key, out Power pow, false);
+            if (pow != null)
+                ActivePowers.Add(pow);
+        }
     }
 
     internal static void SavePowers(ref LoreMasterLocalSaveData saveData)
     {
         foreach (string key in _powerList.Keys)
-        { 
+        {
             saveData.Tags.Add(key, _powerList[key].Tag);
             if (ActivePowers.Contains(_powerList[key]))
-                saveData.AcquiredPowersKey.Add(key);
+                saveData.AcquiredPowersKeys.Add(key);
         }
+
+        // Place the fake powers in the save data as well.
+        if(ActivePowers.Any(x => x is PlaceholderPower))
+            for (int i = 0; i < ActivePowers.Count(x => x is PlaceholderPower); i++)
+                saveData.AcquiredPowersKeys.Add("dream warrior");
+            
     }
 
     internal static void AddPower(string key, Power power) => _powerList.Add(key, power);
-    
+
     #endregion
 
     /// <summary>
@@ -250,25 +293,25 @@ internal static class PowerManager
 
     internal static void CalculatePowerStates(Area newArea)
     {
-            try
-            {
-                // Activate all local abilities
-                foreach (Power power in ActivePowers.Where(x => x.Location == newArea))
-                    if (power.Tag == PowerTag.Exclude || power.Tag == PowerTag.Local)
-                        power.EnablePower();
+        try
+        {
+            // Activate all local abilities
+            foreach (Power power in ActivePowers.Where(x => x.Location == newArea))
+                if (power.Tag == PowerTag.Exclude || power.Tag == PowerTag.Local)
+                    power.EnablePower();
 
-                // Disable all local abilities from all other zone (this has to be done that way for randomizer compability)
-                foreach (Area area in ((Area[])Enum.GetValues(typeof(Area))).Skip(1))
-                    if (area != newArea && !IsAreaGlobal(area))
-                        foreach (Power power in ActivePowers.Where(x => x.Location == area))
-                            if (power.Tag == PowerTag.Local || power.Tag == PowerTag.Exclude)
-                                power.DisablePower();
-            }
-            catch (Exception exception)
-            {
-                LoreMaster.Instance.LogError("An error occured in the area change: " + exception.Message);
-            }
-            UpdateTracker(newArea);
+            // Disable all local abilities from all other zone (this has to be done that way for randomizer compability)
+            foreach (Area area in ((Area[])Enum.GetValues(typeof(Area))).Skip(1))
+                if (area != newArea && !IsAreaGlobal(area))
+                    foreach (Power power in ActivePowers.Where(x => x.Location == area))
+                        if (power.Tag == PowerTag.Local || power.Tag == PowerTag.Exclude)
+                            power.DisablePower();
+        }
+        catch (Exception exception)
+        {
+            LoreMaster.Instance.LogError("An error occured in the area change: " + exception.Message);
+        }
+        UpdateTracker(newArea);
     }
 
     internal static void FirstPowerInitialization()

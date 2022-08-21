@@ -9,8 +9,6 @@ public class ImposterPower : Power
     public ImposterPower() : base("Imposter", Area.FungalWastes)
     {
         CustomText = "Pity those bugs. Their society shattered to pieces. While our kind should survive it all, we fear that they are imposter among us, which causes the blue illness upon our colony.";
-        Hint = "While being part of the shrooms, sometime you focus treacherous energys... AMOGUS";
-        Description = "While wearing spore shrooms, focus has a 20% chance to add a lifeblood (doesn't work if you have 3 or more lifeblood).";
     }
 
     #endregion

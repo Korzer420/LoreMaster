@@ -17,11 +17,7 @@ public class ShadowForgedPower : Power
 
     #region Constructors
 
-    public ShadowForgedPower() : base("Shadow Forged", Area.WhitePalace)
-    {
-        Hint = "The void energy return quicker to you.";
-        Description = "Decrease the cooldown of shade cloak by 0.2 seconds and increases sharp shadow damage by 100%.";
-    }
+    public ShadowForgedPower() : base("Shadow Forged", Area.WhitePalace) { }
 
     #endregion
 

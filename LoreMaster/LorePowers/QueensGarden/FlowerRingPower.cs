@@ -10,11 +10,7 @@ public class FlowerRingPower : Power
 {
     #region Constructors
 
-    public FlowerRingPower() : base("Ring of Flowers", Area.QueensGarden)
-    {
-        Hint = "The power of all existing flower are gathered if you channel powerful strikes.";
-        Description = "Increase the damage of your nail arts by 10% for each recipient for the flower.";
-    }
+    public FlowerRingPower() : base("Ring of Flowers", Area.QueensGarden) { }
 
     #endregion
 
@@ -22,7 +18,7 @@ public class FlowerRingPower : Power
 
     private void PlayMakerFSM_OnEnable(On.PlayMakerFSM.orig_OnEnable orig, PlayMakerFSM self)
     {
-        if (self.FsmName.Equals("nailart_damage"))
+        if (string.Equals(self.FsmName,"nailart_damage"))
         {
             self.GetState("Set").ReplaceAction(new Lambda(() =>
             {

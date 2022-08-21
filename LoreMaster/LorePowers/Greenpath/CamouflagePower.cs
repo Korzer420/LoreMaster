@@ -1,5 +1,4 @@
 using LoreMaster.Enums;
-using Modding;
 using System.Collections;
 using UnityEngine;
 
@@ -16,11 +15,7 @@ public class CamouflagePower : Power
 
     #region Constructors
 
-    public CamouflagePower() : base("Camouflage", Area.Greenpath)
-    {
-        Hint = "While doing nothing, your mind slowly ascent to Unn's dream, while your shell is shielded by Unn's power.";
-        Description = "After standing still for 5 seconds, you gain invincibility until you do something. If you are wearing Shape of Unn, you keep the invincibility while focusing and moving as a slug.";
-    }
+    public CamouflagePower() : base("Camouflage", Area.Greenpath) { }
 
     #endregion
 

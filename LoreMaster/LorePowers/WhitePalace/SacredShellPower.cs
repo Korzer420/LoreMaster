@@ -7,11 +7,7 @@ public class SacredShellPower : Power
 {
     #region Constructors
 
-    public SacredShellPower() : base("Sacred Shell", Area.WhitePalace)
-    {
-        Hint = "Infuse your shell with the pale power of the monarch which grants you tenacity against strong strikes.";
-        Description = "You can longer take more than one damage per hit (excluding overcharmed).";
-    }
+    public SacredShellPower() : base("Sacred Shell", Area.WhitePalace) { }
 
     #endregion
 

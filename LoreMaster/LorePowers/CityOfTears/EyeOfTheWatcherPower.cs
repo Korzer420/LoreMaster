@@ -23,9 +23,6 @@ public class EyeOfTheWatcherPower : Power
 
     public EyeOfTheWatcherPower() : base("Eye Of The Watcher", Area.CityOfTears)
     {
-        Hint = "The eye of the watcher will protect you and share it's sight, allowing you to see in the dark. If the eye can fully see you, it gaze may once prevent a fatal blow on you. To call the eye again, look through the tool of the watcher.";
-        Description = "Grants the lantern effect. If you already have the lantern effect and would take lethal damage, you will be healed to full hp instead (with joni's you gaining 5 lifeblood instead)." +
-            " Once triggered, has to be restored by looking through the telescope by lurien.";
         _eyeSprite = SpriteHelper.CreateSprite("EyeOfLurien");
     }
 
@@ -74,10 +71,10 @@ public class EyeOfTheWatcherPower : Power
 
     private void RefreshEyeOfTheWatcher(On.PlayMakerFSM.orig_OnEnable orig, PlayMakerFSM self)
     {
-        if (self.gameObject.name.Equals("Telescope Inspect") && self.FsmName.Equals("Conversation Control"))
+        if (string.Equals(self.gameObject.name,"Telescope Inspect") && string.Equals(self.FsmName,"Conversation Control"))
             self.GetState("Stop").ReplaceAction(new Lambda(() => EyeActive = true) { Name = "Restore Eye" });
         // Enable the peak toll.
-        else if (self.gameObject.name.Contains("Toll Gate Machine") && self.FsmName.Equals("Disable if No Lantern"))
+        else if (self.gameObject.name.Contains("Toll Gate Machine") && string.Equals(self.FsmName,"Disable if No Lantern"))
             self.GetState("Check").ReplaceAction(new Lambda(() => 
             {
                 if (Active && EyeActive)

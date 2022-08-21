@@ -19,6 +19,9 @@ public abstract class Power
     {
         PowerName = powerName;
         Location = area;
+        string powerType = GetType().Name;
+        Hint = Properties.PowerHints.ResourceManager.GetString(powerType.Substring(0, powerType.Length - 5));
+        Description = Properties.PowerDescriptions.ResourceManager.GetString(powerType.Substring(0, powerType.Length - 5));
     }
 
     #endregion
@@ -121,7 +124,7 @@ public abstract class Power
     /// </summary>
     internal void EnablePower()
     {
-        if (Active || Tag == PowerTag.Disable || Tag == PowerTag.Remove || GameManager.instance == null || !GameManager.instance.IsGameplayScene())
+        if (Active || Tag == PowerTag.Disable || Tag == PowerTag.Remove)
             return;
         try
         {

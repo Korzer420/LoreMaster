@@ -13,8 +13,6 @@ public class JellyfishFlowPower : Power
     public JellyfishFlowPower() : base("Jellyfish Flow", Area.FogCanyon)
     {
         CustomText = "This is great! When I pass this test, I'll be an official jellyfish spotter! Hey, Kevin. I don't think it's working. Hey, hey, Kevin! She's here! Look, she's here! She's here, Kevin!";
-        Hint = "You've gain the swimming agility of the jellyfishs... And you are now a part of the jellyspotters!";
-        Description = "You swim 4 times as fast.";
     }
 
     #endregion

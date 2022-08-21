@@ -32,6 +32,18 @@
   </ItemGroup>
   
   <ItemGroup>
+    <_RandoItems Remove="Resources\Randomizer\Elder_Hu.png" />
+    <_RandoItems Remove="Resources\Randomizer\Galien.png" />
+    <_RandoItems Remove="Resources\Randomizer\Gorb.png" />
+    <_RandoItems Remove="Resources\Randomizer\Grasshopper.png" />
+    <_RandoItems Remove="Resources\Randomizer\Marissa.png" />
+    <_RandoItems Remove="Resources\Randomizer\Markoth.png" />
+    <_RandoItems Remove="Resources\Randomizer\Marmu.png" />
+    <_RandoItems Remove="Resources\Randomizer\No_Eyes.png" />
+    <_RandoItems Remove="Resources\Randomizer\Xero.png" />
+  </ItemGroup>
+  
+  <ItemGroup>
     <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\Program Files\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\Assembly-CSharp.dll</HintPath>

@@ -17,11 +17,7 @@ public class ReturnToUnnPower : Power
 
     #region Constructors
 
-    public ReturnToUnnPower() : base("Return to Unn", Area.Greenpath)
-    {
-        Hint = "Reject Bugness, return to Slug. You move faster to Unn.";
-        Description = "Your Movement speed is increased by 3 and your dash cooldown is reduces by 0.5 seconds, while you facing left.";
-    }
+    public ReturnToUnnPower() : base("Return to Unn", Area.Greenpath) { }
 
     #endregion
 

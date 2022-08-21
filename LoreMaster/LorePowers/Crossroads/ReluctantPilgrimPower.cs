@@ -11,11 +11,7 @@ public class ReluctantPilgrimPower : Power
 {
     #region Constructors
 
-    public ReluctantPilgrimPower() : base("Reluctant Pilgrim", Area.Crossroads)
-    {
-        Hint = "While you stay on the path, your nail shall receive the gift of the grubfather.";
-        Description = "While standing of the ground, the grubberfly elegy effect is active regardless of your hp (Joni conditions are still normal). If you have grubberfly equipped, the damage on ground is doubled instead. Also mutes the beams after a few casts.";
-    }
+    public ReluctantPilgrimPower() : base("Reluctant Pilgrim", Area.Crossroads) { }
 
     #endregion
 

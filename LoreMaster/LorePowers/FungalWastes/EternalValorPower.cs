@@ -18,11 +18,7 @@ public class EternalValorPower : Power
 
     #region Constructors
 
-    public EternalValorPower() : base("Eternal Valor", Area.FungalWastes)
-    {
-        Hint = "The heat of the battle shall allow you to endure more pain.";
-        Description = "Each 12 hits on enemies, heal you for 1 mask. Not hitting an enemy for 3 seconds will take away a stack each half of a second.";
-    }
+    public EternalValorPower() : base("Eternal Valor", Area.FungalWastes) { }
 
     #endregion
 

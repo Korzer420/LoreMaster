@@ -21,11 +21,7 @@ public class UnitedWeStandPower : Power
 
     #region Constructors
 
-    public UnitedWeStandPower() : base("United we Stand", Area.FungalWastes)
-    {
-        Hint = "Your companions inspire each other.";
-        Description = "Weavers are bigger, Grimmchild shoots faster and Hatchling deal more damage for each companion (of those three) you have.";
-    }
+    public UnitedWeStandPower() : base("United we Stand", Area.FungalWastes) { }
 
     #endregion
 
@@ -34,7 +30,7 @@ public class UnitedWeStandPower : Power
     /// <summary>
     /// Get the amount of active companions
     /// </summary>
-    public int CompanionAmount => _companions.Count(x => x.activeSelf);
+    public int CompanionAmount => _companions.Count(x => x != null && x.activeSelf);
 
     #endregion
 
@@ -60,8 +56,6 @@ public class UnitedWeStandPower : Power
     /// <inheritdoc/>
     protected override void Disable()
     {
-        if (_runningCoroutine != null)
-            LoreMaster.Instance.Handler.StopCoroutine(_runningCoroutine);
         On.KnightHatchling.OnEnable -= HatchlingSpawn;
     }
 
@@ -72,7 +66,6 @@ public class UnitedWeStandPower : Power
     /// <summary>
     /// Updates the companions continious.
     /// </summary>
-    /// <returns></returns>
     private IEnumerator UpdateCompanions()
     {
         while (true)
