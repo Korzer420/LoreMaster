@@ -51,7 +51,7 @@ public class OverwhelmingPowerPower : Power
                     self.transform.localScale = new(self.transform.localScale.x + 1f, self.transform.localScale.y + 1f);
                     self.GetComponent<tk2dSprite>().color = Color.cyan;
                     // Roll to determine if the player takes damage.
-                    if (LoreMaster.Instance.Generator.Next(1, 21) == 1)
+                    if (LoreMaster.Instance.Generator.Next(1, 11) == 1)
                         LoreMaster.Instance.Handler.StartCoroutine(Overload());
                 }
                 else
@@ -74,7 +74,7 @@ public class OverwhelmingPowerPower : Power
                     self.transform.localScale = new(self.transform.localScale.x + 1f, self.transform.localScale.y + 1f);
                     self.GetComponent<tk2dSprite>().color = Color.cyan;
                     // Roll to determine if the player takes damage.
-                    if (LoreMaster.Instance.Generator.Next(1, 21) == 1)
+                    if (LoreMaster.Instance.Generator.Next(1, 11) == 1)
                         LoreMaster.Instance.Handler.StartCoroutine(Overload());
                 }
                 else
@@ -142,7 +142,7 @@ public class OverwhelmingPowerPower : Power
                     spell.transform.localScale = new(2, 2);
                     spellObject.transform.parent.GetComponent<tk2dSprite>().color = Color.cyan;
                     // Roll to determine if the player takes damage.
-                    if (LoreMaster.Instance.Generator.Next(1, 21) == 1)
+                    if (LoreMaster.Instance.Generator.Next(1, 11) == 1)
                         LoreMaster.Instance.Handler.StartCoroutine(Overload());
                 }
                 else if(spellObject.transform.parent != null && spellObject.transform.parent.parent != null && spellObject.transform.parent.parent.name.Equals("Spells"))

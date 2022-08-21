@@ -85,7 +85,7 @@ internal class LorePage
                     continue;
                 }
 
-                if (_powers[i].Tag == PowerTag.Disable || _powers[i].Tag == PowerTag.Remove)
+                if (_powers[i].Tag == PowerTag.Remove)
                 {
                     _loreObjects[i].GetComponent<SpriteRenderer>().sprite = _notActive;
                     _loreObjects[i].GetComponent<SpriteRenderer>().color = PowerManager.ActivePowers.Contains(_powers[i])
@@ -229,7 +229,7 @@ internal class LorePage
                                 confirmButton.SetActive(PlayerData.instance.GetBool(nameof(PlayerData.instance.atBench)));
                             else
                                confirmButton.SetActive(PlayerData.instance.GetBool(nameof(PlayerData.instance.atBench)) 
-                                   && (power.Tag == PowerTag.Global || PowerManager.IsAreaGlobal(power.Location) || SettingManager.Instance.CurrentArea == power.Location)); 
+                                   && (PowerManager.IsAreaGlobal(power.Location) || SettingManager.Instance.CurrentArea == power.Location)); 
                         }
                         else
                         {

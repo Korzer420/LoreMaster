@@ -52,7 +52,7 @@ internal class PureSpiritPower : Power
         PlayMakerFSM fsm = HeroController.instance.spellControl;
         fsm.GetState("Spell End").ReplaceAction(new Lambda(() =>
         {
-            if (Active && PlayerData.instance.GetInt(nameof(PlayerData.instance.MPCharge)) == 0 
+            if (Active && PlayerData.instance.GetInt(nameof(PlayerData.instance.MPCharge)) == 0
             && _orbContainer.transform.childCount < 3 && _followed == HeroController.instance.transform)
                 SpawnOrb();
             LoreMaster.Instance.Handler.StartCoroutine(WaitForSpell());
@@ -151,7 +151,7 @@ internal class PureSpiritPower : Power
                 // Refollow the hero.
                 _followed = HeroController.instance.transform;
             }
-            _orbContainer.transform.localPosition = _followed.localPosition;
+            _orbContainer.transform.localPosition = _followed.position;
             _orbContainer.transform.SetPositionY(_orbContainer.transform.localPosition.y - .8f);
             rotation += Time.deltaTime * (120f + PlayerData.instance.GetInt(nameof(PlayerData.instance.MPCharge)) * 2);
             if (rotation >= 360f)
@@ -191,13 +191,14 @@ internal class PureSpiritPower : Power
         foreach (Transform child in _orbContainer.transform)
             child.transform.localPosition = CalculatePosition(child.transform.GetSiblingIndex());
 
-        GameObject hitbox = GameObject.Instantiate(_hitbox,orb.transform);
+        GameObject hitbox = GameObject.Instantiate(_hitbox, orb.transform);
         Component.Destroy(hitbox.GetComponent<PolygonCollider2D>());
         hitbox.AddComponent<CircleCollider2D>().isTrigger = true;
         hitbox.name = "Orb Hitbox";
         PlayMakerFSM fsm = hitbox.LocateMyFSM("damages_enemy");
         fsm.FsmName = "Orb Damage";
-        fsm.GetState("Send Event").InsertAction(new Lambda(() => {
+        fsm.GetState("Send Event").InsertAction(new Lambda(() =>
+        {
             fsm.FsmVariables.FindFsmInt("damageDealt").Value = PlayerData.instance.GetBool(nameof(PlayerData.instance.equippedCharm_19))
             ? 4
             : 2;
@@ -208,6 +209,7 @@ internal class PureSpiritPower : Power
         }
         ), 7);
         hitbox.transform.localPosition = new(0, 0);
+        LoreMaster.Instance.Handler.StartCoroutine(BlinkHitbox(hitbox));
     }
 
     private Vector3 CalculatePosition(int index)
@@ -219,7 +221,7 @@ internal class PureSpiritPower : Power
             vector3.x = 0f;
             vector3.y = circleHeight;
         }
-        else if(index == 1)
+        else if (index == 1)
             // If only two orbs exists, the second one is placed at the other side, otherwise further to the left so that all three have the same distance.
             if (circleHeight == 4)
             {
@@ -270,6 +272,23 @@ internal class PureSpiritPower : Power
             soulGain += 10;
         HeroController.instance.AddMPCharge(soulGain);
         GameObject.Destroy(orb.gameObject);
+    }
+
+    private IEnumerator BlinkHitbox(GameObject hitbox)
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(.5f);
+            if (hitbox != null)
+                hitbox.SetActive(true);
+            else 
+                yield break;
+            yield return new WaitForSeconds(0.1f);
+            if (hitbox != null)
+                hitbox.SetActive(false);
+            else
+                yield break;
+        }
     }
 
     #endregion

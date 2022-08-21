@@ -92,8 +92,6 @@ internal class BlessingOfTheButterflyPower : Power
     protected override void Initialize()
     {
         _wings = HeroController.instance.transform.Find("Effects/Double J Wings").gameObject;
-        _wings.transform.localScale = new(1.8f, 1.8f, 1f);
-        
         _leftHitbox = GameObject.Instantiate(HeroController.instance.transform.Find("Charm Effects/Thorn Hit/Hit L").gameObject, _wings.transform);
         _leftHitbox.transform.localPosition = new(-1.0555f, -0.6111f, 0f);
         _leftHitbox.transform.localScale = new(3.5f, 2.3f);
@@ -138,6 +136,9 @@ internal class BlessingOfTheButterflyPower : Power
     protected override void Enable()
     {
         _wings.GetComponent<tk2dSprite>().color = Color.magenta;
+        _wings.transform.localScale = new(1.8f, 1.8f, 1f);
+        _leftHitbox.gameObject.SetActive(true);
+        _rightHitbox.gameObject.SetActive(true);
         On.HeroController.TakeDamage += HeroController_TakeDamage;
         On.HeroController.DoDoubleJump += HeroController_DoDoubleJump;
         IL.HeroController.DoubleJump += HeroController_DoubleJump;
@@ -146,6 +147,9 @@ internal class BlessingOfTheButterflyPower : Power
     protected override void Disable()
     {
         _wings.GetComponent<tk2dSprite>().color = Color.white;
+        _wings.transform.localScale = new(1f, 1f, 1f);
+        _leftHitbox.gameObject.SetActive(false);
+        _rightHitbox.gameObject.SetActive(false);
         On.HeroController.TakeDamage -= HeroController_TakeDamage;
         On.HeroController.DoDoubleJump -= HeroController_DoDoubleJump;
         IL.HeroController.DoubleJump -= HeroController_DoubleJump;
