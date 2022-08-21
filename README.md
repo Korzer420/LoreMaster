@@ -1,4 +1,4 @@
-# LoreMaster
+# Lore Master
 Hollow Knight Mod that adds abilities to the lore tablets. (Requires Item Changer and SFCore)
 
 ## How it works
