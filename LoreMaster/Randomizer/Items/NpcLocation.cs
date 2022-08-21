@@ -32,7 +32,7 @@ internal class NpcLocation : AutoLocation
     {
         FsmState startState;
         string transitionEnd;
-        if (string.Equals(ObjectName, "Queen", System.StringComparison.InvariantCultureIgnoreCase))
+        if (string.Equals(ObjectName, "Queen", System.StringComparison.CurrentCultureIgnoreCase))
         {
             startState = fsm.GetState("NPC Anim");
             transitionEnd = "Summon";

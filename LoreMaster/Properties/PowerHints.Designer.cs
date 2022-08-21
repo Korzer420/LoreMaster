@@ -376,7 +376,7 @@ namespace LoreMaster.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Casting spells with full capacity will grant your spell much more power. ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Casting spells with full capacity will grant your spell much more power. Be careful though, these spells are  so powerful that you can easily loose control of them, searing your vessel and shatter your soul. It will take some time to recover your soul. ähnelt.
         /// </summary>
         internal static string OverwhelmingPower {
             get {
@@ -531,9 +531,9 @@ namespace LoreMaster.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Shade? What should that be? Can you prove, that the &quot;Shade&quot; exist? Your soul vessel and geo? What are you talking about? ähnelt.
         /// </summary>
-        internal static string WeDontTalkAboutTheShade {
+        internal static string WeDontTalkAboutShade {
             get {
-                return ResourceManager.GetString("WeDontTalkAboutTheShade", resourceCulture);
+                return ResourceManager.GetString("WeDontTalkAboutShade", resourceCulture);
             }
         }
         

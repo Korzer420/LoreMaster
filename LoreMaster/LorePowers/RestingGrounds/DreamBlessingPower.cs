@@ -52,7 +52,7 @@ public class DreamBlessingPower : Power
             {
                 // This assumes that the component is on the same object, if not we ignore it. (It isn't worth the hussle to account for that currently)
                 HealthManager healthManager = self.GetComponent<HealthManager>();
-                int damageAmount = PlayerData.instance.GetBool(nameof(PlayerData.instance.dreamNailUpgraded)) ? 350 : 175;
+                int damageAmount = PlayerData.instance.GetBool(nameof(PlayerData.instance.dreamNailUpgraded)) ? 250 : 125;
                 if (healthManager != null && healthManager.hp <= damageAmount)
                     healthManager.ApplyExtraDamage(damageAmount);
             }

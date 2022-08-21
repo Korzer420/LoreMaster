@@ -70,7 +70,7 @@ namespace LoreMaster.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Wings now deal 12 damage upon contact with enemy and apply massive knockback downwards. While your double jump is on cooldown, instead of taking damage from enemies below you, you deal 4 damage, regain soul and jump automatically again. (This does not restore wings) ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Wings now deal 12 damage upon contact with enemy, apply massive knockback downwards and give you slightly more height. While your double jump is on cooldown, instead of taking damage from enemies below you, you deal 4 damage to them, regain soul and jump automatically again. (This does not restore wings) ähnelt.
         /// </summary>
         internal static string BlessingOfTheButterfly {
             get {
@@ -142,7 +142,7 @@ namespace LoreMaster.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Defeated Dreamers grant the dream nail an additional effect (doubled with awoken dreamnail).&lt;br&gt;Lurien: Roots the target for 3 seconds (15 seconds cooldown)&lt;br&gt;Herrah: Spawn 2 weavers. &lt;br&gt;Monomon: Per 100 Essence you have a 1% chance to instant kill the enemy (capped at 175 damage). Capped at 2400 Essence for 24%. ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Defeated Dreamers grant the dream nail an additional effect (doubled with awoken dreamnail).&lt;br&gt;Lurien: Roots the target for 3 seconds (15 seconds cooldown)&lt;br&gt;Herrah: Spawn 2 weavers. &lt;br&gt;Monomon: Per 100 Essence you have a 1% chance to instant kill the enemy (capped at 125 damage). Capped at 2400 Essence for 24%. ähnelt.
         /// </summary>
         internal static string DreamBlessing {
             get {
@@ -531,9 +531,9 @@ namespace LoreMaster.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die You don&apos;t get the soul limit punishment, when dying. Your geo will still be on the shade. When dying while the shade is active, your shade only loose 50% of your geo. ähnelt.
         /// </summary>
-        internal static string WeDontTalkAboutTheShade {
+        internal static string WeDontTalkAboutShade {
             get {
-                return ResourceManager.GetString("WeDontTalkAboutTheShade", resourceCulture);
+                return ResourceManager.GetString("WeDontTalkAboutShade", resourceCulture);
             }
         }
         

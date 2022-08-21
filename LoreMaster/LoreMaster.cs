@@ -129,11 +129,9 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
             {
                 if (ModHooks.GetMod("Randomizer 4") is Mod mod)
                 {
-                    LoreMaster.Instance.Log("Detected Randomizer. Adding compability.");
+                    Log("Detected Randomizer. Adding compability.");
                     RandomizerManager.AttachToRandomizer();
                 }
-                else
-                    Log("Couldn't find randomizer");
             }
             catch (Exception exception)
             {
@@ -161,16 +159,15 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
                     "On",
                     "Off",
                 },
-            // opt will be the index of the option that has been chosen
             Saver = option => LoreManager.Instance.UseCustomText = option == 0,
             Loader = () => LoreManager.Instance.UseCustomText ? 0 : 1
         });
 
         menu.Add(new()
         {
-            Name = "Use Vague Hints",
-            Description = "If on, it shows the normal more vaguely text. Otherwise it shows a clear description what the power does.",
-            Values = new string[] { "On", "Off" },
+            Name = "Power Descriptions",
+            Description = "Determines how powers show be descripted",
+            Values = new string[] { "Vague Hints", "Clear Descriptions" },
             Saver = option => LoreManager.Instance.UseHints = option == 0,
             Loader = () => LoreManager.Instance.UseHints ? 0 : 1
         });

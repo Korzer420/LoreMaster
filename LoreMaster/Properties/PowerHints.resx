@@ -223,7 +223,7 @@
     <value>Occasionally you emit a spore cloud. (Hold the super dash button to prevent the cloud.)</value>
   </data>
   <data name="OverwhelmingPower" xml:space="preserve">
-    <value>Casting spells with full capacity will grant your spell much more power.</value>
+    <value>Casting spells with full capacity will grant your spell much more power. Be careful though, these spells are  so powerful that you can easily loose control of them, searing your vessel and shatter your soul. It will take some time to recover your soul.</value>
   </data>
   <data name="PaleLuck" xml:space="preserve">
     <value>When someone casts harm on you, sometimes you are blessed by the higher being instead. Especially if you have some artefacts related to him.</value>
@@ -273,7 +273,7 @@
   <data name="UnitedWeStand" xml:space="preserve">
     <value>Your companions inspire each other.</value>
   </data>
-  <data name="WeDontTalkAboutTheShade" xml:space="preserve">
+  <data name="WeDontTalkAboutShade" xml:space="preserve">
     <value>Shade? What should that be? Can you prove, that the "Shade" exist? Your soul vessel and geo? What are you talking about?</value>
   </data>
   <data name="WellFocused" xml:space="preserve">

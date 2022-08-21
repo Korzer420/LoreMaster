@@ -218,11 +218,18 @@ internal class LorePage
                     {
                         if (PowerManager.ActivePowers.Contains(_powers[indexVariable.Value]))
                         {
-                            powerTitle.GetComponent<TextMeshPro>().text = _powers[indexVariable.Value].PowerName;
+                            Power power = _powers[indexVariable.Value];
+                            powerTitle.GetComponent<TextMeshPro>().text = power.Tag == PowerTag.Global || PowerManager.IsAreaGlobal(power.Location)
+                            ? "<color=#7FFF7B>"+ power.PowerName + "</color>"
+                            : power.PowerName;
                             powerDescription.GetComponent<TextMeshPro>().text = LoreManager.Instance.UseHints
-                            ? _powers[indexVariable.Value].Hint.Replace("<br>","\r\n")
-                            :_powers[indexVariable.Value].Description.Replace("<br>","\r\n");
-                            confirmButton.SetActive(true);
+                            ? power.Hint.Replace("<br>","\r\n")
+                            :power.Description.Replace("<br>","\r\n");
+                            if(power.Active)
+                                confirmButton.SetActive(PlayerData.instance.GetBool(nameof(PlayerData.instance.atBench)));
+                            else
+                               confirmButton.SetActive(PlayerData.instance.GetBool(nameof(PlayerData.instance.atBench)) 
+                                   && (power.Tag == PowerTag.Global || PowerManager.IsAreaGlobal(power.Location) || SettingManager.Instance.CurrentArea == power.Location)); 
                         }
                         else
                         {
@@ -274,7 +281,7 @@ internal class LorePage
             currentWorkingState.AddTransition("FINISHED", "Powers");
             currentWorkingState.AddLastAction(new Lambda(() =>
             {
-                if (indexVariable.Value == 9 || indexVariable.Value % 10 == 9 || indexVariable.Value == 52)
+                if (indexVariable.Value == 9 || indexVariable.Value % 10 == 9 || indexVariable.Value == 55)
                 {
                     indexVariable.Value = -1;
                     fsm.SendEvent("OUT");
@@ -290,7 +297,7 @@ internal class LorePage
             currentWorkingState.AddTransition("FINISHED", "Powers");
             currentWorkingState.AddLastAction(new Lambda(() =>
             {
-                if (indexVariable.Value <= 2)
+                if (indexVariable.Value <= 5)
                     indexVariable.Value += 50;
                 else if (indexVariable.Value < 10)
                     indexVariable.Value += 40;
@@ -306,7 +313,7 @@ internal class LorePage
             {
                 if (indexVariable.Value >= 50)
                     indexVariable.Value -= 50;
-                else if (indexVariable.Value >= 43)
+                else if (indexVariable.Value >= 46)
                     indexVariable.Value -= 40;
                 else
                     indexVariable.Value += 10;
@@ -334,8 +341,9 @@ internal class LorePage
                         ? PowerTag.Disable
                         : power.DefaultTag;
                     }
-                    else
+                    else if(power.Tag == PowerTag.Global || PowerManager.IsAreaGlobal(power.Location) || SettingManager.Instance.CurrentArea == power.Location)
                     {
+                        
                         _loreObjects[indexVariable.Value].GetComponent<SpriteRenderer>().sprite = _loreSprite;
                         _loreObjects[indexVariable.Value].GetComponent<SpriteRenderer>().color = _colors[power.Location];
                         power.Tag = power.DefaultTag == PowerTag.Remove || power.DefaultTag == PowerTag.Disable
@@ -347,20 +355,6 @@ internal class LorePage
             }));
 
             lorePage.SetActive(false);
-
-            // Logic for disabling the page when the inventory was closed there.
-            //PlayMakerFSM inventoryFSM = lorePage.transform.parent.gameObject.LocateMyFSM("Inventory Control");
-            //inventoryFSM.GetState("Regain Control").ReplaceAction(new Lambda(() =>
-            //{
-            //    lorePage.SetActive(false);
-            //    PlayerData.instance.SetBool("disablePause", false);
-            //}), 6);
-
-            //inventoryFSM.GetState("Regain Control 2").ReplaceAction(new Lambda(() =>
-            //{
-            //    lorePage.SetActive(false);
-            //    PlayerData.instance.SetBool("disablePause", false);
-            //}), 5);
         }
         catch (Exception exception)
         {

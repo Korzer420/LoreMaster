@@ -121,7 +121,7 @@
     <value>Allows you to pick a mushroom to consume each 180 seconds. White shroom: Increases the speed of the game by 40%. Yellow shroom: Generates 20 soul each second, but causes nausea. Red shroom: Gives you 4 extra health, heals you fully and increases your nail damage by 20%, but you can't dash. Green shroom: Makes you small, decrease the gravity by 50% and doubles all damage taken. Taking the same mushroom twice in a row nerfs it's positive effect by 50%. Taking the same mushroom three times in a row, deals 2 damage to you instead. Press quick map to select another and cdash + dash to consume the mushroom.</value>
   </data>
   <data name="BlessingOfTheButterfly" xml:space="preserve">
-    <value>Wings now deal 12 damage upon contact with enemy and apply massive knockback downwards. While your double jump is on cooldown, instead of taking damage from enemies below you, you deal 4 damage, regain soul and jump automatically again. (This does not restore wings)</value>
+    <value>Wings now deal 12 damage upon contact with enemy, apply massive knockback downwards and give you slightly more height. While your double jump is on cooldown, instead of taking damage from enemies below you, you deal 4 damage to them, regain soul and jump automatically again. (This does not restore wings)</value>
   </data>
   <data name="Camouflage" xml:space="preserve">
     <value>After standing still for 5 seconds, you gain invincibility until you do something. If you are wearing Shape of Unn, you keep the invincibility while focusing and moving as a slug.</value>
@@ -145,7 +145,7 @@
     <value>If you take 10 hits, you will no longer count as overcharmed, resets if you sit on a bench. The UI only updates if you open the charm screen.</value>
   </data>
   <data name="DreamBlessing" xml:space="preserve">
-    <value>Defeated Dreamers grant the dream nail an additional effect (doubled with awoken dreamnail).&lt;br&gt;Lurien: Roots the target for 3 seconds (15 seconds cooldown)&lt;br&gt;Herrah: Spawn 2 weavers. &lt;br&gt;Monomon: Per 100 Essence you have a 1% chance to instant kill the enemy (capped at 175 damage). Capped at 2400 Essence for 24%.</value>
+    <value>Defeated Dreamers grant the dream nail an additional effect (doubled with awoken dreamnail).&lt;br&gt;Lurien: Roots the target for 3 seconds (15 seconds cooldown)&lt;br&gt;Herrah: Spawn 2 weavers. &lt;br&gt;Monomon: Per 100 Essence you have a 1% chance to instant kill the enemy (capped at 125 damage). Capped at 2400 Essence for 24%.</value>
   </data>
   <data name="ElderbugHitList" xml:space="preserve">
     <value>When entering a new room marks a random enemy with a red outline. If you kill that enemy FIRST another one gets marked. If all enemies are killed in the right order you receive a soul vessel fragment, mask shard, charm notch, 200 geo, or a small damage buff.</value>
@@ -273,7 +273,7 @@
   <data name="UnitedWeStand" xml:space="preserve">
     <value>Weavers are bigger, Grimmchild shoots faster and Hatchling deal more damage for each companion (of those three) you have.</value>
   </data>
-  <data name="WeDontTalkAboutTheShade" xml:space="preserve">
+  <data name="WeDontTalkAboutShade" xml:space="preserve">
     <value>You don't get the soul limit punishment, when dying. Your geo will still be on the shade. When dying while the shade is active, your shade only loose 50% of your geo.</value>
   </data>
   <data name="WellFocused" xml:space="preserve">

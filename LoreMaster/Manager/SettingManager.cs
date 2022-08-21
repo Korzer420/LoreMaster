@@ -519,8 +519,7 @@ internal class SettingManager
                             break;
                         powerName += letter;
                     }
-
-                    if (!PowerManager.GetPowerByName(powerName, out Power power, false, false) && !PowerManager.GetPowerByKey(powerName, out power, false))
+                    if (!PowerManager.GetPowerByName(powerName, out Power power, true, false) && !PowerManager.GetPowerByKey(powerName, out power, false))
                         continue;
                     // Skip the name
                     currentLine = currentLine.Substring(powerName.Length + 1);

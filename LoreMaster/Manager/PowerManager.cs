@@ -157,7 +157,7 @@ internal static class PowerManager
         power = null;
         if (string.IsNullOrEmpty(name))
             return false;
-        if (_powerList.Values.FirstOrDefault(x => string.Equals(name, ignoreWhiteSpaces ? x.PowerName.Replace(" ", "") : x.PowerName, StringComparison.InvariantCultureIgnoreCase)) is Power foundPower)
+        if (_powerList.Values.FirstOrDefault(x => string.Equals(name, ignoreWhiteSpaces ? x.PowerName.Replace(" ", "") : x.PowerName, StringComparison.CurrentCultureIgnoreCase)) is Power foundPower)
             try
             {
                 power = foundPower;
@@ -266,8 +266,6 @@ internal static class PowerManager
     /// <summary>
     /// Checks through all needed powers to determine if the powers should be granted globally.
     /// </summary>
-    /// <param name="toCheck"></param>
-    /// <returns></returns>
     internal static bool IsAreaGlobal(Area toCheck)
     {
         List<Power> neededAreaPowers = _powerList.Values.Where(x => x.Location == toCheck && (x.Tag == PowerTag.Local || x.Tag == PowerTag.Disable || x.Tag == PowerTag.Global)).ToList();
@@ -277,6 +275,9 @@ internal static class PowerManager
         return true;
     }
 
+    /// <summary>
+    /// Let all powers execute their behaviour for entering a new room.
+    /// </summary>
     public static void ExecuteSceneActions()
     {
         foreach (Power power in ActivePowers)
@@ -291,6 +292,10 @@ internal static class PowerManager
                 }
     }
 
+    /// <summary>
+    /// Recalculate which powers should be active and disabled.
+    /// </summary>
+    /// <param name="newArea"></param>
     internal static void CalculatePowerStates(Area newArea)
     {
         try

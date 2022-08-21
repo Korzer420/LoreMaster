@@ -5,7 +5,6 @@ using LoreMaster.Enums;
 using LoreMaster.Extensions;
 using LoreMaster.Helper;
 using LoreMaster.Manager;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -104,14 +103,14 @@ public class OverwhelmingPowerPower : Power
         PlayMakerFSM spellControl = FsmHelper.GetFSM("Knight", "Spell Control");
         spellControl.GetState("Spell Choice").ReplaceAction(new Lambda(() =>
         {
-            _hasFullSoulMeter = PlayerData.instance.GetInt(nameof(PlayerData.instance.MPCharge)) >= 99;
+            _hasFullSoulMeter = PlayerData.instance.GetInt(nameof(PlayerData.instance.MPCharge)) >= 99 && !PlayerData.instance.GetBool(nameof(PlayerData.instance.soulLimited));
             if (spellControl.FsmVariables.FindFsmBool("Pressed Up").Value)
                 spellControl.SendEvent("SCREAM");
         })
         { Name = "Full Soul Check" }, 0);
         spellControl.GetState("Can Cast? QC").ReplaceAction(new Lambda(() =>
         {
-            _hasFullSoulMeter = PlayerData.instance.GetInt(nameof(PlayerData.instance.MPCharge)) >= 99;
+            _hasFullSoulMeter = PlayerData.instance.GetInt(nameof(PlayerData.instance.MPCharge)) >= 99 && !PlayerData.instance.GetBool(nameof(PlayerData.instance.soulLimited));
             spellControl.FsmVariables.FindFsmInt("MP").Value = PlayerData.instance.GetInt("MPCharge");
         })
         { Name = "Full Soul Check" }, 1);
