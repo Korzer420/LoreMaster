@@ -74,7 +74,7 @@ public class RequiemPower : Power
 
     #endregion
 
-    #region Protected Methods
+    #region Control
 
     /// <inheritdoc/>
     /// <inheritdoc/>
@@ -94,7 +94,18 @@ public class RequiemPower : Power
 
     #endregion
 
-    #region Private Methods
+    #region Methods
+
+    /// <summary>
+    /// Disable the ability AFTER the spawn to prevent getting stuck.
+    /// </summary>
+    /// <returns></returns>
+    internal IEnumerator DelayDisabling()
+    {
+        yield return new WaitUntil(() => HeroController.instance.acceptingInput);
+        DisablePower(FakeDamage);
+    }
+
 
     /// <summary>
     /// Wait for the player to get control before removing the spawn points.

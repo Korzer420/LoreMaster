@@ -185,7 +185,7 @@ internal static class PowerManager
     public static bool HasObtainedPower(string key, bool onlyActive = true)
     {
         if (_powerList.TryGetValue(key, out Power power))
-            return !onlyActive || power.Active;
+            return ActivePowers.Contains(power) && (!onlyActive || power.Active);
         return false;
     }
 
@@ -253,10 +253,10 @@ internal static class PowerManager
         }
 
         // Place the fake powers in the save data as well.
-        if(ActivePowers.Any(x => x is PlaceholderPower))
+        if (ActivePowers.Any(x => x is PlaceholderPower))
             for (int i = 0; i < ActivePowers.Count(x => x is PlaceholderPower); i++)
                 saveData.AcquiredPowersKeys.Add("dream warrior");
-            
+
     }
 
     internal static void AddPower(string key, Power power) => _powerList.Add(key, power);
@@ -310,7 +310,10 @@ internal static class PowerManager
                 if (area != newArea && !IsAreaGlobal(area))
                     foreach (Power power in ActivePowers.Where(x => x.Location == area))
                         if (power.Tag == PowerTag.Local || power.Tag == PowerTag.Exclude)
-                            power.DisablePower();
+                            if (power is RequiemPower requiem)
+                                LoreMaster.Instance.Handler.StartCoroutine(requiem.DelayDisabling());
+                            else
+                                power.DisablePower();
         }
         catch (Exception exception)
         {
