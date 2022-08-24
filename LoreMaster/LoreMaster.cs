@@ -232,7 +232,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         LoreManager.Instance.UseCustomText = globalSaveData.EnableCustomText;
         SettingManager.Instance.DisableYellowMushroom = globalSaveData.DisableNausea;
         SettingManager.Instance.BombQuickCast = globalSaveData.BombQuickCast;
-
+        RandomizerManager.LoadSettings(globalSaveData);
     }
 
     /// <summary>
@@ -244,7 +244,8 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
             ShowHint = LoreManager.Instance.UseHints,
             EnableCustomText = LoreManager.Instance.UseCustomText,
             DisableNausea = SettingManager.Instance.DisableYellowMushroom,
-            BombQuickCast = SettingManager.Instance.BombQuickCast
+            BombQuickCast = SettingManager.Instance.BombQuickCast,
+            RandoSettings = RandomizerManager.Settings
         };
 
     /// <summary>

@@ -174,5 +174,9 @@
     {
         "Name": "Egg_Shop",
         "Logic": "(ORIG) + LISTEN"
+    },
+    {
+        "Name": "Hunter's_Journal",
+        "Logic": "(ORIG) + LISTEN"
     }
 ]

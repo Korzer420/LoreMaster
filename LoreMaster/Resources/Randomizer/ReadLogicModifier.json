@@ -142,5 +142,13 @@
     {
         "Name": "World_Sense",
         "Logic": "(ORIG) + READ"
+    },
+    {
+        "Name": "Defeated_Colosseum_1",
+        "Logic": "(ORIG) + READ"
+    },
+    {
+        "Name": "Defeated_Colosseum_2",
+        "Logic": "(ORIG) + READ"
     }
 ]

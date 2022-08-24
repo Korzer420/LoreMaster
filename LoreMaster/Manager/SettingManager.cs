@@ -378,7 +378,7 @@ internal class SettingManager
             self.GetState("Init").ClearTransitions();
         // Prevent the player from reading lore tablets without the item (rando only)
         else if (string.Equals(self.FsmName, "inspect_region") && !LoreManager.Instance.CanRead && (PowerManager.GetPowerByKey(self.FsmVariables.FindFsmString("Game Text Convo")?.Value, out power, false)
-            || string.Equals(self.gameObject.name,"Inspect Ghost Region")))
+            || string.Equals(self.gameObject.name, "Inspect Region Ghost")))
             self.GetState("Init").ClearTransitions();
         else if (string.Equals(self.FsmName, "npc_control") && ((!LoreManager.Instance.CanListen && (!string.Equals(self.gameObject.name, "Dreamer Plaque Inspect") && !string.Equals(self.gameObject.name, "Fountain Inspect")))
             || (!LoreManager.Instance.CanRead && (string.Equals(self.gameObject.name, "Dreamer Plaque Inspect") || string.Equals(self.gameObject.name, "Fountain Inspect")))))
@@ -398,11 +398,14 @@ internal class SettingManager
             self.GetState("Out Of Range").ClearTransitions();
         else if (string.Equals(self.FsmName, "Control") && string.Equals(self.gameObject.name, "Final Boss Door") && ModHooks.GetMod("Randomizer 4", true) is Mod mod)
             RandomizerManager.ModifyTempleDoor(self);
+        else if (string.Equals(self.gameObject.name, "Ghost Activator") && self.transform.childCount > 0 && string.Equals("Ghost NPC Joni", self.transform.GetChild(0)?.name) && ModHooks.GetMod("Randomizer 4", true) is Mod)
+            RandomizerManager.ModifyJoni(self);
         else if (string.Equals(self.FsmName, "Thorn Counter"))
         {
             PowerManager.GetPowerByKey("QUEEN", out power, false);
             ((QueenThornsPower)power).ModifyThorns(self);
         }
+        
         orig(self);
     }
 
@@ -420,11 +423,11 @@ internal class SettingManager
     }
 
     /// <summary>
-    /// Forces Myla (best character btw.) to always appear, like she should.
+    /// Forces Myla (best character btw) to always appear, like she should.
     /// </summary>
     private void ForceMyla(On.DeactivateIfPlayerdataTrue.orig_OnEnable orig, DeactivateIfPlayerdataTrue self)
     {
-        if (string.Equals(self.gameObject.name, "Miner") && (self.boolName.Equals("hasSuperDash") || self.boolName.Equals("mageLordDefeated")))
+        if (string.Equals(self.gameObject.name, "Miner"))
             return;
         orig(self);
     }
@@ -432,7 +435,6 @@ internal class SettingManager
     /// <summary>
     /// Event handler to adjust the message and give the power of randomizer items.
     /// </summary>
-    /// <param name="itemData"></param>
     private void GiveLoreItem(ReadOnlyGiveEventArgs itemData)
     {
         //If focus is randomized but the lore tablet isn't, the lore tablet becomes unavailable, which is why we add the power to focus instead.

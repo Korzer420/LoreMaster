@@ -6,6 +6,7 @@ using LoreMaster.Enums;
 using LoreMaster.Extensions;
 using LoreMaster.Manager;
 using LoreMaster.Randomizer.Items;
+using LoreMaster.SaveManagement;
 using System.Collections.Generic;
 
 namespace LoreMaster.Randomizer;
@@ -48,7 +49,7 @@ public static class RandomizerManager
     };
 
     public static List<string> StatueItemNames => new()
-    { 
+    {
         "Xero",
         "Elder_Hu",
         "Gorb",
@@ -61,6 +62,11 @@ public static class RandomizerManager
     #endregion
 
     #region Methods
+
+    internal static void LoadSettings(LoreMasterGlobalSaveData saveData)
+    {
+        _settings = saveData.RandoSettings;
+    }
 
     /// <summary>
     /// Attach the lore master to randomizer
@@ -96,9 +102,9 @@ public static class RandomizerManager
             Finder.DefineCustomItem(NpcItem.CreateItem("Grasshopper", "GRASSHOPPER_TALK", "Considering that these live in the garden, being an arsonist might not be the best for them.", "Grasshopper", "Ghosts"));
 
             // The lore page will also be randomized, since elderbug cannot be talked to.
-            Finder.DefineCustomItem(new AbilityItem() 
-            { 
-                name = "Lore_Page", 
+            Finder.DefineCustomItem(new AbilityItem()
+            {
+                name = "Lore_Page",
                 Item = Enums.CustomItemType.LoreControl,
                 UIDef = new BigUIDef()
                 {
@@ -132,7 +138,7 @@ public static class RandomizerManager
             Finder.DefineCustomLocation(NpcLocation.CreateLocation("Queen", "Room_Queen", "Queen"));
             Finder.DefineCustomLocation(NpcLocation.CreateLocation("Marissa", "Ruins_Bathhouse", "Ghost NPC"));
             Finder.DefineCustomLocation(NpcLocation.CreateLocation("Grasshopper", "Fungus1_24", "Ghost NPC"));
-            Finder.DefineCustomLocation(new AbilityLocation() 
+            Finder.DefineCustomLocation(new AbilityLocation()
             {
                 forceShiny = true,
                 sceneName = "Town",
@@ -142,7 +148,7 @@ public static class RandomizerManager
             });
         }
 
-        if(Settings.RandomizeWarriorStatues && Finder.GetItem("Lore_Tablet-Xero") == null)
+        if (Settings.RandomizeWarriorStatues && Finder.GetItem("Lore_Tablet-Xero") == null)
         {
             Finder.DefineCustomItem(NpcItem.CreateItem("Xero", "XERO_INSPECT", "The words of the king, for what happens with traitors.", "Xero", "Ghosts"));
             Finder.DefineCustomItem(NpcItem.CreateItem("Elder_Hu", "HU_INSPECT", "The mantis buried him even after he attacked them. How nice of them.", "Elder_Hu", "Ghosts"));
@@ -225,6 +231,8 @@ public static class RandomizerManager
 
     internal static void ModifyTempleDoor(PlayMakerFSM door)
     {
+        if (!RandomizerMod.RandomizerMod.IsRandoSave)
+            return;
         if (Settings.BlackEggTempleCondition != RandomizerEndCondition.Dreamers)
             door.GetState("Init").ReplaceAction(new Lambda(() =>
             {
@@ -239,7 +247,22 @@ public static class RandomizerManager
             { Name = "End Condition" }, 10);
     }
 
-    internal static LoreSetOption CheckForRandoFile() 
+    /// <summary>
+    /// Ensures that joni even spawns, when a "not shiny" item is at the charm location.
+    /// </summary>
+    /// <param name="joni"></param>
+    internal static void ModifyJoni(PlayMakerFSM joni)
+    {
+        if (!RandomizerMod.RandomizerMod.IsRandoSave)
+            return;
+        joni.GetState("Idle").ReplaceAction(new Lambda(() =>
+        {
+            if (PlayerData.instance.GetBool(nameof(PlayerData.instance.hasDreamNail)))
+                joni.SendEvent("SHINY PICKED UP");
+        }), 0);
+    }
+
+    internal static LoreSetOption CheckForRandoFile()
     {
         if (!RandomizerMod.RandomizerMod.IsRandoSave)
         {
