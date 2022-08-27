@@ -150,5 +150,9 @@
     {
         "Name": "Defeated_Colosseum_2",
         "Logic": "(ORIG) + READ"
+    },
+    {
+        "Name": "Vessel_Fragment-Basin",
+        "Logic": "(ORIG) + READ"
     }
 ]

@@ -22,7 +22,7 @@ internal class NpcItem : LoreItem
                 sprite = new EmbeddedSprite(sprite)
             },
             loreKey = key,
-            loreSheet = sheet,
+            loreSheet = sheet
         };
     }
 

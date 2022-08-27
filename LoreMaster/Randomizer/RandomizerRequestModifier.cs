@@ -19,6 +19,16 @@ internal class RandomizerRequestModifier
             {
                 requestBuilder.AddItemByName("Lore_Tablet-" + name);
                 requestBuilder.AddLocationByName(name + "_Dialogue");
+                requestBuilder.EditItemRequest("Lore_Tablet-" + name, info =>
+                {
+                    info.getItemDef = () => new RandomizerMod.RandomizerData.ItemDef()
+                    {
+                        MajorItem = false,
+                        PriceCap = 1,
+                        Pool = "Extra Lore",
+                        Name = "Lore_Tablet-" + name
+                    };
+                });
             }
             requestBuilder.AddItemByName("Lore_Page");
             requestBuilder.AddLocationByName("Town_Lore_Page");
@@ -29,6 +39,16 @@ internal class RandomizerRequestModifier
             {
                 requestBuilder.AddItemByName("Lore_Tablet-" + name);
                 requestBuilder.AddLocationByName(name + "_Inspect");
+                requestBuilder.EditItemRequest("Lore_Tablet-" + name, info =>
+                {
+                    info.getItemDef = () => new RandomizerMod.RandomizerData.ItemDef()
+                    {
+                        MajorItem = false,
+                        PriceCap = 1,
+                        Pool = "Extra Lore",
+                        Name = "Lore_Tablet-" + name
+                    };
+                });
             }
 
         if (RandomizerManager.Settings.CursedReading)

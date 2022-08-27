@@ -128,7 +128,7 @@ public static class RandomizerManager
                 Finder.DefineCustomItem(NpcItem.CreateItem("Queen", "QUEEN_MEET", "The queen sent this through the kingdom for the day, someone like you arrives. How do I know? Well... don't ask.", "Queen"));
                 Finder.DefineCustomItem(NpcItem.CreateItem("Marissa", "MARISSA_TALK", "From the most beautiful voice of the world besides me.", "Marissa", "Ghosts"));
                 Finder.DefineCustomItem(NpcItem.CreateItem("Grasshopper", "GRASSHOPPER_TALK", "Considering that these live in the garden, being an arsonist might not be the best for them.", "Grasshopper", "Ghosts"));
-
+                
                 // The lore page will also be randomized, since elderbug cannot be talked to.
                 Finder.DefineCustomItem(new AbilityItem()
                 {

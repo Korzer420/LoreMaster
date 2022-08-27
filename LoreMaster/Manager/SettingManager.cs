@@ -382,8 +382,11 @@ internal class SettingManager
         else if (string.Equals(self.FsmName, "inspect_region") && !LoreManager.Instance.CanRead && (PowerManager.GetPowerByKey(self.FsmVariables.FindFsmString("Game Text Convo")?.Value, out power, false)
             || string.Equals(self.gameObject.name, "Inspect Region Ghost")))
             self.GetState("Init").ClearTransitions();
-        else if (string.Equals(self.FsmName, "npc_control") && ((!LoreManager.Instance.CanListen && (!string.Equals(self.gameObject.name, "Dreamer Plaque Inspect") && !string.Equals(self.gameObject.name, "Fountain Inspect")))
-            || (!LoreManager.Instance.CanRead && (string.Equals(self.gameObject.name, "Dreamer Plaque Inspect") || string.Equals(self.gameObject.name, "Fountain Inspect")))))
+        else if (string.Equals(self.FsmName, "npc_control") 
+            && ((!LoreManager.Instance.CanListen && (!string.Equals(self.gameObject.name, "Dreamer Plaque Inspect") 
+            && !string.Equals(self.gameObject.name, "Fountain Inspect") && !string.Equals(self.gameObject.name, "Fountain Donation")))
+            || (!LoreManager.Instance.CanRead && (string.Equals(self.gameObject.name, "Dreamer Plaque Inspect") 
+            || string.Equals(self.gameObject.name, "Fountain Inspect") || string.Equals(self.gameObject.name, "Fountain Donation")))))
         {
             // There are a few exceptions with npc which we want to ignore.
             if (self.gameObject.LocateMyFSM("Conversation Control") != null && !(string.Equals(self.gameObject.name, "Moth NPC")
