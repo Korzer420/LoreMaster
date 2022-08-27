@@ -25,7 +25,7 @@ public class LoreMasterGlobalSaveData
     public bool BombQuickCast { get; set; }
 
     /// <summary>
-    /// Gets or sets the setting for rando
+    /// Gets or sets the setting for rando.
     /// </summary>
     public RandomizerSettings RandoSettings { get; set; }
 }

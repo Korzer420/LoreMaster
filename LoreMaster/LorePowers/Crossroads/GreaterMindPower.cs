@@ -1,6 +1,8 @@
 using LoreMaster.Enums;
 using LoreMaster.Helper;
 using LoreMaster.Manager;
+using LoreMaster.Randomizer;
+using Modding;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +29,7 @@ public class GreaterMindPower : Power
         {Area.Greenpath, "Greenpath"},
         {Area.Deepnest, "Deepnest" },
         {Area.FungalWastes, "Fungal Wastes"},
-        {Area.QueensGarden, "Queens Gardens"},
+        {Area.QueensGarden, "Queen's Gardens"},
         {Area.Peaks, "Crystal Peaks"},
         {Area.RestingGrounds, "Resting Grounds"},
         {Area.WaterWays, "Waterways"},
@@ -51,7 +53,7 @@ public class GreaterMindPower : Power
     /// <summary>
     /// Desperate attempt to make the tracker work, if it doesn't work before...
     /// </summary>
-    public override Action SceneAction => () => 
+    public override Action SceneAction => () =>
     {
         try
         {
@@ -75,9 +77,9 @@ public class GreaterMindPower : Power
     }
 
     /// <inheritdoc/>
-    protected override void Enable() 
+    protected override void Enable()
     {
-        if(_loreTracker != null)
+        if (_loreTracker != null)
         {
             _loreTracker.SetActive(true);
             UpdateLoreCounter(PowerManager.ActivePowers, PowerManager.GetAllPowers(), SettingManager.Instance.CurrentArea, PowerManager.IsAreaGlobal(SettingManager.Instance.CurrentArea));
@@ -121,13 +123,22 @@ public class GreaterMindPower : Power
         try
         {
             TextMeshPro currentCounter = _loreTracker.GetComponent<DisplayItemAmount>().textObject;
-            currentCounter.text = _areas[currentArea] + ": " + activePowers.Count(x => x.Location == currentArea && x.Tag != PowerTag.Remove);
-            currentCounter.text += "/" + allPowers.Count(x => x.Location == currentArea && x.Tag != PowerTag.Remove);
-            if (globalActive)
-                currentCounter.text = "<color=#7FFF7B>" + currentCounter.text + "</color>";
+            if (ModHooks.GetMod("Randomizer 4") is Mod && RandomizerManager.RandoTracker(currentArea, out string areaLore))
+            { 
+                currentCounter.text = $"{_areas[currentArea]}: {areaLore}";
+                if(globalActive)
+                    currentCounter.text = $"<color=#7FFF7B>{currentCounter.text}</color>";
+            }
+            else
+            {
+                currentCounter.text = _areas[currentArea] + ": " + activePowers.Count(x => x.Location == currentArea);
+                currentCounter.text += "/" + allPowers.Count(x => x.Location == currentArea);
+                if (globalActive)
+                    currentCounter.text = "<color=#7FFF7B>" + currentCounter.text + "</color>";
+            }
 
-            string globalPart = "All: " + activePowers.Count(x => x.Tag != PowerTag.Remove) + "/" + allPowers.Count(x => x.Tag != PowerTag.Remove);
-            if (activePowers.Count(x => x.Tag != PowerTag.Remove) == allPowers.Count(x => x.Tag != PowerTag.Remove))
+            string globalPart = "All: " + activePowers.Count() + "/" + allPowers.Count();
+            if (activePowers.Count() >= allPowers.Count())
                 globalPart = "<color=#7FFF7B>" + globalPart + "</color>";
             currentCounter.text += Environment.NewLine + globalPart;
         }

@@ -178,5 +178,9 @@
     {
         "Name": "Hunter's_Journal",
         "Logic": "(ORIG) + LISTEN"
+    },
+    {
+        "Name": "Queen_Fragment",
+        "Logic": "(ORIG) + LISTEN"
     }
 ]

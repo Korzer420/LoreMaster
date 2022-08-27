@@ -15,6 +15,7 @@ using LoreMaster.LorePowers.FungalWastes;
 using LoreMaster.LorePowers.QueensGarden;
 using LoreMaster.LorePowers.WhitePalace;
 using LoreMaster.Randomizer;
+using LoreMaster.Randomizer.Items;
 using LoreMaster.UnityComponents;
 using Modding;
 using System;
@@ -145,6 +146,7 @@ internal class SettingManager
     private void ContinueGame(On.UIManager.orig_ContinueGame orig, UIManager self)
     {
         _fromMenu = true;
+        orig(self);
         if (PlayerData.instance.GetBool("killedBindingSeal") && !PowerManager.ActivePowers.Any(x => x is SacredShellPower))
             PowerManager.GetPowerByKey("EndOfPathOfPain", out Power power);
         else
@@ -164,7 +166,7 @@ internal class SettingManager
             LoreManager.Instance.CanRead = true;
             LoreManager.Instance.CanListen = true;
         }
-        orig(self);
+        
     }
 
     private IEnumerator ReturnToMenu(On.GameManager.orig_ReturnToMainMenu orig, GameManager self, GameManager.ReturnToMainMenuSaveModes saveMode, Action<bool> callback)
@@ -442,7 +444,7 @@ internal class SettingManager
         {
             string text = string.Empty;
             LoreManager.Instance.ModifyText("TUT_TAB_01", ref text);
-            if (itemData.Item.UIDef is BigUIDef big)
+            if (itemData.Item.UIDef is BigUIDef big && !string.IsNullOrEmpty(text))
                 big.descTwo = new BoxedString(text.Replace("<br>", " "));
         }
         // If world sense is randomized but the lore tablet isn't, the lore tablet becomes unavailable, which is why we add the power to world sense instead.
@@ -450,7 +452,7 @@ internal class SettingManager
         {
             string text = string.Empty;
             LoreManager.Instance.ModifyText("COMPLETION_RATE_UNLOCKED", ref text);
-            if (itemData.Item.UIDef is BigUIDef big)
+            if (itemData.Item.UIDef is BigUIDef big && !string.IsNullOrEmpty(text))
                 big.descTwo = new BoxedString(text.Replace("<br>", " "));
         }
         else if (itemData.Item.name.Contains("Lore_Tablet-"))

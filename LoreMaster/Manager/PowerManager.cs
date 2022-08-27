@@ -104,7 +104,7 @@ internal static class PowerManager
         {"PLAQUE_WARN", new DiminishingCursePower() },
         {"EndOfPathOfPain", new SacredShellPower() { DefaultTag = PowerTag.Exclude } },
         // Unused
-        {"ELDERBUG", new ElderbugHitListPower() { DefaultTag = PowerTag.Remove, Tag = PowerTag.Remove } }
+        //{"ELDERBUG", new ElderbugHitListPower() { DefaultTag = PowerTag.Remove, Tag = PowerTag.Remove } }
     };
 
     #endregion
