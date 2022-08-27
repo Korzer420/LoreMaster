@@ -57,6 +57,8 @@ This mod has compability with the Randomizer 4 and extension mod. The acquired p
 
 The fountain, Record Bela and the dreamer tablet cannot be randomized!
 
+The tracker will also behave differently if lore is randomized. In this case, the tracker will display how many lore is actually in the zone instead of the original ones.
+
 ## Manual Setup
 
 You also can set up a predefined pack of abilites or changing their tag. For this, create a options_{FileSlot}.txt file (options_1.txt for example) in the loremaster folder of the game. A default option file in added to the package.
