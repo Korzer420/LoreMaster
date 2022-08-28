@@ -394,7 +394,10 @@ internal class SettingManager
                 || string.Equals(self.gameObject.name, "Dream Nail Get") || string.Equals(self.gameObject.name, "Centipede Inspect")
                 || string.Equals(self.gameObject.name, "Goam Inspect") || string.Equals(self.gameObject.name, "Zap Bug Inspect")
                 || string.Equals(self.gameObject.name, "AbyssTendril Inspect") || string.Equals(self.gameObject.name, "End Scene")
-                || (string.Equals(self.transform.parent?.name, "Dreamer Monomon"))))
+                || string.Equals(self.transform.parent?.name, "Dreamer Monomon") || string.Equals(self.gameObject.name, "Mage Door")
+                || string.Equals(self.gameObject.name, "Love Door") || string.Equals(self.gameObject.name, "Jiji Door")
+                || string.Equals(self.gameObject.name, "Waterways Machine") || string.Equals(self.transform.parent?.name, "Bathhouse Door")
+                || string.Equals(self.gameObject.name, "Coffin")))
                 self.GetState("Idle").ClearTransitions();
         }
         else if (string.Equals(self.FsmName, "Stag Control") && !LoreManager.Instance.CanListen)

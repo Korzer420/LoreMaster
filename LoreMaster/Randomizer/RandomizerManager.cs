@@ -102,6 +102,14 @@ public static class RandomizerManager
         RandomizerMenu.AttachMenu();
         RandomizerRequestModifier.ModifyRequest();
         LogicManager.AttachLogic();
+        RandomizerMod.RC.RandoController.OnCalculateHash += RandoController_OnCalculateHash;
+    }
+
+    private static int RandoController_OnCalculateHash(RandomizerMod.RC.RandoController controller, int original)
+    {
+        if (Settings.PowerBehaviour != LoreSetOption.Default)
+            return 72767 + PowerManager.GetAllPowers().Count() * (int)Settings.PowerBehaviour;
+        return 0;
     }
 
     internal static void DefineItems()
@@ -128,7 +136,7 @@ public static class RandomizerManager
                 Finder.DefineCustomItem(NpcItem.CreateItem("Queen", "QUEEN_MEET", "The queen sent this through the kingdom for the day, someone like you arrives. How do I know? Well... don't ask.", "Queen"));
                 Finder.DefineCustomItem(NpcItem.CreateItem("Marissa", "MARISSA_TALK", "From the most beautiful voice of the world besides me.", "Marissa", "Ghosts"));
                 Finder.DefineCustomItem(NpcItem.CreateItem("Grasshopper", "GRASSHOPPER_TALK", "Considering that these live in the garden, being an arsonist might not be the best for them.", "Grasshopper", "Ghosts"));
-                
+
                 // The lore page will also be randomized, since elderbug cannot be talked to.
                 Finder.DefineCustomItem(new AbilityItem()
                 {
@@ -149,7 +157,7 @@ public static class RandomizerManager
                 });
             }
 
-            if(Finder.GetLocation("Gravedigger_Dialogue") == null)
+            if (Finder.GetLocation("Gravedigger_Dialogue") == null)
             {
                 Finder.DefineCustomLocation(NpcLocation.CreateLocation("Bretta", "Room_Bretta", "Diary"));
                 Finder.DefineCustomLocation(NpcLocation.CreateLocation("Elderbug", "Town", "Elderbug"));
@@ -314,7 +322,7 @@ public static class RandomizerManager
         int maxPowerAmount = 0;
         int collectedPowerAmount = 0;
 
-        if(!Settings.RandomizeNpc)
+        if (!Settings.RandomizeNpc)
         {
             Power power = null;
             switch (area)
@@ -397,7 +405,7 @@ public static class RandomizerManager
             }
         }
         // Since neither the fountain nor record bela are randomizeable, we add them manually to the tracker
-        if(area == Area.CityOfTears)
+        if (area == Area.CityOfTears)
         {
             maxPowerAmount += 2;
             if (PowerManager.ActivePowers.Any(x => x is TouristPower))
@@ -406,7 +414,7 @@ public static class RandomizerManager
                 collectedPowerAmount++;
         }
         // Same for the dreamer tablet.
-        else if(area == Area.RestingGrounds)
+        else if (area == Area.RestingGrounds)
         {
             maxPowerAmount++;
             if (PowerManager.ActivePowers.Any(x => x is DreamBlessingPower))

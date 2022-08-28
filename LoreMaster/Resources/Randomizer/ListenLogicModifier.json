@@ -182,5 +182,9 @@
     {
         "Name": "Queen_Fragment",
         "Logic": "(ORIG) + LISTEN"
+    },
+    {
+        "Name": "Grimmkin_Flame-Brumm",
+        "Logic": "(ORIG) + LISTEN"
     }
 ]

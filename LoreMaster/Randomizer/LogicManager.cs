@@ -14,12 +14,12 @@ public class LogicManager
     private static Dictionary<string, string> _npcLocationLogic = new()
     {
         {"Bretta", "Room_Bretta[right1] + Rescued_Bretta"},
-        {"Elderbug", "Town[left1] | Town[bot1] | Town[right1]"},
+        {"Elderbug", "Town"},
         {"Bardoon", "Deepnest_East_04[left1] + (WINGS | (LEFTCLAW | RIGHTCLAW) + ENEMYPOGOS) | Deepnest_East_04[right1] + (WINGS | (LEFTCLAW | RIGHTCLAW) + (FIREBALLSKIPS + FIREBALL | LEFTDASH)) | Deepnest_East_04[left2] + (WINGS + RIGHTSUPERDASH + (LEFTCLAW + LEFTDASH | RIGHTDASH) + ACIDSKIPS | ACID) + (WINGS | (LEFTCLAW | RIGHTCLAW) + ENEMYPOGOS)"},
         {"Vespa", "Hive_05[left1] + Defeated_Hive_Knight + DREAMNAIL"},
         {"Mask_Maker", "Room_Mask_Maker[right1]"},
         {"Midwife", "Deepnest_41[left2]"},
-        {"Gravedigger", "(Town[left1] | Town[bot1] | Town[right1]) + DREAMNAIL"},
+        {"Gravedigger", "Town + DREAMNAIL"},
         {"Poggy", "(Ruins_Elevator[left1] | Ruins_Elevator[left2]) + DREAMNAIL"},
         {"Joni", "Cliffs_05[left1] + DREAMNAIL"},
         {"Myla", "Crossroads_45[left1] | Crossroads_45[right1]"},
@@ -72,7 +72,7 @@ public class LogicManager
                 else
                     builder.AddItem(new SingleItem("Lore_Tablet-" + key, new(builder.GetTerm("LORE"), 1)));
             }
-            builder.AddLogicDef(new("Town_Lore_Page", "Town[left1] | Town[bot1] | Town[right1]"));
+            builder.AddLogicDef(new("Town_Lore_Page", "Town"));
             builder.AddItem(new EmptyItem("Lore_Page"));
         }
 
@@ -90,16 +90,16 @@ public class LogicManager
         if (RandomizerManager.Settings.CursedReading)
         {
             Term readAbility = builder.GetOrAddTerm("READ");
-            builder.AddLogicDef(new("Town_Read", "Town[left1] | Town[bot1] | Town[right1]"));
+            builder.AddLogicDef(new("Town_Read", "Town"));
             builder.AddItem(new BoolItem("Reading", readAbility));
             using Stream stream = typeof(LogicManager).Assembly.GetManifestResourceStream("LoreMaster.Resources.Randomizer.ReadLogicModifier.json");
             builder.DeserializeJson(LogicManagerBuilder.JsonType.LogicEdit, stream);
         }
         
-        if(RandomizerManager.Settings.CursedListening)
+        if (RandomizerManager.Settings.CursedListening)
         {
             Term listenAbility = builder.GetOrAddTerm("LISTEN");
-            builder.AddLogicDef(new("Town_Listen", "Town[left1] | Town[bot1] | Town[right1]"));
+            builder.AddLogicDef(new("Town_Listen", "Town"));
             builder.AddItem(new BoolItem("Listening", listenAbility));
             using Stream stream = typeof(LogicManager).Assembly.GetManifestResourceStream("LoreMaster.Resources.Randomizer.ListenLogicModifier.json");
             builder.DeserializeJson(LogicManagerBuilder.JsonType.LogicEdit, stream);
