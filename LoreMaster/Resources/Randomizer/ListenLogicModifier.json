@@ -60,15 +60,7 @@
         "logic": "(ORIG) + LISTEN"
     },
     {
-        "name": "Grimmchild",
-        "logic": "(ORIG) + LISTEN"
-    },
-    {
-        "name": "First_Grimmchild_Upgrade",
-        "logic": "(ORIG) + LISTEN"
-    },
-    {
-        "name": "Second_Grimmchild_Upgrade",
+        "name": "Defeated_Grimm",
         "logic": "(ORIG) + LISTEN"
     },
     {

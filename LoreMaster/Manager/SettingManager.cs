@@ -166,7 +166,6 @@ internal class SettingManager
             LoreManager.Instance.CanRead = true;
             LoreManager.Instance.CanListen = true;
         }
-        
     }
 
     private IEnumerator ReturnToMenu(On.GameManager.orig_ReturnToMainMenu orig, GameManager self, GameManager.ReturnToMainMenuSaveModes saveMode, Action<bool> callback)
@@ -390,14 +389,14 @@ internal class SettingManager
         {
             // There are a few exceptions with npc which we want to ignore.
             if (self.gameObject.LocateMyFSM("Conversation Control") != null && !(string.Equals(self.gameObject.name, "Moth NPC")
-                || string.Equals(self.gameObject.name, "Nailsmith") || self.gameObject.name.Contains("Mr Mushroom") || string.Equals(self.gameObject.name, "Corpse Inspect")
+                || string.Equals(self.gameObject.name, "Corpse Inspect")
                 || string.Equals(self.gameObject.name, "Dream Nail Get") || string.Equals(self.gameObject.name, "Centipede Inspect")
                 || string.Equals(self.gameObject.name, "Goam Inspect") || string.Equals(self.gameObject.name, "Zap Bug Inspect")
                 || string.Equals(self.gameObject.name, "AbyssTendril Inspect") || string.Equals(self.gameObject.name, "End Scene")
                 || string.Equals(self.transform.parent?.name, "Dreamer Monomon") || string.Equals(self.gameObject.name, "Mage Door")
                 || string.Equals(self.gameObject.name, "Love Door") || string.Equals(self.gameObject.name, "Jiji Door")
                 || string.Equals(self.gameObject.name, "Waterways Machine") || string.Equals(self.transform.parent?.name, "Bathhouse Door")
-                || string.Equals(self.gameObject.name, "Coffin")))
+                || string.Equals(self.gameObject.name, "Coffin") || string.Equals(self.gameObject.name, "Tram Call Box")))
                 self.GetState("Idle").ClearTransitions();
         }
         else if (string.Equals(self.FsmName, "Stag Control") && !LoreManager.Instance.CanListen)
@@ -445,40 +444,48 @@ internal class SettingManager
     /// </summary>
     private void GiveLoreItem(ReadOnlyGiveEventArgs itemData)
     {
-        //If focus is randomized but the lore tablet isn't, the lore tablet becomes unavailable, which is why we add the power to focus instead.
-        if (itemData.Item.name.Equals("Focus") && ItemChanger.Internal.Ref.Settings.Placements.ContainsKey(LocationNames.Focus))
+        try
         {
-            string text = string.Empty;
-            LoreManager.Instance.ModifyText("TUT_TAB_01", ref text);
-            if (itemData.Item.UIDef is BigUIDef big && !string.IsNullOrEmpty(text))
-                big.descTwo = new BoxedString(text.Replace("<br>", " "));
-        }
-        // If world sense is randomized but the lore tablet isn't, the lore tablet becomes unavailable, which is why we add the power to world sense instead.
-        else if (itemData.Item.name.Equals("World_Sense") && ItemChanger.Internal.Ref.Settings.Placements.ContainsKey(LocationNames.World_Sense))
-        {
-            string text = string.Empty;
-            LoreManager.Instance.ModifyText("COMPLETION_RATE_UNLOCKED", ref text);
-            if (itemData.Item.UIDef is BigUIDef big && !string.IsNullOrEmpty(text))
-                big.descTwo = new BoxedString(text.Replace("<br>", " "));
-        }
-        else if (itemData.Item.name.Contains("Lore_Tablet-"))
-        {
-            string tabletName = RandomizerHelper.TranslateRandoName(itemData.Item.name.Substring("Lore_Tablet-".Length));
-            // If the tablet name is empty, a "fake lore tablet" has been obtained.
-            if (string.IsNullOrEmpty(tabletName))
+            //If focus is randomized but the lore tablet isn't, the lore tablet becomes unavailable, which is why we add the power to focus instead.
+            if (itemData.Item.name.Equals("Focus") && ItemChanger.Internal.Ref.Settings.Placements.ContainsKey(LocationNames.Focus))
             {
-                // We add a fake power
-                PowerManager.ActivePowers.Add(new PlaceholderPower());
-                return; 
+                string text = string.Empty;
+                LoreManager.Instance.ModifyText("TUT_TAB_01", ref text);
+                if (itemData.Item.UIDef is BigUIDef big && !string.IsNullOrEmpty(text))
+                    big.descTwo = new BoxedString(text.Replace("<br>", " "));
             }
-            string placeHolder = string.Empty;
-            LoreManager.Instance.ModifyText(tabletName, ref placeHolder);
-            PowerManager.GetPowerByKey(tabletName, out Power power, false);
-            if (itemData.Item.UIDef is MsgUIDef msg)
-                msg.name = new BoxedString(power.PowerName);
+            // If world sense is randomized but the lore tablet isn't, the lore tablet becomes unavailable, which is why we add the power to world sense instead.
+            else if (itemData.Item.name.Equals("World_Sense") && ItemChanger.Internal.Ref.Settings.Placements.ContainsKey(LocationNames.World_Sense))
+            {
+                string text = string.Empty;
+                LoreManager.Instance.ModifyText("COMPLETION_RATE_UNLOCKED", ref text);
+                if (itemData.Item.UIDef is BigUIDef big && !string.IsNullOrEmpty(text))
+                    big.descTwo = new BoxedString(text.Replace("<br>", " "));
+            }
+            else if (itemData.Item.name.Contains("Lore_Tablet-"))
+            {
+                string tabletName = RandomizerHelper.TranslateRandoName(itemData.Item.name.Substring("Lore_Tablet-".Length));
+                // If the tablet name is empty, a "fake lore tablet" has been obtained.
+                if (string.IsNullOrEmpty(tabletName))
+                {
+                    // We add a fake power
+                    PowerManager.ActivePowers.Add(new PlaceholderPower());
+                    return;
+                }
+                string placeHolder = string.Empty;
+                LoreManager.Instance.ModifyText(tabletName, ref placeHolder);
+                PowerManager.GetPowerByKey(tabletName, out Power power, false);
+                if (itemData.Item.UIDef is MsgUIDef msg)
+                    msg.name = new BoxedString(power.PowerName);
+            }
+            else if (itemData.Item.name.Equals("Journal_Entry-Seal_of_Binding") && itemData.Item.UIDef is MsgUIDef msg)
+                msg.name = new BoxedString("Sacred Shell (PoP)");
         }
-        else if (itemData.Item.name.Equals("Journal_Entry-Seal_of_Binding") && itemData.Item.UIDef is MsgUIDef msg)
-            msg.name = new BoxedString("Sacred Shell (PoP)");
+        catch (Exception exception)
+        {
+            LoreMaster.Instance.LogError("An error occured while modifying a lore item drop: " + exception.Message);
+            LoreMaster.Instance.LogError(exception.StackTrace);
+        }
     }
 
     #endregion
@@ -537,11 +544,16 @@ internal class SettingManager
                     tagText = char.ToUpper(tagText[0]) + tagText.Substring(1);
                     if (!Enum.TryParse(tagText, out PowerTag tag))
                         continue;
+                    if (power.Tag != tag)
+                        LoreMaster.Instance.Log($"Change {power.PowerName} tag from {power.Tag} to {tag}");
                     power.Tag = tag;
 
                     currentLine = currentLine.Substring(tagText.Length);
                     if (currentLine.Contains("add") && !PowerManager.ActivePowers.Contains(power))
+                    {
+                        LoreMaster.Instance.Log($"Add {power.PowerName} to player.");
                         PowerManager.ActivePowers.Add(power);
+                    }
                 }
             }
             else

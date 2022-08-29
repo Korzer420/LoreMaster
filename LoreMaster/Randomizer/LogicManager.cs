@@ -1,3 +1,4 @@
+using ItemChanger;
 using LoreMaster.Enums;
 using LoreMaster.Helper;
 using RandomizerCore.Logic;
@@ -6,6 +7,7 @@ using RandomizerMod.RC;
 using RandomizerMod.Settings;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace LoreMaster.Randomizer;
 
@@ -44,9 +46,25 @@ public class LogicManager
         {"No_Eyes", "(Fungus1_35[left1] | Fungus1_35[right1]) + (DARKROOMS | LANTERN)" }
     };
 
+    private static List<string> _randoPlusLocation = new()
+    {
+        "Mr_Mushroom-Fungal_Wastes",
+        "Mr_Mushroom-Kingdom's_Edge",
+        "Mr_Mushroom-Deepnest",
+        "Mr_Mushroom-Howling_Cliffs",
+        "Mr_Mushroom-Ancient_Basin",
+        "Mr_Mushroom-Fog_Canyon",
+        "Mr_Mushroom-King's_Pass",
+        "Nailsmith_Upgrade_1",
+        "Nailsmith_Upgrade_2",
+        "Nailsmith_Upgrade_3",
+        "Nailsmith_Upgrade_4"
+    };
+
     public static void AttachLogic()
     {
         RCData.RuntimeLogicOverride.Subscribe(20f, ModifyLogic);
+        RCData.RuntimeLogicOverride.Subscribe(60f, ModifyConnectionLogic);
     }
 
     private static void ModifyLogic(GenerationSettings settings, LogicManagerBuilder builder)
@@ -76,17 +94,17 @@ public class LogicManager
             builder.AddItem(new EmptyItem("Lore_Page"));
         }
 
-        if(RandomizerManager.Settings.RandomizeWarriorStatues)
+        if (RandomizerManager.Settings.RandomizeWarriorStatues)
             foreach (string key in _warriorStatueLocationLogic.Keys)
             {
                 builder.AddLogicDef(new(key + "_Inspect", RandomizerManager.Settings.CursedReading ? $"({_warriorStatueLocationLogic[key]}) + READ" : _warriorStatueLocationLogic[key]));
-                
+
                 if (RandomizerManager.Settings.BlackEggTempleCondition == RandomizerEndCondition.Dreamers)
                     builder.AddItem(new EmptyItem("Lore_Tablet-" + key));
                 else
                     builder.AddItem(new SingleItem("Lore_Tablet-" + key, new(builder.GetTerm("LORE"), 1)));
             }
-        
+
         if (RandomizerManager.Settings.CursedReading)
         {
             Term readAbility = builder.GetOrAddTerm("READ");
@@ -95,7 +113,7 @@ public class LogicManager
             using Stream stream = typeof(LogicManager).Assembly.GetManifestResourceStream("LoreMaster.Resources.Randomizer.ReadLogicModifier.json");
             builder.DeserializeJson(LogicManagerBuilder.JsonType.LogicEdit, stream);
         }
-        
+
         if (RandomizerManager.Settings.CursedListening)
         {
             Term listenAbility = builder.GetOrAddTerm("LISTEN");
@@ -104,5 +122,23 @@ public class LogicManager
             using Stream stream = typeof(LogicManager).Assembly.GetManifestResourceStream("LoreMaster.Resources.Randomizer.ListenLogicModifier.json");
             builder.DeserializeJson(LogicManagerBuilder.JsonType.LogicEdit, stream);
         }
+    }
+
+    private static void ModifyConnectionLogic(GenerationSettings settings, LogicManagerBuilder builder)
+    {
+        // Extra logic for journal rando
+        if (RandomizerManager.Settings.CursedReading)
+        {
+            if (builder.Waypoints.Contains("Defeated_Colosseum_3"))
+                builder.DoLogicEdit(new("Defeated_Colosseum_3", "(ORIG) + READ"));
+            // Since level 2 and 3 from the void idle takes the logic from level 1. We only need to modify one.
+            if (Finder.GetLocation($"Journal_Entry-Void_Idol_1") != null)
+                builder.DoLogicEdit(new($"Journal_Entry-Void_Idol_1", "(ORIG) + READ"));
+        }
+        // Extra logic for rando plus.
+        if (RandomizerManager.Settings.CursedListening)
+            for (int i = 0; i < _randoPlusLocation.Count; i++)
+                if (Finder.GetLocation(_randoPlusLocation[i]) != null)
+                    builder.DoLogicEdit(new(_randoPlusLocation[i], "(ORIG) + LISTEN"));
     }
 }

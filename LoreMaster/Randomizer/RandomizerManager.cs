@@ -108,7 +108,7 @@ public static class RandomizerManager
     private static int RandoController_OnCalculateHash(RandomizerMod.RC.RandoController controller, int original)
     {
         if (Settings.PowerBehaviour != LoreSetOption.Default || Settings.BlackEggTempleCondition != RandomizerEndCondition.Dreamers)
-            return 72767 + PowerManager.GetAllPowers().Count() * ((int)Settings.PowerBehaviour + (int)Settings.BlackEggTempleCondition);
+            return 72767 + PowerManager.GetAllPowers().Count() + ((int)Settings.PowerBehaviour * 120 + (int)Settings.BlackEggTempleCondition * Settings.NeededLore);
         return 0;
     }
 

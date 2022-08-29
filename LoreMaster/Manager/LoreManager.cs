@@ -110,26 +110,34 @@ internal class LoreManager
 
     public bool ModifyText(string key, ref string displayText)
     {
-        if (PowerManager.GetPowerByKey(key, out Power power))
+        try
         {
-            if (power.Tag != PowerTag.Remove)
+            if (PowerManager.GetPowerByKey(key, out Power power))
             {
-                if (LoreManager.Instance.UseCustomText && !string.IsNullOrEmpty(power.CustomText))
-                    displayText = power.CustomText;
-                displayText += "<br>[" + power.PowerName + "]";
-                displayText += "<br>" + (UseHints ? power.Hint : power.Description);
-            }
-            if (string.Equals(key,"PLAQUE_WARN"))
-            {
-                PowerManager.GetPowerByKey("EndOfPathOfPain", out Power popPower, false);
-                if (popPower.Tag != PowerTag.Remove)
+                if (power.Tag != PowerTag.Remove)
                 {
-                    displayText += "<page>For those, that reveals the secret, awaits the power:";
-                    displayText += "<br>[" + popPower.PowerName + "] ";
-                    displayText += "<br>" + (UseHints ? popPower.Hint : popPower.Description);
+                    if (LoreManager.Instance.UseCustomText && !string.IsNullOrEmpty(power.CustomText))
+                        displayText = power.CustomText;
+                    displayText += "<br>[" + power.PowerName + "]";
+                    displayText += "<br>" + (UseHints ? power.Hint : power.Description);
                 }
+                if (string.Equals(key, "PLAQUE_WARN"))
+                {
+                    PowerManager.GetPowerByKey("EndOfPathOfPain", out Power popPower, false);
+                    if (popPower.Tag != PowerTag.Remove)
+                    {
+                        displayText += "<page>For those, that reveals the secret, awaits the power:";
+                        displayText += "<br>[" + popPower.PowerName + "] ";
+                        displayText += "<br>" + (UseHints ? popPower.Hint : popPower.Description);
+                    }
+                }
+                return true;
             }
-            return true;
+        }
+        catch (System.Exception exception)
+        {
+            LoreMaster.Instance.LogError("An error occured while modifying the text: " + exception.Message);
+            LoreMaster.Instance.LogError(exception.StackTrace);
         }
         return false;
     }
