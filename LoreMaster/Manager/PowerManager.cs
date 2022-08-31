@@ -113,6 +113,11 @@ internal static class PowerManager
 
     public static List<Power> ActivePowers { get; set; } = new();
 
+    /// <summary>
+    /// Gets or sets the flag that indicates if powers can be activated. This is used for end cutscenes.
+    /// </summary>
+    public static bool CanPowersActivate { get; set; } = true;
+
     #endregion
 
     #region Methods
@@ -222,6 +227,7 @@ internal static class PowerManager
 
     internal static void DisableAllPowers()
     {
+        CanPowersActivate = false;
         foreach (Power power in ActivePowers)
             power.DisablePower(true);
     }

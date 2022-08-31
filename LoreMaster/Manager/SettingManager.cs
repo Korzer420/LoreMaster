@@ -15,9 +15,9 @@ using LoreMaster.LorePowers.FungalWastes;
 using LoreMaster.LorePowers.QueensGarden;
 using LoreMaster.LorePowers.WhitePalace;
 using LoreMaster.Randomizer;
-using LoreMaster.Randomizer.Items;
 using LoreMaster.UnityComponents;
 using Modding;
+using On.HutongGames.PlayMaker.Actions;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -126,6 +126,7 @@ internal class SettingManager
             ModHooks.LanguageGetHook += LoreManager.Instance.GetText;
             On.DeactivateIfPlayerdataTrue.OnEnable += ForceMyla;
             On.DeactivateIfPlayerdataFalse.OnEnable += PreventMylaZombie;
+            SendEventByName.OnEnter += EndAllPowers;
             if (ModHooks.GetMod("Randomizer 4") is Mod)
             {
                 AbstractItem.BeforeGiveGlobal += GiveLoreItem;
@@ -136,6 +137,7 @@ internal class SettingManager
                 LoreManager.Instance.CanRead = true;
                 LoreManager.Instance.CanListen = true;
             }
+
         }
         catch (Exception exception)
         {
@@ -156,6 +158,7 @@ internal class SettingManager
         On.PlayMakerFSM.OnEnable += FsmEdits;
         On.DeactivateIfPlayerdataTrue.OnEnable += ForceMyla;
         On.DeactivateIfPlayerdataFalse.OnEnable += PreventMylaZombie;
+        SendEventByName.OnEnter += EndAllPowers;
         if (ModHooks.GetMod("Randomizer 4") is Mod)
         {
             AbstractItem.BeforeGiveGlobal += GiveLoreItem;
@@ -177,6 +180,7 @@ internal class SettingManager
         On.DeactivateIfPlayerdataTrue.OnEnable -= ForceMyla;
         On.DeactivateIfPlayerdataFalse.OnEnable -= PreventMylaZombie;
         ModHooks.SetPlayerBoolHook -= TrackPathOfPain;
+        SendEventByName.OnEnter -= EndAllPowers;
         ModHooks.LanguageGetHook -= LoreManager.Instance.GetText;
         if (ModHooks.GetMod("Randomizer 4", true) is Mod mod)
             AbstractItem.BeforeGiveGlobal -= GiveLoreItem;
@@ -210,6 +214,8 @@ internal class SettingManager
         {
             if (GameManager.instance != null && GameManager.instance.IsGameplayScene() && !string.Equals(arg1.name, "Quit_To_Menu"))
             {
+                // Resets the flag, that powers can be used.
+                PowerManager.CanPowersActivate = true;
                 // Spawn extra lore tablet.
                 if (string.Equals(arg1.name, "Ruins1_30"))
                 {
@@ -301,24 +307,6 @@ internal class SettingManager
         // Deactives moss prophet corpse, so that it doesn't block the living one.
         else if (string.Equals(self.gameObject.name, "corpse set") && string.Equals(self.FsmName, "FSM"))
             self.gameObject.FindChild("corpse0000").SetActive(false);
-        else if (self.gameObject.name.Contains("Radiance") && string.Equals(self.FsmName, "Control"))
-        {
-            // This disables all powers when the player defeats radiance.
-            // The main purpose is to ensure, that the player is not killed by revek (Marissas Audience) or grimmkin (Lifeblood Omen).
-            try
-            {
-                self.GetState("Final Impact").ReplaceAction(new Lambda(() =>
-                {
-                    PlayerData.instance.SetInt(nameof(PlayerData.instance.killsFinalBoss), 0);
-                    PowerManager.DisableAllPowers();
-                })
-                { Name = "Deactivate Lore powers." }, 5);
-            }
-            catch (Exception exception)
-            {
-                LoreMaster.Instance.LogError("Couldn't modify radiance fsm: " + exception.Message);
-            }
-        }
         else if (string.Equals(self.gameObject.name, "Elderbug"))
         {
             if (string.Equals(self.FsmName, "npc_control"))
@@ -366,14 +354,6 @@ internal class SettingManager
                 LoreMaster.Instance.LogError("Error while modifying ghost: " + ghostName + ": " + exception.Message);
             }
         }
-        // Disable all powers in the end sequence.
-        else if (string.Equals(self.FsmName, "Phase Control") && string.Equals(self.gameObject.name, "Hollow Knight Boss"))
-            self.GetState("Die").ReplaceAction(new Lambda(() =>
-            {
-                PowerManager.DisableAllPowers();
-                PlayerData.instance.SetBool(nameof(PlayerData.instance.killedHollowKnight), true);
-            })
-            { Name = "Deactivate Lore Powers" }, 2);
         // Prevent the player from reading lore tablets without the item (rando only)
         else if (string.Equals(self.FsmName, "Inspection") && !LoreManager.Instance.CanRead && PowerManager.GetPowerByKey(self.FsmVariables.FindFsmString("Convo Name")?.Value, out Power power, false))
             self.GetState("Init").ClearTransitions();
@@ -381,10 +361,10 @@ internal class SettingManager
         else if (string.Equals(self.FsmName, "inspect_region") && !LoreManager.Instance.CanRead && (PowerManager.GetPowerByKey(self.FsmVariables.FindFsmString("Game Text Convo")?.Value, out power, false)
             || string.Equals(self.gameObject.name, "Inspect Region Ghost")))
             self.GetState("Init").ClearTransitions();
-        else if (string.Equals(self.FsmName, "npc_control") 
-            && ((!LoreManager.Instance.CanListen && (!string.Equals(self.gameObject.name, "Dreamer Plaque Inspect") 
+        else if (string.Equals(self.FsmName, "npc_control")
+            && ((!LoreManager.Instance.CanListen && (!string.Equals(self.gameObject.name, "Dreamer Plaque Inspect")
             && !string.Equals(self.gameObject.name, "Fountain Inspect") && !string.Equals(self.gameObject.name, "Fountain Donation")))
-            || (!LoreManager.Instance.CanRead && (string.Equals(self.gameObject.name, "Dreamer Plaque Inspect") 
+            || (!LoreManager.Instance.CanRead && (string.Equals(self.gameObject.name, "Dreamer Plaque Inspect")
             || string.Equals(self.gameObject.name, "Fountain Inspect") || string.Equals(self.gameObject.name, "Fountain Donation")))))
         {
             // There are a few exceptions with npc which we want to ignore.
@@ -412,7 +392,7 @@ internal class SettingManager
             PowerManager.GetPowerByKey("QUEEN", out power, false);
             ((QueenThornsPower)power).ModifyThorns(self);
         }
-        
+
         orig(self);
     }
 
@@ -486,6 +466,17 @@ internal class SettingManager
             LoreMaster.Instance.LogError("An error occured while modifying a lore item drop: " + exception.Message);
             LoreMaster.Instance.LogError(exception.StackTrace);
         }
+    }
+
+    /// <summary>
+    /// Event handler to disable all powers after a final boss has been killed.
+    /// </summary>
+    private void EndAllPowers(SendEventByName.orig_OnEnter orig, HutongGames.PlayMaker.Actions.SendEventByName self)
+    {
+        orig(self);
+        if (string.Equals(self.sendEvent.Value, "ALL CHARMS END") && (string.Equals(self.Fsm.GameObjectName, "Hollow Knight Boss")
+            || string.Equals(self.Fsm.GameObjectName, "Radiance") || string.Equals(self.Fsm.GameObjectName, "Absolute Radiance")))
+            PowerManager.DisableAllPowers();
     }
 
     #endregion

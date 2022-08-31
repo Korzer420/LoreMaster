@@ -132,13 +132,13 @@ public class LogicManager
             if (builder.Waypoints.Contains("Defeated_Colosseum_3"))
                 builder.DoLogicEdit(new("Defeated_Colosseum_3", "(ORIG) + READ"));
             // Since level 2 and 3 from the void idle takes the logic from level 1. We only need to modify one.
-            if (Finder.GetLocation($"Journal_Entry-Void_Idol_1") != null)
-                builder.DoLogicEdit(new($"Journal_Entry-Void_Idol_1", "(ORIG) + READ"));
+            if (Finder.GetLocation("Journal_Entry-Void_Idol_1") != null && builder.LogicLookup.Any(x => string.Equals("Journal_Entry-Void_Idol_1", x.Key, System.StringComparison.CurrentCultureIgnoreCase)))
+                builder.DoLogicEdit(new("Journal_Entry-Void_Idol_1", "(ORIG) + READ"));
         }
         // Extra logic for rando plus.
         if (RandomizerManager.Settings.CursedListening)
             for (int i = 0; i < _randoPlusLocation.Count; i++)
-                if (Finder.GetLocation(_randoPlusLocation[i]) != null)
+                if (Finder.GetLocation(_randoPlusLocation[i]) != null && builder.LogicLookup.Any(x => string.Equals(_randoPlusLocation[i], x.Key, System.StringComparison.CurrentCultureIgnoreCase)))
                     builder.DoLogicEdit(new(_randoPlusLocation[i], "(ORIG) + LISTEN"));
     }
 }
