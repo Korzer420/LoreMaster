@@ -61,7 +61,7 @@ public class InfestedPower : Power
 
     private void OnIntCompareAction(On.HutongGames.PlayMaker.Actions.IntCompare.orig_OnEnter orig, HutongGames.PlayMaker.Actions.IntCompare self)
     {
-        if (string.Equals(self.Fsm.FsmComponent.FsmName, "Attack") && string.Equals(self.Fsm.FsmComponent.gameObject.transform.parent.name, "Weaverling(Clone)") && string.Equals(self.Fsm.FsmComponent.ActiveStateName, "G Parent?") && Active)
+        if (string.Equals(self.Fsm.FsmComponent.FsmName, "Attack") && string.Equals(self.Fsm.FsmComponent.gameObject.transform.parent?.name, "Weaverling(Clone)") && string.Equals(self.Fsm.FsmComponent.ActiveStateName, "G Parent?") && Active)
         {
             Infest(self.Fsm.FsmComponent.FsmVariables.FindFsmGameObject("Enemy").Value);
             Infest(self.Fsm.FsmComponent.FsmVariables.FindFsmGameObject("Enemy Parent").Value);
