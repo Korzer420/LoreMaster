@@ -42,54 +42,38 @@ public class WeDontTalkAboutShadePower : Power
     #region Protected Methods
 
     /// <inheritdoc/>
-    protected override void Initialize()
+    private void OnSetPlayerDataIntAction(On.HutongGames.PlayMaker.Actions.SetPlayerDataInt.orig_OnEnter orig, SetPlayerDataInt self)
     {
-        HeroController.instance.transform.Find("Hero Death").gameObject.LocateMyFSM("Hero Death Anim").GetState("Remove Geo").ReplaceAction(new Lambda(() =>
+        if (string.Equals(self.Fsm.FsmComponent.gameObject.name, "Hero Death") && string.Equals(self.Fsm.FsmComponent.FsmName, "Hero Death Anim") && string.Equals(self.Fsm.FsmComponent.ActiveStateName, "Remove Geo") && string.Equals(self.intName.Value, "geoPool") && Active)
         {
-            if (Active)
-            {
-                int shadeGeo = PlayerData.instance.GetInt(nameof(PlayerData.instance.geoPool));
-                PlayerData.instance.SetInt(nameof(PlayerData.instance.geoPool), PlayerData.instance.GetInt(nameof(PlayerData.instance.geo)) + (shadeGeo > 1
-                    ? shadeGeo / 2
-                    : 0));
-            }
-            else
-                PlayerData.instance.SetInt(nameof(PlayerData.instance.geoPool), PlayerData.instance.GetInt(nameof(PlayerData.instance.geo)));
-        })
-        {
-            Name = "Diminish geo punishment"
-        }, 1);
+            self.value.Value += PlayerData.instance.GetInt(nameof(PlayerData.instance.geoPool)) > 1 ? PlayerData.instance.GetInt(nameof(PlayerData.instance.geoPool)) / 2 : 0;
+        }
+        orig(self);
     }
 
     /// <inheritdoc/>
     protected override void Enable()
     {
-        On.PlayMakerFSM.OnEnable += PlayMakerFSM_OnEnable;
+        On.HutongGames.PlayMaker.Actions.PlayerDataBoolTest.OnEnter += OnPlayerDataBoolTestAction;
+        On.HutongGames.PlayMaker.Actions.SetPlayerDataInt.OnEnter += OnSetPlayerDataIntAction;
         ModHooks.AfterPlayerDeadHook += AfterPlayerDied;
         PlayerData.instance.SetBool("soulLimited", false);
     }
 
-    private void PlayMakerFSM_OnEnable(On.PlayMakerFSM.orig_OnEnable orig, PlayMakerFSM self)
+    private void OnPlayerDataBoolTestAction(On.HutongGames.PlayMaker.Actions.PlayerDataBoolTest.orig_OnEnter orig, PlayerDataBoolTest self)
     {
-        if (string.Equals(self.FsmName, "Deactivate if !SoulLimited"))
-            self.GetState("Check").ReplaceAction(new Lambda(() =>
-            {
-                if (Active)
-                {
-                    if (string.Equals(PlayerData.instance.GetString(nameof(PlayerData.instance.shadeScene)), "None"))
-                        self.SendEvent("DEACTIVATE");
-                }
-                else if (!PlayerData.instance.GetBool(nameof(PlayerData.instance.soulLimited)))
-                    self.SendEvent("DEACTIVATE");
-            })
-            { Name = "Check for Shade"}, 0);
+        if (string.Equals(self.Fsm.FsmComponent.FsmName, "Deactivate if !SoulLimited") && string.Equals(PlayerData.instance.GetString(nameof(PlayerData.instance.shadeScene)), "None") && Active)
+        {
+            self.Fsm.FsmComponent.SendEvent("DEACTIVATE");
+        }
         orig(self);
     }
 
     /// <inheritdoc/>
     protected override void Disable()
     {
-        On.PlayMakerFSM.OnEnable -= PlayMakerFSM_OnEnable;
+        On.HutongGames.PlayMaker.Actions.PlayerDataBoolTest.OnEnter -= OnPlayerDataBoolTestAction;
+        On.HutongGames.PlayMaker.Actions.SetPlayerDataInt.OnEnter -= OnSetPlayerDataIntAction;
         ModHooks.AfterPlayerDeadHook -= AfterPlayerDied;
         if (!PlayerData.instance.GetString(nameof(PlayerData.instance.shadeScene)).Equals("None"))
             PlayerData.instance.StartSoulLimiter();
