@@ -21,17 +21,46 @@ public class ScrewTheRulesPower : Power
 
     #endregion
 
-    #region Event Handler
+    #region ???
 
-    private void PlayMakerFSM_OnEnable(On.PlayMakerFSM.orig_OnEnable orig, PlayMakerFSM self)
+    private void OnSetFsmFloatAction(On.HutongGames.PlayMaker.Actions.SetFsmFloat.orig_OnEnter orig, SetFsmFloat self)
     {
-        if (string.Equals(self.FsmName,"nailart_damage"))
-            self.GetState("Fury?").ReplaceAction(new Lambda(() => self.FsmVariables.FindFsmFloat("Damage Float").Value *= Active ? 1.5f : 1.75f) { Name = "Fury Nerf" }, 1);
-        else if (self.gameObject.name.Contains("Grubberfly Beam") && string.Equals(self.FsmName,"Control"))
-            self.GetState("Fury Multiplier").ReplaceAction(new Lambda(() => self.FsmVariables.FindFsmFloat("Dmg Float").Value *= Active ? 1.3f : 1.5f) { Name = "Fury Amplifier" }, 2);
+        if (string.Equals(self.Fsm.FsmComponent.gameObject.name, "Charm Effects") && string.Equals(self.Fsm.FsmComponent.FsmName, "Fury") && string.Equals(self.Fsm.FsmComponent.ActiveStateName, "Activate"))
+        {
+            self.setValue.Value = Active ? 1.5f : 1.75f;
+        }
         orig(self);
     }
-
+    
+    private void OnFloatMultiplyAction(On.HutongGames.PlayMaker.Actions.FloatMultiply.orig_OnEnter orig, FloatMultiply self)
+    {
+        if (string.Equals(self.Fsm.FsmComponent.FsmName, "nailart_damage") && string.Equals(self.Fsm.FsmComponent.ActiveStateName, "Fury?"))
+        {
+            self.multiplyBy.Value = Active ? 1.5f : 1.75f;
+        }
+        else if (self.Fsm.FsmComponent.gameObject.name.Contains("Grubberfly Beam") && string.Equals(self.Fsm.FsmComponent.FsmName, "Control"))
+        {
+            self.multiplyBy.Value = Active ? 1.3f : 1.5f;
+        }
+        orig(self);
+    }
+    
+    private void OnIntCompareAction(On.HutongGames.PlayMaker.Actions.IntCompare.orig_OnEnter orig, IntCompare self)
+    {
+        if (string.Equals(self.Fsm.FsmComponent.gameObject.name, "Charm Effects") && string.Equals(self.Fsm.FsmComponent.FsmName, "Fury") && (string.Equals(self.Fsm.FsmComponent.ActiveStateName, "Check HP") || string.Equals(self.Fsm.FsmComponent.ActiveStateName, "Recheck")) && PlayerData.instance.GetInt(nameof(PlayerData.instance.health)) == 2 && Active)
+        {
+            if (self.Fsm.FsmComponent.ActiveStateName == "Check HP")
+            {
+                self.Fsm.FsmComponent.SendEvent("FURY");
+            }
+            else if (self.Fsm.FsmComponent.ActiveStateName == "Recheck")
+            {
+                self.Fsm.FsmComponent.SendEvent("RETURN");
+            }
+        }
+        orig(self);
+    }
+    
     private void HeroController_Attack(ILContext il)
     {
         ILCursor cursor = new(il);
@@ -64,59 +93,20 @@ public class ScrewTheRulesPower : Power
 
     #region Protected Methods
 
-    /// <inheritdoc/>
-    protected override void Initialize()
-    {
-        try
-        {
-            PlayMakerFSM fsm = GameObject.Find("Knight").transform.Find("Charm Effects").gameObject.LocateMyFSM("Fury");
-            FsmState state = fsm.GetState("Check HP");
-
-            // Remove "HP Compare" action and add new one, so fury is active while have two OR LESS health
-            state.ReplaceAction(new Lambda(() =>
-            {
-                if (PlayerData.instance.GetInt(nameof(PlayerData.instance.health)) == 1 || (PlayerData.instance.GetInt(nameof(PlayerData.instance.health)) == 2 && Active))
-                    fsm.SendEvent("FURY");
-                else
-                    fsm.SendEvent("CANCEL");
-            })
-            { Name = "HP Compare" }, 6);
-
-            // Also changing the recheck for after getting hit or healed
-            fsm.GetState("Recheck").ReplaceAction(new Lambda(() =>
-            {
-                if (PlayerData.instance.GetInt(nameof(PlayerData.instance.health)) == 1 || (PlayerData.instance.GetInt(nameof(PlayerData.instance.health)) == 2 && Active))
-                    fsm.SendEvent("RETURN");
-            })
-            { Name = "HP Compare" }, 1);
-
-            // We are nerfing the damage increase to 50% (The action 9 to 12 are setting the modifier in the nail fsm)
-            fsm.GetState("Get Ref").ReplaceAction(new Lambda(() =>
-            {
-                foreach (SetFsmFloat action in state.GetActionsOfType<SetFsmFloat>())
-                    action.setValue.Value = Active ? 1.5f : 1.75f;
-                if (fsm.FsmVariables.FindFsmGameObject("Fury Vignette").Value != null)
-                    fsm.SendEvent("FINISHED");
-            })
-            { Name = "Nerf damage" }, 0);
-        }
-        catch (Exception error)
-        {
-            LoreMaster.Instance.LogError("Couldn't modify fury fsm: " + error.Message);
-        }
-    }
-
-    /// <inheritdoc/>
     protected override void Enable()
     {
-        On.PlayMakerFSM.OnEnable += PlayMakerFSM_OnEnable;
+        On.HutongGames.PlayMaker.Actions.FloatMultiply.OnEnter += OnFloatMultiplyAction;
+        On.HutongGames.PlayMaker.Actions.IntCompare.OnEnter += OnIntCompareAction;
+        On.HutongGames.PlayMaker.Actions.SetFsmFloat.OnEnter += OnSetFsmFloatAction;
         IL.HeroController.Attack += HeroController_Attack;
     }
 
     /// <inheritdoc/>
     protected override void Disable()
     {
-        On.PlayMakerFSM.OnEnable -= PlayMakerFSM_OnEnable;
+        On.HutongGames.PlayMaker.Actions.FloatMultiply.OnEnter -= OnFloatMultiplyAction;
+        On.HutongGames.PlayMaker.Actions.IntCompare.OnEnter -= OnIntCompareAction;
+        On.HutongGames.PlayMaker.Actions.SetFsmFloat.OnEnter -= OnSetFsmFloatAction;
         IL.HeroController.Attack -= HeroController_Attack;
         // Disable the fury effect if you leave with 2 hp.
         if (PlayerData.instance.GetInt(nameof(PlayerData.instance.health)) == 2)
