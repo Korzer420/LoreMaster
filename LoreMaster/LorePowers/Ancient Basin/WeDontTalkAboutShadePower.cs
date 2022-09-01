@@ -48,6 +48,17 @@ public class WeDontTalkAboutShadePower : Power
         {
             self.value.Value += PlayerData.instance.GetInt(nameof(PlayerData.instance.geoPool)) > 1 ? PlayerData.instance.GetInt(nameof(PlayerData.instance.geoPool)) / 2 : 0;
         }
+
+        orig(self);
+    }
+
+    private void OnPlayerDataBoolTestAction(On.HutongGames.PlayMaker.Actions.PlayerDataBoolTest.orig_OnEnter orig, PlayerDataBoolTest self)
+    {
+        if (string.Equals(self.Fsm.FsmComponent.FsmName, "Deactivate if !SoulLimited") && string.Equals(PlayerData.instance.GetString(nameof(PlayerData.instance.shadeScene)), "None") && Active)
+        {
+            self.Fsm.FsmComponent.SendEvent("DEACTIVATE");
+        }
+
         orig(self);
     }
 
@@ -58,15 +69,6 @@ public class WeDontTalkAboutShadePower : Power
         On.HutongGames.PlayMaker.Actions.SetPlayerDataInt.OnEnter += OnSetPlayerDataIntAction;
         ModHooks.AfterPlayerDeadHook += AfterPlayerDied;
         PlayerData.instance.SetBool("soulLimited", false);
-    }
-
-    private void OnPlayerDataBoolTestAction(On.HutongGames.PlayMaker.Actions.PlayerDataBoolTest.orig_OnEnter orig, PlayerDataBoolTest self)
-    {
-        if (string.Equals(self.Fsm.FsmComponent.FsmName, "Deactivate if !SoulLimited") && string.Equals(PlayerData.instance.GetString(nameof(PlayerData.instance.shadeScene)), "None") && Active)
-        {
-            self.Fsm.FsmComponent.SendEvent("DEACTIVATE");
-        }
-        orig(self);
     }
 
     /// <inheritdoc/>
