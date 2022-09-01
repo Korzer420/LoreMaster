@@ -21,7 +21,7 @@ public class ScrewTheRulesPower : Power
 
     #endregion
 
-    #region ???
+    #region Event Handler
 
     private void OnSetFsmFloatAction(On.HutongGames.PlayMaker.Actions.SetFsmFloat.orig_OnEnter orig, SetFsmFloat self)
     {
