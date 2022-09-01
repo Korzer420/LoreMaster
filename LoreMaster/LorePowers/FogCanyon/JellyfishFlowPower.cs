@@ -19,7 +19,7 @@ public class JellyfishFlowPower : Power
 
     #region Event Handler
 
-    private void OnSetVelocity2D(On.HutongGames.PlayMaker.Actions.SetVelocity2d.orig_OnEnter orig, HutongGames.PlayMaker.Actions.SetVelocity2d self)
+    private void OnSetVelocity2DAction(On.HutongGames.PlayMaker.Actions.SetVelocity2d.orig_OnEnter orig, HutongGames.PlayMaker.Actions.SetVelocity2d self)
     {
         if (string.Equals(self.Fsm.FsmComponent.gameObject.name, "Knight") && string.Equals(self.Fsm.FsmComponent.FsmName, "Surface Water"))
         {
@@ -43,7 +43,7 @@ public class JellyfishFlowPower : Power
     /// <inheritdoc/>
     protected override void Initialize()
     {
-        On.HutongGames.PlayMaker.Actions.SetVelocity2d.OnEnter += OnSetVelocity2D;
+        On.HutongGames.PlayMaker.Actions.SetVelocity2d.OnEnter += OnSetVelocity2DAction;
     }
 
     #endregion
