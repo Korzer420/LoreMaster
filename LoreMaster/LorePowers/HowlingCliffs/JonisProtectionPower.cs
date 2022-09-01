@@ -112,23 +112,25 @@ public class JonisProtectionPower : Power
                     _immune = true;
                 }));
         }
-        else if (string.Equals(self.FsmName,"Inspection") && self.gameObject.name.Contains("tablet"))
-        {
-            FsmState fsmState = self.GetState("Prompt Up");
-            fsmState.ReplaceAction(new Lambda(() =>
-            {
-                PlayMakerFSM.BroadcastEvent("LORE PROMPT UP");
-                _immune = true;
-            })
-            { Name = "Prompt Up Immunity" }, 7);
 
-            fsmState = self.GetState("Regain Control");
-            fsmState.ReplaceAction(new Lambda(() =>
-            {
-                _immune = false;
-                PlayerData.instance.SetBool("disablePause", false);
-            })
-            { Name = "Remove Immunity" }, 1);
+        orig(self);
+    }
+
+    private void OnSendEventByNameAction(On.HutongGames.PlayMaker.Actions.SendEventByName.orig_OnEnter orig, SendEventByName self)
+    {
+        orig(self);
+
+        if (self.Fsm.FsmComponent.gameObject.name.Contains("tablet") && string.Equals(self.Fsm.FsmComponent.FsmName, "Inspection") && string.Equals(self.Fsm.FsmComponent.ActiveStateName, "Prompt Up") && string.Equals(self.sendEvent.Value, "LORE PROMPT UP"))
+        {
+            _immune = true;
+        }
+    }
+
+    private void OnSetPlayerDataBoolAction(On.HutongGames.PlayMaker.Actions.SetPlayerDataBool.orig_OnEnter orig, SetPlayerDataBool self)
+    {
+        if (self.Fsm.FsmComponent.gameObject.name.Contains("tablet") && string.Equals(self.Fsm.FsmComponent.FsmName, "Inspection") && string.Equals(self.Fsm.FsmComponent.ActiveStateName, "Regain Control"))
+        {
+            _immune = false;
         }
 
         orig(self);
@@ -152,6 +154,9 @@ public class JonisProtectionPower : Power
         ModHooks.CharmUpdateHook += CharmUpdate;
         ModHooks.TakeHealthHook += TakeHealth;
         On.PlayMakerFSM.OnEnable += ModifyFSM;
+        On.HutongGames.PlayMaker.Actions.SendEventByName.OnEnter += OnSendEventByNameAction;
+        On.HutongGames.PlayMaker.Actions.SetPlayerDataBool.OnEnter += OnSetPlayerDataBoolAction;
+
         On.InvAnimateUpAndDown.AnimateUp += InvAnimateUpAndDown_AnimateUp;
         On.InvAnimateUpAndDown.AnimateDown += InvAnimateUpAndDown_AnimateDown;
     }
@@ -162,6 +167,8 @@ public class JonisProtectionPower : Power
         ModHooks.CharmUpdateHook -= CharmUpdate;
         ModHooks.TakeHealthHook -= TakeHealth;
         On.PlayMakerFSM.OnEnable -= ModifyFSM;
+        On.HutongGames.PlayMaker.Actions.SendEventByName.OnEnter -= OnSendEventByNameAction;
+        On.HutongGames.PlayMaker.Actions.SetPlayerDataBool.OnEnter -= OnSetPlayerDataBoolAction;
         On.InvAnimateUpAndDown.AnimateUp -= InvAnimateUpAndDown_AnimateUp;
         On.InvAnimateUpAndDown.AnimateDown -= InvAnimateUpAndDown_AnimateDown;
         FakeDamage = false;
