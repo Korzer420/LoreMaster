@@ -40,11 +40,11 @@ public class EternalSentinelPower : Power
 
     private void OnSetPositionAction(On.HutongGames.PlayMaker.Actions.SetPosition.orig_OnEnter orig, SetPosition self)
     {
-        if (string.Equals(self.Fsm.FsmComponent.gameObject, "Knight Dung Trail(Clone)") && string.Equals(self.Fsm.FsmComponent.FsmName, "Control") && string.Equals(self.Fsm.FsmComponent.ActiveStateName, "Init"))
+        if (string.Equals(self.Fsm.FsmComponent.gameObject.name, "Knight Dung Trail(Clone)") && string.Equals(self.Fsm.FsmComponent.FsmName, "Control") && string.Equals(self.Fsm.FsmComponent.ActiveStateName, "Init"))
         {
-            self.Fsm.FsmComponent.transform.localPosition = HeroController.instance.transform.position;
-            self.Fsm.FsmComponent.transform.localScale = Active ? new(1f, 1f) : new(2.5f, 2.5f);
-            self.Fsm.FsmComponent.GetComponent<DamageEffectTicker>().SetDamageInterval(Active ? 0.3f : 0.15f);
+            self.Fsm.FsmComponent.gameObject.transform.localPosition = HeroController.instance.transform.position;
+            self.Fsm.FsmComponent.gameObject.transform.localScale = Active ? new(2.5f, 2.5f) : new(1f, 1f);
+            self.Fsm.FsmComponent.gameObject.GetComponent<DamageEffectTicker>().SetDamageInterval(Active ? 0.15f : 0.3f);
         }
         orig(self);
     }
