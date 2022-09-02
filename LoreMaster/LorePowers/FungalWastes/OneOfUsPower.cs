@@ -56,7 +56,10 @@ public class OneOfUsPower : Power
             {
                 GameObject newCloud = GameObject.Instantiate(_cloud, HeroController.instance.transform.position,
                 Quaternion.identity);
-                newCloud.LocateMyFSM("Control").ChangeTransition("Init", "NORMAL", "Deep")
+                newCloud.LocateMyFSM("Control").GetState("Init").ReplaceAction(new Lambda(() => 
+                {
+                    newCloud.LocateMyFSM("Control").SendEvent("DEEP");
+                }) { Name = "Force Deep Cloud" }, 2);
                 newCloud.SetActive(true);
                 yield return new WaitForSeconds(4.1f);
                 GameObject.Destroy(newCloud);
