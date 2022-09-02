@@ -34,7 +34,7 @@ internal class RandomizerRequestModifier
             requestBuilder.AddLocationByName("Town_Lore_Page");
         }
 
-        if(RandomizerManager.Settings.RandomizeWarriorStatues)
+        if (RandomizerManager.Settings.RandomizeWarriorStatues)
             foreach (string name in RandomizerManager.StatueItemNames)
             {
                 requestBuilder.AddItemByName("Lore_Tablet-" + name);
@@ -56,6 +56,16 @@ internal class RandomizerRequestModifier
             LoreManager.Instance.CanRead = false;
             requestBuilder.AddItemByName("Reading");
             requestBuilder.AddLocationByName("Town_Read");
+            requestBuilder.EditItemRequest("Reading", info =>
+            {
+                info.getItemDef = () => new RandomizerMod.RandomizerData.ItemDef()
+                {
+                    MajorItem = true,
+                    PriceCap = 1250,
+                    Name = "Reading",
+                    Pool = "Extra Lore"
+                };
+            });
         }
         else
             LoreManager.Instance.CanRead = true;
@@ -65,6 +75,16 @@ internal class RandomizerRequestModifier
             LoreManager.Instance.CanListen = false;
             requestBuilder.AddItemByName("Listening");
             requestBuilder.AddLocationByName("Town_Listen");
+            requestBuilder.EditItemRequest("Listening", info =>
+            {
+                info.getItemDef = () => new RandomizerMod.RandomizerData.ItemDef()
+                {
+                    MajorItem = true,
+                    PriceCap = 1250,
+                    Name = "Listening",
+                    Pool = "Extra Lore"
+                };
+            });
         }
         else
             LoreManager.Instance.CanListen = true;

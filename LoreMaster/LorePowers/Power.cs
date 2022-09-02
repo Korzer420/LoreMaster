@@ -1,4 +1,5 @@
 using LoreMaster.Enums;
+using LoreMaster.Manager;
 using System;
 using UnityEngine;
 
@@ -124,7 +125,7 @@ public abstract class Power
     /// </summary>
     internal void EnablePower()
     {
-        if (Active || Tag == PowerTag.Disable || Tag == PowerTag.Remove)
+        if (Active || Tag == PowerTag.Disable || Tag == PowerTag.Remove || !PowerManager.CanPowersActivate)
             return;
         try
         {
