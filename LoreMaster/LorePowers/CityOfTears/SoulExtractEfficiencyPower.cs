@@ -23,7 +23,7 @@ public class SoulExtractEfficiencyPower : Power
 
     private void OnSetBoolValueAction(On.HutongGames.PlayMaker.Actions.SetBoolValue.orig_OnEnter orig, HutongGames.PlayMaker.Actions.SetBoolValue self)
     {
-        if (string.Equals(self.Fsm.FsmComponent.gameObject.name, "Knight") && string.Equals(self.Fsm.FsmComponent.FsmName, "Spell Control") && string.Equals(self.Fsm.FsmComponent.ActiveStateName, "Inactive") && PlayerData.instance.equippedCharm_2)
+        if (string.Equals(self.Fsm.FsmComponent.gameObject.name, "Knight") && string.Equals(self.Fsm.FsmComponent.FsmName, "Spell Control") && string.Equals(self.Fsm.FsmComponent.ActiveStateName, "Inactive") && Active)
         {
             int currentMP = PlayerData.instance.GetInt(nameof(PlayerData.instance.MPCharge));
             int maxMP = PlayerData.instance.GetInt(nameof(PlayerData.instance.maxMP));
