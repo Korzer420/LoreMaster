@@ -39,7 +39,10 @@ public class MaskCharge : MonoBehaviour
             fsm.FsmName = "set_ring_damage";
             fsm.GetState("Set").ReplaceAction(new Lambda(() =>
             {
-                fsm.FsmVariables.FindFsmInt("Damage").Value = Mathf.Min(20, PlayerData.instance.GetInt(nameof(PlayerData.instance.nailDamage)) / 2);
+                int nailDamage = PlayerData.instance.GetInt(nameof(PlayerData.instance.nailDamage)) / 2;
+                if (nailDamage > 20)
+                    nailDamage = 20;
+                fsm.FsmVariables.FindFsmInt("Damage").Value = nailDamage;
             }), 0);
         }
 
