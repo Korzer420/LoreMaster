@@ -5,6 +5,9 @@ using LoreMaster.Extensions;
 using Modding;
 using System;
 using UnityEngine;
+using HutongGames.PlayMaker.Actions;
+using HutongGames.PlayMaker;
+using SFCore.Utils;
 
 namespace LoreMaster.LorePowers.Ancient_Basin;
 
@@ -54,9 +57,9 @@ public class WeDontTalkAboutShadePower : Power
 
     private void OnPlayerDataBoolTestAction(On.HutongGames.PlayMaker.Actions.PlayerDataBoolTest.orig_OnEnter orig, PlayerDataBoolTest self)
     {
-        if (string.Equals(self.Fsm.FsmComponent.FsmName, "Deactivate if !SoulLimited") && string.Equals(PlayerData.instance.GetString(nameof(PlayerData.instance.shadeScene)), "None") && Active)
+        if (string.Equals(self.Fsm.FsmComponent.FsmName, "Deactivate if !SoulLimited") && Active)
         {
-            self.Fsm.FsmComponent.SendEvent("DEACTIVATE");
+            self.isFalse = string.Equals(PlayerData.instance.GetString(nameof(PlayerData.instance.shadeScene)), "None") ? FsmEvent.GetFsmEvent("DEACTIVATE") : null;
         }
 
         orig(self);

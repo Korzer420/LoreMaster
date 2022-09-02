@@ -3,6 +3,7 @@ using ItemChanger.FsmStateActions;
 using LoreMaster.Enums;
 using LoreMaster.Extensions;
 using System;
+using HutongGames.PlayMaker.Actions;
 
 namespace LoreMaster.LorePowers.QueensGarden;
 

@@ -201,7 +201,7 @@ internal class LorePage
             }));
 
             // Create main state
-            fsm.AddState(new(fsm.Fsm)
+            fsm.AddState(new FsmState(fsm.Fsm)
             {
                 Name = "Powers",
                 Actions = new FsmStateAction[]
@@ -246,11 +246,11 @@ internal class LorePage
 
             currentWorkingState = fsm.GetState("Powers");
 
-            fsm.AddState(new(fsm.Fsm) { Name = "Up Press" });
-            fsm.AddState(new(fsm.Fsm) { Name = "Right Press" });
-            fsm.AddState(new(fsm.Fsm) { Name = "Down Press" });
-            fsm.AddState(new(fsm.Fsm) { Name = "Left Press" });
-            fsm.AddState(new(fsm.Fsm) { Name = "Toggle Power" });
+            fsm.AddState(new FsmState(fsm.Fsm) { Name = "Up Press" });
+            fsm.AddState(new FsmState(fsm.Fsm) { Name = "Right Press" });
+            fsm.AddState(new FsmState(fsm.Fsm) { Name = "Down Press" });
+            fsm.AddState(new FsmState(fsm.Fsm) { Name = "Left Press" });
+            fsm.AddState(new FsmState(fsm.Fsm) { Name = "Toggle Power" });
 
             currentWorkingState.AddTransition("UI UP", "Up Press");
             currentWorkingState.AddTransition("UI RIGHT", "Right Press");

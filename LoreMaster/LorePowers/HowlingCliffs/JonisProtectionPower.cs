@@ -8,6 +8,7 @@ using System;
 using System.Collections;
 using System.Linq;
 using UnityEngine;
+using HutongGames.PlayMaker.Actions;
 
 namespace LoreMaster.LorePowers.HowlingCliffs;
 

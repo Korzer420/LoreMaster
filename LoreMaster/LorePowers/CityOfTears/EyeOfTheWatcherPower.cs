@@ -6,6 +6,8 @@ using LoreMaster.Helper;
 using System;
 using System.Collections;
 using UnityEngine;
+using SFCore.Utils;
+using HutongGames.PlayMaker;
 
 namespace LoreMaster.LorePowers.CityOfTears;
 

@@ -59,14 +59,11 @@ public class InfestedPower : Power
         orig(self, attackDirection, attackType, ignoreEvasion);
     }
 
-    private void OnIntCompareAction(On.HutongGames.PlayMaker.Actions.IntCompare.orig_OnEnter orig, HutongGames.PlayMaker.Actions.IntCompare self)
+    private void OnIntCompareAction(On.HutongGames.PlayMaker.Actions.IntCompare.orig_OnEnter orig, IntCompare self)
     {
-        if (string.Equals(self.Fsm.FsmComponent.FsmName, "Attack") && string.Equals(self.Fsm.FsmComponent.gameObject.transform.parent?.name, "Weaverling(Clone)") && string.Equals(self.Fsm.FsmComponent.ActiveStateName, "G Parent?") && Active)
+        if (string.Equals(self.Fsm.FsmComponent.FsmName, "Attack") && string.Equals(self.Fsm.FsmComponent.gameObject.transform.parent.gameObject.name, "Weaverling(Clone)") && string.Equals(self.Fsm.FsmComponent.ActiveStateName, "Hit") && Active)
         {
             Infest(self.Fsm.FsmComponent.FsmVariables.FindFsmGameObject("Enemy").Value);
-            Infest(self.Fsm.FsmComponent.FsmVariables.FindFsmGameObject("Enemy Parent").Value);
-            Infest(self.Fsm.FsmComponent.FsmVariables.FindFsmGameObject("Enemy Grandparent").Value);
-
         }
 
         orig(self);

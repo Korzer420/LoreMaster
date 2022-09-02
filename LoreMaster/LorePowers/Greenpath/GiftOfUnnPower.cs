@@ -2,6 +2,7 @@ using ItemChanger.FsmStateActions;
 using LoreMaster.Enums;
 using LoreMaster.Extensions;
 using LoreMaster.Helper;
+using HutongGames.PlayMaker;
 
 namespace LoreMaster.LorePowers.Greenpath;
 
