@@ -69,20 +69,52 @@ public class EyeOfTheWatcherPower : Power
         }
     }
 
-    private void RefreshEyeOfTheWatcher(On.PlayMakerFSM.orig_OnEnable orig, PlayMakerFSM self)
+    private void OnActivateGameObjectAction(On.HutongGames.PlayMaker.Actions.ActivateGameObject.orig_OnEnter orig, HutongGames.PlayMaker.Actions.ActivateGameObject self)
     {
-        if (string.Equals(self.gameObject.name,"Telescope Inspect") && string.Equals(self.FsmName,"Conversation Control"))
-            self.GetState("Stop").ReplaceAction(new Lambda(() => EyeActive = true) { Name = "Restore Eye" });
-        // Enable the peak toll.
-        else if (self.gameObject.name.Contains("Toll Gate Machine") && string.Equals(self.FsmName,"Disable if No Lantern"))
-            self.GetState("Check").ReplaceAction(new Lambda(() => 
+        if (string.Equals(self.Fsm.FsmComponent.gameObject.name, "Vignette") && string.Equals(self.Fsm.FsmComponent.FsmName, "Darkness Control") && string.Equals(self.Fsm.FsmComponent.ActiveStateName, "Scene Reset 2"))
+        {
+            self.Fsm.FsmComponent.AddTransition("Scene Reset 2", "LANTERN", "Lantern 2");
+            if (Active && EyeActive)
             {
-                if (Active && EyeActive)
-                    self.SendEvent("FINISHED");
-                else if(!PlayerData.instance.GetBool(nameof(PlayerData.instance.hasLantern)))
-                    self.SendEvent("DISABLE");
-            })
-            { Name = "Enable Toll"},0);
+                self.Fsm.FsmComponent.SendEvent("LANTERN");
+            }
+        }
+
+        orig(self);
+    }
+
+    private void OnSendMessageAction(On.HutongGames.PlayMaker.Actions.SendMessage.orig_OnEnter orig, HutongGames.PlayMaker.Actions.SendMessage self)
+    {
+        if (string.Equals(self.Fsm.FsmComponent.gameObject.name, "Telescope Inspect") && string.Equals(self.Fsm.FsmComponent.FsmName, "Conversation Control") && string.Equals(self.Fsm.FsmComponent.ActiveStateName, "Stop"))
+        {
+            EyeActive = true;
+        }
+
+        orig(self);
+    }
+
+    private void OnPlayerDataBoolTestAction(On.HutongGames.PlayMaker.Actions.PlayerDataBoolTest.orig_OnEnter orig, HutongGames.PlayMaker.Actions.PlayerDataBoolTest self)
+    {
+        if (self.Fsm.FsmComponent.gameObject.name.Contains("Toll Gate Machine") && string.Equals(self.Fsm.FsmComponent.FsmName, "Disable if No Lantern"))
+        {
+            self.isFalse = (Active && EyeActive) ? null : FsmEvent.GetFsmEvent("DISABLE");
+        }
+
+        else if (string.Equals(self.Fsm.FsmComponent.gameObject.name, "Area Title Controller") && string.Equals(self.Fsm.FsmComponent.FsmName, "Deactivate in darkness without lantern"))
+        {
+            self.isFalse = (Active && EyeActive) ? null : FsmEvent.GetFsmEvent("NO LANTERN");
+        }
+
+        else if (string.Equals(self.Fsm.FsmComponent.gameObject.name, "Ghost Warrior NPC") && string.Equals(self.Fsm.FsmComponent.FsmName, "FSM"))
+        {
+            self.isFalse = (Active && EyeActive) ? null : FsmEvent.GetFsmEvent("DEACTIVE");
+        }
+
+        else if (string.Equals(self.Fsm.FsmComponent.gameObject.name, "Vignette") && string.Equals(self.Fsm.FsmComponent.FsmName, "Darkness Control") && (string.Equals(self.Fsm.FsmComponent.ActiveStateName, "Scene Reset") || string.Equals(self.Fsm.FsmComponent.ActiveStateName, "Dark Lev Check")))
+        {
+            self.isFalse = (Active && EyeActive) ? FsmEvent.GetFsmEvent("LANTERN") : null;
+        }
+
         orig(self);
     }
 
@@ -93,42 +125,6 @@ public class EyeOfTheWatcherPower : Power
     /// <inheritdoc/>
     protected override void Initialize()
     {
-        // Modify all darkness checks
-        PlayMakerFSM fsm = HeroController.instance.transform.Find("Vignette").gameObject.LocateMyFSM("Darkness Control");
-        fsm.GetState("Scene Reset").ReplaceAction(new Lambda(() =>
-        {
-            if ((Active && EyeActive) || PlayerData.instance.GetBool(nameof(PlayerData.instance.hasLantern)))
-            {
-                _eye.GetComponent<SpriteRenderer>().color = new(1f, 1f, 0f);
-                fsm.SendEvent("LANTERN");
-            }
-        })
-        { Name = "Force Lantern" }, 1);
-
-        fsm.GetState("Scene Reset 2").AddTransition("LANTERN", "Lantern 2");
-        fsm.GetState("Scene Reset 2").ReplaceAction(new Lambda(() =>
-        {
-            if (Active && EyeActive)
-            {
-                _eye.GetComponent<SpriteRenderer>().color = new(1f, 1f, 0f);
-                fsm.SendEvent("LANTERN");
-            }
-            else if (fsm.FsmVariables.FindFsmInt("Darkness Level").Value == 0)
-                fsm.SendEvent("NORMAL");
-            else if (fsm.FsmVariables.FindFsmInt("Darkness Level").Value == -1)
-                fsm.SendEvent("DARK -1");
-        })
-        { Name = "Force Lantern" }, 1);
-
-        fsm.GetState("Dark Lev Check").ReplaceAction(new Lambda(() =>
-        {
-            if ((Active && EyeActive) || PlayerData.instance.GetBool(nameof(PlayerData.instance.hasLantern)))
-            {
-                _eye.GetComponent<SpriteRenderer>().color = new(1f, 1f, 0f);
-                fsm.SendEvent("LANTERN");
-            }
-        })
-        { Name = "Force Lantern" }, 3);
         _eye = new("Eye of Lurien");
         _eye.transform.SetParent(HeroController.instance.transform);
         _eye.AddComponent<SpriteRenderer>().sprite = _eyeSprite;
@@ -140,7 +136,9 @@ public class EyeOfTheWatcherPower : Power
     /// <inheritdoc/>
     protected override void Enable()
     {
-        On.PlayMakerFSM.OnEnable += RefreshEyeOfTheWatcher;
+        On.HutongGames.PlayMaker.Actions.PlayerDataBoolTest.OnEnter += OnPlayerDataBoolTestAction;
+        On.HutongGames.PlayMaker.Actions.SendMessage.OnEnter += OnSendMessageAction;
+        On.HutongGames.PlayMaker.Actions.ActivateGameObject.OnEnter += OnActivateGameObjectAction;
         On.HeroController.Die += HeroController_Die;
         _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(Blink());
         if (_eye != null)
@@ -150,7 +148,9 @@ public class EyeOfTheWatcherPower : Power
     /// <inheritdoc/>
     protected override void Disable()
     {
-        On.PlayMakerFSM.OnEnable -= RefreshEyeOfTheWatcher;
+        On.HutongGames.PlayMaker.Actions.PlayerDataBoolTest.OnEnter -= OnPlayerDataBoolTestAction;
+        On.HutongGames.PlayMaker.Actions.SendMessage.OnEnter -= OnSendMessageAction;
+        On.HutongGames.PlayMaker.Actions.ActivateGameObject.OnEnter -= OnActivateGameObjectAction;
         On.HeroController.Die -= HeroController_Die;
         _eye?.SetActive(false);
     }
