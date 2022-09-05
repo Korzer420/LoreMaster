@@ -40,6 +40,32 @@ public class GraspOfLifePower : Power
         _grasses.Clear();
     };
 
+    public GameObject Scream 
+    { 
+        get 
+        {
+            if(_scream == null)
+            {
+                _scream = GameObject.Instantiate(HeroController.instance.transform.Find("Spells/Scr Heads").gameObject);
+                GameObject.DontDestroyOnLoad(_scream);
+            }
+            return _scream;
+        }
+    }
+
+    public GameObject Shriek
+    {
+        get
+        {
+            if(_shriek == null)
+            {
+                _shriek = GameObject.Instantiate(HeroController.instance.transform.Find("Spells/Scr Heads 2").gameObject);
+                GameObject.DontDestroyOnLoad(_shriek);
+            }
+            return _shriek;
+        }
+    }
+
     #endregion
 
     #region Event handler
@@ -59,7 +85,7 @@ public class GraspOfLifePower : Power
                     try
                     {
                         bool hasUnn = PlayerData.instance.GetBool(nameof(PlayerData.instance.equippedCharm_28));
-                        GameObject cheer = GameObject.Instantiate(hasUnn ? _shriek : _scream);
+                        GameObject cheer = GameObject.Instantiate(hasUnn ? Shriek : Scream);
                         cheer.LocateMyFSM("FSM").FsmVariables.FindFsmBool("Unparent").Value = false;
                         cheer.LocateMyFSM("FSM").FsmVariables.FindFsmBool("Reposition").Value = false;
                         cheer.GetComponent<tk2dSprite>().color = Color.green;
@@ -99,16 +125,6 @@ public class GraspOfLifePower : Power
     {
         _normalGrass = LoreMaster.Instance.PreloadedObjects["green_grass_1"];
         _paleGrass = LoreMaster.Instance.PreloadedObjects["ash_grass_02"];
-        if (_scream == null)
-        {
-            _scream = GameObject.Instantiate(HeroController.instance.transform.Find("Spells/Scr Heads").gameObject);
-            GameObject.DontDestroyOnLoad(_scream);
-        }
-        if(_shriek == null)
-        {
-            _shriek = GameObject.Instantiate(HeroController.instance.transform.Find("Spells/Scr Heads 2").gameObject);
-            GameObject.DontDestroyOnLoad(_shriek);
-        }
     }
 
     /// <inheritdoc/>

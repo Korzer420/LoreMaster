@@ -30,6 +30,8 @@ public class QueenThornsPower : Power
     public bool CanHeal => PlayerData.instance.GetBool("equippedCharm_27")
         || (PlayerData.instance.GetInt("Health") < PlayerData.instance.GetInt("maxHealth"));
 
+    public GameObject Thorns => _thorns == null ? _thorns = HeroController.instance.transform.Find("Charm Effects/Thorn Hit").gameObject : _thorns;
+
     #endregion
 
     #region Event Handler
@@ -37,9 +39,7 @@ public class QueenThornsPower : Power
     private void EnemyTakeDamage(On.HealthManager.orig_TakeDamage orig, HealthManager self, HitInstance hitInstance)
     {
         orig(self, hitInstance);
-        if (_thorns == null)
-            Initialize();
-        if (_thorns.activeSelf)
+        if (Thorns.activeSelf)
             HeroController.instance.AddMPCharge(7);
     }
 
@@ -47,7 +47,7 @@ public class QueenThornsPower : Power
     {
         orig(self, attackDirection, attackType, ignoreEvasion);
         // We assume that if an enemy dies while thorns is active, they killed them.
-        if (_thorns.activeSelf && LoreMaster.Instance.Generator.Next(1, 3) == 1 && CanHeal)
+        if (Thorns.activeSelf && LoreMaster.Instance.Generator.Next(1, 3) == 1 && CanHeal)
         {
             if (PlayerData.instance.GetBool("equippedCharm_27"))
                 EventRegister.SendEvent("ADD BLUE HEALTH");

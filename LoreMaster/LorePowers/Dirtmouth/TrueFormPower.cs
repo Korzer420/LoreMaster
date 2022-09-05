@@ -4,6 +4,7 @@ using LoreMaster.Enums;
 using Modding;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace LoreMaster.LorePowers.Dirtmouth;
@@ -14,7 +15,7 @@ public class TrueFormPower : Power
 
     private int _shadeState = 0;
 
-    private List<Transform> _attackTransform = new List<Transform>();
+    private GameObject[] _attachObjects = new GameObject[5];
 
     #endregion
 
@@ -54,6 +55,16 @@ public class TrueFormPower : Power
             return;
         }
     };
+
+    public GameObject[] Attacks 
+    {
+        get 
+        {
+            if (_attachObjects.Any(x => x == null))
+                Initialize();
+            return _attachObjects;
+        }
+    }
 
     #endregion
 
@@ -95,11 +106,11 @@ public class TrueFormPower : Power
     protected override void Initialize()
     {
         GameObject attackDirections = GameObject.Find("Knight/Attacks");
-        _attackTransform.Add(attackDirections.transform.Find("Slash"));
-        _attackTransform.Add(attackDirections.transform.Find("AltSlash"));
-        _attackTransform.Add(attackDirections.transform.Find("UpSlash"));
-        _attackTransform.Add(attackDirections.transform.Find("DownSlash"));
-        _attackTransform.Add(attackDirections.transform.Find("WallSlash"));
+        _attachObjects[0] = attackDirections.transform.Find("Slash").gameObject;
+        _attachObjects[1] = attackDirections.transform.Find("AltSlash").gameObject;
+        _attachObjects[2] = attackDirections.transform.Find("UpSlash").gameObject;
+        _attachObjects[3] = attackDirections.transform.Find("DownSlash").gameObject;
+        _attachObjects[4] = attackDirections.transform.Find("WallSlash").gameObject;
     }
 
     /// <inheritdoc/>
@@ -135,8 +146,8 @@ public class TrueFormPower : Power
         {
             for (int index = 0; index < 4; index++)
             {
-                Vector3 currentScale = _attackTransform[index].GetComponent<NailSlash>().scale;
-                _attackTransform[index].GetComponent<NailSlash>().scale = new Vector3(currentScale.x + multiplier, currentScale.y + multiplier, currentScale.z + multiplier);
+                Vector3 currentScale = _attachObjects[index].GetComponent<NailSlash>().scale;
+                _attachObjects[index].GetComponent<NailSlash>().scale = new Vector3(currentScale.x + multiplier, currentScale.y + multiplier, currentScale.z + multiplier);
             }
         }
         catch (Exception exception)

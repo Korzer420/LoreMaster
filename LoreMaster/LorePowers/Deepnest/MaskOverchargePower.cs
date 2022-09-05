@@ -23,6 +23,20 @@ public class MaskOverchargePower : Power
 
     #endregion
 
+    #region Properties
+
+    public GameObject Overcharge
+    {
+        get
+        {
+            if (_overcharge == null)
+                Initialize();
+            return _overcharge;
+        }
+    }
+
+    #endregion
+
     #region Event Handler
 
     /// <summary>
@@ -53,8 +67,6 @@ public class MaskOverchargePower : Power
     /// <inheritdoc/>
     protected override void Enable()
     {
-        if (_overcharge == null)
-            Initialize();
         On.HeroController.FixedUpdate += HeroController_FixedUpdate;
         _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(SelectOverchargeHealth());
     }
@@ -65,7 +77,7 @@ public class MaskOverchargePower : Power
         On.HeroController.FixedUpdate -= HeroController_FixedUpdate;
         if (_runningCoroutine != null)
             LoreMaster.Instance.Handler.StopCoroutine(_runningCoroutine);
-        _overcharge.SetActive(false);
+        Overcharge.SetActive(false);
         // Reset mask color.
         foreach (tk2dSprite sprite in _healthSprites)
             sprite.color = Color.white;
@@ -90,6 +102,8 @@ public class MaskOverchargePower : Power
         {
             // We need to wait here, because otherwise this would freeze the game, if we have joni's and/or less then 2 hp.
             yield return null;
+            if (_overcharge == null)
+                Initialize();
             // Reset sprites
             _overchargeHealth = -1;
             if (!firstTime)

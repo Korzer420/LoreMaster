@@ -26,6 +26,12 @@ public class InfestedPower : Power
 
     #endregion
 
+    #region Properties
+
+    public GameObject WeaverPrefab => _weaverPrefab == null ? GameObject.Find("Knight/Charm Effects").LocateMyFSM("Weaverling Control").GetState("Spawn").GetFirstActionOfType<SpawnObjectFromGlobalPool>().gameObject.Value : _weaverPrefab;
+
+    #endregion
+
     #region Event Handler
 
     private void HealthManager_TakeDamage(On.HealthManager.orig_TakeDamage orig, HealthManager self, HitInstance hitInstance)
@@ -50,7 +56,7 @@ public class InfestedPower : Power
             {
                 if (_weavers.Count >= 25)
                     break;
-                GameObject weaver = GameObject.Instantiate(_weaverPrefab, new Vector3(HeroController.instance.transform.GetPositionX(), HeroController.instance.transform.GetPositionY()), Quaternion.identity);
+                GameObject weaver = GameObject.Instantiate(WeaverPrefab, new Vector3(HeroController.instance.transform.GetPositionX(), HeroController.instance.transform.GetPositionY()), Quaternion.identity);
                 _weavers.Add(weaver);
                 LoreMaster.Instance.Handler.StartCoroutine(WeaverLife(weaver));
             }
@@ -77,10 +83,6 @@ public class InfestedPower : Power
     #endregion
 
     #region Protected Methods
-
-    /// <inheritdoc/>
-    protected override void Initialize()
-       => _weaverPrefab = GameObject.Find("Knight/Charm Effects").LocateMyFSM("Weaverling Control").GetState("Spawn").GetFirstActionOfType<SpawnObjectFromGlobalPool>().gameObject.Value;
 
     /// <inheritdoc/>
     protected override void Enable()

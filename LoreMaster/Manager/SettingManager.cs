@@ -149,41 +149,57 @@ internal class SettingManager
     {
         _fromMenu = true;
         orig(self);
-        if (PlayerData.instance.GetBool("killedBindingSeal") && !PowerManager.ActivePowers.Any(x => x is SacredShellPower))
-            PowerManager.GetPowerByKey("EndOfPathOfPain", out Power power);
-        else
-            ModHooks.SetPlayerBoolHook += TrackPathOfPain;
+        try
+        {
+            if (PlayerData.instance.GetBool("killedBindingSeal") && !PowerManager.ActivePowers.Any(x => x is SacredShellPower))
+                PowerManager.GetPowerByKey("EndOfPathOfPain", out Power power);
+            else
+                ModHooks.SetPlayerBoolHook += TrackPathOfPain;
 
-        ModHooks.LanguageGetHook += LoreManager.Instance.GetText;
-        On.PlayMakerFSM.OnEnable += FsmEdits;
-        On.DeactivateIfPlayerdataTrue.OnEnable += ForceMyla;
-        On.DeactivateIfPlayerdataFalse.OnEnable += PreventMylaZombie;
-        SendEventByName.OnEnter += EndAllPowers;
-        if (ModHooks.GetMod("Randomizer 4") is Mod)
-        {
-            AbstractItem.BeforeGiveGlobal += GiveLoreItem;
-            RandomizerManager.CheckForRandoFile();
+            ModHooks.LanguageGetHook += LoreManager.Instance.GetText;
+            On.PlayMakerFSM.OnEnable += FsmEdits;
+            On.DeactivateIfPlayerdataTrue.OnEnable += ForceMyla;
+            On.DeactivateIfPlayerdataFalse.OnEnable += PreventMylaZombie;
+            SendEventByName.OnEnter += EndAllPowers;
+            if (ModHooks.GetMod("Randomizer 4") is Mod)
+            {
+                AbstractItem.BeforeGiveGlobal += GiveLoreItem;
+                RandomizerManager.CheckForRandoFile();
+            }
+            else
+            {
+                LoreManager.Instance.CanRead = true;
+                LoreManager.Instance.CanListen = true;
+            }
         }
-        else
+        catch (Exception exception)
         {
-            LoreManager.Instance.CanRead = true;
-            LoreManager.Instance.CanListen = true;
+            LoreMaster.Instance.LogError("An error occured in continue: " + exception.Message);
+            LoreMaster.Instance.LogError("An error occured in continue: " + exception.StackTrace);
         }
     }
 
     private IEnumerator ReturnToMenu(On.GameManager.orig_ReturnToMainMenu orig, GameManager self, GameManager.ReturnToMainMenuSaveModes saveMode, Action<bool> callback)
     {
-        PowerManager.DisableAllPowers();
-        LoreMaster.Instance.Handler.StopAllCoroutines();
-        CurrentArea = Area.None;
-        On.PlayMakerFSM.OnEnable -= FsmEdits;
-        On.DeactivateIfPlayerdataTrue.OnEnable -= ForceMyla;
-        On.DeactivateIfPlayerdataFalse.OnEnable -= PreventMylaZombie;
-        ModHooks.SetPlayerBoolHook -= TrackPathOfPain;
-        SendEventByName.OnEnter -= EndAllPowers;
-        ModHooks.LanguageGetHook -= LoreManager.Instance.GetText;
-        if (ModHooks.GetMod("Randomizer 4", true) is Mod mod)
-            AbstractItem.BeforeGiveGlobal -= GiveLoreItem;
+        try
+        {
+            PowerManager.DisableAllPowers();
+            LoreMaster.Instance.Handler.StopAllCoroutines();
+            CurrentArea = Area.None;
+            On.PlayMakerFSM.OnEnable -= FsmEdits;
+            On.DeactivateIfPlayerdataTrue.OnEnable -= ForceMyla;
+            On.DeactivateIfPlayerdataFalse.OnEnable -= PreventMylaZombie;
+            ModHooks.SetPlayerBoolHook -= TrackPathOfPain;
+            SendEventByName.OnEnter -= EndAllPowers;
+            ModHooks.LanguageGetHook -= LoreManager.Instance.GetText;
+            if (ModHooks.GetMod("Randomizer 4", true) is Mod mod)
+                AbstractItem.BeforeGiveGlobal -= GiveLoreItem;
+        }
+        catch (Exception exception)
+        {
+            LoreMaster.Instance.LogError("An error occured in returning: " + exception.Message);
+            LoreMaster.Instance.LogError("An error occured in returning: " + exception.StackTrace);
+        }
         return orig(self, saveMode, callback);
     }
 
@@ -501,6 +517,14 @@ internal class SettingManager
         string optionFile = Path.Combine(Path.GetDirectoryName(typeof(MindBlast).Assembly.Location), "options_" + GameManager.instance.profileID + ".txt");
         try
         {
+#if DEBUG
+            foreach (Power power in PowerManager.GetAllPowers())
+            {
+                if (!PowerManager.ActivePowers.Contains(power))
+                    PowerManager.ActivePowers.Add(power);
+                power.Tag = PowerTag.Global;
+            }
+#endif
             if (File.Exists(optionFile))
             {
                 using StreamReader reader = new(optionFile);
@@ -527,6 +551,7 @@ internal class SettingManager
                             break;
                         powerName += letter;
                     }
+
                     if (!PowerManager.GetPowerByName(powerName, out Power power, true, false) && !PowerManager.GetPowerByKey(powerName, out power, false))
                         continue;
                     // Skip the name
@@ -566,7 +591,7 @@ internal class SettingManager
         // Just to make sure the controller exist. A desperate attempt.
         if (_fromMenu && (HeroController.instance == null || !HeroController.instance.acceptingInput))
             yield return new WaitUntil(() => HeroController.instance != null && HeroController.instance.acceptingInput);
-
+        LoreMaster.Instance.Log("Is Hero null? " + (HeroController.instance == null));
         Area newArea = CurrentArea;
 
         // Figure out the current Map zone. (Dream world counts as the same area)

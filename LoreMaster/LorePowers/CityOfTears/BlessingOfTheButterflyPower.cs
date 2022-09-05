@@ -36,6 +36,20 @@ internal class BlessingOfTheButterflyPower : Power
 
     #endregion
 
+    #region Properties
+
+    public GameObject Wings
+    {
+        get
+        {
+            if (_wings == null)
+                Initialize();
+            return _wings; 
+        }
+    }
+
+    #endregion
+
     #region Event handler
 
     private void HeroController_DoDoubleJump(On.HeroController.orig_DoDoubleJump orig, HeroController self)
@@ -92,7 +106,7 @@ internal class BlessingOfTheButterflyPower : Power
     protected override void Initialize()
     {
         _wings = HeroController.instance.transform.Find("Effects/Double J Wings").gameObject;
-        _leftHitbox = GameObject.Instantiate(HeroController.instance.transform.Find("Charm Effects/Thorn Hit/Hit L").gameObject, _wings.transform);
+        _leftHitbox = GameObject.Instantiate(HeroController.instance.transform.Find("Charm Effects/Thorn Hit/Hit L").gameObject, Wings.transform);
         _leftHitbox.transform.localPosition = new(-1.0555f, -0.6111f, 0f);
         _leftHitbox.transform.localScale = new(3.5f, 2.3f);
         Component.Destroy(_leftHitbox.GetComponent<PolygonCollider2D>());
@@ -111,7 +125,7 @@ internal class BlessingOfTheButterflyPower : Power
                 fsm.SendEvent("CANCEL");
         }), 2);
 
-        _rightHitbox = GameObject.Instantiate(HeroController.instance.transform.Find("Charm Effects/Thorn Hit/Hit R").gameObject, _wings.transform);
+        _rightHitbox = GameObject.Instantiate(HeroController.instance.transform.Find("Charm Effects/Thorn Hit/Hit R").gameObject, Wings.transform);
         _rightHitbox.transform.localPosition = new(1.02f, -0.6111f);
         _rightHitbox.transform.localScale = new(3.5f, 2.3f);
         Component.Destroy(_rightHitbox.GetComponent<PolygonCollider2D>());
@@ -135,8 +149,8 @@ internal class BlessingOfTheButterflyPower : Power
 
     protected override void Enable()
     {
-        _wings.GetComponent<tk2dSprite>().color = Color.magenta;
-        _wings.transform.localScale = new(1.8f, 1.8f, 1f);
+        Wings.GetComponent<tk2dSprite>().color = Color.magenta;
+        Wings.transform.localScale = new(1.8f, 1.8f, 1f);
         _leftHitbox.gameObject.SetActive(true);
         _rightHitbox.gameObject.SetActive(true);
         On.HeroController.TakeDamage += HeroController_TakeDamage;
@@ -146,8 +160,8 @@ internal class BlessingOfTheButterflyPower : Power
 
     protected override void Disable()
     {
-        _wings.GetComponent<tk2dSprite>().color = Color.white;
-        _wings.transform.localScale = new(1f, 1f, 1f);
+        Wings.GetComponent<tk2dSprite>().color = Color.white;
+        Wings.transform.localScale = new(1f, 1f, 1f);
         _leftHitbox.gameObject.SetActive(false);
         _rightHitbox.gameObject.SetActive(false);
         On.HeroController.TakeDamage -= HeroController_TakeDamage;

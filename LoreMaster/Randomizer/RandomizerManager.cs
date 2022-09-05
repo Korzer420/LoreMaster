@@ -14,6 +14,7 @@ using System.Linq;
 using LoreMaster.LorePowers.CityOfTears;
 using LoreMaster.LorePowers.RestingGrounds;
 using LoreMaster.LorePowers;
+using ItemChanger.Tags;
 
 namespace LoreMaster.Randomizer;
 
@@ -213,7 +214,7 @@ public static class RandomizerManager
             Finder.DefineCustomItem(new AbilityItem()
             {
                 name = "Reading",
-                Item = Enums.CustomItemType.Reading,
+                Item = CustomItemType.Reading,
                 UIDef = new BigUIDef()
                 {
                     name = new BoxedString("Reading"),
@@ -225,7 +226,19 @@ public static class RandomizerManager
                     bigSprite = (Finder.GetItem("World_Sense").UIDef.Clone() as BigUIDef).bigSprite
                 },
                 boolName = "Reading", // The bool logic gets executed seperately. This is just for avoiding Serialization errors.
-                moduleName = "Unused" // Same as boolName.
+                moduleName = "Unused", // Same as boolName.
+                tags = new() 
+                {
+                    new InteropTag()
+                    {
+                        Message = "RandoSupplementalMetadata",
+                        Properties = new()
+                        {
+                            {"ModSource", "LoreMaster" },
+                            {"PoolGroup", "Skill" }
+                        }
+                    }
+                }
             });
             Finder.DefineCustomLocation(new AbilityLocation()
             {
@@ -243,7 +256,7 @@ public static class RandomizerManager
             Finder.DefineCustomItem(new AbilityItem()
             {
                 name = "Listening",
-                Item = Enums.CustomItemType.Listening,
+                Item = CustomItemType.Listening,
                 UIDef = new BigUIDef()
                 {
                     name = new BoxedString("Listening"),
@@ -256,7 +269,18 @@ public static class RandomizerManager
                 },
                 boolName = "Listening", // The bool logic gets executed seperately. This is just for avoiding Serialization errors.
                 moduleName = "Unused", // Same as boolName.
-
+                tags = new()
+                {
+                    new InteropTag()
+                    {
+                        Message = "RandoSupplementalMetadata",
+                        Properties = new()
+                        {
+                            {"ModSource", "LoreMaster" },
+                            {"PoolGroup", "Skill" }
+                        }
+                    }
+                }
             });
             Finder.DefineCustomLocation(new AbilityLocation()
             {

@@ -3,6 +3,7 @@ using MenuChanger;
 using MenuChanger.Extensions;
 using MenuChanger.MenuElements;
 using MenuChanger.MenuPanels;
+using Modding;
 using RandomizerMod.Menu;
 using System;
 using System.Collections.Generic;
@@ -94,6 +95,9 @@ public class RandomizerMenu
                 _menuElementFactory.Elements[6].Hide();
             _menuElementFactory.Elements[6].SelfChanged += ChangeLoreAmount;
             _optionPanel = new(_mainPage, new(0, 300), 80f, true, _menuElementFactory.Elements);
+
+            if (ModHooks.GetMod("ConnectionSettingsCode", true) is Mod mod)
+                ConnectionSettingManager.CreateSettingsCode(previousPage, _menuElementFactory.Elements);
         }
         catch (Exception exception)
         {

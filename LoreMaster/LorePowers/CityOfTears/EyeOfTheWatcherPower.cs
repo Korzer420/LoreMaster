@@ -46,6 +46,22 @@ public class EyeOfTheWatcherPower : Power
     /// </summary>
     public bool EyeActive { get; set; } = true;
 
+    public GameObject Eye
+    {
+        get 
+        {
+            if(_eye == null)
+            {
+                _eye = new("Eye of Lurien");
+                _eye.transform.SetParent(HeroController.instance?.transform);
+                _eye.AddComponent<SpriteRenderer>().sprite = _eyeSprite;
+                _eye.transform.localPosition = new(0, 2f);
+                _eye.transform.localScale = new(.5f, .5f);
+            }
+            return _eye;
+        }
+    }
+
     #endregion
 
     #region Event Handler
@@ -99,7 +115,7 @@ public class EyeOfTheWatcherPower : Power
         {
             if ((Active && EyeActive) || PlayerData.instance.GetBool(nameof(PlayerData.instance.hasLantern)))
             {
-                _eye.GetComponent<SpriteRenderer>().color = new(1f, 1f, 0f);
+                Eye.GetComponent<SpriteRenderer>().color = new(1f, 1f, 0f);
                 fsm.SendEvent("LANTERN");
             }
         })
@@ -110,7 +126,7 @@ public class EyeOfTheWatcherPower : Power
         {
             if (Active && EyeActive)
             {
-                _eye.GetComponent<SpriteRenderer>().color = new(1f, 1f, 0f);
+                Eye.GetComponent<SpriteRenderer>().color = new(1f, 1f, 0f);
                 fsm.SendEvent("LANTERN");
             }
             else if (fsm.FsmVariables.FindFsmInt("Darkness Level").Value == 0)
@@ -124,17 +140,11 @@ public class EyeOfTheWatcherPower : Power
         {
             if ((Active && EyeActive) || PlayerData.instance.GetBool(nameof(PlayerData.instance.hasLantern)))
             {
-                _eye.GetComponent<SpriteRenderer>().color = new(1f, 1f, 0f);
+                Eye.GetComponent<SpriteRenderer>().color = new(1f, 1f, 0f);
                 fsm.SendEvent("LANTERN");
             }
         })
         { Name = "Force Lantern" }, 3);
-        _eye = new("Eye of Lurien");
-        _eye.transform.SetParent(HeroController.instance.transform);
-        _eye.AddComponent<SpriteRenderer>().sprite = _eyeSprite;
-        _eye.transform.localPosition = new(0, 2f);
-        _eye.transform.localScale = new(.5f, .5f);
-        GameObject.DontDestroyOnLoad(_eye);
     }
 
     /// <inheritdoc/>
@@ -143,8 +153,7 @@ public class EyeOfTheWatcherPower : Power
         On.PlayMakerFSM.OnEnable += RefreshEyeOfTheWatcher;
         On.HeroController.Die += HeroController_Die;
         _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(Blink());
-        if (_eye != null)
-            _eye?.SetActive(EyeActive);
+        Eye?.SetActive(EyeActive);
     }
 
     /// <inheritdoc/>
@@ -152,7 +161,7 @@ public class EyeOfTheWatcherPower : Power
     {
         On.PlayMakerFSM.OnEnable -= RefreshEyeOfTheWatcher;
         On.HeroController.Die -= HeroController_Die;
-        _eye?.SetActive(false);
+        Eye.SetActive(false);
     }
 
     #endregion
@@ -161,23 +170,23 @@ public class EyeOfTheWatcherPower : Power
 
     private IEnumerator Blink()
     {
-        float currentScale = _eye.transform.localScale.x;
+        float currentScale = Eye.transform.localScale.x;
         bool upscale = true;
         while (true)
         {
             yield return null;
             if (!EyeActive)
             {
-                _eye.SetActive(false);
+                Eye.SetActive(false);
                 yield return new WaitUntil(() => EyeActive);
-                _eye.SetActive(true);
+                Eye.SetActive(true);
             }
             currentScale += .3f * Time.deltaTime * (upscale ? 1f : -1f);
             if (currentScale >= 1.2f)
                 upscale = false;
             else if (currentScale <= .5f)
                 upscale = true;
-            _eye.transform.localScale = new(currentScale, currentScale);
+            Eye.transform.localScale = new(currentScale, currentScale);
         }
     }
 

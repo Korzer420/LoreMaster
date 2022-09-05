@@ -42,6 +42,16 @@ public class MarissasAudiencePower : Power
         semiPersistent = false
     })?.activated ?? false;
 
+    public GameObject[] Companions
+    {
+        get 
+        {
+            if (_companions.Any(x => x == null))
+                Initialize();
+            return _companions;
+        }
+    }
+
     #endregion
 
     #region Protected Methods
@@ -109,7 +119,7 @@ public class MarissasAudiencePower : Power
                 {
                     for (int companionCopy = 0; companionCopy < LoreMaster.Instance.Generator.Next(_minCompanionAmount[companionIndex], _maxCompanionAmounts[companionIndex]); companionCopy++)
                     {
-                        GameObject newCompanion = GameObject.Instantiate(_companions[companionIndex]
+                        GameObject newCompanion = GameObject.Instantiate(Companions[companionIndex]
                             , new Vector3(HeroController.instance.transform.GetPositionX()
                             , HeroController.instance.transform.GetPositionY()), Quaternion.identity);
                         GameObject.DontDestroyOnLoad(newCompanion);

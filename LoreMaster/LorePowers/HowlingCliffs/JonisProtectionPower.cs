@@ -37,7 +37,7 @@ public class JonisProtectionPower : Power
     /// <summary>
     /// Gets the indicator if the bonus health can be taken.
     /// </summary>
-    public bool ShouldEffectFreeze => _immune || _dialogueFSM.Any(x => x.ActiveStateName.Equals("Box Up")) || !HeroController.instance.CanInput();
+    public bool ShouldEffectFreeze => _immune || DialogueFsm.Any(x => x.ActiveStateName.Equals("Box Up")) || !HeroController.instance.CanInput();
 
     /// <inheritdoc/>
     public override Action SceneAction => () =>
@@ -47,6 +47,16 @@ public class JonisProtectionPower : Power
             LoreMaster.Instance.Handler.StopCoroutine(_runningCoroutine);
         _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(FadingLifeblood());
     };
+
+    public PlayMakerFSM[] DialogueFsm 
+    {
+        get 
+        {
+            if (_dialogueFSM == null)
+                Initialize();
+            return _dialogueFSM;
+        }
+    }
 
     #endregion
 

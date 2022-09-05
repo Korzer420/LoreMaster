@@ -1,4 +1,5 @@
 using LoreMaster.Enums;
+using LoreMaster.Manager;
 using System.Collections;
 using UnityEngine;
 
@@ -8,7 +9,6 @@ public class CamouflagePower : Power
 {
     #region Members
 
-    private tk2dSprite _heroSprite;
     private bool _isCamouflaged;
 
     #endregion
@@ -20,9 +20,6 @@ public class CamouflagePower : Power
     #endregion
 
     #region Protected Methods
-
-    /// <inheritdoc/>
-    protected override void Initialize() => _heroSprite = GameObject.Find("Knight").GetComponent<tk2dSprite>();
 
     /// <inheritdoc/>
     protected override void Enable()
@@ -47,7 +44,7 @@ public class CamouflagePower : Power
             LoreMaster.Instance.Handler.StopCoroutine(_runningCoroutine);
         _isCamouflaged = false;
         PlayerData.instance.SetBool(nameof(PlayerData.instance.isInvincible), false);
-        _heroSprite.color = Color.white;
+        HeroManager.Sprite.color = Color.white;
         On.HeroController.CanTakeDamage -= HeroController_CanTakeDamage;
     }
 
@@ -74,12 +71,12 @@ public class CamouflagePower : Power
             }
             if (passedTime >= 5f)
             {
-                _heroSprite.color = Color.green;
+                HeroManager.Sprite.color = Color.green;
                 _isCamouflaged = true;
             }
             else
             {
-                _heroSprite.color = Color.white;
+                HeroManager.Sprite.color = Color.white;
                 _isCamouflaged = false;
             }
         }
