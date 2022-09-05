@@ -24,6 +24,11 @@ public class LoreMasterLocalSaveData
     public int GloryCost { get; set; }
 
     /// <summary>
+    /// Gets or sets the obtained treasure charts.
+    /// </summary>
+    public bool[] TreasureCharts { get; set; } = new bool[14];
+
+    /// <summary>
     /// Gets or sets the value which indicates, if the player can read lore tablets. (Rando only)
     /// </summary>
     public bool HasReadAbility { get; set; }

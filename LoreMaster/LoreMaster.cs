@@ -1,3 +1,4 @@
+using LoreMaster.LorePowers.CityOfTears;
 using LoreMaster.LorePowers.FungalWastes;
 using LoreMaster.Manager;
 using LoreMaster.Randomizer;
@@ -23,6 +24,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
             InitializeManager();
         LorePage.PassPowers(PowerManager.GetAllPowers().ToList());
         InventoryHelper.AddInventoryPage(InventoryPageType.Empty, "Lore", "LoreMaster", "LoreMaster", "metElderbug", LorePage.GeneratePage);
+        InventoryHelper.AddInventoryPage(InventoryPageType.Empty, "Treasures", "TreasureCharts", "TreasureCharts", "hasTreasureCharts", TreasureHunterPower.BuildInventory);
     }
 
     #endregion
@@ -84,7 +86,8 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         ("Ruins1_01", "Ceiling Dropper"),
         ("Ruins1_23", "Glow Response Mage Computer"), // Soul sanctum lore tablet.
         ("Ruins1_23", "Inspect Region"), // Inspect region for soul sanctum tablet.
-        ("Ruins1_23", "Mage")
+        ("Ruins1_23", "Mage"),
+        ("Deepnest_East_16", "Quake Floor")
     };
 
     /// <summary>
@@ -96,9 +99,6 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         GameObject loreManager = new("LoreManager");
         GameObject.DontDestroyOnLoad(loreManager);
         Handler = loreManager.AddComponent<CoroutineHandler>();
-        if (Instance != null)
-            return;
-        Instance = this;
 
         int grimmkinIndex = 1;
         try
@@ -127,6 +127,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
 
             try
             {
+                ItemManager.CreateCustomItems();
                 if (ModHooks.GetMod("Randomizer 4") is Mod mod)
                 {
                     Log("Detected Randomizer. Adding compability.");
@@ -198,6 +199,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         LoreManager loreManager = new();
         SettingManager settingManager = new();
         settingManager.Initialize();
+        Instance = this;
     }
 
     /// <summary>
@@ -257,6 +259,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         {
             PowerManager.LoadPowers(saveData);
             GloryOfTheWealthPower.GloryCost = saveData.GloryCost;
+            TreasureHunterPower.HasCharts = saveData.TreasureCharts;
             LoreManager.Instance.CanRead = ModHooks.GetMod("Randomizer 4") is not Mod mod || saveData.HasReadAbility;
             LoreManager.Instance.CanListen = ModHooks.GetMod("Randomizer 4") is not Mod mod2 || saveData.HasListenAbility;
         }
@@ -274,6 +277,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         LoreMasterLocalSaveData saveData = new();
         PowerManager.SavePowers(ref saveData);
         saveData.GloryCost = GloryOfTheWealthPower.GloryCost;
+        saveData.TreasureCharts = TreasureHunterPower.HasCharts;
         saveData.HasReadAbility = LoreManager.Instance.CanRead;
         saveData.HasListenAbility = LoreManager.Instance.CanListen;
         return saveData;

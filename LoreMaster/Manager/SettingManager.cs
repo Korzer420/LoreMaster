@@ -101,20 +101,6 @@ internal class SettingManager
     {
         try
         {
-            // Add items for the black egg temple teleporter.
-            ItemChangerMod.CreateSettingsProfile(false);
-            List<MutablePlacement> teleportItems = new();
-            MutablePlacement teleportPlacement = new CoordinateLocation() { x = 35.0f, y = 5.4f, elevation = 0, sceneName = "Ruins1_27", name = "City_Teleporter" }.Wrap() as MutablePlacement;
-            teleportPlacement.Cost = new Paypal { ToTemple = true };
-            teleportPlacement.Add(new TouristMagnetItem("City_Teleporter"));
-            teleportItems.Add(teleportPlacement);
-
-            MutablePlacement secondPlacement = new CoordinateLocation() { x = 57f, y = 5f, elevation = 0, sceneName = "Room_temple", name = "Temple_Teleporter" }.Wrap() as MutablePlacement;
-            secondPlacement.Cost = new Paypal { ToTemple = false };
-            secondPlacement.Add(new TouristMagnetItem("Temple_Teleporter"));
-            teleportItems.Add(secondPlacement);
-            ItemChangerMod.AddPlacements(teleportItems);
-
 
             GloryOfTheWealthPower.GloryCost = 0;
             On.PlayMakerFSM.OnEnable += FsmEdits;

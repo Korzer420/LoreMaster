@@ -51,6 +51,8 @@ internal class LoreManager
     {
         if (key.Equals("LoreMaster"))
             return "Lore Powers";
+        else if (key.Equals("TreasureCharts"))
+            return "Treasure Charts";
         key = ModifyKey(key);
         if (key.Equals("INV_NAME_SUPERDASH"))
         {
