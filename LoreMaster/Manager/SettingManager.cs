@@ -337,9 +337,33 @@ internal class SettingManager
                 self.GetState("Convo Choice").ClearTransitions();
                 self.GetState("Convo Choice").Actions = new HutongGames.PlayMaker.FsmStateAction[]
                 {
-                    new Lambda(() => self.SendEvent("FINISHED"))
+                    new Lambda(() =>
+                    {
+                        if(!PlayerData.instance.GetBool(nameof(PlayerData.instance.elderbugGaveFlower)) && PlayerData.instance.GetBool(nameof(PlayerData.instance.hasXunFlower)) && !PlayerData.instance.GetBool(nameof(PlayerData.instance.xunFlowerBroken)))
+                            self.SendEvent(!PlayerData.instance.GetBool(nameof(PlayerData.instance.elderbugRequestedFlower)) ? "FLOWER" : "FLOWER2");
+                        else
+                            self.SendEvent("FINISHED");
+                    })
                 };
                 self.GetState("Convo Choice").AddTransition("FINISHED", "Meeting Choice");
+                self.GetState("Convo Choice").AddTransition("FLOWER", "Flower Offer");
+                self.GetState("Convo Choice").AddTransition("FLOWER2", "Flower Reoffer");
+                self.AddState(new HutongGames.PlayMaker.FsmState(self.Fsm)
+                {
+                    Name = "Good Deed",
+                    Actions = new HutongGames.PlayMaker.FsmStateAction[]
+                    {
+                        new Lambda(() => {
+                            HeroController.instance.AddGeo(1200);
+                            PlayerData.instance.SetInt(nameof(PlayerData.instance.dreamOrbs), PlayerData.instance.GetInt(nameof(PlayerData.instance.dreamOrbs)) + 300);
+                            PlayMakerFSM.BroadcastEvent("DREAM ORB COLLECT");
+                            self.SendEvent("FINISHED");
+                        })
+                    }
+                });
+                self.GetState("Flower Accept").ClearTransitions();
+                self.GetState("Flower Accept").AddTransition("CONVO_FINISH", "Good Deed");
+                self.GetState("Good Deed").AddTransition("FINISHED", "Talk Finish");
             }
         }
         // Prevent killing ghosts with abilities.
@@ -348,14 +372,14 @@ internal class SettingManager
             string ghostName = "";
             try
             {
-                ghostName = self.gameObject.LocateMyFSM("Conversation Control").FsmVariables.FindFsmString("Ghost Name").Value.ToUpper();
+                ghostName = self.gameObject?.LocateMyFSM("Conversation Control")?.FsmVariables?.FindFsmString("Ghost Name")?.Value?.ToUpper();
                 if (string.Equals(ghostName, "POGGY") || string.Equals(ghostName, "HIVEQUEEN")
                     || string.Equals(ghostName, "JONI") || string.Equals(ghostName, "GRAVEDIGGER")
                     || string.Equals(ghostName, "GRASSHOPPER") || string.Equals(ghostName, "MARISSA"))
                 {
                     self.GetState("Revek?").ReplaceAction(new Lambda(() =>
                     {
-                        // If rando is used, to prevent locking out of progress, ghost with abilities will became immune entirely.
+                        // Prevent the ghosts death, if it power hasn't been obtained.
                         if (!PowerManager.HasObtainedPower(ghostName, false))
                             self.SendEvent("IMMUNE");
                         else
