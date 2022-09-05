@@ -23,6 +23,12 @@ public class DeliciousMealPower : Power
 
     #endregion
 
+    #region Properties
+
+    public GameObject EggObject => _eggObject == null ? _eggObject = GameObject.Find("_GameCameras").transform.Find("HudCamera/Inventory/Inv/Equipment/Rancid Egg").gameObject : _eggObject;
+
+    #endregion
+
     #region Event Handler
 
     private string CheckForEgg(string key, string sheetTitle, string orig)
@@ -41,12 +47,6 @@ public class DeliciousMealPower : Power
     #endregion
 
     #region Protected Methods
-
-    /// <inheritdoc/>
-    protected override void Initialize()
-    {
-        _eggObject = GameObject.Find("_GameCameras").transform.Find("HudCamera/Inventory/Inv/Equipment/Rancid Egg").gameObject;
-    }
 
     /// <inheritdoc/>
     protected override void Enable()
@@ -72,7 +72,7 @@ public class DeliciousMealPower : Power
     private void EatEgg()
     {
         // The grand parent is the inventory
-        if (_saturation || !_selectedEgg || !_eggObject.activeSelf || !_eggObject.transform.parent.parent.gameObject.activeSelf)
+        if (_saturation || !_selectedEgg || !EggObject.activeSelf || !EggObject.transform.parent.parent.gameObject.activeSelf)
         {
             _selectedEgg = false;
             return;
@@ -80,7 +80,7 @@ public class DeliciousMealPower : Power
         if (PlayerData.instance.GetInt(nameof(PlayerData.instance.rancidEggs)) == 0)
             return;
         PlayerData.instance.SetInt(nameof(PlayerData.instance.rancidEggs), PlayerData.instance.GetInt(nameof(PlayerData.instance.rancidEggs)) - 1);
-        _eggObject.GetComponentInChildren<TextMeshPro>().text = PlayerData.instance.GetInt(nameof(PlayerData.instance.rancidEggs)).ToString();
+        EggObject.GetComponentInChildren<TextMeshPro>().text = PlayerData.instance.GetInt(nameof(PlayerData.instance.rancidEggs)).ToString();
         _saturation = true;
         _selectedEgg = false;
         LoreMaster.Instance.Handler.StartCoroutine(Saturation());

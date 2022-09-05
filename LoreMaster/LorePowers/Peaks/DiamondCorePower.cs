@@ -43,6 +43,8 @@ public class DiamondCorePower : Power
 
     public bool HasDiamondDash => PowerManager.HasObtainedPower("MYLA");
 
+    public SpriteRenderer CrystalHeartSprite => _crystalHeartSprite == null ? _crystalHeartSprite = GameObject.Find("_GameCameras").transform.Find("HudCamera/Inventory/Inv/Equipment/Super Dash").GetComponent<SpriteRenderer>() : _crystalHeartSprite;
+
     public override Action SceneAction => () =>
     {
         _enemies = GameObject.FindObjectsOfType<HealthManager>();
@@ -77,8 +79,7 @@ public class DiamondCorePower : Power
     {
         try
         {
-            _crystalHeartSprite = GameObject.Find("_GameCameras").transform.Find("HudCamera/Inventory/Inv/Equipment/Super Dash").GetComponent<SpriteRenderer>();
-            _originalSprite = _crystalHeartSprite.sprite;
+            _originalSprite = CrystalHeartSprite.sprite;
             _corelessSprite = SpriteHelper.CreateSprite("DiamondHeart_Coreless");
             _shelllessSprite = SpriteHelper.CreateSprite("DiamondHeart_Shellless");
             _diamondSprite = SpriteHelper.CreateSprite("DiamondHeart");
@@ -120,8 +121,7 @@ public class DiamondCorePower : Power
     protected override void Enable()
     {
         _enemies = GameObject.FindObjectsOfType<HealthManager>();
-        if (_crystalHeartSprite != null)
-            _crystalHeartSprite.sprite = HasDiamondDash ? _diamondSprite : _shelllessSprite;
+        CrystalHeartSprite.sprite = HasDiamondDash ? _diamondSprite : _shelllessSprite;
         if (HasDiamondDash)
             HeroController.instance.superDash.FsmVariables.FindFsmFloat("Charge Time").Value = .2f;
         On.HeroController.CanTakeDamage += HeroController_CanTakeDamage;
@@ -132,11 +132,11 @@ public class DiamondCorePower : Power
     {
         if (HasDiamondDash)
         {
-            _crystalHeartSprite.sprite = _corelessSprite;
+            CrystalHeartSprite.sprite = _corelessSprite;
             HeroController.instance.superDash.FsmVariables.FindFsmFloat("Charge Time").Value = .5f;
         }
         else
-            _crystalHeartSprite.sprite = _originalSprite;
+            CrystalHeartSprite.sprite = _originalSprite;
         _enemies = null;
         On.HeroController.CanTakeDamage -= HeroController_CanTakeDamage;
         HeroController.instance.superDash.FsmVariables.FindFsmFloat("Current SD Speed").Value = 30f;

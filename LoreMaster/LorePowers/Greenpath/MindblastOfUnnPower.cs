@@ -1,18 +1,14 @@
 using LoreMaster.Enums;
+using LoreMaster.Manager;
 using LoreMaster.UnityComponents;
 using Modding;
+using System.Linq;
 using UnityEngine;
 
 namespace LoreMaster.LorePowers.Greenpath;
 
 public class MindblastOfUnnPower : Power
 {
-    #region Members
-
-    private tk2dSprite[] _dreamNailSprites;
-
-    #endregion
-
     #region Constructors
 
     public MindblastOfUnnPower() : base("Mindblast of Unn", Area.Greenpath) { }
@@ -53,7 +49,7 @@ public class MindblastOfUnnPower : Power
         };
 
         // Color all dream nail components accordingly (just for fun)
-        foreach (tk2dSprite dreamNailComponent in _dreamNailSprites)
+        foreach (tk2dSprite dreamNailComponent in HeroManager.DreamNailSprites)
             dreamNailComponent.color = dreamNailColor;
     }
 
@@ -90,9 +86,6 @@ public class MindblastOfUnnPower : Power
     #region Protected Methods
 
     /// <inheritdoc/>
-    protected override void Initialize() => _dreamNailSprites = GameObject.Find("Knight/Dream Effects").GetComponentsInChildren<tk2dSprite>(true);
-
-    /// <inheritdoc/>
     protected override void Enable()
     {
         On.EnemyDreamnailReaction.RecieveDreamImpact += Apply_Mindblast;
@@ -106,8 +99,7 @@ public class MindblastOfUnnPower : Power
         On.EnemyDreamnailReaction.RecieveDreamImpact -= Apply_Mindblast;
         On.HealthManager.TakeDamage -= AddMindblastDamage;
         ModHooks.CharmUpdateHook -= UpdateDreamNailColor;
-
-        foreach (tk2dSprite dreamNailComponent in _dreamNailSprites)
+        foreach (tk2dSprite dreamNailComponent in HeroManager.DreamNailSprites)
             dreamNailComponent.color = Color.white;
     }
 

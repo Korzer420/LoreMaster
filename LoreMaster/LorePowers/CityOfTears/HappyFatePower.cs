@@ -21,6 +21,20 @@ public class HappyFatePower : Power
 
     #endregion
 
+    #region Properties
+
+    public Transform[] NailObjects 
+    {
+        get 
+        {
+            if (_nailObjects.Any(x => x == null))
+                Initialize();
+            return _nailObjects;
+        }
+    }
+
+    #endregion
+
     #region Event handler
 
     /// <summary>
@@ -114,11 +128,9 @@ public class HappyFatePower : Power
 
     private void HappynessChange()
     {
-        if (_nailObjects.Any(x => x == null))
-            Initialize();
         if (_isHappy)
         {
-            foreach (Transform child in _nailObjects)
+            foreach (Transform child in NailObjects)
             {
                 Vector3 currentScale = child.GetComponent<NailSlash>().scale;
                 child.GetComponent<NailSlash>().scale = new Vector3(currentScale.x + .2f, currentScale.y + .2f, currentScale.z + .2f);
@@ -134,7 +146,7 @@ public class HappyFatePower : Power
         }
         else
         {
-            foreach (Transform child in _nailObjects)
+            foreach (Transform child in NailObjects)
             {
                 Vector3 currentScale = child.GetComponent<NailSlash>().scale;
                 child.GetComponent<NailSlash>().scale = new Vector3(currentScale.x - .2f, currentScale.y - .2f, currentScale.z - .2f);

@@ -4,7 +4,7 @@
 		<TargetFramework>net472</TargetFramework>
 		<RootNamespace>LoreMaster</RootNamespace>
 		<AssemblyTitle>LoreMaster</AssemblyTitle>
-		<AssemblyVersion>1.3.6.0</AssemblyVersion>
+		<AssemblyVersion>1.3.7.0</AssemblyVersion>
 		<Deterministic>true</Deterministic>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<LangVersion>latest</LangVersion>
@@ -50,12 +50,15 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\Program Files\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
+    <Reference Include="ConnectionSettingsCode">
+      <HintPath>..\..\..\..\Program Files\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\Mods\ConnectionSettingsCode\ConnectionSettingsCode.dll</HintPath>
+    </Reference>
     <Reference Include="ItemChanger, Version=2.0.6.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Mod Dll\ItemChanger.dll</HintPath>
     </Reference>
     <Reference Include="MenuChanger">
-      <HintPath>..\..\Mod Dll\MenuChanger.dll</HintPath>
+      <HintPath>..\..\..\..\Program Files\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\Mods\MenuChanger\MenuChanger.dll</HintPath>
     </Reference>
     <Reference Include="MMHOOK_Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -86,14 +89,13 @@
       <HintPath>..\..\..\..\Program Files\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\PlayMaker.dll</HintPath>
     </Reference>
     <Reference Include="RandomizerCore">
-      <HintPath>..\..\Mod Dll\RandomizerCore.dll</HintPath>
+      <HintPath>..\..\..\..\Program Files\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\Mods\RandomizerCore\RandomizerCore.dll</HintPath>
     </Reference>
     <Reference Include="RandomizerMod">
-      <HintPath>..\..\Mod Dll\RandomizerMod.dll</HintPath>
+      <HintPath>..\..\..\..\Program Files\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\Mods\Randomizer 4\RandomizerMod.dll</HintPath>
     </Reference>
-    <Reference Include="SFCore, Version=1.5.3.2, Culture=neutral, PublicKeyToken=723094b6adc0e8b9, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Mod Dll\SFCore.dll</HintPath>
+    <Reference Include="SFCore">
+      <HintPath>..\..\..\..\Program Files\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\Mods\SFCore\SFCore.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">

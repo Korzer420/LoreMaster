@@ -23,25 +23,28 @@ internal class YouLikeJazzPower : Power
 
     #endregion
 
-    #region Protected Methods
+    #region Properties
 
-    /// <inheritdoc/>
-    protected override void Initialize() => _hatchlingVariables = GameObject.Find("Charm Effects").LocateMyFSM("Hatchling Spawn").FsmVariables;
+    public FsmVariables HatchlingVariables => _hatchlingVariables == null ? _hatchlingVariables = GameObject.Find("Charm Effects").LocateMyFSM("Hatchling Spawn").FsmVariables : _hatchlingVariables;
+
+    #endregion
+
+    #region Protected Methods
 
     /// <inheritdoc/>
     protected override void Enable()
     {
-        _hatchlingVariables.FindFsmInt("Hatchling Max").Value = 10;
-        _hatchlingVariables.FindFsmInt("Soul Cost").Value = 2;
-        _hatchlingVariables.FindFsmFloat("Hatch Time").Value = 2f;
+        HatchlingVariables.FindFsmInt("Hatchling Max").Value = 10;
+        HatchlingVariables.FindFsmInt("Soul Cost").Value = 2;
+        HatchlingVariables.FindFsmFloat("Hatch Time").Value = 2f;
     }
 
     /// <inheritdoc/>
     protected override void Disable()
     {
-        _hatchlingVariables.FindFsmInt("Hatchling Max").Value = 4;
-        _hatchlingVariables.FindFsmInt("Soul Cost").Value = 8;
-        _hatchlingVariables.FindFsmFloat("Hatch Time").Value = 4f;
+        HatchlingVariables.FindFsmInt("Hatchling Max").Value = 4;
+        HatchlingVariables.FindFsmInt("Soul Cost").Value = 8;
+        HatchlingVariables.FindFsmFloat("Hatch Time").Value = 4f;
     }
 
     #endregion

@@ -7,7 +7,7 @@ public class DiminishingCursePower : Power
 {
     #region Members
 
-    private int _takenHits = 15;
+    private int _takenHits = 0;
 
     #endregion
 
