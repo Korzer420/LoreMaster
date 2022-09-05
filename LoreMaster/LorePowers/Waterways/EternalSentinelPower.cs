@@ -38,22 +38,15 @@ public class EternalSentinelPower : Power
         _baldurSprite.color = Color.white;
     }
 
-    private void PlayMakerFSM_OnEnable(On.PlayMakerFSM.orig_OnEnable orig, PlayMakerFSM self)
+    private void OnSetPositionAction(On.HutongGames.PlayMaker.Actions.SetPosition.orig_OnEnter orig, SetPosition self)
     {
-        if (self.gameObject.name.Contains("Knight Dung Trail(Clone)") && string.Equals(self.FsmName,"Control"))
+        if (string.Equals(self.Fsm.FsmComponent.gameObject.name, "Knight Dung Trail(Clone)") && string.Equals(self.Fsm.FsmComponent.FsmName, "Control") && string.Equals(self.Fsm.FsmComponent.ActiveStateName, "Init"))
         {
-            self.GetState("Init").ReplaceAction(new Lambda(() =>
-            {
-                self.transform.localPosition = HeroController.instance.transform.position;
-                if (Active)
-                    self.transform.localScale = new(2.5f, 2.5f);
-                else
-                    self.transform.localScale = new(1f, 1f);
-                self.GetComponent<DamageEffectTicker>().SetDamageInterval(Active ? .3f : .15f);
-            })
-            { Name = "Extend Cloud" });
+            self.Fsm.FsmComponent.gameObject.transform.localPosition = HeroController.instance.transform.position;
+            self.Fsm.FsmComponent.gameObject.transform.localScale = Active ? new(2.5f, 2.5f) : new(1f, 1f);
+            self.Fsm.FsmComponent.gameObject.GetComponent<DamageEffectTicker>().SetDamageInterval(Active ? 0.15f : 0.3f);
         }
-        
+
         orig(self);
     }
 
@@ -82,6 +75,8 @@ public class EternalSentinelPower : Power
         }));
 
         _baldurSprite = baldurShield.GetComponentInChildren<tk2dSprite>();
+
+        On.HutongGames.PlayMaker.Actions.SetPosition.OnEnter += OnSetPositionAction;
     }
 
     /// <inheritdoc/>
@@ -90,7 +85,6 @@ public class EternalSentinelPower : Power
         if (PlayerData.instance.GetBool(nameof(PlayerData.instance.equippedCharm_10)))
             _baldurSprite.color = new(1f, 0.4f, 0f);
         ModHooks.CharmUpdateHook += CharmUpdate;
-        On.PlayMakerFSM.OnEnable += PlayMakerFSM_OnEnable;
     }
 
     /// <inheritdoc/>
@@ -98,7 +92,6 @@ public class EternalSentinelPower : Power
     {
         ModHooks.CharmUpdateHook -= CharmUpdate;
         _baldurSprite.color = Color.white;
-        On.PlayMakerFSM.OnEnable -= PlayMakerFSM_OnEnable;
         if (PlayerData.instance.GetInt(nameof(PlayerData.instance.blockerHits)) > 4)
             PlayerData.instance.SetInt(nameof(PlayerData.instance.blockerHits), 4);
     }

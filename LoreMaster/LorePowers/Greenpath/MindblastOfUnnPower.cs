@@ -113,5 +113,3 @@ public class MindblastOfUnnPower : Power
 
     #endregion
 }
-
-

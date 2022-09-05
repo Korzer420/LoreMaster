@@ -21,34 +21,37 @@ public class SoulExtractEfficiencyPower : Power
     /// </summary>
     private int OnSoulGain(int soulToGain) => soulToGain + 5;
 
+    private void OnSetBoolValueAction(On.HutongGames.PlayMaker.Actions.SetBoolValue.orig_OnEnter orig, HutongGames.PlayMaker.Actions.SetBoolValue self)
+    {
+
+        if (string.Equals(self.Fsm.FsmComponent.gameObject.name, "Knight") && string.Equals(self.Fsm.FsmComponent.FsmName, "Spell Control") && string.Equals(self.Fsm.FsmComponent.ActiveStateName, "Inactive") && Active)
+        {
+            int currentMP = PlayerData.instance.GetInt(nameof(PlayerData.instance.MPCharge));
+            int maxMP = PlayerData.instance.GetInt(nameof(PlayerData.instance.maxMP));
+            int reserveMP = PlayerData.instance.GetInt(nameof(PlayerData.instance.MPReserve));
+
+            if (currentMP < maxMP && reserveMP > 0)
+            {
+                int neededMP = maxMP - currentMP;
+                if (reserveMP - neededMP >= 0)
+                {
+                    reserveMP -= neededMP;
+                }
+            }
+            HeroController.instance.TakeReserveMP(reserveMP);
+            HeroController.instance.AddMPCharge(reserveMP);
+        }
+
+        orig(self);
+    }
+
     #endregion
 
-    #region Protected Methods
+        #region Protected Methods
 
     protected override void Initialize()
     {
-        HeroController.instance.spellControl.GetState("Inactive").ReplaceAction(new Lambda(() =>
-        {
-            if (Active)
-            {
-                int currentMP = PlayerData.instance.GetInt(nameof(PlayerData.instance.MPCharge));
-                int maxMP = PlayerData.instance.GetInt(nameof(PlayerData.instance.maxMP));
-                int reserveMP = PlayerData.instance.GetInt(nameof(PlayerData.instance.MPReserve));
-
-                if (currentMP < maxMP && reserveMP > 0)
-                {
-                    int neededMP = maxMP - currentMP;
-                    if (reserveMP - neededMP >= 0)
-                    {
-                        reserveMP -= neededMP;
-                    }
-                    HeroController.instance.TakeReserveMP(reserveMP);
-                    HeroController.instance.AddMPCharge(reserveMP);
-                }
-            }
-            HeroController.instance.spellControl.FsmVariables.FindFsmBool("Double").Value = false;
-        })
-        { Name = "Quick Refreshing MP"}, 0);
+        On.HutongGames.PlayMaker.Actions.SetBoolValue.OnEnter += OnSetBoolValueAction;
     }
 
     /// <inheritdoc/>

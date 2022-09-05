@@ -59,18 +59,14 @@ public class InfestedPower : Power
         orig(self, attackDirection, attackType, ignoreEvasion);
     }
 
-    private void PlayMakerFSM_OnEnable(On.PlayMakerFSM.orig_OnEnable orig, PlayMakerFSM self)
+
+    private void OnIntCompareAction(On.HutongGames.PlayMaker.Actions.IntCompare.orig_OnEnter orig, IntCompare self)
     {
-        if (string.Equals(self.FsmName,"Attack") && string.Equals(self.transform.parent?.name, "Weaverling(Clone)"))
+        if (string.Equals(self.Fsm.FsmComponent.FsmName, "Attack") && string.Equals(self.Fsm.FsmComponent.gameObject.transform.parent?.gameObject.name, "Weaverling(Clone)") && string.Equals(self.Fsm.FsmComponent.ActiveStateName, "Hit") && Active)
         {
-            self.GetState("Hit").ReplaceAction(new Lambda(() =>
-            {
-                if (Active)
-                    Infest(self.FsmVariables.FindFsmGameObject("Enemy").Value);
-                self.FsmVariables.FindFsmInt("Enemy HP").Value -= self.FsmVariables.FindFsmInt("Damage").Value;
-            })
-            { Name = "Infest" }, 4);
+            Infest(self.Fsm.FsmComponent.FsmVariables.FindFsmGameObject("Enemy").Value);
         }
+
         orig(self);
     }
 
@@ -80,14 +76,17 @@ public class InfestedPower : Power
 
     /// <inheritdoc/>
     protected override void Initialize()
-       => _weaverPrefab = GameObject.Find("Knight/Charm Effects").LocateMyFSM("Weaverling Control").GetState("Spawn").GetFirstActionOfType<SpawnObjectFromGlobalPool>().gameObject.Value;
+    {
+        On.HutongGames.PlayMaker.Actions.IntCompare.OnEnter += OnIntCompareAction;
+
+        _weaverPrefab = GameObject.Find("Knight/Charm Effects").LocateMyFSM("Weaverling Control").GetState("Spawn").GetFirstActionOfType<SpawnObjectFromGlobalPool>().gameObject.Value;
+    }
 
     /// <inheritdoc/>
     protected override void Enable()
     {
         On.HealthManager.TakeDamage += HealthManager_TakeDamage;
         On.HealthManager.Die += HealthManager_Die;
-        On.PlayMakerFSM.OnEnable += PlayMakerFSM_OnEnable;
     }
 
     /// <inheritdoc/>
@@ -95,7 +94,6 @@ public class InfestedPower : Power
     {
         On.HealthManager.TakeDamage -= HealthManager_TakeDamage;
         On.HealthManager.Die -= HealthManager_Die;
-        On.PlayMakerFSM.OnEnable -= PlayMakerFSM_OnEnable;
     }
 
     #endregion

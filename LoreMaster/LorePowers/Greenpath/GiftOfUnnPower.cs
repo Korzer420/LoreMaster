@@ -2,6 +2,7 @@ using ItemChanger.FsmStateActions;
 using LoreMaster.Enums;
 using LoreMaster.Extensions;
 using LoreMaster.Helper;
+using HutongGames.PlayMaker;
 
 namespace LoreMaster.LorePowers.Greenpath;
 
@@ -13,39 +14,44 @@ public class GiftOfUnnPower : Power
 
     #endregion
 
+    #region Event Handler
+
+    private void OnPlayerDataBoolTestAction(On.HutongGames.PlayMaker.Actions.PlayerDataBoolTest.orig_OnEnter orig, HutongGames.PlayMaker.Actions.PlayerDataBoolTest self)
+    {
+        if (string.Equals(self.Fsm.FsmComponent.gameObject.name, "Knight") && string.Equals(self.Fsm.FsmComponent.FsmName, "Spell Control"))
+        {
+            if (string.Equals(self.Fsm.FsmComponent.ActiveStateName, "Start Slug Anim"))
+            {
+                self.isFalse = Active ? null : FsmEvent.GetFsmEvent("FINISHED");
+            }
+            else if (string.Equals(self.Fsm.FsmComponent.ActiveStateName, "Slug?"))
+            {
+                self.isFalse = Active ? FsmEvent.GetFsmEvent("SLUG") : null;
+            }
+        }
+        orig(self);
+    }
+
+    // If the player has shape of unn equipped, it gives 15 mp on a successful cast (this is added, to prevent making the charm useless)
+    private void OnSpawnObjectFromGlobalPoolAction(On.HutongGames.PlayMaker.Actions.SpawnObjectFromGlobalPool.orig_OnEnter orig, HutongGames.PlayMaker.Actions.SpawnObjectFromGlobalPool self)
+    {
+        if (string.Equals(self.Fsm.FsmComponent.gameObject.name, "Knight") && string.Equals(self.Fsm.FsmComponent.FsmName, "Spell Control") && string.Equals(self.Fsm.FsmComponent.ActiveStateName, "Focus Heal 2") && PlayerData.instance.GetBool(nameof(PlayerData.instance.equippedCharm_28)) && Active)
+        {
+            HeroController.instance.AddMPCharge(15);
+        }
+
+        orig(self);
+    }
+
+    #endregion
+
     #region Protected Methods
 
     /// <inheritdoc/>
     protected override void Initialize()
     {
-        PlayMakerFSM spellFsm = FsmHelper.GetFSM("Knight", "Spell Control");
-
-        // This is the check for shape of unn
-        FsmHelper.GetState(spellFsm, "Start Slug Anim").ReplaceAction(new Lambda(() =>
-        {
-            if (!Active && !PlayerData.instance.GetBool(nameof(PlayerData.instance.equippedCharm_28)))
-                spellFsm.SendEvent("FINISHED");
-        })
-        { Name = "Gift of Unn" }, 1);
-
-        FsmHelper.GetState(spellFsm, "Slug?").ReplaceAction(new Lambda(() =>
-        {
-            if (Active || PlayerData.instance.GetBool(nameof(PlayerData.instance.equippedCharm_28)))
-                spellFsm.SendEvent("SLUG");
-            else
-                spellFsm.SendEvent("FINISHED");
-
-        })
-        { Name = "Force Unn" }, 0);
-
-        // If the player has shape of unn equipped, it gives 15 mp on a successful cast (this is added, to prevent making the charm useless)
-        FsmHelper.GetState(spellFsm, "Focus Heal 2").ReplaceAction(new Lambda(() =>
-        {
-            if (Active && PlayerData.instance.GetBool(nameof(PlayerData.instance.equippedCharm_28)))
-                HeroController.instance.AddMPCharge(15);
-            spellFsm.FsmVariables.FindFsmInt("Max HP").Value = PlayerData.instance.GetInt(nameof(PlayerData.instance.maxHealth));
-        })
-        { Name = "Soul Recover" }, 14);
+        On.HutongGames.PlayMaker.Actions.PlayerDataBoolTest.OnEnter += OnPlayerDataBoolTestAction;
+        On.HutongGames.PlayMaker.Actions.SpawnObjectFromGlobalPool.OnEnter += OnSpawnObjectFromGlobalPoolAction;
     }
 
     #endregion

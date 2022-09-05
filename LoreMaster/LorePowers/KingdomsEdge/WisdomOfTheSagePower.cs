@@ -25,6 +25,15 @@ public class WisdomOfTheSagePower : Power
 
     private void ModHooks_CharmUpdateHook(PlayerData data, HeroController controller) => UpdateSpellCost();
 
+    private void OnSetFsmIntAction(On.HutongGames.PlayMaker.Actions.SetFsmInt.orig_DoSetFsmInt orig, HutongGames.PlayMaker.Actions.SetFsmInt self)
+    {
+        orig(self);
+        if (string.Equals(self.Fsm.FsmComponent.gameObject.name, "Charm Effects") && string.Equals(self.Fsm.FsmComponent.FsmName, "Set Spell Cost"))
+        {
+            GameObject.Find("Knight").LocateMyFSM("Spell Control").FsmVariables.FindFsmInt("MP Cost").Value -= _soulBonus;
+        }
+    }
+
     #endregion
 
     #region Protected Methods
@@ -32,15 +41,7 @@ public class WisdomOfTheSagePower : Power
     /// <inheritdoc/>
     protected override void Initialize()
     {
-        // If the player is using spell twister (enable or disable) it triggers this fsm AFTER the charm update hook, which would negate the effect.
-        // Therefore we have to add a clauses here too.
-        PlayMakerFSM fsm = GameObject.Find("Knight/Charm Effects").LocateMyFSM("Set Spell Cost");
-        fsm.GetState("Idle").ReplaceAction(new Lambda(() =>
-        {
-            if (Active)
-                UpdateSpellCost();
-        })
-        { Name = "Mushroom power up" });
+        On.HutongGames.PlayMaker.Actions.SetFsmInt.DoSetFsmInt += OnSetFsmIntAction;
     }
 
     /// <inheritdoc/>
