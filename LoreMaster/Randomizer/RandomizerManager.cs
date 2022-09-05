@@ -235,7 +235,7 @@ public static class RandomizerManager
                         Properties = new()
                         {
                             {"ModSource", "LoreMaster" },
-                            {"PoolGroup", "Skill" }
+                            {"PoolGroup", "Skills" }
                         }
                     }
                 }
@@ -277,7 +277,7 @@ public static class RandomizerManager
                         Properties = new()
                         {
                             {"ModSource", "LoreMaster" },
-                            {"PoolGroup", "Skill" }
+                            {"PoolGroup", "Skills" }
                         }
                     }
                 }
