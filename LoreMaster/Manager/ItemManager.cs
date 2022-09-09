@@ -6,6 +6,7 @@ using ItemChanger.Tags;
 using ItemChanger.UIDefs;
 using LoreMaster.CustomItem;
 using LoreMaster.Helper;
+using LoreMaster.LorePowers.CityOfTears;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -88,6 +89,7 @@ namespace LoreMaster.Manager
                 }
 
                 ItemChangerMod.AddPlacements(new List<ShopPlacement>() { shopPlacement });
+                List<AbstractItem> availableTreasures = TreasureHunterPower.GetTreasureItems();
 
                 // Place the treasures
                 for (int i = 0; i < 14; i++)
@@ -95,18 +97,7 @@ namespace LoreMaster.Manager
                     {
                         TreasureLocation treasureLocation = TreasureLocation.GenerateLocation(i);
                         AbstractPlacement abstractPlacement = treasureLocation.Wrap();
-                        abstractPlacement.Items.Add(new IntItem()
-                        {
-                            name = "Journal_" + (i + 1),
-                            amount = 1,
-                            fieldName = nameof(PlayerData.instance.trinket1),
-                            UIDef = new MsgUIDef() 
-                            { 
-                                 name = new BoxedString("Journal"),
-                                 shopDesc = new BoxedString("A bit dirty maybe, but still valuable."),
-                                 sprite = new CustomSprite("Elderbug")
-                            }
-                        });
+                        abstractPlacement.Items.Add(availableTreasures[i]);
                         ItemChangerMod.AddPlacements(new List<AbstractPlacement>() { abstractPlacement });
                     }
 

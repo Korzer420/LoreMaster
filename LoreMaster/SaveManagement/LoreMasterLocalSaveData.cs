@@ -29,6 +29,11 @@ public class LoreMasterLocalSaveData
     public bool[] TreasureCharts { get; set; } = new bool[14];
 
     /// <summary>
+    /// Gets or sets the state of the treasures.
+    /// </summary>
+    public Dictionary<string, TreasureState> TreasureStates = new();
+
+    /// <summary>
     /// Gets or sets the value which indicates, if the player can read lore tablets. (Rando only)
     /// </summary>
     public bool HasReadAbility { get; set; }

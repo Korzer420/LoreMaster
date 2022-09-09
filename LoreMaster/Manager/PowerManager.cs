@@ -46,6 +46,7 @@ internal static class PowerManager
         {"EMILITIA", new HappyFatePower() },
         {"MARISSA", new BlessingOfTheButterflyPower() },
         {"POGGY", new DeliciousMealPower() },
+        {"RELICDEALER_DOOR", new TreasureHunterPower() },
         // Crossroads
         {"PILGRIM_TAB_01", new ReluctantPilgrimPower() },
         {"COMPLETION_RATE_UNLOCKED", new GreaterMindPower() { DefaultTag = PowerTag.Global } },
@@ -262,7 +263,6 @@ internal static class PowerManager
         if (ActivePowers.Any(x => x is PlaceholderPower))
             for (int i = 0; i < ActivePowers.Count(x => x is PlaceholderPower); i++)
                 saveData.AcquiredPowersKeys.Add("dream warrior");
-
     }
 
     internal static void AddPower(string key, Power power) => _powerList.Add(key, power);
