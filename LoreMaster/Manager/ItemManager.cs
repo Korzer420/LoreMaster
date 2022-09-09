@@ -5,14 +5,9 @@ using ItemChanger.Placements;
 using ItemChanger.Tags;
 using ItemChanger.UIDefs;
 using LoreMaster.CustomItem;
-using LoreMaster.Helper;
 using LoreMaster.LorePowers.CityOfTears;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
 
 namespace LoreMaster.Manager
 {
@@ -51,16 +46,16 @@ namespace LoreMaster.Manager
                     Finder.DefineCustomLocation(iselda2);
                 }
 
-                ShopPlacement shopPlacement = new("Iselda_Secret")
-                {
-                    Location = iselda2,
-                    defaultShopItems = DefaultShopItems.IseldaCharms | DefaultShopItems.IseldaMaps
-                      | DefaultShopItems.IseldaMapMarkers | DefaultShopItems.IseldaMapPins | DefaultShopItems.IseldaQuill,
-                };
+                ShopPlacement shopPlacement = (ShopPlacement)iselda2.Wrap();
+                shopPlacement.defaultShopItems = DefaultShopItems.IseldaCharms | DefaultShopItems.IseldaMaps
+                      | DefaultShopItems.IseldaMapMarkers | DefaultShopItems.IseldaMapPins | DefaultShopItems.IseldaQuill;
+                List<int> chartPrices = new() { 1, 30, 69, 120, 160, 200, 230, 290, 420, 500, 750, 870, 1000, 1150 };
 
                 // Add the charts to the placement
                 for (int i = 1; i < 15; i++)
                 {
+                    int rolledPrice = chartPrices[LoreMaster.Instance.Generator.Next(0, chartPrices.Count)];
+                    chartPrices.Remove(rolledPrice);
                     BoolItem item = new()
                     {
                         fieldName = "Treasure_Chart_" + i,
@@ -81,7 +76,7 @@ namespace LoreMaster.Manager
                         },
                         new CostTag()
                         {
-                             Cost = new GeoCost(120)
+                             Cost = new GeoCost(rolledPrice)
                         }
                     }
                     };

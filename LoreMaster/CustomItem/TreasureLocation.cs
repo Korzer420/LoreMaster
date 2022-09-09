@@ -22,7 +22,7 @@ namespace LoreMaster.CustomItem
             ("Crossroads_42", new (7.052f, 13.41f)), 
             ("Fungus1_Slug", new (44.78f, 14.41f)), 
             ("Fungus2_10",new (5.8f, 14.41f)), 
-            ("Fungus3_Archive_02",new (96f, 92.41f)) , 
+            ("Fungus3_archive_02",new (96f, 92.41f)) , 
             ("Ruins2_05",new(27.42f,68.41f)) , 
             ("Waterways_13",new(43.625f, 47.41f)) , 
             ("Deepnest_30",new(40.1f, 138.41f)) ,

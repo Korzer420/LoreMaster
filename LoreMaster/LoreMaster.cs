@@ -127,7 +127,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
 
             try
             {
-                
+                ItemManager.CreateCustomItems();
                 if (ModHooks.GetMod("Randomizer 4") is Mod mod)
                 {
                     Log("Detected Randomizer. Adding compability.");
@@ -196,11 +196,10 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
 
     public void InitializeManager()
     {
-        ItemManager.CreateCustomItems();
+        Instance = this;
         LoreManager loreManager = new();
         SettingManager settingManager = new();
         settingManager.Initialize();
-        Instance = this;
     }
 
     /// <summary>
@@ -263,7 +262,9 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
             TreasureHunterPower.HasCharts = saveData.TreasureCharts;
             LoreManager.Instance.CanRead = ModHooks.GetMod("Randomizer 4") is not Mod mod || saveData.HasReadAbility;
             LoreManager.Instance.CanListen = ModHooks.GetMod("Randomizer 4") is not Mod mod2 || saveData.HasListenAbility;
-            TreasureHunterPower.Artifacts = saveData.TreasureStates;
+            foreach (string key in saveData.TreasureStates.Keys)
+                if (TreasureHunterPower.Artifacts.ContainsKey(key))
+                    TreasureHunterPower.Artifacts[key] = saveData.TreasureStates[key];
         }
         catch (Exception exception)
         {

@@ -38,12 +38,12 @@ internal class TreasureHunterPower : Power
 
     public TreasureHunterPower() : base("Treasure Hunter", Area.CityOfTears)
     {
-        _treasureSprites[0] = (Finder.GetItem("Silksong Journal").UIDef as MsgUIDef).GetSprite();
-        _treasureSprites[1] = (Finder.GetItem("Silver Hallownest Seal").UIDef as MsgUIDef).GetSprite();
-        _treasureSprites[2] = (Finder.GetItem("Bronze King's Idol").UIDef as MsgUIDef).GetSprite();
-        _treasureSprites[3] = (Finder.GetItem("Golden Arcane Egg").UIDef as MsgUIDef).GetSprite();
-        _treasureSprites[4] = (Finder.GetItem("Dream Medallion").UIDef as MsgUIDef).GetSprite();
-        _treasureSprites[5] = (Finder.GetItem("Magical Key").UIDef as MsgUIDef).GetSprite();
+        _treasureSprites[0] = SpriteHelper.CreateSprite("Silksong_Journal",false);
+        _treasureSprites[1] = SpriteHelper.CreateSprite("Silver_Seal", false);
+        _treasureSprites[2] = SpriteHelper.CreateSprite("Bronze_King_Idol", false);
+        _treasureSprites[3] = SpriteHelper.CreateSprite("Golden_Egg", false);
+        _treasureSprites[4] = SpriteHelper.CreateSprite("MagicKey", false);
+        _treasureSprites[5] = SpriteHelper.CreateSprite("Dream_Medallion", false);
     }
 
     #endregion
@@ -127,7 +127,12 @@ internal class TreasureHunterPower : Power
 
     private void EnemyDeathEffects_EmitEssence(ILContext il)
     {
-        if (Artifacts["DreamMedallion"] == TreasureState.NoMap)
+        foreach (string key in Artifacts.Keys)
+        {
+            LoreMaster.Instance.Log("The key is: " + key);
+        }
+        
+        if (Artifacts["dreamMedallion"] == TreasureState.NoMap)
             return;
         ILCursor cursor = new(il);
 
@@ -140,7 +145,7 @@ internal class TreasureHunterPower : Power
     private void GetPlayerDataInt_OnEnter(On.HutongGames.PlayMaker.Actions.GetPlayerDataInt.orig_OnEnter orig, GetPlayerDataInt self)
     {
         orig(self);
-        if (Artifacts["MagicKey"] != TreasureState.NoMap && string.Equals(self.intName, nameof(PlayerData.instance.simpleKeys)))
+        if (Artifacts["magicKey"] != TreasureState.NoMap && string.Equals(self.intName, nameof(PlayerData.instance.simpleKeys)))
             self.storeValue.Value = 99;
     }
 
@@ -400,7 +405,7 @@ internal class TreasureHunterPower : Power
                 {
                     name = new BoxedString("Silver Seal"),
                     shopDesc = new BoxedString("A very special Hallownest seal which was buried in this kingdom. I personally like the colored design more."),
-                    sprite = new CustomSprite("Silver_Hallownest_Seal", false)
+                    sprite = new CustomSprite("Silver_Seal", false)
                 }
             },
             new BoolItem()
