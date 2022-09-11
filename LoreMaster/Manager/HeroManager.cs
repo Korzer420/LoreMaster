@@ -76,7 +76,7 @@ public static class HeroManager
     /// <summary>
     /// Gets the collider of the hero.
     /// </summary>
-    public static BoxCollider2D Collider => _collider == null ? _collider = HeroController.instance.GetComponent<BoxCollider2D>() : _collider;
+    public static BoxCollider2D Collider => _collider == null && HeroController.instance != null ? _collider = HeroController.instance.GetComponent<BoxCollider2D>() : _collider;
 
     public static tk2dSprite[] DreamNailSprites
     {

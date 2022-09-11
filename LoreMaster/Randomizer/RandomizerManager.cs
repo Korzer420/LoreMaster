@@ -133,7 +133,7 @@ public static class RandomizerManager
                 Finder.DefineCustomItem(NpcItem.CreateItem("Willoh", "GIRAFFE_MEET", "As a bug, I'd be scared of eating unknown mushrooms.", "Willoh"));
                 Finder.DefineCustomItem(NpcItem.CreateItem("Moss_Prophet", "MOSS_CULTIST_01", "I'm not sure about this... just take it away.", "Moss_Prophet"));
                 Finder.DefineCustomItem(NpcItem.CreateItem("Fluke_Hermit", "FLUKE_HERMIT_IDLE_1", "The words spoken by the child of the A L L U R I N G mother.", "Fluke_Hermit", "CP3"));
-                Finder.DefineCustomItem(NpcItem.CreateItem("Quirrel", "QUIRREL_MINES_1", "The wisdom of a real adventurer, which can swim fairly good. :)", "Quirrel"));
+                Finder.DefineCustomItem(NpcItem.CreateItem("Quirrel", "QUIRREL_MINES_1", "The wisdom of a real adventurer, which can swim fairly good. :)", "Quirrel", "Quirrel"));
                 Finder.DefineCustomItem(NpcItem.CreateItem("Queen", "QUEEN_MEET", "The queen sent this through the kingdom for the day, someone like you arrives. How do I know? Well... don't ask.", "Queen"));
                 Finder.DefineCustomItem(NpcItem.CreateItem("Marissa", "MARISSA_TALK", "From the most beautiful voice of the world besides me.", "Marissa", "Ghosts"));
                 Finder.DefineCustomItem(NpcItem.CreateItem("Grasshopper", "GRASSHOPPER_TALK", "Considering that these live in the garden, being an arsonist might not be the best for them.", "Grasshopper", "Ghosts"));
