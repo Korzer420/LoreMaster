@@ -265,6 +265,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
             foreach (string key in saveData.TreasureStates.Keys)
                 if (TreasureHunterPower.Artifacts.ContainsKey(key))
                     TreasureHunterPower.Artifacts[key] = saveData.TreasureStates[key];
+            TreasureHunterPower.CanPurchaseTreasureCharts = saveData.CanBuyTreasureCharts;
         }
         catch (Exception exception)
         {
@@ -284,6 +285,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         saveData.HasReadAbility = LoreManager.Instance.CanRead;
         saveData.HasListenAbility = LoreManager.Instance.CanListen;
         saveData.TreasureStates = TreasureHunterPower.Artifacts;
+        saveData.CanBuyTreasureCharts = TreasureHunterPower.CanPurchaseTreasureCharts;
         return saveData;
     }
 

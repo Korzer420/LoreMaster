@@ -6,6 +6,7 @@ using ItemChanger.Tags;
 using ItemChanger.UIDefs;
 using LoreMaster.CustomItem;
 using LoreMaster.LorePowers.CityOfTears;
+using LoreMaster.Randomizer.Items;
 using System;
 using System.Collections.Generic;
 
@@ -29,8 +30,34 @@ namespace LoreMaster.Manager
             teleportItems.Add(secondPlacement);
             ItemChangerMod.AddPlacements(teleportItems);
 
+            // Treasure Hunter stuff
             try
             {
+                List<AbstractPlacement> treasurePlacements = new();
+
+                LemmSignLocation lemmSignLocation = new()
+                {
+                    sceneName = "Ruins1_05b",
+                    name = "Lemm_Door",
+                    flingType = FlingType.DirectDeposit
+                };
+                AbstractPlacement lemmPlacement = lemmSignLocation.Wrap();
+                lemmPlacement.Items.Add(NpcItem.CreateItem("Lemm_Sign", "RELICDEALER_DOOR", "Don't ask why this is here... please.", "Lore", "Relic Dealer"));
+                lemmPlacement.Items.Add(new BoolItem()
+                {
+                    name = "Lemm_Order",
+                    fieldName = "lemm_Allow",
+                    setValue = true,
+                    UIDef = new MsgUIDef()
+                    {
+                        name = new BoxedString("Lemm's Order"),
+                        shopDesc = new BoxedString("The order of the relic seeker for a few treasure charts from Cornifer. But it seems like Lemm hasn't pay the price yet..."),
+                        sprite = new CustomSprite("Lemms_Order", false)
+                    }
+                });
+                treasurePlacements.Add(lemmPlacement);
+
+                // Charts
                 ShopLocation iselda2 = Finder.GetLocation("Iselda_Treasure") as ShopLocation;
                 if (iselda2 == null)
                 {
@@ -49,9 +76,9 @@ namespace LoreMaster.Manager
                 ShopPlacement shopPlacement = (ShopPlacement)iselda2.Wrap();
                 shopPlacement.defaultShopItems = DefaultShopItems.IseldaCharms | DefaultShopItems.IseldaMaps
                       | DefaultShopItems.IseldaMapMarkers | DefaultShopItems.IseldaMapPins | DefaultShopItems.IseldaQuill;
-                List<int> chartPrices = new() { 1, 30, 69, 120, 160, 200, 230, 290, 420, 500, 750, 870, 1000, 1150 };
+                treasurePlacements.Add(shopPlacement);
 
-                // Add the charts to the placement
+                List<int> chartPrices = new() { 1, 30, 69, 120, 160, 200, 230, 290, 420, 500, 750, 870, 1000, 1150 };
                 for (int i = 1; i < 15; i++)
                 {
                     int rolledPrice = chartPrices[LoreMaster.Instance.Generator.Next(0, chartPrices.Count)];
@@ -83,7 +110,6 @@ namespace LoreMaster.Manager
                     shopPlacement.Items.Add(item);
                 }
 
-                ItemChangerMod.AddPlacements(new List<ShopPlacement>() { shopPlacement });
                 List<AbstractItem> availableTreasures = TreasureHunterPower.GetTreasureItems();
 
                 // Place the treasures
@@ -93,9 +119,9 @@ namespace LoreMaster.Manager
                         TreasureLocation treasureLocation = TreasureLocation.GenerateLocation(i);
                         AbstractPlacement abstractPlacement = treasureLocation.Wrap();
                         abstractPlacement.Items.Add(availableTreasures[i]);
-                        ItemChangerMod.AddPlacements(new List<AbstractPlacement>() { abstractPlacement });
+                        treasurePlacements.Add(abstractPlacement);
                     }
-
+                ItemChangerMod.AddPlacements(treasurePlacements);
             }
             catch (Exception exception)
             {

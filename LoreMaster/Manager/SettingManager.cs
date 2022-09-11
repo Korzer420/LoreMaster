@@ -241,7 +241,8 @@ internal class SettingManager
                     }
                     catch (Exception exception)
                     {
-                        LoreMaster.Instance.LogError("An error occured while modifying IC: " + exception.Message);
+                        LoreMaster.Instance.LogError("An error occured while modifying dreamer cutscene: " + exception.Message);
+                        LoreMaster.Instance.LogError("An error occured while modifying dreamer cutscene: " + exception.StackTrace);
                     }
 
                     // Load in changes from the options file (if it exists)

@@ -14,6 +14,7 @@ using System.Linq;
 using LoreMaster.LorePowers.CityOfTears;
 using LoreMaster.LorePowers.RestingGrounds;
 using LoreMaster.LorePowers;
+using Modding;
 
 namespace LoreMaster.Randomizer;
 
@@ -84,6 +85,11 @@ public static class RandomizerManager
         "Markoth",
         "No_Eyes"
     };
+
+    /// <summary>
+    /// Gets the flag, that indicates if this is a rando file.
+    /// </summary>
+    public static bool IsRandoFile => ModHooks.GetMod("Randomizer 4", true) is Mod && RandomizerMod.RandomizerMod.IsRandoSave;
 
     #endregion
 

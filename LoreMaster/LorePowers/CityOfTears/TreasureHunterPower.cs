@@ -13,8 +13,6 @@ using MonoMod.Cil;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 
@@ -26,7 +24,7 @@ internal class TreasureHunterPower : Power
 
     private static Sprite[] _chartImages = new Sprite[14];
 
-    private static Sprite[] _treasureSprites = new Sprite[6];
+    private static Sprite[] _treasureSprites = new Sprite[7];
 
     private static GameObject[] _mapItems = new GameObject[14];
 
@@ -44,6 +42,7 @@ internal class TreasureHunterPower : Power
         _treasureSprites[3] = SpriteHelper.CreateSprite("Golden_Egg", false);
         _treasureSprites[4] = SpriteHelper.CreateSprite("MagicKey", false);
         _treasureSprites[5] = SpriteHelper.CreateSprite("Dream_Medallion", false);
+        _treasureSprites[6] = SpriteHelper.CreateSprite("Lemms_Order", false);
     }
 
     #endregion
@@ -54,6 +53,11 @@ internal class TreasureHunterPower : Power
     /// Contains the flags to indicate, if the charts have been obtained.
     /// </summary>
     public static bool[] HasCharts { get; set; } = new bool[14];
+
+    /// <summary>
+    /// Gets or sets the flag that indicates, if the player can purchase treasure charts from iselda.
+    /// </summary>
+    public static bool CanPurchaseTreasureCharts { get; set; }
 
     /// <summary>
     /// Gets or sets the state of the special treasure items.
@@ -325,9 +329,9 @@ internal class TreasureHunterPower : Power
     private static bool ModHooks_GetPlayerBoolHook(string name, bool orig)
     {
         if (string.Equals(name, "hasTreasureCharts"))
-            return HasCharts.Any(x => x);
+            return HasCharts.Any(x => x) || CanPurchaseTreasureCharts || Artifacts.Any(x => x.Value != TreasureState.NoMap);
         else if (string.Equals(name, "lemm_allow"))
-            return true;
+            return CanPurchaseTreasureCharts;
         return orig;
     }
 
@@ -339,9 +343,9 @@ internal class TreasureHunterPower : Power
             HasCharts[number - 1] = orig;
         }
         else if (Artifacts.ContainsKey(name))
-            Artifacts[name] = orig
-                ? (Artifacts[name] == TreasureState.NoMap ? TreasureState.ObtainedMap : TreasureState.ObtainedTreasure) 
-                :  TreasureState.NoMap;
+            Artifacts[name] = TreasureState.ObtainedMap;
+        else if (string.Equals(name, "lemm_Allow"))
+            CanPurchaseTreasureCharts = orig;
         return orig;
     }
 

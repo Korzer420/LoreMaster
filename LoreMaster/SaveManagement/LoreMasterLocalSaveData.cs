@@ -24,6 +24,11 @@ public class LoreMasterLocalSaveData
     public int GloryCost { get; set; }
 
     /// <summary>
+    /// Gets or sets the flag, that indicates if the player can purchase treasure charts from iselda.
+    /// </summary>
+    public bool CanBuyTreasureCharts { get; set; }
+
+    /// <summary>
     /// Gets or sets the obtained treasure charts.
     /// </summary>
     public bool[] TreasureCharts { get; set; } = new bool[14];
