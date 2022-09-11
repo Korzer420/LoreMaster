@@ -101,8 +101,6 @@ internal class SettingManager
     {
         try
         {
-
-            GloryOfTheWealthPower.GloryCost = 0;
             On.PlayMakerFSM.OnEnable += FsmEdits;
             orig(self, permaDeath, bossRush);
             ModHooks.SetPlayerBoolHook += TrackPathOfPain;

@@ -74,19 +74,12 @@ internal class TreasureHunterPower : Power
 
     #endregion
 
-    #region Control
-
-    protected override void Enable()
-    {
-        On.HutongGames.PlayMaker.Actions.GetPlayerDataInt.OnEnter += GetPlayerDataInt_OnEnter;
-        On.HutongGames.PlayMaker.Actions.ActivateGameObject.OnEnter += ActivateGameObject_OnEnter;
-        IL.EnemyDeathEffects.EmitEssence += EnemyDeathEffects_EmitEssence;
-    }
+    #region Event handler
 
     private void ActivateGameObject_OnEnter(On.HutongGames.PlayMaker.Actions.ActivateGameObject.orig_OnEnter orig, ActivateGameObject self)
     {
         orig(self);
-        if(string.Equals(self.Fsm.GameObjectName, "Shop Menu") && string.Equals(self.Fsm.Name, "shop_control") 
+        if (string.Equals(self.Fsm.GameObjectName, "Shop Menu") && string.Equals(self.Fsm.Name, "shop_control")
             && string.Equals(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name, "Ruins1_05b"))
         {
             TreasureState[] states = Artifacts.Values.Take(4).ToArray();
@@ -95,7 +88,7 @@ internal class TreasureHunterPower : Power
             {
                 if (states[i - 1] == TreasureState.NoMap)
                     continue;
-                else if (states[i-1] == TreasureState.ObtainedMap)
+                else if (states[i - 1] == TreasureState.ObtainedMap)
                 {
                     GameObject relic = self.Fsm.GameObject.transform.Find($"Item List/Shop Item Rlc {i}(Clone)").gameObject;
                     ShopItemStats stats = relic.GetComponent<ShopItemStats>();
@@ -122,20 +115,13 @@ internal class TreasureHunterPower : Power
         }
     }
 
-    protected override void Disable()
-    {
-        On.HutongGames.PlayMaker.Actions.GetPlayerDataInt.OnEnter -= GetPlayerDataInt_OnEnter;
-        On.HutongGames.PlayMaker.Actions.ActivateGameObject.OnEnter -= ActivateGameObject_OnEnter;
-        IL.EnemyDeathEffects.EmitEssence -= EnemyDeathEffects_EmitEssence;
-    }
-
     private void EnemyDeathEffects_EmitEssence(ILContext il)
     {
         foreach (string key in Artifacts.Keys)
         {
             LoreMaster.Instance.Log("The key is: " + key);
         }
-        
+
         if (Artifacts["dreamMedallion"] == TreasureState.NoMap)
             return;
         ILCursor cursor = new(il);
@@ -153,6 +139,36 @@ internal class TreasureHunterPower : Power
             self.storeValue.Value = 99;
     }
 
+    private void SetPlayerDataBool_OnEnter(On.HutongGames.PlayMaker.Actions.SetPlayerDataBool.orig_OnEnter orig, SetPlayerDataBool self)
+    {
+        orig(self);
+        if(self.boolName.Value.Contains("noTrinket") && self.State.Name.Contains("Check Relic") && self.value.Value)
+        {
+            int trinketNumber = Convert.ToInt16(self.boolName.Value.Substring(9));
+            PlayerData.instance.SetBool("noTrinket" + trinketNumber, Artifacts.Values.ToArray()[trinketNumber -1] == TreasureState.ObtainedMap);
+        }
+    }
+
+    #endregion
+
+    #region Control
+
+    protected override void Enable()
+    {
+        On.HutongGames.PlayMaker.Actions.GetPlayerDataInt.OnEnter += GetPlayerDataInt_OnEnter;
+        On.HutongGames.PlayMaker.Actions.ActivateGameObject.OnEnter += ActivateGameObject_OnEnter;
+        On.HutongGames.PlayMaker.Actions.SetPlayerDataBool.OnEnter += SetPlayerDataBool_OnEnter;
+        IL.EnemyDeathEffects.EmitEssence += EnemyDeathEffects_EmitEssence;
+    }
+
+    protected override void Disable()
+    {
+        On.HutongGames.PlayMaker.Actions.GetPlayerDataInt.OnEnter -= GetPlayerDataInt_OnEnter;
+        On.HutongGames.PlayMaker.Actions.ActivateGameObject.OnEnter -= ActivateGameObject_OnEnter;
+        On.HutongGames.PlayMaker.Actions.SetPlayerDataBool.OnEnter -= SetPlayerDataBool_OnEnter;
+        IL.EnemyDeathEffects.EmitEssence -= EnemyDeathEffects_EmitEssence;
+    }
+
     #endregion
 
     #region Inventory Screen
@@ -163,7 +179,7 @@ internal class TreasureHunterPower : Power
         if (treasureChartPage.transform.childCount > 1)
             return;
         ModHooks.GetPlayerBoolHook += ModHooks_GetPlayerBoolHook;
-        ModHooks.SetPlayerBoolHook += ListenForTreasureItems;
+        ModHooks.SetPlayerBoolHook += SetPlayerDataBool;
         GameObject charts = new("Charts");
         charts.transform.SetParent(treasureChartPage.transform);
         charts.transform.localScale = new(1f, 1f, 1f);
@@ -335,7 +351,7 @@ internal class TreasureHunterPower : Power
         return orig;
     }
 
-    private static bool ListenForTreasureItems(string name, bool orig)
+    private static bool SetPlayerDataBool(string name, bool orig)
     {
         if (name.Contains("Treasure_Chart_"))
         {
@@ -346,6 +362,11 @@ internal class TreasureHunterPower : Power
             Artifacts[name] = TreasureState.ObtainedMap;
         else if (string.Equals(name, "lemm_Allow"))
             CanPurchaseTreasureCharts = orig;
+        // Force lemm after 1 dreamer to be outside. (This is needed because if QoL skips cutscenes, the flag normally gets skipped)
+        else if(orig && (string.Equals(name, "monomonDefeated") || string.Equals(name, "hegemolDefeated") || string.Equals(name, "lurienDefeated")))
+            if (!PlayerData.instance.GetBool("monomonDefeated") && !PlayerData.instance.GetBool("hegemolDefeated") && !PlayerData.instance.GetBool("lurienDefeated"))
+                PlayerData.instance.SetBool("marmOutside", true);
+        
         return orig;
     }
 

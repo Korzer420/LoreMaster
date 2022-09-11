@@ -222,6 +222,12 @@ internal static class PowerManager
             // Reset tags to default.
             foreach (string key in _powerList.Keys)
                 _powerList[key].Tag = _powerList[key].DefaultTag;
+        GloryOfTheWealthPower.GloryCost = 0;
+        foreach (string key in TreasureHunterPower.Artifacts.Keys)
+            TreasureHunterPower.Artifacts[key] = TreasureState.NoMap;
+        TreasureHunterPower.CanPurchaseTreasureCharts = false;
+        for (int i = 0; i < TreasureHunterPower.HasCharts.Length; i++)
+            TreasureHunterPower.HasCharts[i] = false;
         // Unsure if this is needed, but just in case.
         ActivePowers.Clear();
     }

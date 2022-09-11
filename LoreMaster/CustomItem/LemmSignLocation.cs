@@ -68,8 +68,7 @@ namespace LoreMaster.CustomItem
                 {
                     new Lambda(() =>
                     {
-                        LoreMaster.Instance.Log("Check if door should be destroyed.");
-                        if ((PlayerData.instance.GetBool("marmOutside") || PlayerData.instance.GetBool("marmOutsideConvo")) && !Placement.Items.All(x => x.IsObtained()))
+                        if (!PlayerData.instance.GetBool("marmOutside") || (PlayerData.instance.GetBool("marmOutsideConvo") && Placement.Items.All(x => x.IsObtained())))
                             fsm.SendEvent("DESTROY");
                     })
                 }
