@@ -152,7 +152,7 @@ internal class SettingManager
         try
         {
             if (PlayerData.instance.GetBool("killedBindingSeal") && !PowerManager.ActivePowers.Any(x => x is SacredShellPower))
-                PowerManager.GetPowerByKey("EndOfPathOfPain", out Power power);
+                PowerManager.GetPowerByKey("POP", out Power power);
             else
                 ModHooks.SetPlayerBoolHook += TrackPathOfPain;
 
@@ -214,7 +214,7 @@ internal class SettingManager
     {
         if (name.Equals("killedBindingSeal") && orig)
         {
-            PowerManager.GetPowerByKey("EndOfPathOfPain", out Power power);
+            PowerManager.GetPowerByKey("POP", out Power power);
             // This hook is no longer needed after obtaining the power.
             ModHooks.SetPlayerBoolHook -= TrackPathOfPain;
         }
@@ -615,7 +615,6 @@ internal class SettingManager
         // Just to make sure the controller exist. A desperate attempt.
         if (_fromMenu && (HeroController.instance == null || !HeroController.instance.acceptingInput))
             yield return new WaitUntil(() => HeroController.instance != null && HeroController.instance.acceptingInput);
-        LoreMaster.Instance.Log("Is Hero null? " + (HeroController.instance == null));
         Area newArea = CurrentArea;
 
         // Figure out the current Map zone. (Dream world counts as the same area)

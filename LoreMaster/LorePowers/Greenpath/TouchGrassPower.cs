@@ -127,7 +127,7 @@ public class TouchGrassPower : Power
             float passedTime = 0f;
             while (passedTime <= HealTime)
             {
-                if(_triggeredCollider == null || (!_triggeredCollider.IsTouching(HeroManager.Collider) && !HeroManager.Collider.IsTouching(_triggeredCollider)))
+                if(_triggeredCollider == null || HeroManager.Collider == null || (!_triggeredCollider.IsTouching(HeroManager.Collider) && !HeroManager.Collider.IsTouching(_triggeredCollider)))
                 {
                     _currentlyRunning = false;
                     yield break;
