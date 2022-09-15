@@ -17,25 +17,33 @@ public class JellyfishFlowPower : Power
 
     #endregion
 
+    #region Event Handler
+
+    private void OnSetVelocity2DAction(On.HutongGames.PlayMaker.Actions.SetVelocity2d.orig_OnEnter orig, HutongGames.PlayMaker.Actions.SetVelocity2d self)
+    {
+        if (string.Equals(self.Fsm.FsmComponent.gameObject.name, "Knight") && string.Equals(self.Fsm.FsmComponent.FsmName, "Surface Water"))
+        {
+            if (string.Equals(self.Fsm.FsmComponent.ActiveStateName, "Swim Right"))
+            {
+                self.x.Value = Active ? 20f : 5f;
+            }
+            else if (string.Equals(self.Fsm.FsmComponent.ActiveStateName, "Swim Left"))
+            {
+                self.x.Value = Active ? -20f : -5f;
+            }
+        }
+
+        orig(self);
+    }
+
+    #endregion
+
     #region Protected Methods
 
     /// <inheritdoc/>
     protected override void Initialize()
     {
-        PlayMakerFSM knightFSM = GameObject.Find("Knight").LocateMyFSM("Surface Water");
-        knightFSM.GetState("Swim Right").ReplaceAction(new Lambda(() =>
-        {
-            knightFSM.FsmVariables.GetFsmFloat("Swim Speed").Value = Active ? 20f : 5f;
-            knightFSM.FsmVariables.GetFsmString("Idle Anim").Value = "Surface Idle";
-        })
-        { Name = "Jellyfish swim" }, 1);
-
-        knightFSM.GetState("Swim Left").ReplaceAction(new Lambda(() =>
-        {
-            knightFSM.FsmVariables.GetFsmFloat("Swim Speed neg").Value = Active ? -20f : -5f;
-            knightFSM.FsmVariables.GetFsmString("Idle Anim").Value = "Surface Idle";
-        })
-        { Name = "Jellyfish swim" }, 1);
+        On.HutongGames.PlayMaker.Actions.SetVelocity2d.OnEnter += OnSetVelocity2DAction;
     }
 
     #endregion

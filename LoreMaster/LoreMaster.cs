@@ -198,7 +198,6 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         LoreManager loreManager = new();
         SettingManager settingManager = new();
         settingManager.Initialize();
-        HeroManager.Initialize();
     }
 
     /// <summary>
