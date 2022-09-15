@@ -14,6 +14,7 @@ using LoreMaster.LorePowers;
 using LoreMaster.LorePowers.FungalWastes;
 using LoreMaster.LorePowers.QueensGarden;
 using LoreMaster.LorePowers.WhitePalace;
+using LoreMaster.Properties;
 using LoreMaster.Randomizer;
 using LoreMaster.UnityComponents;
 using Modding;
@@ -101,11 +102,12 @@ internal class SettingManager
     {
         try
         {
+            ItemChangerMod.CreateSettingsProfile(false);
+            ItemManager.ResetItems();
             On.PlayMakerFSM.OnEnable += FsmEdits;
             orig(self, permaDeath, bossRush);
             ModHooks.SetPlayerBoolHook += TrackPathOfPain;
             _fromMenu = true;
-
             PowerManager.ResetPowers();
             ModHooks.LanguageGetHook += LoreManager.Instance.GetText;
             On.DeactivateIfPlayerdataTrue.OnEnable += ForceMyla;
@@ -121,7 +123,6 @@ internal class SettingManager
                 LoreManager.Instance.CanRead = true;
                 LoreManager.Instance.CanListen = true;
             }
-
         }
         catch (Exception exception)
         {
@@ -217,6 +218,14 @@ internal class SettingManager
                 // Initialization
                 if (_fromMenu)
                 {
+#if DEBUG
+                    foreach (string key in LorePowers.CityOfTears.TreasureHunterPower.Treasures.Keys.ToArray())
+                        LorePowers.CityOfTears.TreasureHunterPower.Treasures[key] = TreasureState.Obtained;
+                    PlayerData.instance.SetInt("trinket1", 5);
+                    PlayerData.instance.SetInt("trinket2", 5);
+                    PlayerData.instance.SetInt("trinket3", 5);
+                    PlayerData.instance.SetInt("trinket4", 5);
+#endif
                     if (string.Equals(arg1.name.ToLower(), "town"))
                     {
                         Transform elderbug = GameObject.Find("_NPCs/Elderbug").transform;

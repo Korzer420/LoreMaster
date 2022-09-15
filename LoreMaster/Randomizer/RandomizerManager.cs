@@ -89,7 +89,21 @@ public static class RandomizerManager
     /// <summary>
     /// Gets the flag, that indicates if this is a rando file.
     /// </summary>
-    public static bool IsRandoFile => ModHooks.GetMod("Randomizer 4", true) is Mod && RandomizerMod.RandomizerMod.IsRandoSave;
+    public static bool PlayingRandomizer
+    {
+        get
+        {
+            if (ModHooks.GetMod("Randomizer 4", true) is not Mod)
+                return false;
+            else
+                return RandoFile;
+        }
+    }
+
+    /// <summary>
+    /// Gets the flag, that indicates if this is a rando file. To prevent missing reference exceptions, this is seperated from <see cref="PlayingRandomizer"/>.
+    /// </summary>
+    public static bool RandoFile => RandomizerMod.RandomizerMod.IsRandoSave;
 
     #endregion
 

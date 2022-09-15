@@ -263,8 +263,8 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
             LoreManager.Instance.CanRead = ModHooks.GetMod("Randomizer 4") is not Mod mod || saveData.HasReadAbility;
             LoreManager.Instance.CanListen = ModHooks.GetMod("Randomizer 4") is not Mod mod2 || saveData.HasListenAbility;
             foreach (string key in saveData.TreasureStates.Keys)
-                if (TreasureHunterPower.Artifacts.ContainsKey(key))
-                    TreasureHunterPower.Artifacts[key] = saveData.TreasureStates[key];
+                if (TreasureHunterPower.Treasures.ContainsKey(key))
+                    TreasureHunterPower.Treasures[key] = saveData.TreasureStates[key];
             TreasureHunterPower.CanPurchaseTreasureCharts = saveData.CanBuyTreasureCharts;
         }
         catch (Exception exception)
@@ -284,7 +284,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         saveData.TreasureCharts = TreasureHunterPower.HasCharts;
         saveData.HasReadAbility = LoreManager.Instance.CanRead;
         saveData.HasListenAbility = LoreManager.Instance.CanListen;
-        saveData.TreasureStates = TreasureHunterPower.Artifacts;
+        saveData.TreasureStates = TreasureHunterPower.Treasures;
         saveData.CanBuyTreasureCharts = TreasureHunterPower.CanPurchaseTreasureCharts;
         return saveData;
     }

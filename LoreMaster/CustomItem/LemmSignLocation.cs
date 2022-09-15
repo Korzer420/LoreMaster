@@ -26,7 +26,7 @@ namespace LoreMaster.CustomItem
         private void ModifySignText(PlayMakerFSM fsm)
         {
             fsm.GetState("Idle").ClearTransitions();
-            if (RandomizerManager.IsRandoFile && Placement.Items.All(x => x.IsObtained()))
+            if (RandomizerManager.PlayingRandomizer && Placement.Items.All(x => x.IsObtained()))
                 return;
             FsmState controlState = new(fsm.Fsm)
             {

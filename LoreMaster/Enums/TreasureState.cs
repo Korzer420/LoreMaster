@@ -14,15 +14,15 @@ public enum TreasureState
     /// <summary>
     /// Didn't get the map yet, preventing the treasure ground from spawning.
     /// </summary>
-    NoMap,
+    NotObtained,
 
     /// <summary>
     /// Obtained the map, but didn't acquire the treasure yet.
     /// </summary>
-    ObtainedMap,
+    Obtained,
 
     /// <summary>
     /// Obtained the map and their treasure.
     /// </summary>
-    ObtainedTreasure
+    GivenLemm
 }

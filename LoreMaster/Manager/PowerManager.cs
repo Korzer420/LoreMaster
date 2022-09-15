@@ -223,8 +223,8 @@ internal static class PowerManager
             foreach (string key in _powerList.Keys)
                 _powerList[key].Tag = _powerList[key].DefaultTag;
         GloryOfTheWealthPower.GloryCost = 0;
-        foreach (string key in TreasureHunterPower.Artifacts.Keys)
-            TreasureHunterPower.Artifacts[key] = TreasureState.NoMap;
+        foreach (string key in TreasureHunterPower.Treasures.Keys.ToList())
+            TreasureHunterPower.Treasures[key] = TreasureState.NotObtained;
         TreasureHunterPower.CanPurchaseTreasureCharts = false;
         for (int i = 0; i < TreasureHunterPower.HasCharts.Length; i++)
             TreasureHunterPower.HasCharts[i] = false;
