@@ -169,7 +169,7 @@ public class GrassBombardementPower : Power
     {
         if (string.Equals(self.FsmName, "quake_floor"))
         {
-            self.AddState(new(self.Fsm)
+            self.AddState(new FsmState(self.Fsm)
             {
                 Name = "Explosion Quake",
                 Actions = new FsmStateAction[]
@@ -187,7 +187,7 @@ public class GrassBombardementPower : Power
             });
 
             // To prevent the "not-destruction" of dive or bomb if the other one is active, we add a additional state that handles both.
-            self.AddState(new(self.Fsm)
+            self.AddState(new FsmState(self.Fsm)
             {
                 Name = "Multiple Breaker",
                 Actions = new FsmStateAction[]

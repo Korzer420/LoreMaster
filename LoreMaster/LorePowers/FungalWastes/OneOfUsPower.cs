@@ -4,6 +4,7 @@ using LoreMaster.Enums;
 using LoreMaster.Extensions;
 using System.Collections;
 using UnityEngine;
+using SFCore.Utils;
 
 namespace LoreMaster.LorePowers.FungalWastes;
 
@@ -55,12 +56,9 @@ public class OneOfUsPower : Power
             {
                 GameObject newCloud = GameObject.Instantiate(Cloud, HeroController.instance.transform.position,
                 Quaternion.identity);
-                newCloud.LocateMyFSM("Control").GetState("Init").ReplaceAction(new Lambda(() => 
-                {
-                    newCloud.LocateMyFSM("Control").SendEvent("DEEP");
-                }) { Name = "Force Deep Cloud" }, 2);
+                newCloud.LocateMyFSM("Control").ChangeTransition("Init", "NORMAL", Active ? "Deep" : "Normal");
                 newCloud.SetActive(true);
-                yield return new WaitForSeconds(4.5f);
+                yield return new WaitForSeconds(4.1f);
                 GameObject.Destroy(newCloud);
             }
         }

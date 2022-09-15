@@ -79,7 +79,7 @@ public class QueenThornsPower : Power
 
         // Create a copy of the counter start for the queen variant.
         FsmState currentWorkingState = fsm.GetState("Counter Start");
-        fsm.AddState(new(fsm.Fsm)
+        fsm.AddState(new FsmState(fsm.Fsm)
         {
             Name = "Queen Counter Start",
             Actions = new FsmStateAction[]
@@ -100,7 +100,7 @@ public class QueenThornsPower : Power
 
         // Create a copy of the counter for the queen variant.
         currentWorkingState = fsm.GetState("Counter");
-        fsm.AddState(new(fsm.Fsm)
+        fsm.AddState(new FsmState(fsm.Fsm)
         {
             Name = "Queen Counter",
             Actions = new FsmStateAction[]
@@ -115,7 +115,7 @@ public class QueenThornsPower : Power
         });
 
         // Add a state to control if the normal or queen variant should be executed.
-        fsm.AddState(new(fsm.Fsm)
+        fsm.AddState(new FsmState(fsm.Fsm)
         {
             Name = "Queen?",
             Actions = new FsmStateAction[]

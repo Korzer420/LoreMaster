@@ -100,16 +100,7 @@ public class UnitedWeStandPower : Power
                     fsmState = companionFsm.GetState("Antic");
                     fsmState.ReplaceAction(new Lambda(() =>
                     {
-                        if (Active)
-                        {
-                            float attackSpeedIncrease = CompanionAmount * 0.1f;
-                            // To prevent some unwanted behavior the attack speed is capped at 0.3 seconds
-                            if (attackSpeedIncrease > 1.2f)
-                                attackSpeedIncrease = 1.2f;
-                            companionFsm.FsmVariables.FindFsmFloat("Attack Timer").Value = 1.5f - attackSpeedIncrease;
-                        }
-                        else
-                            companionFsm.FsmVariables.FindFsmFloat("Attack Timer").Value = 1.5f;
+                        companionFsm.FsmVariables.FindFsmFloat("Attack Timer").Value = Active ? Mathf.Max(0.3f, 1.5f - (CompanionAmount * 0.1f)) : 1.5f;
                     }), 3);
                 }
                 else if (companion.tag.Equals("Weaverling"))
@@ -118,16 +109,12 @@ public class UnitedWeStandPower : Power
                     fsmState = companionFsm.GetState("Run Dir");
                     fsmState.ReplaceAction(new Lambda(() =>
                     {
-                        if (Active)
-                        {
-                            float weaverScale = 1f + (CompanionAmount * 0.1f);
-                            if (weaverScale > 2.2f)
-                                weaverScale = 2.2f;
-                            companionFsm.FsmVariables.FindFsmFloat("Scale").Value = weaverScale;
-                            companionFsm.FsmVariables.FindFsmFloat("Neg Scale").Value = weaverScale * -1f;
-                            companion.transform.localScale = new Vector3(weaverScale, weaverScale);
-                            companion.transform.SetScaleMatching(weaverScale);
-                        }
+                        float weaverScale = 1f + (CompanionAmount * 0.1f);
+                        companionFsm.FsmVariables.FindFsmFloat("Scale").Value = Active ? Mathf.Min(2.2f, weaverScale) : 1f;
+                        companionFsm.FsmVariables.FindFsmFloat("Neg Scale").Value = Active ? Mathf.Max(-2.2f, weaverScale * -1f) : -1f;
+                        companion.transform.localScale = new Vector3(weaverScale, weaverScale);
+                        companion.transform.SetScaleMatching(weaverScale);
+
                         // Imitates the send random event which we removed.
                         companionFsm.SendEvent(LoreMaster.Instance.Generator.Next(0, 2) == 0 ? "L" : "R");
                     }), 7);
