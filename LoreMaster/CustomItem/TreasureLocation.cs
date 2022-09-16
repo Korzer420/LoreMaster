@@ -15,7 +15,6 @@ namespace LoreMaster.CustomItem
 {
     internal class TreasureLocation : ContainerLocation
     {
-        
         private static readonly List<(string, Vector3)> _coordinates = new()
         {
             ("Cliffs_01", new(106.41f, 127.41f)), //127.41 -> 125.71f  1.7f
@@ -91,8 +90,20 @@ namespace LoreMaster.CustomItem
                 fsm.GetState("Transient").ClearTransitions();
                 fsm.GetState("Transient").AddTransition("DESTROY", "Throw Item");
             }
+        }
+
+        internal static TreasureLocation GetLocation(string sceneName)
+        {
+            int treasureIndex = _coordinates.Select(x => x.Item1.ToLower()).IndexOf(sceneName.ToLower());
+            if (treasureIndex != _coordinates.Count)
+            { 
+                TreasureLocation location = Finder.GetLocation($"Treasure_{treasureIndex + 1}") as TreasureLocation;
+                if(location == null)
+                    LoreMaster.Instance.Log("Couldn't found location Treasure_"+(treasureIndex + 1));
+                return location;
+            }
             else
-                LoreMaster.Instance.Log("Treasure Index is: " + TreasureIndex);
+                return null;
         }
 
         internal static TreasureLocation GenerateLocation(int index) => new()

@@ -23,15 +23,17 @@ internal class TreasureHunterPower : Power
 {
     #region Members
 
+    private static Sprite _emptySprite;
+
     private static Sprite[] _chartImages = new Sprite[14];
 
-    private static Sprite[] _treasureSprites = new Sprite[11];
+    private static Sprite[] _treasureSprites = new Sprite[7];
 
-    private static GameObject[] _mapItems = new GameObject[14];
+    private static GameObject[] _inventoryItems = new GameObject[21];
 
     private readonly string[] _specialRelics = new string[] { "silksongJournal", "silverSeal", "bronzeKingIdol", "goldenArcaneEgg" };
 
-    private readonly int[] _treasureBonus = new int[] { 100, 225, 400, 600 }; 
+    private readonly int[] _treasureBonus = new int[] { 100, 225, 400, 600 };
 
     // Key scenes: Ruins1_31, Ruins2_11b, Crossroads_46
     //Lemm: Ruins1_05b
@@ -80,6 +82,21 @@ internal class TreasureHunterPower : Power
         {"goldenArcaneEgg", TreasureState.NotObtained},
         {"magicKey", TreasureState.NotObtained },
         {"dreamMedallion", TreasureState.NotObtained }
+    };
+
+    public override Action SceneAction => () =>
+    {
+        LoreMaster.Instance.Log("Check if player has compass.");
+        if (PlayerData.instance.GetBool("equippedCharm_2")
+        && TreasureLocation.GetLocation(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name) is TreasureLocation location
+        && location.Placement.Items.Any(x => !x.IsObtained()))
+        {
+            LoreMaster.Instance.Log("Location name is: " + location.name);
+            PlayMakerFSM playMakerFSM = PlayMakerFSM.FindFsmOnGameObject(FsmVariables.GlobalVariables.GetFsmGameObject("Enemy Dream Msg").Value, "Display");
+            playMakerFSM.FsmVariables.GetFsmInt("Convo Amount").Value = 1;
+            playMakerFSM.FsmVariables.GetFsmString("Convo Title").Value = location.name;
+            playMakerFSM.SendEvent("DISPLAY ENEMY DREAM");
+        }
     };
 
     #endregion
@@ -134,7 +151,7 @@ internal class TreasureHunterPower : Power
                 else if (Treasures[_specialRelics[self.Fsm.Variables.FindFsmInt("Relic Number").Value - 1]] == TreasureState.Obtained)
                     self.parameters[0].SetValue(500);
             }
-            else if(string.Equals(self.State.Name, "Convo") && string.Equals(self.Fsm.Name, "Relic Discussions"))
+            else if (string.Equals(self.State.Name, "Convo") && string.Equals(self.Fsm.Name, "Relic Discussions"))
             {
                 string key = new(self.Fsm.Variables.FindFsmString("Convo Prefix").Value.Substring("RELICDEALER_".Length).TakeWhile(x => !x.Equals('_')).ToArray());
                 string treasure = null;
@@ -193,7 +210,7 @@ internal class TreasureHunterPower : Power
                 if (Treasures["magicKey"] != TreasureState.NotObtained)
                     self.SendEvent("READY");
             }));
-        else if((string.Equals(self.FsmName, "Conversation Control") && string.Equals(self.gameObject.name, "Tram Call Box"))
+        else if ((string.Equals(self.FsmName, "Conversation Control") && string.Equals(self.gameObject.name, "Tram Call Box"))
             || (string.Equals(self.FsmName, "Tram Door") && string.Equals(self.gameObject.name, "Door Inspect")))
         {
             FsmState extraState = new(self.Fsm)
@@ -341,11 +358,23 @@ internal class TreasureHunterPower : Power
         GameObject chartImage = new("Active Chart");
         chartImage.transform.SetParent(treasureChartPage.transform);
         chartImage.transform.localScale = new(1f, 1f, 1f);
-        chartImage.transform.position = new(-.1f, -2f, 0f);
+        chartImage.transform.localPosition = new(10f, -10f, 0f);
         chartImage.layer = treasureChartPage.layer;
-        chartImage.AddComponent<SpriteRenderer>();
-        chartImage.GetComponent<SpriteRenderer>().sortingLayerID = 629535577;
-        chartImage.GetComponent<SpriteRenderer>().sortingLayerName = "HUD";
+        SpriteRenderer image = chartImage.AddComponent<SpriteRenderer>();
+        image.sortingLayerID = 629535577;
+        image.sortingLayerName = "HUD";
+
+        GameObject titleObject = GameObject.Instantiate(GameObject.Find("_GameCameras").transform.Find("HudCamera/Inventory/Charms/Text Name").gameObject);
+        titleObject.transform.SetParent(treasureChartPage.transform);
+        titleObject.transform.localPosition = new(10f, -11f, -2f);
+        TextMeshPro title = titleObject.GetComponent<TextMeshPro>();
+        title.text = "";
+
+        GameObject descriptionObject = GameObject.Instantiate(GameObject.Find("_GameCameras").transform.Find("HudCamera/Inventory/Charms/Text Desc").gameObject);
+        descriptionObject.transform.SetParent(treasureChartPage.transform);
+        descriptionObject.transform.localPosition = new(10f, -12f, 1f);
+        TextMeshPro desc = descriptionObject.GetComponent<TextMeshPro>();
+        desc.text = "";
 
         float xPosition = -9.1f; // in 3f steps
         float yPosition = 4.6f; // in -1.6f steps
@@ -367,31 +396,42 @@ internal class TreasureHunterPower : Power
                 yPosition -= 1.6f;
             }
             _chartImages[i] = SpriteHelper.CreateSprite("Treasure_Chart_" + (i + 1), ".jpg");
-            _mapItems[i] = map;
+            _inventoryItems[i] = map;
         }
 
         GameObject item = new("Lemm Order");
         item.transform.SetParent(items.transform);
-        item.transform.localScale = new(1.5f, 1.5f, 1f);
-        item.transform.position = new(xPosition, yPosition, 0f);
+        item.transform.localScale = new(2f, 2f, 1f);
+        item.transform.localPosition = new(-6, -9.5f, 0f);
         item.AddComponent<BoxCollider2D>();
         item.layer = treasureChartPage.layer;
         item.AddComponent<SpriteRenderer>().sprite = SpriteHelper.CreateSprite("Lemms_Order");
         item.GetComponent<SpriteRenderer>().sortingLayerID = 629535577;
         item.GetComponent<SpriteRenderer>().sortingLayerName = "HUD";
+        _inventoryItems[14] = item;
+
         int index = 0;
+        xPosition = -3;
+        yPosition = -8;
         foreach (string key in Treasures.Keys)
         {
             GameObject treasure = new(key);
             treasure.transform.SetParent(items.transform);
             treasure.transform.localScale = new(1.5f, 1.5f, 1f);
-            treasure.transform.position = new(xPosition, yPosition, 0f);
+            treasure.transform.localPosition = new(xPosition, yPosition, 0f);
             treasure.AddComponent<BoxCollider2D>();
             treasure.layer = treasureChartPage.layer;
             treasure.AddComponent<SpriteRenderer>().sprite = _treasureSprites[index];
             treasure.GetComponent<SpriteRenderer>().sortingLayerID = 629535577;
             treasure.GetComponent<SpriteRenderer>().sortingLayerName = "HUD";
             index++;
+            xPosition += 3;
+            if (xPosition > 3)
+            {
+                xPosition = -3;
+                yPosition -= 3;
+            }
+            _inventoryItems[index + 14] = treasure;
         }
         // Modify inventory movement
         PlayMakerFSM inventoryFsm = treasureChartPage.LocateMyFSM("Empty UI");
@@ -418,10 +458,10 @@ internal class TreasureHunterPower : Power
         // Create main state
         inventoryFsm.AddState(new FsmState(inventoryFsm.Fsm)
         {
-            Name = "Charts",
+            Name = "Handle Item",
             Actions = new FsmStateAction[]
             {
-                    new Lambda(() => inventoryFsm.gameObject.LocateMyFSM("Update Cursor").FsmVariables.FindFsmGameObject("Item").Value = _mapItems[indexVariable.Value]),
+                    new Lambda(() => inventoryFsm.gameObject.LocateMyFSM("Update Cursor").FsmVariables.FindFsmGameObject("Item").Value = _inventoryItems[indexVariable.Value]),
                     new SetSpriteRendererOrder()
                     {
                         gameObject = new() { GameObject = inventoryFsm.FsmVariables.FindFsmGameObject("Cursor Glow") },
@@ -431,29 +471,63 @@ internal class TreasureHunterPower : Power
                     new Lambda(() => inventoryFsm.gameObject.LocateMyFSM("Update Cursor").SendEvent("UPDATE CURSOR")),
                     new Lambda(() =>
                     {
-                        SpriteRenderer spriteRenderer = chartImage.GetComponent<SpriteRenderer>();
-                        spriteRenderer.sprite = HasCharts[indexVariable.Value] ? _chartImages[indexVariable.Value] : null;
-                        spriteRenderer.color = Finder.GetLocation("Treasure_"+(indexVariable.Value + 1)).Placement.Items.All(x => x.IsObtained()) ? Color.grey : Color.white;
+                        if(indexVariable.Value < 14)
+                        {
+                            titleObject.SetActive(false);
+                            descriptionObject.SetActive(false);
+                            chartImage.SetActive(true);
+                            image.sprite = HasCharts[indexVariable.Value] ? _chartImages[indexVariable.Value] : null;
+                            image.color = Finder.GetLocation("Treasure_"+(indexVariable.Value + 1)).Placement.Items.All(x => x.IsObtained()) ? Color.grey : Color.white;
+                        }
+                        else
+                        {
+                            bool hasTreasure = indexVariable.Value == 14 ? CanPurchaseTreasureCharts : Treasures.Select(x => x.Value).ToArray()[indexVariable.Value  - 15] != TreasureState.NotObtained;
+                            titleObject.SetActive(hasTreasure);
+                            descriptionObject.SetActive(hasTreasure);
+                            chartImage.SetActive(false);
+                            title.text = Properties.TreasureHunter.ResourceManager.GetString("Shop_Title_Special_Treasure_"+(indexVariable.Value - 14));
+                            desc.text = Properties.TreasureHunter.ResourceManager.GetString("Shop_Desc_Special_Treasure_"+(indexVariable.Value - 14));
+                        }
                     })
             }
         });
 
         // Add transition from init to main
-        currentWorkingState.AddTransition("FINISHED", "Charts");
+        currentWorkingState.AddTransition("FINISHED", "Handle Item");
         AddInventoryMovement(inventoryFsm, indexVariable);
+        _emptySprite = GameObject.Find("_GameCameras").transform.Find("HudCamera/Inventory/Charms/Backboards/BB 3").GetComponent<SpriteRenderer>().sprite;
         treasureChartPage.SetActive(false);
+        On.HeroController.CanOpenInventory += HeroController_CanOpenInventory;
+    }
+
+    private static bool HeroController_CanOpenInventory(On.HeroController.orig_CanOpenInventory orig, HeroController self)
+    {
+        try
+        {
+            for (int i = 0; i < 14; i++)
+                _chartImages[0] = HasCharts[i] ? _chartSprite : _emptySprite;
+            _treasureSprites[0] = CanPurchaseTreasureCharts ? _
+        }
+        catch (Exception exception)
+        {
+            LoreMaster.Instance.LogError("An error occured while updating the treasure page: " + exception.Message);
+            LoreMaster.Instance.LogError("An error occured while updating the treasure page: " + exception.StackTrace);
+        }
+        return orig(self);
     }
 
     private static string ModHooks_LanguageGetHook(string key, string sheetTitle, string orig)
     {
-        if(key.Contains("_Special_Treasure_") || key.StartsWith("Sold"))
+        if (key.Contains("_Special_Treasure_") || key.StartsWith("Sold"))
             orig = Properties.TreasureHunter.ResourceManager.GetString(key);
+        else if (key.Contains("Treasure_"))
+            orig = Finder.GetLocation(key.Substring(0, key.Length - 2)).Placement.GetUIName();
         return orig;
     }
 
     private static void AddInventoryMovement(PlayMakerFSM fsm, FsmInt indexVariable)
     {
-        FsmState currentWorkingState = fsm.GetState("Charts");
+        FsmState currentWorkingState = fsm.GetState("Handle Item");
 
         fsm.AddState(new FsmState(fsm.Fsm) { Name = "Up Press" });
         fsm.AddState(new FsmState(fsm.Fsm) { Name = "Right Press" });
@@ -468,16 +542,19 @@ internal class TreasureHunterPower : Power
         // Left
         currentWorkingState = fsm.GetState("Left Press");
         currentWorkingState.AddTransition("OUT", "L Arrow");
-        currentWorkingState.AddTransition("FINISHED", "Charts");
+        currentWorkingState.AddTransition("FINISHED", "Handle Item");
         currentWorkingState.AddLastAction(new Lambda(() =>
         {
-            if (indexVariable.Value == 0 || indexVariable.Value == 7)
+            if (indexVariable.Value == 0 || indexVariable.Value == 7 || indexVariable.Value == 14)
             {
                 indexVariable.Value = -2;
                 fsm.SendEvent("OUT");
                 return;
             }
-            indexVariable.Value = indexVariable.Value == -1 ? 6 : indexVariable.Value - 1;
+            else if (indexVariable.Value == 18)
+                indexVariable.Value = 14;
+            else
+                indexVariable.Value = indexVariable.Value == -1 ? 6 : indexVariable.Value - 1;
             fsm.SendEvent("FINISHED");
         }));
         fsm.GetState("R Arrow").AddTransition("UI LEFT", "Left Press");
@@ -485,10 +562,10 @@ internal class TreasureHunterPower : Power
         // Right
         currentWorkingState = fsm.GetState("Right Press");
         currentWorkingState.AddTransition("OUT", "R Arrow");
-        currentWorkingState.AddTransition("FINISHED", "Charts");
+        currentWorkingState.AddTransition("FINISHED", "Handle Item");
         currentWorkingState.AddLastAction(new Lambda(() =>
         {
-            if (indexVariable.Value == 6 || indexVariable.Value == 13)
+            if (indexVariable.Value == 6 || indexVariable.Value == 13 || indexVariable.Value == 20 || indexVariable.Value == 17)
             {
                 indexVariable.Value = -1;
                 fsm.SendEvent("OUT");
@@ -501,25 +578,37 @@ internal class TreasureHunterPower : Power
 
         // Up
         currentWorkingState = fsm.GetState("Up Press");
-        currentWorkingState.AddTransition("FINISHED", "Charts");
+        currentWorkingState.AddTransition("FINISHED", "Handle Item");
         currentWorkingState.AddLastAction(new Lambda(() =>
         {
+            // For charts
             if (indexVariable.Value <= 6)
-                indexVariable.Value += 7;
-            else
+                indexVariable.Value += 14;
+            else if (indexVariable.Value < 14)
                 indexVariable.Value -= 7;
+            // For treasures
+            else if (indexVariable.Value < 18)
+                indexVariable.Value = 7;
+            else
+                indexVariable.Value -= 3;
             fsm.SendEvent("FINISHED");
         }));
 
         // Down
         currentWorkingState = fsm.GetState("Down Press");
-        currentWorkingState.AddTransition("FINISHED", "Charts");
+        currentWorkingState.AddTransition("FINISHED", "Handle Item");
         currentWorkingState.AddLastAction(new Lambda(() =>
         {
-            if (indexVariable.Value >= 7)
-                indexVariable.Value -= 7;
-            else
+            // For charts
+            if (indexVariable.Value >= 7 && indexVariable.Value < 14)
+                indexVariable.Value = 14;
+            else if (indexVariable.Value < 7)
                 indexVariable.Value += 7;
+            // For treasure
+            else if (indexVariable.Value < 18 && indexVariable.Value > 14)
+                indexVariable.Value += 3;
+            else
+                indexVariable.Value = 0;
             fsm.SendEvent("FINISHED");
         }));
     }
@@ -555,8 +644,8 @@ internal class TreasureHunterPower : Power
         // Force lemm after 1 dreamer to be outside. (This is needed because if QoL skips cutscenes, the flag normally gets skipped)
         else if (orig && (string.Equals(name, "monomonDefeated") || string.Equals(name, "hegemolDefeated") || string.Equals(name, "lurienDefeated")))
             if (!PlayerData.instance.GetBool("monomonDefeated") && !PlayerData.instance.GetBool("hegemolDefeated") && !PlayerData.instance.GetBool("lurienDefeated"))
-            { 
-                PlayerData.instance.SetBool("marmOutside", true); 
+            {
+                PlayerData.instance.SetBool("marmOutside", true);
                 PlayerData.instance.SetBool(nameof(PlayerData.instance.hornetFountainEncounter), true);
             }
 

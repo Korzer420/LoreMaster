@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace LoreMaster.LorePowers.CityOfTears;
 
-internal class BlessingOfTheButterflyPower : Power
+public class BlessingOfTheButterflyPower : Power
 {
     #region Members
 

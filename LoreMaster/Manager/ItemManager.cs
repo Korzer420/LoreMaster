@@ -81,7 +81,7 @@ internal static class ItemManager
             
             treasurePlacements.Add(shopPlacement);
             List<int> chartPrices = new() { 1, 30, 69, 120, 160, 200, 230, 290, 420, 500, 750, 870, 1000, 1150 };
-            for (int i = 1; i < 16; i++)
+            for (int i = 1; i < 15; i++)
             {
                 int rolledPrice = chartPrices[LoreMaster.Instance.Generator.Next(0, chartPrices.Count)];
                 chartPrices.Remove(rolledPrice);
@@ -116,13 +116,14 @@ internal static class ItemManager
             List<AbstractItem> availableTreasures = TreasureHunterPower.GetTreasureItems();
             _customItems.AddRange(availableTreasures);
             // Place the treasures
-            for (int i = 0; i < 15; i++)
+            for (int i = 0; i < 14; i++)
                 if (Finder.GetLocation("Treasure_" + (i + 1)) == null)
                 {
                     TreasureLocation treasureLocation = TreasureLocation.GenerateLocation(i);
                     AbstractPlacement abstractPlacement = treasureLocation.Wrap();
                     abstractPlacement.Items.Add(availableTreasures[i]);
                     treasurePlacements.Add(abstractPlacement);
+                    Finder.DefineCustomLocation(treasureLocation);
                 }
             ItemChangerMod.AddPlacements(treasurePlacements);
         }
