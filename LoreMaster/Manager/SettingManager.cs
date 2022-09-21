@@ -140,41 +140,57 @@ internal class SettingManager
     {
         _fromMenu = true;
         orig(self);
-        if (PlayerData.instance.GetBool("killedBindingSeal") && !PowerManager.ActivePowers.Any(x => x is SacredShellPower))
-            PowerManager.GetPowerByKey("EndOfPathOfPain", out Power power);
-        else
-            ModHooks.SetPlayerBoolHook += TrackPathOfPain;
+        try
+        {
+            if (PlayerData.instance.GetBool("killedBindingSeal") && !PowerManager.ActivePowers.Any(x => x is SacredShellPower))
+                PowerManager.GetPowerByKey("POP", out Power power);
+            else
+                ModHooks.SetPlayerBoolHook += TrackPathOfPain;
 
-        ModHooks.LanguageGetHook += LoreManager.Instance.GetText;
-        On.PlayMakerFSM.OnEnable += FsmEdits;
-        On.DeactivateIfPlayerdataTrue.OnEnable += ForceMyla;
-        On.DeactivateIfPlayerdataFalse.OnEnable += PreventMylaZombie;
-        SendEventByName.OnEnter += EndAllPowers;
-        if (ModHooks.GetMod("Randomizer 4") is Mod)
-        {
-            AbstractItem.BeforeGiveGlobal += GiveLoreItem;
-            RandomizerManager.CheckForRandoFile();
+            ModHooks.LanguageGetHook += LoreManager.Instance.GetText;
+            On.PlayMakerFSM.OnEnable += FsmEdits;
+            On.DeactivateIfPlayerdataTrue.OnEnable += ForceMyla;
+            On.DeactivateIfPlayerdataFalse.OnEnable += PreventMylaZombie;
+            SendEventByName.OnEnter += EndAllPowers;
+            if (ModHooks.GetMod("Randomizer 4") is Mod)
+            {
+                AbstractItem.BeforeGiveGlobal += GiveLoreItem;
+                RandomizerManager.CheckForRandoFile();
+            }
+            else
+            {
+                LoreManager.Instance.CanRead = true;
+                LoreManager.Instance.CanListen = true;
+            }
         }
-        else
+        catch (Exception exception)
         {
-            LoreManager.Instance.CanRead = true;
-            LoreManager.Instance.CanListen = true;
+            LoreMaster.Instance.LogError("An error occured in continue: " + exception.Message);
+            LoreMaster.Instance.LogError("An error occured in continue: " + exception.StackTrace);
         }
     }
 
     private IEnumerator ReturnToMenu(On.GameManager.orig_ReturnToMainMenu orig, GameManager self, GameManager.ReturnToMainMenuSaveModes saveMode, Action<bool> callback)
     {
-        PowerManager.DisableAllPowers();
-        LoreMaster.Instance.Handler.StopAllCoroutines();
-        CurrentArea = Area.None;
-        On.PlayMakerFSM.OnEnable -= FsmEdits;
-        On.DeactivateIfPlayerdataTrue.OnEnable -= ForceMyla;
-        On.DeactivateIfPlayerdataFalse.OnEnable -= PreventMylaZombie;
-        ModHooks.SetPlayerBoolHook -= TrackPathOfPain;
-        SendEventByName.OnEnter -= EndAllPowers;
-        ModHooks.LanguageGetHook -= LoreManager.Instance.GetText;
-        if (ModHooks.GetMod("Randomizer 4", true) is Mod mod)
-            AbstractItem.BeforeGiveGlobal -= GiveLoreItem;
+        try
+        {
+            PowerManager.DisableAllPowers();
+            LoreMaster.Instance.Handler.StopAllCoroutines();
+            CurrentArea = Area.None;
+            On.PlayMakerFSM.OnEnable -= FsmEdits;
+            On.DeactivateIfPlayerdataTrue.OnEnable -= ForceMyla;
+            On.DeactivateIfPlayerdataFalse.OnEnable -= PreventMylaZombie;
+            ModHooks.SetPlayerBoolHook -= TrackPathOfPain;
+            SendEventByName.OnEnter -= EndAllPowers;
+            ModHooks.LanguageGetHook -= LoreManager.Instance.GetText;
+            if (ModHooks.GetMod("Randomizer 4", true) is Mod mod)
+                AbstractItem.BeforeGiveGlobal -= GiveLoreItem;
+        }
+        catch (Exception exception)
+        {
+            LoreMaster.Instance.LogError("An error occured in returning: " + exception.Message);
+            LoreMaster.Instance.LogError("An error occured in returning: " + exception.StackTrace);
+        }
         return orig(self, saveMode, callback);
     }
 
@@ -189,7 +205,7 @@ internal class SettingManager
     {
         if (name.Equals("killedBindingSeal") && orig)
         {
-            PowerManager.GetPowerByKey("EndOfPathOfPain", out Power power);
+            PowerManager.GetPowerByKey("POP", out Power power);
             // This hook is no longer needed after obtaining the power.
             ModHooks.SetPlayerBoolHook -= TrackPathOfPain;
         }
@@ -316,9 +332,33 @@ internal class SettingManager
                 self.GetState("Convo Choice").ClearTransitions();
                 self.GetState("Convo Choice").Actions = new HutongGames.PlayMaker.FsmStateAction[]
                 {
-                    new Lambda(() => self.SendEvent("FINISHED"))
+                    new Lambda(() =>
+                    {
+                        if(!PlayerData.instance.GetBool(nameof(PlayerData.instance.elderbugGaveFlower)) && PlayerData.instance.GetBool(nameof(PlayerData.instance.hasXunFlower)) && !PlayerData.instance.GetBool(nameof(PlayerData.instance.xunFlowerBroken)))
+                            self.SendEvent(!PlayerData.instance.GetBool(nameof(PlayerData.instance.elderbugRequestedFlower)) ? "FLOWER" : "FLOWER2");
+                        else
+                            self.SendEvent("FINISHED");
+                    })
                 };
                 self.GetState("Convo Choice").AddTransition("FINISHED", "Meeting Choice");
+                self.GetState("Convo Choice").AddTransition("FLOWER", "Flower Offer");
+                self.GetState("Convo Choice").AddTransition("FLOWER2", "Flower Reoffer");
+                self.AddState(new HutongGames.PlayMaker.FsmState(self.Fsm)
+                {
+                    Name = "Good Deed",
+                    Actions = new HutongGames.PlayMaker.FsmStateAction[]
+                    {
+                        new Lambda(() => {
+                            HeroController.instance.AddGeo(1200);
+                            PlayerData.instance.SetInt(nameof(PlayerData.instance.dreamOrbs), PlayerData.instance.GetInt(nameof(PlayerData.instance.dreamOrbs)) + 300);
+                            PlayMakerFSM.BroadcastEvent("DREAM ORB COLLECT");
+                            self.SendEvent("FINISHED");
+                        })
+                    }
+                });
+                self.GetState("Flower Accept").ClearTransitions();
+                self.GetState("Flower Accept").AddTransition("CONVO_FINISH", "Good Deed");
+                self.GetState("Good Deed").AddTransition("FINISHED", "Talk Finish");
             }
         }
         // Prevent killing ghosts with abilities.
@@ -327,14 +367,14 @@ internal class SettingManager
             string ghostName = "";
             try
             {
-                ghostName = self.gameObject.LocateMyFSM("Conversation Control").FsmVariables.FindFsmString("Ghost Name").Value.ToUpper();
+                ghostName = self.gameObject?.LocateMyFSM("Conversation Control")?.FsmVariables?.FindFsmString("Ghost Name")?.Value?.ToUpper();
                 if (string.Equals(ghostName, "POGGY") || string.Equals(ghostName, "HIVEQUEEN")
                     || string.Equals(ghostName, "JONI") || string.Equals(ghostName, "GRAVEDIGGER")
                     || string.Equals(ghostName, "GRASSHOPPER") || string.Equals(ghostName, "MARISSA"))
                 {
                     self.GetState("Revek?").ReplaceAction(new Lambda(() =>
                     {
-                        // If rando is used, to prevent locking out of progress, ghost with abilities will became immune entirely.
+                        // Prevent the ghosts death, if it power hasn't been obtained.
                         if (!PowerManager.HasObtainedPower(ghostName, false))
                             self.SendEvent("IMMUNE");
                         else
@@ -496,6 +536,14 @@ internal class SettingManager
         string optionFile = Path.Combine(Path.GetDirectoryName(typeof(MindBlast).Assembly.Location), "options_" + GameManager.instance.profileID + ".txt");
         try
         {
+#if DEBUG
+            foreach (Power power in PowerManager.GetAllPowers())
+            {
+                if (!PowerManager.ActivePowers.Contains(power))
+                    PowerManager.ActivePowers.Add(power);
+                power.Tag = PowerTag.Global;
+            }
+#endif
             if (File.Exists(optionFile))
             {
                 using StreamReader reader = new(optionFile);
@@ -522,7 +570,7 @@ internal class SettingManager
                             break;
                         powerName += letter;
                     }
-                    LoreMaster.Instance.Log("Power name should be: " + powerName);
+
                     if (!PowerManager.GetPowerByName(powerName, out Power power, true, false) && !PowerManager.GetPowerByKey(powerName, out power, false))
                         continue;
                     // Skip the name
@@ -562,7 +610,6 @@ internal class SettingManager
         // Just to make sure the controller exist. A desperate attempt.
         if (_fromMenu && (HeroController.instance == null || !HeroController.instance.acceptingInput))
             yield return new WaitUntil(() => HeroController.instance != null && HeroController.instance.acceptingInput);
-
         Area newArea = CurrentArea;
 
         // Figure out the current Map zone. (Dream world counts as the same area)

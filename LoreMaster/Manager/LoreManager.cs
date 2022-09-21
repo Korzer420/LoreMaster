@@ -132,7 +132,7 @@ internal class LoreManager
                 }
                 if (string.Equals(key, "PLAQUE_WARN"))
                 {
-                    PowerManager.GetPowerByKey("EndOfPathOfPain", out Power popPower, false);
+                    PowerManager.GetPowerByKey("POP", out Power popPower, false);
                     if (popPower.Tag != PowerTag.Remove)
                     {
                         displayText += "<page>For those, that reveals the secret, awaits the power:";

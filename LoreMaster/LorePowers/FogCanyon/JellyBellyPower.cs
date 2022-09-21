@@ -21,21 +21,24 @@ public class JellyBellyPower : Power
 
     #endregion
 
+    #region Properties
+
+    public Rigidbody2D PlayerRigidBody => _playerRigidBody == null ? _playerRigidBody = HeroController.instance.gameObject.GetComponent<Rigidbody2D>() : _playerRigidBody;
+
+    #endregion
+
     #region Event Handler
 
     private void Float()
     {
-        if (_playerRigidBody.gravityScale == 0)
+        if (PlayerRigidBody.gravityScale == 0)
             return;
-        _playerRigidBody.gravityScale = HeroController.instance.transitionState == GlobalEnums.HeroTransitionState.WAITING_TO_TRANSITION ? 0.64f : 0.79f;
+        PlayerRigidBody.gravityScale = HeroController.instance.transitionState == GlobalEnums.HeroTransitionState.WAITING_TO_TRANSITION ? 0.64f : 0.79f;
     }
 
     #endregion
 
     #region Protected Methods
-
-    /// <inheritdoc/>
-    protected override void Initialize() => _playerRigidBody = HeroController.instance.gameObject.GetComponent<Rigidbody2D>();
 
     /// <inheritdoc/>
     protected override void Enable()
@@ -51,7 +54,7 @@ public class JellyBellyPower : Power
         HeroController.instance.BIG_FALL_TIME -= 2.2f;
         if (HeroController.instance.BIG_FALL_TIME < 1.1f)
             HeroController.instance.BIG_FALL_TIME = 1.1f;
-        _playerRigidBody.gravityScale = .79f;
+        PlayerRigidBody.gravityScale = .79f;
     }
 
     #endregion

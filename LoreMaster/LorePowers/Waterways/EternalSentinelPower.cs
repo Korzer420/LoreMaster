@@ -23,6 +23,12 @@ public class EternalSentinelPower : Power
 
     #endregion
 
+    #region Properties
+
+    public tk2dSprite BaldurSprite => _baldurSprite == null ? _baldurSprite = GameObject.Find("Knight/Charm Effects").transform.Find("Blocker Shield").gameObject.GetComponentInChildren<tk2dSprite>() : _baldurSprite;
+
+    #endregion
+
     #region Event Handler
 
     private void CharmUpdate(PlayerData data, HeroController controller)
@@ -30,12 +36,12 @@ public class EternalSentinelPower : Power
         if (data.GetBool(nameof(data.equippedCharm_10)))
         {
             PlayerData.instance.SetInt(nameof(PlayerData.instance.blockerHits), 10);
-            _baldurSprite.color = new(1f, 0.4f, 0f);
+            BaldurSprite.color = new(1f, 0.4f, 0f);
             return;
         }
 
         PlayerData.instance.SetInt(nameof(PlayerData.instance.blockerHits), 7);
-        _baldurSprite.color = Color.white;
+        BaldurSprite.color = Color.white;
     }
 
     private void PlayMakerFSM_OnEnable(On.PlayMakerFSM.orig_OnEnable orig, PlayMakerFSM self)
@@ -88,7 +94,7 @@ public class EternalSentinelPower : Power
     protected override void Enable()
     {
         if (PlayerData.instance.GetBool(nameof(PlayerData.instance.equippedCharm_10)))
-            _baldurSprite.color = new(1f, 0.4f, 0f);
+            BaldurSprite.color = new(1f, 0.4f, 0f);
         ModHooks.CharmUpdateHook += CharmUpdate;
         On.PlayMakerFSM.OnEnable += PlayMakerFSM_OnEnable;
     }
@@ -97,7 +103,7 @@ public class EternalSentinelPower : Power
     protected override void Disable()
     {
         ModHooks.CharmUpdateHook -= CharmUpdate;
-        _baldurSprite.color = Color.white;
+        BaldurSprite.color = Color.white;
         On.PlayMakerFSM.OnEnable -= PlayMakerFSM_OnEnable;
         if (PlayerData.instance.GetInt(nameof(PlayerData.instance.blockerHits)) > 4)
             PlayerData.instance.SetInt(nameof(PlayerData.instance.blockerHits), 4);

@@ -2,6 +2,7 @@ using LoreMaster.Enums;
 using LoreMaster.UnityComponents;
 using System;
 using System.Collections;
+using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
@@ -27,6 +28,22 @@ public class ConcussiveStrikePower : Power
 
     #endregion
 
+    #region Properties
+
+    public GameObject[] NailArts 
+    {
+        get
+        {
+            if (_nailArts.Any(x => x == null))
+                Initialize();
+            return _nailArts;
+        }
+    }
+
+    public MethodInfo InvulnerableCall => _invulnerableCall == null ? _invulnerableCall = HeroController.instance.GetType().GetMethod("Invulnerable", BindingFlags.NonPublic | BindingFlags.Instance) : _invulnerableCall;
+
+    #endregion
+
     #region Event Handler
 
     private void EnemyTookHit(On.HealthManager.orig_TakeDamage orig, HealthManager self, HitInstance hitInstance)
@@ -35,7 +52,7 @@ public class ConcussiveStrikePower : Power
         if (concussive == null)
         {
             // Only apply concussion on great slash or dash slash hit
-            if (hitInstance.AttackType == AttackTypes.Nail && (_nailArts[0].activeSelf || _nailArts[1].activeSelf))
+            if (hitInstance.AttackType == AttackTypes.Nail && (NailArts[0].activeSelf || NailArts[1].activeSelf))
             {
                 GameObject child = GameObject.Instantiate(LoreMaster.Instance.PreloadedObjects["Mantis Heavy Flyer"], self.transform);
                 child.name = "Concussion";
@@ -47,7 +64,7 @@ public class ConcussiveStrikePower : Power
         else if (hitInstance.DamageDealt > 0)
         {
             // Nail hits extends the duration of concussion (except cyclone slash) and increase their damage
-            if (hitInstance.AttackType == AttackTypes.Nail && !_nailArts[2].activeSelf)
+            if (hitInstance.AttackType == AttackTypes.Nail && !NailArts[2].activeSelf)
             {
                 concussive.ConcussiveTime += 1f;
                 hitInstance.DamageDealt = Convert.ToInt16(hitInstance.DamageDealt * 1.1f) + 1;
@@ -68,7 +85,7 @@ public class ConcussiveStrikePower : Power
             {
                 // If the enemy deals no damage it will not trigger the i frames and cause the knight to take the damage next frame, which would make this rather pointless.
                 // Therefore we doing some witchcraft to trigger the i frames manually if no damage is applied because of this.
-                _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine((IEnumerator)_invulnerableCall.Invoke(HeroController.instance, new object[] { 1.5f }));
+                _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine((IEnumerator)InvulnerableCall.Invoke(HeroController.instance, new object[] { 1.5f }));
             }
         }
 
@@ -86,7 +103,6 @@ public class ConcussiveStrikePower : Power
         _nailArts[0] = attacks.transform.Find("Great Slash").gameObject;
         _nailArts[1] = attacks.transform.Find("Dash Slash").gameObject;
         _nailArts[2] = attacks.transform.Find("Cyclone Slash").gameObject;
-        _invulnerableCall = HeroController.instance.GetType().GetMethod("Invulnerable", BindingFlags.NonPublic | BindingFlags.Instance);
     }
 
     /// <inheritdoc/>

@@ -46,6 +46,22 @@ public class BagOfMushroomsPower : Power
 
     #region Properties
 
+    public GameObject MushroomBag
+    {
+        get
+        {
+            if(_mushroomBag == null)
+            {
+                _mushroomBag = new("Mushroom Bag");
+                _mushroomBag.transform.SetParent(GameObject.Find("Knight")?.transform);
+                _mushroomBag.transform.localScale = new(1f, 1f);
+                _mushroomBag.transform.localPosition = new(.4f, .4f);
+                _mushroomBag.AddComponent<SpriteRenderer>().sprite = _mushroomSprite;
+            }
+            return _mushroomBag;
+        }
+    }
+
     /// <summary>
     /// Gets the flag that indicates if the player has eaten the same mushroom twice in row, which causes a weaker effect.
     /// </summary>
@@ -62,7 +78,7 @@ public class BagOfMushroomsPower : Power
     {
         try
         {
-            if (_activeEffect == 0 && _mushroomBag.activeSelf && !_pressed && InputHandler.Instance.inputActions.quickMap.IsPressed)
+            if (_activeEffect == 0 && MushroomBag.activeSelf && !_pressed && InputHandler.Instance.inputActions.quickMap.IsPressed)
             {
                 _pressed = true;
                 LoreMaster.Instance.Handler.StartCoroutine(ChangeChoice());
@@ -194,11 +210,6 @@ public class BagOfMushroomsPower : Power
     /// <inheritdoc/>
     protected override void Initialize()
     {
-        _mushroomBag = new("Mushroom Bag");
-        _mushroomBag.transform.SetParent(GameObject.Find("Knight").transform);
-        _mushroomBag.transform.localScale = new(1f, 1f);
-        _mushroomBag.transform.localPosition = new(.4f, .4f);
-        _mushroomBag.AddComponent<SpriteRenderer>().sprite = _mushroomSprite;
         GameObject healthPrefab = GameObject.Find("_GameCameras/HudCamera/Hud Canvas/Health/Health 11");
         float space = healthPrefab.transform.localPosition.x - GameObject.Find("_GameCameras/HudCamera/Hud Canvas/Health/Health 10").transform.localPosition.x;
 
@@ -216,7 +227,7 @@ public class BagOfMushroomsPower : Power
     protected override void Enable()
     {
         ModHooks.HeroUpdateHook += ShroomControl;
-        _mushroomBag.SetActive(true);
+        MushroomBag.SetActive(true);
     }
 
     /// <inheritdoc/>
@@ -227,8 +238,8 @@ public class BagOfMushroomsPower : Power
             RevertMushroom();
         _activeEffect = 0;
         _selectedEffect = LoreMaster.Instance.Generator.Next(1, 5);
-        _mushroomBag.GetComponent<SpriteRenderer>().color = _colors[_selectedEffect - 1];
-        _mushroomBag.SetActive(false);
+        MushroomBag.GetComponent<SpriteRenderer>().color = _colors[_selectedEffect - 1];
+        MushroomBag.SetActive(false);
     }
 
     #endregion
@@ -244,7 +255,7 @@ public class BagOfMushroomsPower : Power
         _selectedEffect++;
         if (_selectedEffect > 4)
             _selectedEffect = 1;
-        _mushroomBag.GetComponent<SpriteRenderer>().color = _colors[_selectedEffect - 1];
+        MushroomBag.GetComponent<SpriteRenderer>().color = _colors[_selectedEffect - 1];
         yield return new WaitForSeconds(.5f);
         _pressed = false;
     }
@@ -294,7 +305,7 @@ public class BagOfMushroomsPower : Power
     private IEnumerator Saturation()
     {
         _activeEffect = _selectedEffect;
-        _mushroomBag.SetActive(false);
+        MushroomBag.SetActive(false);
         _selectedEffect = 0;
         EatMushroom();
         float passedTime = 0f;
@@ -311,8 +322,8 @@ public class BagOfMushroomsPower : Power
         yield return new WaitForSeconds(180f);
         _activeEffect = 0;
         _selectedEffect = LoreMaster.Instance.Generator.Next(1, 5);
-        _mushroomBag.GetComponent<SpriteRenderer>().color = _colors[_selectedEffect - 1];
-        _mushroomBag.SetActive(true);
+        MushroomBag.GetComponent<SpriteRenderer>().color = _colors[_selectedEffect - 1];
+        MushroomBag.SetActive(true);
     }
 
     /// <summary>

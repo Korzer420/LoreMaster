@@ -100,13 +100,6 @@ public abstract class Power
     /// </summary>
     protected virtual void Disable() { }
 
-    #region Hard mode
-
-    /// <summary>
-    /// Initialize the twisted version of this power.
-    /// </summary>
-    protected virtual void TwistInitialize() => _initialized = true;
-
     /// <summary>
     /// Enables the twisted version of this power.
     /// </summary>

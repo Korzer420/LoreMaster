@@ -25,6 +25,12 @@ public class DreamBlessingPower : Power
 
     #endregion
 
+    #region Properties
+
+    public GameObject WeaverPrefab => _weaverlingPrefab == null ? _weaverlingPrefab = GameObject.Find("Knight/Charm Effects").LocateMyFSM("Weaverling Control").GetState("Spawn").GetFirstActionOfType<SpawnObjectFromGlobalPool>().gameObject.Value : _weaverlingPrefab;
+
+    #endregion
+
     #region Event Handler
 
     private void EnemyDreamnailReaction_RecieveDreamImpact(On.EnemyDreamnailReaction.orig_RecieveDreamImpact orig, EnemyDreamnailReaction self)
@@ -37,9 +43,9 @@ public class DreamBlessingPower : Power
 
         // Herrah... don't ask.
         if (PlayerData.instance.GetBool(nameof(PlayerData.instance.hegemolDefeated)) && !self.gameObject.name.Contains("Prayer Slug"))
-            if (_spawnedWeavers.Count < 40)
+            if (_spawnedWeavers.Count < 20)
                 for (int i = 0; i < (PlayerData.instance.GetBool(nameof(PlayerData.instance.dreamNailUpgraded)) ? 4 : 2); i++)
-                    _spawnedWeavers.Add(GameObject.Instantiate(_weaverlingPrefab, HeroController.instance.transform.position, Quaternion.identity));
+                    _spawnedWeavers.Add(GameObject.Instantiate(WeaverPrefab, HeroController.instance.transform.position, Quaternion.identity));
 
         if (PlayerData.instance.GetBool(nameof(PlayerData.instance.monomonDefeated)) && !self.gameObject.name.Contains("Prayer Slug"))
         {
@@ -81,34 +87,12 @@ public class DreamBlessingPower : Power
     #region Protected Methods
 
     /// <inheritdoc/>
-    protected override void Initialize()
-           => _weaverlingPrefab = GameObject.Find("Knight/Charm Effects").LocateMyFSM("Weaverling Control").GetState("Spawn").GetFirstActionOfType<SpawnObjectFromGlobalPool>().gameObject.Value;
-
-    /// <inheritdoc/>
     protected override void Enable()
            => On.EnemyDreamnailReaction.RecieveDreamImpact += EnemyDreamnailReaction_RecieveDreamImpact;
 
     /// <inheritdoc/>
     protected override void Disable()
            => On.EnemyDreamnailReaction.RecieveDreamImpact -= EnemyDreamnailReaction_RecieveDreamImpact;
-
-    #endregion
-
-    #region Private Methods
-
-    private IEnumerator WeaverLifeTime()
-    {
-        float passedTime = 0f;
-        while (passedTime < 15f)
-        {
-            passedTime += Time.deltaTime;
-            yield return null;
-        }
-
-        foreach (GameObject weaver in _spawnedWeavers)
-            GameObject.Destroy(weaver);
-        _spawnedWeavers.Clear();
-    }
 
     #endregion
 }

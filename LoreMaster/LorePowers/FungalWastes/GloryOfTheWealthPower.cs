@@ -71,6 +71,16 @@ public class GloryOfTheWealthPower : Power
     /// </summary>
     public static int GloryCost { get; set; } = 0;
 
+    public GameObject PayObject
+    {
+        get
+        {
+            if (_payObject == null)
+                Initialize();
+            return _payObject;
+        }
+    }
+
     #endregion
 
     #region Event handler
@@ -130,7 +140,7 @@ public class GloryOfTheWealthPower : Power
         ModHooks.HeroUpdateHook -= ModHooks_HeroUpdateHook;
         ModHooks.GetPlayerBoolHook += ModHooks_GetPlayerBoolHook;
         _active = false;
-        _payObject.SetActive(false);
+        PayObject.SetActive(false);
     }
 
     #endregion
@@ -142,16 +152,16 @@ public class GloryOfTheWealthPower : Power
     /// </summary>
     private IEnumerator Negotiation()
     {
-        _payObject.SetActive(true);
+        PayObject.SetActive(true);
         float passedTime = 0f;
         while (true)
         {
             // Even though this might seem useless, I'm not the biggest fan of setting the gameobject state each frame, which is why we only do it once when the effect is active.
-            if(GloryCost > 0 || _active)
-                _payObject.SetActive(true);
+            if (GloryCost > 0 || _active)
+                PayObject.SetActive(true);
             while (GloryCost > 0 || _active)
             {
-                
+
                 passedTime += Time.deltaTime;
                 if (_active && !PlayerData.instance.GetBool(nameof(PlayerData.instance.atBench)) && PlayerData.instance.GetInt(nameof(PlayerData.instance.geo)) >= GloryCost)
                 {
@@ -159,26 +169,26 @@ public class GloryOfTheWealthPower : Power
                     {
                         GloryCost++;
                         HeroController.instance.TakeGeo(GloryCost);
-                        _payObject.GetComponent<DisplayItemAmount>().textObject.text = "- " + GloryCost;
-                        _payObject.GetComponent<DisplayItemAmount>().textObject.color = new(1f, 0f, 1f);
+                        PayObject.GetComponent<DisplayItemAmount>().textObject.text = "- " + GloryCost;
+                        PayObject.GetComponent<DisplayItemAmount>().textObject.color = new(1f, 0f, 1f);
                         passedTime = 0f;
                     }
                 }
-                else if(GloryCost > 0)
+                else if (GloryCost > 0)
                 {
                     _active = false;
                     if (passedTime >= DeflationTime)
                     {
                         GloryCost--;
-                        _payObject.GetComponent<DisplayItemAmount>().textObject.text = "- " + GloryCost;
-                        _payObject.GetComponent<DisplayItemAmount>().textObject.color = new(0f, .75f, 0f);
+                        PayObject.GetComponent<DisplayItemAmount>().textObject.text = "- " + GloryCost;
+                        PayObject.GetComponent<DisplayItemAmount>().textObject.color = new(0f, .75f, 0f);
                         passedTime = 0f;
                     }
                 }
                 yield return null;
             }
             _active = false;
-            _payObject.SetActive(false);
+            PayObject.SetActive(false);
             yield return null;
         }
     }

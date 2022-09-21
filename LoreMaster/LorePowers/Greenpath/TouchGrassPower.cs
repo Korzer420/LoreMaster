@@ -1,4 +1,5 @@
 using LoreMaster.Enums;
+using LoreMaster.Manager;
 using System.Collections;
 using UnityEngine;
 
@@ -9,8 +10,6 @@ public class TouchGrassPower : Power
     #region Members
 
     private bool _currentlyRunning;
-
-    private Collider2D _heroCollider;
 
     private Collider2D _triggeredCollider;
 
@@ -112,8 +111,6 @@ public class TouchGrassPower : Power
     {
         if (!_currentlyRunning && (collider.tag.Equals("Player") || collider.gameObject.name.Equals("HeroBox")))
         {
-            if (_heroCollider == null)
-                _heroCollider = collider;
             _triggeredCollider = sourceCollider;
             _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(TouchGrass());
         }
@@ -122,7 +119,6 @@ public class TouchGrassPower : Power
     /// <summary>
     /// Coroutine to wait for standing long enough on grass to heal.
     /// </summary>
-    /// <returns></returns>
     private IEnumerator TouchGrass()
     {
         _currentlyRunning = true;
@@ -131,15 +127,15 @@ public class TouchGrassPower : Power
             float passedTime = 0f;
             while (passedTime <= HealTime)
             {
-                if (_triggeredCollider.IsTouching(_heroCollider) || _heroCollider.IsTouching(_triggeredCollider))
-                {
-                    yield return null;
-                    passedTime += Time.deltaTime;
-                }
-                else
+                if(_triggeredCollider == null || HeroManager.Collider == null || (!_triggeredCollider.IsTouching(HeroManager.Collider) && !HeroManager.Collider.IsTouching(_triggeredCollider)))
                 {
                     _currentlyRunning = false;
                     yield break;
+                }
+                else
+                {
+                    yield return null;
+                    passedTime += Time.deltaTime;
                 }
             }
             if (PlayerData.instance.GetInt("Health") < PlayerData.instance.GetInt(nameof(PlayerData.instance.maxHealth)))

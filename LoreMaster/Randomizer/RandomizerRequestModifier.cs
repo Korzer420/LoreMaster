@@ -1,5 +1,6 @@
 using LoreMaster.Manager;
 using RandomizerMod.RC;
+using RandomizerMod.Settings;
 
 namespace LoreMaster.Randomizer;
 
@@ -60,10 +61,10 @@ internal class RandomizerRequestModifier
             {
                 info.getItemDef = () => new RandomizerMod.RandomizerData.ItemDef()
                 {
-                    MajorItem = true,
+                    MajorItem = false,
                     PriceCap = 1250,
                     Name = "Reading",
-                    Pool = "Extra Lore"
+                    Pool = "Skill"
                 };
             });
         }
@@ -79,10 +80,10 @@ internal class RandomizerRequestModifier
             {
                 info.getItemDef = () => new RandomizerMod.RandomizerData.ItemDef()
                 {
-                    MajorItem = true,
+                    MajorItem = false,
                     PriceCap = 1250,
                     Name = "Listening",
-                    Pool = "Extra Lore"
+                    Pool = "Skill"
                 };
             });
         }

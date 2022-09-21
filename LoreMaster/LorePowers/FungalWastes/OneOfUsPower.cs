@@ -4,6 +4,7 @@ using LoreMaster.Enums;
 using LoreMaster.Extensions;
 using System.Collections;
 using UnityEngine;
+using SFCore.Utils;
 
 namespace LoreMaster.LorePowers.FungalWastes;
 
@@ -21,14 +22,13 @@ public class OneOfUsPower : Power
 
     #endregion
 
-    #region Protected Methods
+    #region Properties
 
-    /// <inheritdoc/>
-    protected override void Initialize()
-    {
-        _cloud = GameObject.Find("_GameManager");
-        _cloud = _cloud.transform.Find("GlobalPool/Knight Spore Cloud(Clone)").gameObject;
-    }
+    public GameObject Cloud => _cloud == null ? GameObject.Find("_GameManager").transform.Find("GlobalPool/Knight Spore Cloud(Clone)").gameObject : _cloud;
+
+    #endregion
+
+    #region Protected Methods
 
     /// <inheritdoc/>
     protected override void Enable() => _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(EmitCloud());
@@ -54,14 +54,11 @@ public class OneOfUsPower : Power
             yield return new WaitForSeconds(12f);
             if (!InputHandler.Instance.inputActions.superDash.IsPressed && !GameManager.instance.isPaused)
             {
-                GameObject newCloud = GameObject.Instantiate(_cloud, HeroController.instance.transform.position,
+                GameObject newCloud = GameObject.Instantiate(Cloud, HeroController.instance.transform.position,
                 Quaternion.identity);
-                newCloud.LocateMyFSM("Control").GetState("Init").ReplaceAction(new Lambda(() => 
-                {
-                    newCloud.LocateMyFSM("Control").SendEvent("DEEP");
-                }) { Name = "Force Deep Cloud" }, 2);
+                newCloud.LocateMyFSM("Control").ChangeTransition("Init", "NORMAL", Active ? "Deep" : "Normal");
                 newCloud.SetActive(true);
-                yield return new WaitForSeconds(4.5f);
+                yield return new WaitForSeconds(4.1f);
                 GameObject.Destroy(newCloud);
             }
         }

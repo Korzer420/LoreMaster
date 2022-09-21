@@ -107,7 +107,7 @@ internal static class PowerManager
         {"WP_WORKSHOP_01", new ShadowForgedPower() },
         {"WP_THRONE_01", new ShiningBoundPower() },
         {"PLAQUE_WARN", new DiminishingCursePower() },
-        {"EndOfPathOfPain", new SacredShellPower() { DefaultTag = PowerTag.Exclude } },
+        {"POP", new SacredShellPower() { DefaultTag = PowerTag.Exclude } },
         // Unused
         //{"ELDERBUG", new ElderbugHitListPower() { DefaultTag = PowerTag.Remove, Tag = PowerTag.Remove } }
     };

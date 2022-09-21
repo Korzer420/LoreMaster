@@ -8,6 +8,7 @@ using System;
 using System.Collections;
 using System.Linq;
 using UnityEngine;
+using HutongGames.PlayMaker.Actions;
 
 namespace LoreMaster.LorePowers.HowlingCliffs;
 
@@ -37,7 +38,7 @@ public class JonisProtectionPower : Power
     /// <summary>
     /// Gets the indicator if the bonus health can be taken.
     /// </summary>
-    public bool ShouldEffectFreeze => _immune || _dialogueFSM.Any(x => x.ActiveStateName.Equals("Box Up")) || !HeroController.instance.CanInput();
+    public bool ShouldEffectFreeze => _immune || DialogueFsm.Any(x => x.ActiveStateName.Equals("Box Up")) || !HeroController.instance.CanInput();
 
     /// <inheritdoc/>
     public override Action SceneAction => () =>
@@ -47,6 +48,16 @@ public class JonisProtectionPower : Power
             LoreMaster.Instance.Handler.StopCoroutine(_runningCoroutine);
         _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(FadingLifeblood());
     };
+
+    public PlayMakerFSM[] DialogueFsm 
+    {
+        get 
+        {
+            if (_dialogueFSM == null)
+                Initialize();
+            return _dialogueFSM;
+        }
+    }
 
     #endregion
 
@@ -112,23 +123,25 @@ public class JonisProtectionPower : Power
                     _immune = true;
                 }));
         }
-        else if (string.Equals(self.FsmName,"Inspection") && self.gameObject.name.Contains("tablet"))
-        {
-            FsmState fsmState = self.GetState("Prompt Up");
-            fsmState.ReplaceAction(new Lambda(() =>
-            {
-                PlayMakerFSM.BroadcastEvent("LORE PROMPT UP");
-                _immune = true;
-            })
-            { Name = "Prompt Up Immunity" }, 7);
 
-            fsmState = self.GetState("Regain Control");
-            fsmState.ReplaceAction(new Lambda(() =>
-            {
-                _immune = false;
-                PlayerData.instance.SetBool("disablePause", false);
-            })
-            { Name = "Remove Immunity" }, 1);
+        orig(self);
+    }
+
+    private void OnSendEventByNameAction(On.HutongGames.PlayMaker.Actions.SendEventByName.orig_OnEnter orig, SendEventByName self)
+    {
+        if (self.Fsm.FsmComponent.gameObject.name.Contains("tablet") && string.Equals(self.Fsm.FsmComponent.FsmName, "Inspection") && string.Equals(self.Fsm.FsmComponent.ActiveStateName, "Prompt Up") && string.Equals(self.sendEvent.Value, "LORE PROMPT UP"))
+        {
+            _immune = true;
+        }
+
+        orig(self);
+    }
+
+    private void OnSetPlayerDataBoolAction(On.HutongGames.PlayMaker.Actions.SetPlayerDataBool.orig_OnEnter orig, SetPlayerDataBool self)
+    {
+        if (self.Fsm.FsmComponent.gameObject.name.Contains("tablet") && string.Equals(self.Fsm.FsmComponent.FsmName, "Inspection") && string.Equals(self.Fsm.FsmComponent.ActiveStateName, "Regain Control"))
+        {
+            _immune = false;
         }
 
         orig(self);
@@ -136,14 +149,17 @@ public class JonisProtectionPower : Power
 
     #endregion
 
-    #region Protected Methods
+        #region Protected Methods
 
-    /// <inheritdoc/>
+        /// <inheritdoc/>
     protected override void Initialize()
     {
         _dialogueFSM[0] = GameObject.Find("_GameCameras/HudCamera/DialogueManager").LocateMyFSM("Box Open");
         _dialogueFSM[1] = GameObject.Find("_GameCameras/HudCamera/DialogueManager").LocateMyFSM("Box Open YN");
         _dialogueFSM[2] = GameObject.Find("_GameCameras/HudCamera/DialogueManager").LocateMyFSM("Box Open Dream");
+
+        On.HutongGames.PlayMaker.Actions.SendEventByName.OnEnter += OnSendEventByNameAction;
+        On.HutongGames.PlayMaker.Actions.SetPlayerDataBool.OnEnter += OnSetPlayerDataBoolAction;
     }
 
     /// <inheritdoc/>

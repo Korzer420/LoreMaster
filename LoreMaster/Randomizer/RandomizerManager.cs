@@ -14,7 +14,7 @@ using System.Linq;
 using LoreMaster.LorePowers.CityOfTears;
 using LoreMaster.LorePowers.RestingGrounds;
 using LoreMaster.LorePowers;
-using Modding;
+using ItemChanger.Tags;
 
 namespace LoreMaster.Randomizer;
 
@@ -152,7 +152,7 @@ public static class RandomizerManager
                 Finder.DefineCustomItem(NpcItem.CreateItem("Willoh", "GIRAFFE_MEET", "As a bug, I'd be scared of eating unknown mushrooms.", "Willoh"));
                 Finder.DefineCustomItem(NpcItem.CreateItem("Moss_Prophet", "MOSS_CULTIST_01", "I'm not sure about this... just take it away.", "Moss_Prophet"));
                 Finder.DefineCustomItem(NpcItem.CreateItem("Fluke_Hermit", "FLUKE_HERMIT_IDLE_1", "The words spoken by the child of the A L L U R I N G mother.", "Fluke_Hermit", "CP3"));
-                Finder.DefineCustomItem(NpcItem.CreateItem("Quirrel", "QUIRREL_MINES_1", "The wisdom of a real adventurer, which can swim fairly good. :)", "Quirrel"));
+                Finder.DefineCustomItem(NpcItem.CreateItem("Quirrel", "QUIRREL_MINES_1", "The wisdom of a real adventurer, which can swim fairly good. :)", "Quirrel", "Quirrel"));
                 Finder.DefineCustomItem(NpcItem.CreateItem("Queen", "QUEEN_MEET", "The queen sent this through the kingdom for the day, someone like you arrives. How do I know? Well... don't ask.", "Queen"));
                 Finder.DefineCustomItem(NpcItem.CreateItem("Marissa", "MARISSA_TALK", "From the most beautiful voice of the world besides me.", "Marissa", "Ghosts"));
                 Finder.DefineCustomItem(NpcItem.CreateItem("Grasshopper", "GRASSHOPPER_TALK", "Considering that these live in the garden, being an arsonist might not be the best for them.", "Grasshopper", "Ghosts"));
@@ -233,7 +233,7 @@ public static class RandomizerManager
             Finder.DefineCustomItem(new AbilityItem()
             {
                 name = "Reading",
-                Item = Enums.CustomItemType.Reading,
+                Item = CustomItemType.Reading,
                 UIDef = new BigUIDef()
                 {
                     name = new BoxedString("Reading"),
@@ -245,7 +245,19 @@ public static class RandomizerManager
                     bigSprite = (Finder.GetItem("World_Sense").UIDef.Clone() as BigUIDef).bigSprite
                 },
                 boolName = "Reading", // The bool logic gets executed seperately. This is just for avoiding Serialization errors.
-                moduleName = "Unused" // Same as boolName.
+                moduleName = "Unused", // Same as boolName.
+                tags = new() 
+                {
+                    new InteropTag()
+                    {
+                        Message = "RandoSupplementalMetadata",
+                        Properties = new()
+                        {
+                            {"ModSource", "LoreMaster" },
+                            {"PoolGroup", "Skills" }
+                        }
+                    }
+                }
             });
             Finder.DefineCustomLocation(new AbilityLocation()
             {
@@ -263,7 +275,7 @@ public static class RandomizerManager
             Finder.DefineCustomItem(new AbilityItem()
             {
                 name = "Listening",
-                Item = Enums.CustomItemType.Listening,
+                Item = CustomItemType.Listening,
                 UIDef = new BigUIDef()
                 {
                     name = new BoxedString("Listening"),
@@ -276,7 +288,18 @@ public static class RandomizerManager
                 },
                 boolName = "Listening", // The bool logic gets executed seperately. This is just for avoiding Serialization errors.
                 moduleName = "Unused", // Same as boolName.
-
+                tags = new()
+                {
+                    new InteropTag()
+                    {
+                        Message = "RandoSupplementalMetadata",
+                        Properties = new()
+                        {
+                            {"ModSource", "LoreMaster" },
+                            {"PoolGroup", "Skills" }
+                        }
+                    }
+                }
             });
             Finder.DefineCustomLocation(new AbilityLocation()
             {

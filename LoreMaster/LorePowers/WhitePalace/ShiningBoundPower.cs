@@ -33,8 +33,13 @@ public class ShiningBoundPower : Power
         while (true)
         {
             yield return new WaitForSeconds(2f);
-            HeroController.instance.AddMPCharge(PlayerData.instance.equippedCharms.Count);
+            if (PlayerData.instance.equippedCharms.Count > 0)
+            {
+                HeroController.instance.AddMPCharge(PlayerData.instance.equippedCharms.Count);
+            }
+
         }
+
     }
 
     #endregion
