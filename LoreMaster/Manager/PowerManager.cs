@@ -234,6 +234,9 @@ internal static class PowerManager
             TreasureHunterPower.HasCharts[i] = false;
         // Unsure if this is needed, but just in case.
         ActivePowers.Clear();
+#if DEBUG
+        ActivePowers.AddRange(_powerList.Values);
+#endif
     }
 
     internal static void DisableAllPowers()

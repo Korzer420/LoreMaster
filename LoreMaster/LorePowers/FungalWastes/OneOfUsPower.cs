@@ -1,10 +1,7 @@
-using ItemChanger.Extensions;
-using ItemChanger.FsmStateActions;
 using LoreMaster.Enums;
-using LoreMaster.Extensions;
+using SFCore.Utils;
 using System.Collections;
 using UnityEngine;
-using SFCore.Utils;
 
 namespace LoreMaster.LorePowers.FungalWastes;
 
@@ -12,7 +9,7 @@ public class OneOfUsPower : Power
 {
     #region Members
 
-    private GameObject _cloud = GameObject.Find("_GameManager").transform.Find("GlobalPool/Knight Spore Cloud(Clone)").gameObject;
+    private GameObject _cloud;
 
     #endregion
 
