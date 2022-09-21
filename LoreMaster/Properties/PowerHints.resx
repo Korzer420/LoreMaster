@@ -120,6 +120,9 @@
   <data name="BagOfMushrooms" xml:space="preserve">
     <value>Allows you to consume a yummy mushroom snack occasionly. The saturation may power you up. Caution: Can cause throw up if you eat too much of the same ones. Press quick map to select another and cdash + dash to consume the mushroom.</value>
   </data>
+  <data name="BestMenderInTheWorld" xml:space="preserve">
+    <value>The best day of Menderbug lifes occured! He asked Mender Berri out and she said yes! Together, they made the signs of this kingdom even better. They even hide some reward for the good souls that let them have work to do.</value>
+  </data>
   <data name="BlessingOfTheButterfly" xml:space="preserve">
     <value>Your Wings have received the blessing of the butterfly, which allows them to crush enemies beneath them and repel even higher. While the wings rest on you, your enemies shall be shattered by your feet. From your best girl (besides Myla) c:</value>
   </data>
@@ -143,6 +146,9 @@
   </data>
   <data name="DiminishingCurse" xml:space="preserve">
     <value>If you suffer from the curse of greed, it will vanish once you experienced enough pain after resting.</value>
+  </data>
+  <data name="DramaticEntrance" xml:space="preserve">
+    <value>Staying up against a powerful foe will restore all your power for a glorious fight.</value>
   </data>
   <data name="DreamBlessing" xml:space="preserve">
     <value>The dream artifact uses the power it absorbs from their powerful victims to use it's hidden power.&lt;br&gt;Monomon: Through her knowledge she exposes the foes biggest weakness.&lt;br&gt;Lurien: His gaze may freeze the enemy in place.&lt;br&gt;Herrah: Invoking her children from the victim.</value>
@@ -204,6 +210,9 @@
   <data name="JonisProtection" xml:space="preserve">
     <value>When going to a new area, you will receive the gift of Joni, which will quickly fade away.</value>
   </data>
+  <data name="LaughableThreat" xml:space="preserve">
+    <value>Can you hear it? Those pesky peasant laugh about you behind your back. They don't even consider you a real threat to them. Oh they will learn to respect you, once you swung your nail at one of them.</value>
+  </data>
   <data name="LifebloodOmen" xml:space="preserve">
     <value>Sometimes you will be haunted by a ghost from a distant land. Killing it will grant you the essence of it's soul. A more powerful weapon may attract more powerful foes.</value>
   </data>
@@ -261,11 +270,17 @@
   <data name="SoulExtractEfficiency" xml:space="preserve">
     <value>Allows you to drain soul more efficient from your foes and draw you reserve more quickly.</value>
   </data>
+  <data name="StagAdoption" xml:space="preserve">
+    <value>Small scared stags want a good home. Take this egg with you and care for it. Touching it a bit tougher, may hatch it instantly and allow you to help the stag fulfill their purpose. After setting it free and waiting a bit a new one may appear here.</value>
+  </data>
   <data name="TouchGrass" xml:space="preserve">
     <value>The flora may nourish your shell, if you stand long enough near it.</value>
   </data>
   <data name="Tourist" xml:space="preserve">
     <value>Want to see the incredible black egg temple? Talk to the firefly to the right. Drinks are not included in the price. Also offers back travel.</value>
+  </data>
+  <data name="TreasureHunter" xml:space="preserve">
+    <value>Revealing the buried treasures of the kingdom, may give you their effect and the favor of the relic seeker.</value>
   </data>
   <data name="TrueForm" xml:space="preserve">
     <value>While the true form is revealed, its vessels nail gets more powerful. Especially near your true self.</value>

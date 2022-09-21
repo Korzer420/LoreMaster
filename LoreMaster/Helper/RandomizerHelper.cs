@@ -39,6 +39,7 @@ internal static class RandomizerHelper
          {"Palace_Workshop","WP_WORKSHOP_01"},
          {"Palace_Throne","WP_THRONE_01"},
          {"Path_of_Pain_Entrance","PLAQUE_WARN"},
+         {"RELICDEALER_DOOR", "RELICDEALER_DOOR" },
          //{"Elderbug", "ELDERBUG" },
          {"Gravedigger", "GRAVEDIGGER" },
          {"Poggy", "POGGY" },

@@ -101,6 +101,20 @@ public abstract class Power
     protected virtual void Disable() { }
 
     /// <summary>
+    /// Enables the twisted version of this power.
+    /// </summary>
+    protected virtual void TwistEnable() { }
+
+    /// <summary>
+    /// Disables the twisted version of this power.
+    /// </summary>
+    protected virtual void TwistDisable() { }
+
+    #endregion
+
+    #region Wrapper Methods
+
+    /// <summary>
     /// Wrapper to initialize the power
     /// </summary>
     private bool InitializePower()
@@ -115,7 +129,7 @@ public abstract class Power
         }
         catch (Exception exception)
         {
-            LoreMaster.Instance.LogError("Error when initializing " + PowerName+": "+exception.Message+exception.StackTrace);
+            LoreMaster.Instance.LogError("Error when initializing " + PowerName + ": " + exception.Message + exception.StackTrace);
         }
         return false;
     }
@@ -168,7 +182,9 @@ public abstract class Power
             LoreMaster.Instance.LogError("Error while loading " + PowerName + ": " + exception.Source);
             LoreMaster.Instance.LogError("Error while loading " + PowerName + ": " + exception.StackTrace);
         }
-    }
+    } 
+
+    #endregion
 
     #endregion
 }

@@ -8,25 +8,23 @@ using System;
 namespace LoreMaster.CustomItem;
 
 [Serializable]
-internal class EmbeddedSprite : ISprite
+internal class CustomSprite : ISprite
 {
-    private string _key = "Lore";
+    public CustomSprite() { }
 
-    private bool _isRandoSprite;
-
-    private static SpriteManager _manager = new(Assembly.GetExecutingAssembly(), "LoreMaster.Resources.");
-
-    public EmbeddedSprite() { }
-
-    public EmbeddedSprite(string key, bool isRandoSprite = true)
+    public CustomSprite(string key, bool isRandoSprite = true)
     {
         if (!string.IsNullOrEmpty(key))
-            _key = key;
-        _isRandoSprite = isRandoSprite;
+            Key = key;
+        RandoSprite = isRandoSprite;
     }
 
-    [Newtonsoft.Json.JsonIgnore]
-    public Sprite Value => SpriteHelper.CreateSprite(_key, _isRandoSprite);
+    public string Key { get; set; } = "Lore";
 
-    public ISprite Clone() => new EmbeddedSprite(_key,_isRandoSprite);
+    public bool RandoSprite { get; set; }
+
+    [Newtonsoft.Json.JsonIgnore]
+    public Sprite Value => SpriteHelper.CreateSprite(Key, RandoSprite);
+
+    public ISprite Clone() => new CustomSprite(Key, RandoSprite);
 }

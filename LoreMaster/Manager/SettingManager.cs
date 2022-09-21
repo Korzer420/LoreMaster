@@ -11,9 +11,11 @@ using LoreMaster.Enums;
 using LoreMaster.Extensions;
 using LoreMaster.Helper;
 using LoreMaster.LorePowers;
+using LoreMaster.LorePowers.CityOfTears;
 using LoreMaster.LorePowers.FungalWastes;
 using LoreMaster.LorePowers.QueensGarden;
 using LoreMaster.LorePowers.WhitePalace;
+using LoreMaster.Properties;
 using LoreMaster.Randomizer;
 using LoreMaster.UnityComponents;
 using Modding;
@@ -101,28 +103,18 @@ internal class SettingManager
     {
         try
         {
-            // Add items for the black egg temple teleporter.
             ItemChangerMod.CreateSettingsProfile(false);
-            List<MutablePlacement> teleportItems = new();
-            MutablePlacement teleportPlacement = new CoordinateLocation() { x = 35.0f, y = 5.4f, elevation = 0, sceneName = "Ruins1_27", name = "City_Teleporter" }.Wrap() as MutablePlacement;
-            teleportPlacement.Cost = new Paypal { ToTemple = true };
-            teleportPlacement.Add(new TouristMagnetItem("City_Teleporter"));
-            teleportItems.Add(teleportPlacement);
-
-            MutablePlacement secondPlacement = new CoordinateLocation() { x = 57f, y = 5f, elevation = 0, sceneName = "Room_temple", name = "Temple_Teleporter" }.Wrap() as MutablePlacement;
-            secondPlacement.Cost = new Paypal { ToTemple = false };
-            secondPlacement.Add(new TouristMagnetItem("Temple_Teleporter"));
-            teleportItems.Add(secondPlacement);
-            ItemChangerMod.AddPlacements(teleportItems);
-
-
-            GloryOfTheWealthPower.GloryCost = 0;
+            ItemManager.ResetItems();
             On.PlayMakerFSM.OnEnable += FsmEdits;
             orig(self, permaDeath, bossRush);
             ModHooks.SetPlayerBoolHook += TrackPathOfPain;
             _fromMenu = true;
-
             PowerManager.ResetPowers();
+#if DEBUG
+            //foreach (Power power in PowerManager.GetAllPowers())
+            //    if (!PowerManager.ActivePowers.Contains(power))
+            //        PowerManager.ActivePowers.Add(power);
+#endif
             ModHooks.LanguageGetHook += LoreManager.Instance.GetText;
             On.DeactivateIfPlayerdataTrue.OnEnable += ForceMyla;
             On.DeactivateIfPlayerdataFalse.OnEnable += PreventMylaZombie;
@@ -137,7 +129,6 @@ internal class SettingManager
                 LoreManager.Instance.CanRead = true;
                 LoreManager.Instance.CanListen = true;
             }
-
         }
         catch (Exception exception)
         {
@@ -249,6 +240,9 @@ internal class SettingManager
                 // Initialization
                 if (_fromMenu)
                 {
+#if DEBUG
+
+#endif
                     if (string.Equals(arg1.name.ToLower(), "town"))
                     {
                         Transform elderbug = GameObject.Find("_NPCs/Elderbug").transform;
@@ -271,7 +265,8 @@ internal class SettingManager
                     }
                     catch (Exception exception)
                     {
-                        LoreMaster.Instance.LogError("An error occured while modifying IC: " + exception.Message);
+                        LoreMaster.Instance.LogError("An error occured while modifying dreamer cutscene: " + exception.Message);
+                        LoreMaster.Instance.LogError("An error occured while modifying dreamer cutscene: " + exception.StackTrace);
                     }
 
                     // Load in changes from the options file (if it exists)
@@ -659,6 +654,7 @@ internal class SettingManager
             _fromMenu = false;
             PowerManager.FirstPowerInitialization();
             PowerManager.UpdateTracker(newArea);
+            TreasureHunterPower.UpdateTreasurePage();
         }
         LorePage.UpdateLorePage();
 

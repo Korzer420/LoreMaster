@@ -19,9 +19,9 @@ public class LoreMasterLocalSaveData
     public List<string> AcquiredPowersKeys { get; set; } = new();
 
     /// <summary>
-    /// Gets or sets the current cost of glory of the wealth.
+    /// Gets or sets power specific data.
     /// </summary>
-    public int GloryCost { get; set; }
+    public LocalPowerSaveData PowerData { get; set; }
 
     /// <summary>
     /// Gets or sets the value which indicates, if the player can read lore tablets. (Rando only)

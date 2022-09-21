@@ -19,7 +19,7 @@ internal class NpcItem : LoreItem
                 name = new BoxedString(itemName?.Replace('_', ' ')),
                 lore = new BoxedString("You shouldn't be able to see this."),
                 shopDesc = new BoxedString(shopDescription),
-                sprite = new CustomItem.EmbeddedSprite(sprite)
+                sprite = new CustomSprite(sprite)
             },
             loreKey = key,
             loreSheet = sheet

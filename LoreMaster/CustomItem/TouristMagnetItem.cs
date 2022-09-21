@@ -16,7 +16,7 @@ public class TouristMagnetItem : AbstractItem
         {
             name = new BoxedString(_name),
             shopDesc = new BoxedString(_name),
-            sprite = new EmbeddedSprite()
+            sprite = new CustomSprite()
         };
         tags = new List<Tag>()
         {

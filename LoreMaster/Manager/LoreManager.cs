@@ -1,5 +1,6 @@
 using LoreMaster.Enums;
 using LoreMaster.LorePowers;
+using LoreMaster.LorePowers.HowlingCliffs;
 using LoreMaster.LorePowers.RestingGrounds;
 using System.Collections.Generic;
 
@@ -51,6 +52,8 @@ internal class LoreManager
     {
         if (key.Equals("LoreMaster"))
             return "Lore Powers";
+        else if (key.Equals("TreasureCharts"))
+            return "Treasure Charts";
         key = ModifyKey(key);
         if (key.Equals("INV_NAME_SUPERDASH"))
         {
@@ -95,12 +98,18 @@ internal class LoreManager
         }
         else if (key.Equals("ELDERBUG_INTRO_MAIN"))
             text = Properties.AdditionalText.ELDERBUG_INTRO_MAIN;
-            //text = "This town may not hold the most interesting wisdom, but the kingdom below sure does. There a plenty of tablets and creatures which you can learn from. " +
-            //    "Maybe someday, I'll be able to call you \"LoreMaster\". Oh what a thought, excuse me. Anyway, if you want to explore the world below, keeping track of " +
-            //    "every knowledge that you acquired might be hard. Let me help you with that. This is a relic which tracks every bit of information that you've collected so far. " +
-            //    "Sometimes, the knowledge can be more of a threat than a blessing. In those cases, touching the ability on the relic while resting may disable them, until you touch it again. " +
-            //    "Maybe you should not waste too much time though. I heard legends that this artifact might lock it's " +
-            //    "power behind a test or something once the one in the time event \"Patch 1.3\" happens... whatever that might be. Don't forget \"Knowledge is power\".";
+        else if (key.Equals("TISO_TOWN_GREET"))
+            text += "<page>Hm... maybe I could teach you something. But not here... if we meet again.";
+        else if (key.Equals("TISO_TOWN_REPEAT"))
+            text = "I said not here. If you are not as weak as you look, we'll meet again.";
+        else if (key.Contains("Menderbug_Warning"))
+            text = Properties.AdditionalText.ResourceManager.GetString(key.Substring(0, key.Length - 2));
+        else if (string.Equals(key, "Menderbug_Journal_1"))
+            text = "Acquired Menderbug Journal entry.";
+        else if (string.Equals(key, "Stag_Egg_Convo"))
+            text = StagAdoptionPower.Instance.CanSpawnStag ? "Stag Egg" : "Broken Stag Egg";
+        else if (string.Equals(key, "Stag_Egg_Desc_Convo"))
+            text = StagAdoptionPower.Instance.CanSpawnStag ? "You can feel something moving inside, maybe knocking let it hatch?" : "The remains of an egg shell.";
         return text;
     }
 
@@ -151,15 +160,17 @@ internal class LoreManager
     {
         if (key.Contains("BRETTA_DIARY"))
             key = "BRETTA";
-        else if (string.Equals(key,"HIVEQUEEN_TALK") || string.Equals(key,"HIVEQUEEN_REPEAT"))
+        else if (key.Contains("MENDER_DIARY"))
+            key = "MENDERBUG";
+        else if (string.Equals(key, "HIVEQUEEN_TALK") || string.Equals(key, "HIVEQUEEN_REPEAT"))
             key = "HIVEQUEEN";
-        else if (string.Equals(key,"JONI_TALK") || string.Equals(key,"JONI_REPEAT"))
+        else if (string.Equals(key, "JONI_TALK") || string.Equals(key, "JONI_REPEAT"))
             key = "JONI";
-        else if (string.Equals(key,"POGGY_TALK") || string.Equals(key,"POGGY_REPEAT"))
+        else if (string.Equals(key, "POGGY_TALK") || string.Equals(key, "POGGY_REPEAT"))
             key = "POGGY";
-        else if (string.Equals(key,"GRAVEDIGGER_TALK") || string.Equals(key,"GRAVEDIGGER_REPEAT"))
+        else if (string.Equals(key, "GRAVEDIGGER_TALK") || string.Equals(key, "GRAVEDIGGER_REPEAT"))
             key = "GRAVEDIGGER";
-        else if (string.Equals(key,"GRASSHOPPER_TALK") || string.Equals(key,"GRASSHOPPER_REPEAT"))
+        else if (string.Equals(key, "GRASSHOPPER_TALK") || string.Equals(key, "GRASSHOPPER_REPEAT"))
             key = "GRASSHOPPER";
         else if (string.Equals(key, "MARISSA_TALK") || string.Equals(key, "MARISSA_REPEAT"))
             key = "MARISSA";
@@ -183,6 +194,10 @@ internal class LoreManager
             key = "EMILITIA";
         else if (IsMossProphet(key))
             key = "MOSSPROPHET";
+        else if (string.Equals(key, "TISO_BENCH_GREET") || string.Equals(key, "TISO_BENCH_REPEAT"))
+            key = "TISO";
+        else if (string.Equals(key, "ZOTE_DEEPNEST_1") || string.Equals(key, "ZOTE_DEEPNEST_2"))
+            key = "ZOTE";
         return key;
     }
 

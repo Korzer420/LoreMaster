@@ -70,6 +70,15 @@ namespace LoreMaster.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die The best day of Menderbug lifes occured! He asked Mender Berri out and she said yes! Together, they made the signs of this kingdom even better. They even hide some reward for the good souls that let them have work to do. ähnelt.
+        /// </summary>
+        internal static string BestMenderInTheWorld {
+            get {
+                return ResourceManager.GetString("BestMenderInTheWorld", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Your Wings have received the blessing of the butterfly, which allows them to crush enemies beneath them and repel even higher. While the wings rest on you, your enemies shall be shattered by your feet. From your best girl (besides Myla) c: ähnelt.
         /// </summary>
         internal static string BlessingOfTheButterfly {
@@ -138,6 +147,15 @@ namespace LoreMaster.Properties {
         internal static string DiminishingCurse {
             get {
                 return ResourceManager.GetString("DiminishingCurse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Staying up against a powerful foe will restore all your power for a glorious fight. ähnelt.
+        /// </summary>
+        internal static string DramaticEntrance {
+            get {
+                return ResourceManager.GetString("DramaticEntrance", resourceCulture);
             }
         }
         
@@ -322,6 +340,15 @@ namespace LoreMaster.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Can you hear it? Those pesky peasant laugh about you behind your back. They don&apos;t even consider you a real threat to them. Oh they will learn to respect you, once you swung your nail at one of them. ähnelt.
+        /// </summary>
+        internal static string LaughableThreat {
+            get {
+                return ResourceManager.GetString("LaughableThreat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Sometimes you will be haunted by a ghost from a distant land. Killing it will grant you the essence of it&apos;s soul. A more powerful weapon may attract more powerful foes. ähnelt.
         /// </summary>
         internal static string LifebloodOmen {
@@ -493,6 +520,15 @@ namespace LoreMaster.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Small scared stags want a good home. Take this egg with you and care for it. Touching it a bit tougher, may hatch it instantly and allow you to help the stag fulfill their purpose. After setting it free and waiting a bit a new one may appear here. ähnelt.
+        /// </summary>
+        internal static string StagAdoption {
+            get {
+                return ResourceManager.GetString("StagAdoption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die The flora may nourish your shell, if you stand long enough near it. ähnelt.
         /// </summary>
         internal static string TouchGrass {
@@ -507,6 +543,15 @@ namespace LoreMaster.Properties {
         internal static string Tourist {
             get {
                 return ResourceManager.GetString("Tourist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Revealing the buried treasures of the kingdom, may give you their effect and the favor of the relic seeker. ähnelt.
+        /// </summary>
+        internal static string TreasureHunter {
+            get {
+                return ResourceManager.GetString("TreasureHunter", resourceCulture);
             }
         }
         

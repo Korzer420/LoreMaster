@@ -106,6 +106,51 @@ namespace LoreMaster.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Congratulations, you killed the only happy bug in the entire kingdom. Are you proud of yourself? Not only did you want to kill them, but you commited to 100+ hits... Good luck in the next run :) ähnelt.
+        /// </summary>
+        internal static string Menderbug_Regret {
+            get {
+                return ResourceManager.GetString("Menderbug_Regret", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Please stop doing this... ähnelt.
+        /// </summary>
+        internal static string Menderbug_Warning_1 {
+            get {
+                return ResourceManager.GetString("Menderbug_Warning_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die If you continue with this, you will regret that. ähnelt.
+        /// </summary>
+        internal static string Menderbug_Warning_2 {
+            get {
+                return ResourceManager.GetString("Menderbug_Warning_2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Your game will END if you continue... ähnelt.
+        /// </summary>
+        internal static string Menderbug_Warning_3 {
+            get {
+                return ResourceManager.GetString("Menderbug_Warning_3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Don&apos;t say I didn&apos;t warn you ähnelt.
+        /// </summary>
+        internal static string Menderbug_Warning_4 {
+            get {
+                return ResourceManager.GetString("Menderbug_Warning_4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die &lt;br&gt;The core is pulsing in the rate of your heart. Just having the pure diamond core near you, let you feel the pressure. It just needs the right vessel to hold it. ähnelt.
         /// </summary>
         internal static string SHELLLESS_DIAMOND_HEART_DESCRIPTION {

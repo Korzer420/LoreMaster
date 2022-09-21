@@ -33,8 +33,34 @@ internal static class PowerManager
 
     private static Dictionary<string, Power> _powerList = new()
     {
-        // Ancient Basin
-        {"ABYSS_TUT_TAB_01", new WeDontTalkAboutShadePower() },
+        // Dirtmouth/King's Pass
+        {"TUT_TAB_01", new WellFocusedPower() },
+        {"TUT_TAB_02", new ScrewTheRulesPower() },
+        {"TUT_TAB_03", new TrueFormPower() },
+        {"BRETTA", new CaringShellPower() },
+        {"GRAVEDIGGER", new RequiemPower() },
+        // Crossroads
+        {"PILGRIM_TAB_01", new ReluctantPilgrimPower() },
+        {"COMPLETION_RATE_UNLOCKED", new GreaterMindPower() { DefaultTag = PowerTag.Global } },
+        {"MYLA", new DiamondDashPower() },
+        {"TISO", new DramaticEntrancePower() },
+        {"MENDERBUG", new BestMenderInTheWorldPower() },
+        // Greenpath
+        {"GREEN_TABLET_01", new TouchGrassPower() },
+        {"GREEN_TABLET_02", new GiftOfUnnPower() },
+        {"GREEN_TABLET_03", new MindblastOfUnnPower() },
+        {"GREEN_TABLET_05", new CamouflagePower() },
+        {"GREEN_TABLET_06", new ReturnToUnnPower() },
+        {"GREEN_TABLET_07", new GraspOfLifePower() },
+        // Fungal Wastes
+        {"FUNG_TAB_04", new OneOfUsPower() },
+        {"FUNG_TAB_01", new PaleLuckPower() },
+        {"FUNG_TAB_02", new ImposterPower() },
+        {"FUNG_TAB_03", new UnitedWeStandPower() },
+        {"MANTIS_PLAQUE_01", new MantisStylePower() },
+        {"MANTIS_PLAQUE_02", new EternalValorPower() },
+        {"PILGRIM_TAB_02", new GloryOfTheWealthPower() },
+        {"WILLOH", new BagOfMushroomsPower() },
         // City of Tears
         {"RUIN_TAB_01", new HotStreakPower() },
         {"FOUNTAIN_PLAQUE_DESC", new TouristPower() {DefaultTag = PowerTag.Global } },
@@ -46,44 +72,28 @@ internal static class PowerManager
         {"EMILITIA", new HappyFatePower() },
         {"MARISSA", new BlessingOfTheButterflyPower() },
         {"POGGY", new DeliciousMealPower() },
-        // Crossroads
-        {"PILGRIM_TAB_01", new ReluctantPilgrimPower() },
-        {"COMPLETION_RATE_UNLOCKED", new GreaterMindPower() { DefaultTag = PowerTag.Global } },
-        {"MYLA", new DiamondDashPower() },
+        {"RELICDEALER_DOOR", new TreasureHunterPower() {DefaultTag = PowerTag.Global } },
+        // Waterways
+        {"DUNG_DEF_SIGN", new EternalSentinelPower() },
+        {"FLUKE_HERMIT", new RelentlessSwarmPower() },
         // Crystal Peaks
         {"QUIRREL", new DiamondCorePower() },
-        // Deepnest
-        {"MASKMAKER", new MaskOverchargePower() },
-        {"MIDWIFE", new InfestedPower() },
-        // Dirtmouth/King's Pass
-        {"TUT_TAB_01", new WellFocusedPower() },
-        {"TUT_TAB_02", new ScrewTheRulesPower() },
-        {"TUT_TAB_03", new TrueFormPower() },
-        {"BRETTA", new CaringShellPower() },
-        {"GRAVEDIGGER", new RequiemPower() },
+        // Resting Grounds
+        {"DREAMERS_INSPECT_RG5", new DreamBlessingPower() },
+        // Howling Cliffs
+        {"CLIFF_TAB_02", new LifebloodOmenPower() },
+        {"JONI", new JonisProtectionPower() },
+        {"STAG_EGG_INSPECT", new StagAdoptionPower() },
         // Fog Canyon
         {"ARCHIVE_01", new FriendOfTheJellyfishPower() },
         {"ARCHIVE_02", new JellyBellyPower() },
         {"ARCHIVE_03", new JellyfishFlowPower() },
-        // Fungal Wastes
-        {"FUNG_TAB_04", new OneOfUsPower() },
-        {"FUNG_TAB_01", new PaleLuckPower() },
-        {"FUNG_TAB_02", new ImposterPower() },
-        {"FUNG_TAB_03", new UnitedWeStandPower() },
-        {"MANTIS_PLAQUE_01", new MantisStylePower() },
-        {"MANTIS_PLAQUE_02", new EternalValorPower() },
-        {"PILGRIM_TAB_02", new GloryOfTheWealthPower() },
-        {"WILLOH", new BagOfMushroomsPower() },
-        // Greenpath
-        {"GREEN_TABLET_01", new TouchGrassPower() },
-        {"GREEN_TABLET_02", new GiftOfUnnPower() },
-        {"GREEN_TABLET_03", new MindblastOfUnnPower() },
-        {"GREEN_TABLET_05", new CamouflagePower() },
-        {"GREEN_TABLET_06", new ReturnToUnnPower() },
-        {"GREEN_TABLET_07", new GraspOfLifePower() },
-        // Howling Cliffs
-        {"CLIFF_TAB_02", new LifebloodOmenPower() },
-        {"JONI", new JonisProtectionPower() },
+        // Ancient Basin
+        {"ABYSS_TUT_TAB_01", new WeDontTalkAboutShadePower() },
+        // Deepnest
+        {"MASKMAKER", new MaskOverchargePower() },
+        {"MIDWIFE", new InfestedPower() },
+        {"ZOTE", new LaughableThreatPower() },
         // Kingdom's Edge
         {"MR_MUSH_RIDDLE_TAB_NORMAL", new WisdomOfTheSagePower() },
         {"BARDOON", new ConcussiveStrikePower() },
@@ -93,11 +103,6 @@ internal static class PowerManager
         {"QUEEN", new QueenThornsPower() },
         {"MOSSPROPHET", new FollowTheLightPower() },
         {"GRASSHOPPER", new GrassBombardementPower() },
-        // Resting Grounds
-        {"DREAMERS_INSPECT_RG5", new DreamBlessingPower() },
-        // Waterways
-        {"DUNG_DEF_SIGN", new EternalSentinelPower() },
-        {"FLUKE_HERMIT", new RelentlessSwarmPower() },
         // White Palace
         {"WP_WORKSHOP_01", new ShadowForgedPower() },
         {"WP_THRONE_01", new ShiningBoundPower() },
@@ -221,6 +226,12 @@ internal static class PowerManager
             // Reset tags to default.
             foreach (string key in _powerList.Keys)
                 _powerList[key].Tag = _powerList[key].DefaultTag;
+        GloryOfTheWealthPower.GloryCost = 0;
+        foreach (string key in TreasureHunterPower.Treasures.Keys.ToList())
+            TreasureHunterPower.Treasures[key] = TreasureState.NotObtained;
+        TreasureHunterPower.CanPurchaseTreasureCharts = false;
+        for (int i = 0; i < TreasureHunterPower.HasCharts.Length; i++)
+            TreasureHunterPower.HasCharts[i] = false;
         // Unsure if this is needed, but just in case.
         ActivePowers.Clear();
     }
@@ -232,6 +243,10 @@ internal static class PowerManager
             power.DisablePower(true);
     }
 
+    /// <summary>
+    /// Loads the acquired powers and tags of powers in the save file.
+    /// </summary>
+    /// <param name="saveData"></param>
     internal static void LoadPowers(LoreMasterLocalSaveData saveData)
     {
         ActivePowers.Clear();
@@ -249,6 +264,26 @@ internal static class PowerManager
         }
     }
 
+    /// <summary>
+    /// Loads power specific data in the save file.
+    /// </summary>
+    /// <param name="saveData"></param>
+    internal static void LoadPowerData(LocalPowerSaveData saveData)
+    {
+        if (saveData == null)
+            return;
+        GloryOfTheWealthPower.GloryCost = saveData.GloryCost;
+        TreasureHunterPower.HasCharts = saveData.TreasureCharts;
+        foreach (string key in saveData.TreasureStates.Keys)
+            if (TreasureHunterPower.Treasures.ContainsKey(key))
+                TreasureHunterPower.Treasures[key] = saveData.TreasureStates[key];
+        TreasureHunterPower.CanPurchaseTreasureCharts = saveData.CanBuyTreasureCharts;
+        StagAdoptionPower.Instance.CanSpawnStag = saveData.CanSpawnStag;
+    }
+
+    /// <summary>
+    /// Saves the acquired powers and tags.
+    /// </summary>
     internal static void SavePowers(ref LoreMasterLocalSaveData saveData)
     {
         foreach (string key in _powerList.Keys)
@@ -262,8 +297,20 @@ internal static class PowerManager
         if (ActivePowers.Any(x => x is PlaceholderPower))
             for (int i = 0; i < ActivePowers.Count(x => x is PlaceholderPower); i++)
                 saveData.AcquiredPowersKeys.Add("dream warrior");
-
     }
+
+    /// <summary>
+    /// Prepare the save data for power specific data.
+    /// </summary>
+    internal static LocalPowerSaveData PreparePowerData() => new()
+    {
+        CanBuyTreasureCharts = TreasureHunterPower.CanPurchaseTreasureCharts,
+        CanSpawnStag = StagAdoptionPower.Instance.CanSpawnStag,
+        GloryCost = GloryOfTheWealthPower.GloryCost,
+        TreasureCharts = TreasureHunterPower.HasCharts,
+        TreasureStates = TreasureHunterPower.Treasures
+    };
+
 
     internal static void AddPower(string key, Power power) => _powerList.Add(key, power);
 
