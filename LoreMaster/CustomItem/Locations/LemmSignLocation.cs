@@ -7,7 +7,7 @@ using ItemChanger.Util;
 using LoreMaster.Randomizer;
 using System.Linq;
 
-namespace LoreMaster.CustomItem
+namespace LoreMaster.CustomItem.Locations
 {
     internal class LemmSignLocation : AutoLocation
     {
@@ -68,7 +68,7 @@ namespace LoreMaster.CustomItem
                 {
                     new Lambda(() =>
                     {
-                        if (!PlayerData.instance.GetBool("marmOutside") || (PlayerData.instance.GetBool("marmOutsideConvo") && Placement.Items.All(x => x.IsObtained())))
+                        if (!PlayerData.instance.GetBool("marmOutside") || PlayerData.instance.GetBool("marmOutsideConvo") && Placement.Items.All(x => x.IsObtained()))
                             fsm.SendEvent("DESTROY");
                     })
                 }

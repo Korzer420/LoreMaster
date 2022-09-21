@@ -6,6 +6,7 @@ using ItemChanger.FsmStateActions;
 using ItemChanger.Items;
 using ItemChanger.UIDefs;
 using LoreMaster.CustomItem;
+using LoreMaster.CustomItem.Locations;
 using LoreMaster.Enums;
 using LoreMaster.Helper;
 using Modding;
@@ -25,9 +26,11 @@ internal class TreasureHunterPower : Power
 
     private static Sprite _emptySprite;
 
+    private static Sprite _chartSprite;
+
     private static Sprite[] _chartImages = new Sprite[14];
 
-    private static Sprite[] _treasureSprites = new Sprite[7];
+    private static Sprite[] _treasureSprites = new Sprite[11];
 
     private static GameObject[] _inventoryItems = new GameObject[21];
 
@@ -55,6 +58,7 @@ internal class TreasureHunterPower : Power
         _treasureSprites[8] = Finder.GetItem(ItemNames.Hallownest_Seal).UIDef.GetSprite();
         _treasureSprites[9] = Finder.GetItem(ItemNames.Kings_Idol).UIDef.GetSprite();
         _treasureSprites[10] = Finder.GetItem(ItemNames.Arcane_Egg).UIDef.GetSprite();
+        _emptySprite = GameObject.Find("_GameCameras").transform.Find("HudCamera/Inventory/Charms/Backboards/BB 3").GetComponent<SpriteRenderer>().sprite;
     }
 
     #endregion
@@ -86,12 +90,10 @@ internal class TreasureHunterPower : Power
 
     public override Action SceneAction => () =>
     {
-        LoreMaster.Instance.Log("Check if player has compass.");
         if (PlayerData.instance.GetBool("equippedCharm_2")
         && TreasureLocation.GetLocation(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name) is TreasureLocation location
         && location.Placement.Items.Any(x => !x.IsObtained()))
         {
-            LoreMaster.Instance.Log("Location name is: " + location.name);
             PlayMakerFSM playMakerFSM = PlayMakerFSM.FindFsmOnGameObject(FsmVariables.GlobalVariables.GetFsmGameObject("Enemy Dream Msg").Value, "Display");
             playMakerFSM.FsmVariables.GetFsmInt("Convo Amount").Value = 1;
             playMakerFSM.FsmVariables.GetFsmString("Convo Title").Value = location.name;
@@ -386,7 +388,7 @@ internal class TreasureHunterPower : Power
             map.transform.position = new(xPosition, yPosition, 0f);
             map.AddComponent<BoxCollider2D>();
             map.layer = treasureChartPage.layer;
-            map.AddComponent<SpriteRenderer>().sprite = SpriteHelper.CreateSprite("Treasure_Chart");
+            map.AddComponent<SpriteRenderer>();
             map.GetComponent<SpriteRenderer>().sortingLayerID = 629535577;
             map.GetComponent<SpriteRenderer>().sortingLayerName = "HUD";
             xPosition += 3f;
@@ -495,25 +497,26 @@ internal class TreasureHunterPower : Power
         // Add transition from init to main
         currentWorkingState.AddTransition("FINISHED", "Handle Item");
         AddInventoryMovement(inventoryFsm, indexVariable);
-        _emptySprite = GameObject.Find("_GameCameras").transform.Find("HudCamera/Inventory/Charms/Backboards/BB 3").GetComponent<SpriteRenderer>().sprite;
+        _chartSprite = SpriteHelper.CreateSprite("Treasure_Chart");
         treasureChartPage.SetActive(false);
-        On.HeroController.CanOpenInventory += HeroController_CanOpenInventory;
     }
 
-    private static bool HeroController_CanOpenInventory(On.HeroController.orig_CanOpenInventory orig, HeroController self)
+    public static void UpdateTreasurePage()
     {
         try
         {
             for (int i = 0; i < 14; i++)
-                _chartImages[0] = HasCharts[i] ? _chartSprite : _emptySprite;
-            _treasureSprites[0] = CanPurchaseTreasureCharts ? _
+                _inventoryItems[i].GetComponent<SpriteRenderer>().sprite = HasCharts[i] ? _chartSprite : _emptySprite;
+            _inventoryItems[14].GetComponent<SpriteRenderer>().sprite = CanPurchaseTreasureCharts ? _treasureSprites[6] : _emptySprite;
+            TreasureState[] states = Treasures.Values.ToArray();
+            for (int i = 15; i < 21; i++)
+                _inventoryItems[i].GetComponent<SpriteRenderer>().sprite = states[i -15] != TreasureState.NotObtained ? _treasureSprites[i - 15] : _emptySprite;
         }
         catch (Exception exception)
         {
             LoreMaster.Instance.LogError("An error occured while updating the treasure page: " + exception.Message);
             LoreMaster.Instance.LogError("An error occured while updating the treasure page: " + exception.StackTrace);
         }
-        return orig(self);
     }
 
     private static string ModHooks_LanguageGetHook(string key, string sheetTitle, string orig)
@@ -628,6 +631,7 @@ internal class TreasureHunterPower : Power
         {
             int number = Convert.ToInt32(new string(name.Skip("Treasure_Chart_".Length).ToArray()));
             HasCharts[number - 1] = orig;
+            UpdateTreasurePage();
         }
         else if (Treasures.ContainsKey(name) && Treasures[name] == TreasureState.NotObtained)
         {
@@ -638,9 +642,13 @@ internal class TreasureHunterPower : Power
                 PlayerData.instance.IncrementInt("trinket" + (treasureIndex + 1));
             }
             Treasures[name] = TreasureState.Obtained;
+            UpdateTreasurePage();
         }
         else if (string.Equals(name, "lemm_Allow"))
+        {
             CanPurchaseTreasureCharts = orig;
+            UpdateTreasurePage();
+        }
         // Force lemm after 1 dreamer to be outside. (This is needed because if QoL skips cutscenes, the flag normally gets skipped)
         else if (orig && (string.Equals(name, "monomonDefeated") || string.Equals(name, "hegemolDefeated") || string.Equals(name, "lurienDefeated")))
             if (!PlayerData.instance.GetBool("monomonDefeated") && !PlayerData.instance.GetBool("hegemolDefeated") && !PlayerData.instance.GetBool("lurienDefeated"))

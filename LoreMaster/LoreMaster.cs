@@ -87,7 +87,8 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         ("Ruins1_23", "Glow Response Mage Computer"), // Soul sanctum lore tablet.
         ("Ruins1_23", "Inspect Region"), // Inspect region for soul sanctum tablet.
         ("Ruins1_23", "Mage"),
-        ("Deepnest_East_16", "Quake Floor")
+        ("Deepnest_East_16", "Quake Floor"),
+        ("Crossroads_47", "Stag")
     };
 
     /// <summary>
@@ -258,18 +259,14 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         try
         {
             PowerManager.LoadPowers(saveData);
-            GloryOfTheWealthPower.GloryCost = saveData.GloryCost;
-            TreasureHunterPower.HasCharts = saveData.TreasureCharts;
+            PowerManager.LoadPowerData(saveData.PowerData);
             LoreManager.Instance.CanRead = ModHooks.GetMod("Randomizer 4") is not Mod mod || saveData.HasReadAbility;
             LoreManager.Instance.CanListen = ModHooks.GetMod("Randomizer 4") is not Mod mod2 || saveData.HasListenAbility;
-            foreach (string key in saveData.TreasureStates.Keys)
-                if (TreasureHunterPower.Treasures.ContainsKey(key))
-                    TreasureHunterPower.Treasures[key] = saveData.TreasureStates[key];
-            TreasureHunterPower.CanPurchaseTreasureCharts = saveData.CanBuyTreasureCharts;
         }
         catch (Exception exception)
         {
             LogError("Error while loading local save data: " + exception.Message);
+            LogError(exception.StackTrace);
         }
     }
 
@@ -280,12 +277,9 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
     {
         LoreMasterLocalSaveData saveData = new();
         PowerManager.SavePowers(ref saveData);
-        saveData.GloryCost = GloryOfTheWealthPower.GloryCost;
-        saveData.TreasureCharts = TreasureHunterPower.HasCharts;
+        saveData.PowerData = PowerManager.PreparePowerData();
         saveData.HasReadAbility = LoreManager.Instance.CanRead;
         saveData.HasListenAbility = LoreManager.Instance.CanListen;
-        saveData.TreasureStates = TreasureHunterPower.Treasures;
-        saveData.CanBuyTreasureCharts = TreasureHunterPower.CanPurchaseTreasureCharts;
         return saveData;
     }
 

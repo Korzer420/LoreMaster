@@ -120,6 +120,9 @@
   <data name="BagOfMushrooms" xml:space="preserve">
     <value>Allows you to pick a mushroom to consume each 180 seconds. White shroom: Increases the speed of the game by 40%. Yellow shroom: Generates 20 soul each second, but causes nausea. Red shroom: Gives you 4 extra health, heals you fully and increases your nail damage by 20%, but you can't dash. Green shroom: Makes you small, decrease the gravity by 50% and doubles all damage taken. Taking the same mushroom twice in a row nerfs it's positive effect by 50%. Taking the same mushroom three times in a row, deals 2 damage to you instead. Press quick map to select another and cdash + dash to consume the mushroom.</value>
   </data>
+  <data name="BestMenderInTheWorld" xml:space="preserve">
+    <value>Menderbug asked Mender Berri out and she said yes ^-^ Most signs of this kingdom are now unbreakable and grant small amount of geo once it. Also causes Menderbug to always appear at the sign. &lt;3</value>
+  </data>
   <data name="BlessingOfTheButterfly" xml:space="preserve">
     <value>Wings now deal 12 damage upon contact with enemy, apply massive knockback downwards and give you slightly more height. While your double jump is on cooldown, instead of taking damage from enemies below you, you deal 4 damage to them, regain soul and jump automatically again. (This does not restore wings)</value>
   </data>
@@ -143,6 +146,9 @@
   </data>
   <data name="DiminishingCurse" xml:space="preserve">
     <value>If you take 10 hits, you will no longer count as overcharmed, resets if you sit on a bench. The UI only updates if you open the charm screen.</value>
+  </data>
+  <data name="DramaticEntrance" xml:space="preserve">
+    <value>Heals you to full health and soul once entering a boss fight. If you have joni's equipped you will be granted up to 8 lifeblood masks instead. In godhome these effects are weakend heavily.</value>
   </data>
   <data name="DreamBlessing" xml:space="preserve">
     <value>Defeated Dreamers grant the dream nail an additional effect (doubled with awoken dreamnail).&lt;br&gt;Lurien: Roots the target for 3 seconds (15 seconds cooldown)&lt;br&gt;Herrah: Spawn 2 weavers. &lt;br&gt;Monomon: Per 100 Essence you have a 1% chance to instant kill the enemy (capped at 125 damage). Capped at 2400 Essence for 24%.</value>
@@ -204,6 +210,9 @@
   <data name="JonisProtection" xml:space="preserve">
     <value>When going to another area, you will be granted 5 life blood (10 if you have Joni's equipped). Each 3 seconds a lifeblood will fade away.</value>
   </data>
+  <data name="LaughableThreat" xml:space="preserve">
+    <value>Most non boss enemies will not be triggered by line of sight. This effect fades away once you hit any enemy. Refreshes on entering a new room.</value>
+  </data>
   <data name="LifebloodOmen" xml:space="preserve">
     <value>Spawns a grimmkin every 180 seconds. Killing the ghost grants 3/6/9 lifeblood (based on ghost level). The ghost disappears if you leave the room or if 90 seconds passed. The chances for the ghost adjust based on your current nail level. I'll will not list the chances here. Look at the repository, if you want to know.</value>
   </data>
@@ -261,11 +270,17 @@
   <data name="SoulExtractEfficiency" xml:space="preserve">
     <value>You gain 5 more soul per hit on enemies and your extra soul vessel soul will be added instantly to be used for spells after casting spell. This does NOT affect focus, unless you do the wind up again.</value>
   </data>
+  <data name="StagAdoption" xml:space="preserve">
+    <value>Using the stag egg on the lore power page spawns a small stag that can bring you to any opened stag station. After using it, the egg respawns after 5 minutes in the stag nest.</value>
+  </data>
   <data name="TouchGrass" xml:space="preserve">
     <value>Every 8 seconds standing on grass, you heal 1 mask. Decreased to 4 seconds if wearing Shape of Unn.</value>
   </data>
   <data name="Tourist" xml:space="preserve">
     <value>You can talk to the firefly to the right to teleport to black egg temple for 50 geo, or back to this room from the temple.</value>
+  </data>
+  <data name="TreasureHunter" xml:space="preserve">
+    <value>Obtained treasure (via the treasure charts that you can purchase at iselda with Lemm's Order) grant you their effect. Special Relics: Increase the amount of geo that Lemm gives you with each relic by 50%. Magic  Key: Opens all locked doors and other mechanisms besides Toll and the Lifeblood Door. Medallion: Increase the chance for an essence drop upon an enemys death to 10% (20% with Dreamwielder)</value>
   </data>
   <data name="TrueForm" xml:space="preserve">
     <value>While your shade is active, you deal 30% more damage and increase your nail length by 25%. The effects are doubled, if you are in the same room as your shade.</value>

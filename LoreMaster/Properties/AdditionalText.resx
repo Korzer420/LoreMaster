@@ -132,6 +132,21 @@
   <data name="FULL_DIAMOND_HEART_NAME" xml:space="preserve">
     <value>Diamond Heart</value>
   </data>
+  <data name="Menderbug_Regret" xml:space="preserve">
+    <value>Congratulations, you killed the only happy bug in the entire kingdom. Are you proud of yourself? Not only did you want to kill them, but you commited to 100+ hits... Good luck in the next run :)</value>
+  </data>
+  <data name="Menderbug_Warning_1" xml:space="preserve">
+    <value>Please stop doing this...</value>
+  </data>
+  <data name="Menderbug_Warning_2" xml:space="preserve">
+    <value>If you continue with this, you will regret that.</value>
+  </data>
+  <data name="Menderbug_Warning_3" xml:space="preserve">
+    <value>Your game will END if you continue...</value>
+  </data>
+  <data name="Menderbug_Warning_4" xml:space="preserve">
+    <value>Don't say I didn't warn you</value>
+  </data>
   <data name="SHELLLESS_DIAMOND_HEART_DESCRIPTION" xml:space="preserve">
     <value>&lt;br&gt;The core is pulsing in the rate of your heart. Just having the pure diamond core near you, let you feel the pressure. It just needs the right vessel to hold it.</value>
   </data>

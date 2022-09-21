@@ -19,24 +19,9 @@ public class LoreMasterLocalSaveData
     public List<string> AcquiredPowersKeys { get; set; } = new();
 
     /// <summary>
-    /// Gets or sets the current cost of glory of the wealth.
+    /// Gets or sets power specific data.
     /// </summary>
-    public int GloryCost { get; set; }
-
-    /// <summary>
-    /// Gets or sets the flag, that indicates if the player can purchase treasure charts from iselda.
-    /// </summary>
-    public bool CanBuyTreasureCharts { get; set; }
-
-    /// <summary>
-    /// Gets or sets the obtained treasure charts.
-    /// </summary>
-    public bool[] TreasureCharts { get; set; } = new bool[14];
-
-    /// <summary>
-    /// Gets or sets the state of the treasures.
-    /// </summary>
-    public Dictionary<string, TreasureState> TreasureStates = new();
+    public LocalPowerSaveData PowerData { get; set; }
 
     /// <summary>
     /// Gets or sets the value which indicates, if the player can read lore tablets. (Rando only)

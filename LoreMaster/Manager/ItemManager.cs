@@ -5,6 +5,8 @@ using ItemChanger.Placements;
 using ItemChanger.Tags;
 using ItemChanger.UIDefs;
 using LoreMaster.CustomItem;
+using LoreMaster.CustomItem.Locations;
+using LoreMaster.Helper;
 using LoreMaster.LorePowers.CityOfTears;
 using LoreMaster.Randomizer.Items;
 using System;
@@ -78,7 +80,7 @@ internal static class ItemManager
             ShopPlacement shopPlacement = (ShopPlacement)iselda2.Wrap();
             shopPlacement.defaultShopItems = DefaultShopItems.IseldaCharms | DefaultShopItems.IseldaMaps
                   | DefaultShopItems.IseldaMapMarkers | DefaultShopItems.IseldaMapPins | DefaultShopItems.IseldaQuill;
-            
+
             treasurePlacements.Add(shopPlacement);
             List<int> chartPrices = new() { 1, 30, 69, 120, 160, 200, 230, 290, 420, 500, 750, 870, 1000, 1150 };
             for (int i = 1; i < 15; i++)
@@ -132,6 +134,30 @@ internal static class ItemManager
             LoreMaster.Instance.LogError("Error while setting up treasure charts: " + exception.Message);
             LoreMaster.Instance.LogError("Error while setting up treasure charts: " + exception.StackTrace);
         }
+
+        StagEggLocation stagEggLocation = new()
+        {
+            name = "Stag_Nest",
+            sceneName = "Cliffs_03",
+            flingType = FlingType.DirectDeposit
+        };
+
+        AbstractPlacement stagPlacement = stagEggLocation.Wrap();
+        stagPlacement.Add(NpcItem.CreateItem("Stag_Egg_Inspect", "STAG_EGG_INSPECT", "See this picture of an egg I took.", "Stag_Egg", "Stag"));
+        stagPlacement.Add(new BoolItem()
+        {
+            fieldName = "hasStagEgg",
+            name = "Stag_Egg",
+            setValue = true,
+            UIDef = new MsgUIDef()
+            {
+                name = new BoxedString("Stag Egg"),
+                shopDesc = new BoxedString("If you are seeing this, something went wrong."),
+                sprite = new CustomSprite("Stag_Egg", false)
+            }
+        });
+
+        ItemChangerMod.AddPlacements(new AbstractPlacement[] { stagPlacement, new ZoteLocation().Wrap() });
     }
 
     /// <summary>

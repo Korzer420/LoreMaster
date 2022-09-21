@@ -103,7 +103,7 @@ public static class RandomizerManager
     /// <summary>
     /// Gets the flag, that indicates if this is a rando file. To prevent missing reference exceptions, this is seperated from <see cref="PlayingRandomizer"/>.
     /// </summary>
-    public static bool RandoFile => RandomizerMod.RandomizerMod.IsRandoSave;
+    private static bool RandoFile => RandomizerMod.RandomizerMod.IsRandoSave;
 
     #endregion
 

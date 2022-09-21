@@ -11,19 +11,19 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace LoreMaster.CustomItem
+namespace LoreMaster.CustomItem.Locations
 {
     internal class TreasureLocation : ContainerLocation
     {
         private static readonly List<(string, Vector3)> _coordinates = new()
         {
             ("Cliffs_01", new(106.41f, 127.41f)), //127.41 -> 125.71f  1.7f
-            ("Crossroads_42", new (7.052f, 13.41f)), 
-            ("Fungus1_Slug", new (44.78f, 14.41f)), 
-            ("Fungus2_10",new (5.8f, 14.41f)), 
-            ("Fungus3_archive_02",new (96f, 92.41f)) , 
-            ("Ruins2_05",new(27.42f,68.41f)) , 
-            ("Waterways_13",new(43.625f, 47.41f)) , 
+            ("Crossroads_42", new (7.052f, 13.41f)),
+            ("Fungus1_Slug", new (44.78f, 14.41f)),
+            ("Fungus2_10",new (5.8f, 14.41f)),
+            ("Fungus3_archive_02",new (96f, 92.41f)) ,
+            ("Ruins2_05",new(27.42f,68.41f)) ,
+            ("Waterways_13",new(43.625f, 47.41f)) ,
             ("Deepnest_30",new(40.1f, 138.41f)) ,
             ("Abyss_06_Core",new(94.6f, 108.41f)) ,
             ("GG_Lurker",new(124.3f, 52.41f)) ,
@@ -51,18 +51,18 @@ namespace LoreMaster.CustomItem
             if (TreasureHunterPower.HasCharts[TreasureIndex] && !Placement.Items.All(x => x.IsObtained()))
             {
                 // Since I'm too incompetent to setup my own fsm, I just take the quake floor one and strip all features off (:
-                GameObject markedGround = GameObject.Instantiate(LoreMaster.Instance.PreloadedObjects["Quake Floor"]);
+                GameObject markedGround = Object.Instantiate(LoreMaster.Instance.PreloadedObjects["Quake Floor"]);
                 markedGround.SetActive(false);
                 markedGround.name = "Treasure Ground";
                 markedGround.transform.position = _coordinates[TreasureIndex].Item2 + new Vector3(0, -1.7f);
                 markedGround.transform.localScale = new(2f, 1f, 1f);
                 foreach (Transform child in markedGround.transform)
-                    GameObject.Destroy(child.gameObject);
+                    Object.Destroy(child.gameObject);
 
                 // Remove unnecessary components.
-                Component.Destroy(markedGround.GetComponent<PersistentBoolItem>());
-                Component.Destroy(markedGround.LocateMyFSM("quake_floor_shake"));
-                Component.Destroy(markedGround.GetComponent<PlayMakerCollisionExit2D>());
+                Object.Destroy(markedGround.GetComponent<PersistentBoolItem>());
+                Object.Destroy(markedGround.LocateMyFSM("quake_floor_shake"));
+                Object.Destroy(markedGround.GetComponent<PlayMakerCollisionExit2D>());
                 markedGround.SetActive(true);
                 PlayMakerFSM fsm = markedGround.LocateMyFSM("quake_floor");
                 fsm.FsmName = "Treasure Ground";
@@ -74,7 +74,7 @@ namespace LoreMaster.CustomItem
                        new Lambda(() =>
                        {
                            // We remove the collider early so we can adjust the position of the ground, to prevent the shiny getting stuck in the ground.
-                           Component.Destroy(markedGround.GetComponent<BoxCollider2D>());
+                           Object.Destroy(markedGround.GetComponent<BoxCollider2D>());
                            markedGround.transform.localPosition += new Vector3(0, 1.7f);
 
                            Container container = Container.GetContainer(Container.Shiny);
@@ -82,7 +82,7 @@ namespace LoreMaster.CustomItem
                            ShinyUtility.FlingShinyRandomly(treasure.LocateMyFSM("Shiny Control"));
                            container.ApplyTargetContext(treasure, markedGround, 0f);
                        }),
-                       new Lambda(() => GameObject.Destroy(markedGround))
+                       new Lambda(() => Object.Destroy(markedGround))
                     }
                 });
                 fsm.GetState("Pause").ClearTransitions();
@@ -96,10 +96,10 @@ namespace LoreMaster.CustomItem
         {
             int treasureIndex = _coordinates.Select(x => x.Item1.ToLower()).IndexOf(sceneName.ToLower());
             if (treasureIndex != _coordinates.Count)
-            { 
+            {
                 TreasureLocation location = Finder.GetLocation($"Treasure_{treasureIndex + 1}") as TreasureLocation;
-                if(location == null)
-                    LoreMaster.Instance.Log("Couldn't found location Treasure_"+(treasureIndex + 1));
+                if (location == null)
+                    LoreMaster.Instance.Log("Couldn't found location Treasure_" + (treasureIndex + 1));
                 return location;
             }
             else

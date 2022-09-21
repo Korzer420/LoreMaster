@@ -70,6 +70,15 @@ namespace LoreMaster.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Menderbug asked Mender Berri out and she said yes ^-^ Most signs of this kingdom are now unbreakable and grant small amount of geo once it. Also causes Menderbug to always appear at the sign. &lt;3 ähnelt.
+        /// </summary>
+        internal static string BestMenderInTheWorld {
+            get {
+                return ResourceManager.GetString("BestMenderInTheWorld", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Wings now deal 12 damage upon contact with enemy, apply massive knockback downwards and give you slightly more height. While your double jump is on cooldown, instead of taking damage from enemies below you, you deal 4 damage to them, regain soul and jump automatically again. (This does not restore wings) ähnelt.
         /// </summary>
         internal static string BlessingOfTheButterfly {
@@ -138,6 +147,15 @@ namespace LoreMaster.Properties {
         internal static string DiminishingCurse {
             get {
                 return ResourceManager.GetString("DiminishingCurse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Heals you to full health and soul once entering a boss fight. If you have joni&apos;s equipped you will be granted up to 8 lifeblood masks instead. In godhome these effects are weakend heavily. ähnelt.
+        /// </summary>
+        internal static string DramaticEntrance {
+            get {
+                return ResourceManager.GetString("DramaticEntrance", resourceCulture);
             }
         }
         
@@ -322,6 +340,15 @@ namespace LoreMaster.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Most non boss enemies will not be triggered by line of sight. This effect fades away once you hit any enemy. Refreshes on entering a new room. ähnelt.
+        /// </summary>
+        internal static string LaughableThreat {
+            get {
+                return ResourceManager.GetString("LaughableThreat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Spawns a grimmkin every 180 seconds. Killing the ghost grants 3/6/9 lifeblood (based on ghost level). The ghost disappears if you leave the room or if 90 seconds passed. The chances for the ghost adjust based on your current nail level. I&apos;ll will not list the chances here. Look at the repository, if you want to know. ähnelt.
         /// </summary>
         internal static string LifebloodOmen {
@@ -493,6 +520,15 @@ namespace LoreMaster.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Using the stag egg on the lore power page spawns a small stag that can bring you to any opened stag station. After using it, the egg respawns after 5 minutes in the stag nest. ähnelt.
+        /// </summary>
+        internal static string StagAdoption {
+            get {
+                return ResourceManager.GetString("StagAdoption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Every 8 seconds standing on grass, you heal 1 mask. Decreased to 4 seconds if wearing Shape of Unn. ähnelt.
         /// </summary>
         internal static string TouchGrass {
@@ -507,6 +543,15 @@ namespace LoreMaster.Properties {
         internal static string Tourist {
             get {
                 return ResourceManager.GetString("Tourist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Obtained treasure (via the treasure charts that you can purchase at iselda with Lemm&apos;s Order) grant you their effect. Special Relics: Increase the amount of geo that Lemm gives you with each relic by 50%. Magic  Key: Opens all locked doors and other mechanisms besides Toll and the Lifeblood Door. Medallion: Increase the chance for an essence drop upon an enemys death to 10% (20% with Dreamwielder) ähnelt.
+        /// </summary>
+        internal static string TreasureHunter {
+            get {
+                return ResourceManager.GetString("TreasureHunter", resourceCulture);
             }
         }
         

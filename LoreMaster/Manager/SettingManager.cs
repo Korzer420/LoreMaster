@@ -11,6 +11,7 @@ using LoreMaster.Enums;
 using LoreMaster.Extensions;
 using LoreMaster.Helper;
 using LoreMaster.LorePowers;
+using LoreMaster.LorePowers.CityOfTears;
 using LoreMaster.LorePowers.FungalWastes;
 using LoreMaster.LorePowers.QueensGarden;
 using LoreMaster.LorePowers.WhitePalace;
@@ -109,6 +110,11 @@ internal class SettingManager
             ModHooks.SetPlayerBoolHook += TrackPathOfPain;
             _fromMenu = true;
             PowerManager.ResetPowers();
+#if DEBUG
+            //foreach (Power power in PowerManager.GetAllPowers())
+            //    if (!PowerManager.ActivePowers.Contains(power))
+            //        PowerManager.ActivePowers.Add(power);
+#endif
             ModHooks.LanguageGetHook += LoreManager.Instance.GetText;
             On.DeactivateIfPlayerdataTrue.OnEnable += ForceMyla;
             On.DeactivateIfPlayerdataFalse.OnEnable += PreventMylaZombie;
@@ -219,12 +225,7 @@ internal class SettingManager
                 if (_fromMenu)
                 {
 #if DEBUG
-                    foreach (string key in LorePowers.CityOfTears.TreasureHunterPower.Treasures.Keys.ToArray())
-                        LorePowers.CityOfTears.TreasureHunterPower.Treasures[key] = TreasureState.Obtained;
-                    PlayerData.instance.SetInt("trinket1", 5);
-                    PlayerData.instance.SetInt("trinket2", 5);
-                    PlayerData.instance.SetInt("trinket3", 5);
-                    PlayerData.instance.SetInt("trinket4", 5);
+
 #endif
                     if (string.Equals(arg1.name.ToLower(), "town"))
                     {
@@ -521,6 +522,7 @@ internal class SettingManager
                             break;
                         powerName += letter;
                     }
+                    LoreMaster.Instance.Log("Power name should be: " + powerName);
                     if (!PowerManager.GetPowerByName(powerName, out Power power, true, false) && !PowerManager.GetPowerByKey(powerName, out power, false))
                         continue;
                     // Skip the name
@@ -605,6 +607,7 @@ internal class SettingManager
             _fromMenu = false;
             PowerManager.FirstPowerInitialization();
             PowerManager.UpdateTracker(newArea);
+            TreasureHunterPower.UpdateTreasurePage();
         }
         LorePage.UpdateLorePage();
 
