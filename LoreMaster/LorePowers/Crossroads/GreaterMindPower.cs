@@ -32,7 +32,7 @@ public class GreaterMindPower : Power
         {Area.QueensGarden, "Queen's Gardens"},
         {Area.Peaks, "Crystal Peaks"},
         {Area.RestingGrounds, "Resting Grounds"},
-        {Area.WaterWays, "Waterways"},
+        {Area.Waterways, "Waterways"},
         {Area.KingdomsEdge, "Kingdom's Edge"},
         {Area.FogCanyon, "Fog Canyon"},
         {Area.Cliffs, "Howling Cliffs"},
@@ -64,7 +64,7 @@ public class GreaterMindPower : Power
         { }
     };
 
-    #region Protected Methods
+    #region Control
 
     /// <inheritdoc/>
     protected override void Initialize()

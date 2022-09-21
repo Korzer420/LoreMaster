@@ -15,7 +15,7 @@ public class ShiningBoundPower : Power
 
     #endregion
 
-    #region Protected Methods
+    #region Control
 
     /// <inheritdoc/>
     protected override void Enable() => _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(GatherShiningSoul());
@@ -25,21 +25,16 @@ public class ShiningBoundPower : Power
     #region Private Methods
 
     /// <summary>
-    /// Gather soul.
+    /// Gather soul over time.
     /// </summary>
-    /// <returns></returns>
     private IEnumerator GatherShiningSoul()
     {
         while (true)
         {
             yield return new WaitForSeconds(2f);
             if (PlayerData.instance.equippedCharms.Count > 0)
-            {
                 HeroController.instance.AddMPCharge(PlayerData.instance.equippedCharms.Count);
-            }
-
         }
-
     }
 
     #endregion

@@ -15,6 +15,7 @@ using LoreMaster.LorePowers.CityOfTears;
 using LoreMaster.LorePowers.RestingGrounds;
 using LoreMaster.LorePowers;
 using ItemChanger.Tags;
+using Modding;
 
 namespace LoreMaster.Randomizer;
 
@@ -37,7 +38,7 @@ public static class RandomizerManager
         {Area.QueensGarden, "Queen's Gardens"},
         {Area.Peaks, "Crystal Peaks"},
         {Area.RestingGrounds, "Resting Grounds"},
-        {Area.WaterWays, "Royal Waterways"},
+        {Area.Waterways, "Royal Waterways"},
         {Area.KingdomsEdge, "Kingdom's Edge"},
         {Area.FogCanyon, "Fog Canyon"},
         {Area.Cliffs, "Howling Cliffs"},
@@ -401,7 +402,7 @@ public static class RandomizerManager
                     if (PowerManager.GetPowerByKey("EMILITIA", out power, false) && PowerManager.ActivePowers.Contains(power))
                         collectedPowerAmount++;
                     break;
-                case Area.WaterWays:
+                case Area.Waterways:
                     maxPowerAmount++;
                     if (PowerManager.GetPowerByKey("FLUKE_HERMIT", out power, false) && PowerManager.ActivePowers.Contains(power))
                         collectedPowerAmount++;

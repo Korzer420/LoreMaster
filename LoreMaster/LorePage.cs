@@ -6,7 +6,6 @@ using LoreMaster.Enums;
 using LoreMaster.Helper;
 using LoreMaster.LorePowers;
 using LoreMaster.LorePowers.CityOfTears;
-using LoreMaster.LorePowers.HowlingCliffs;
 using LoreMaster.Manager;
 using System;
 using System.Collections.Generic;
@@ -24,13 +23,30 @@ internal class LorePage
 
     private static Sprite _emptySprite;
 
+    private static Sprite _loreSprite;
+
     private static Sprite _notActive;
 
     private static GameObject[] _loreObjects;
 
-    private static SpriteRenderer _stagEgg;
-
-    private static Dictionary<Area, Sprite> _sprites = new();
+    private static readonly Dictionary<Area, Color> _colors = new()
+    {
+        {Area.WhitePalace, Color.white },
+        {Area.Greenpath, Color.green },
+        {Area.Waterways, Color.blue },
+        {Area.CityOfTears, Color.cyan },
+        {Area.AncientBasin, Color.gray },
+        {Area.RestingGrounds, Color.red },
+        {Area.Peaks, Color.magenta },
+        {Area.Dirtmouth, Color.yellow},
+        {Area.FungalWastes, new(1f, 0.4f, 0f) },
+        {Area.FogCanyon, new(.75f, 0f, 1f) },
+        {Area.QueensGarden, new(.1f, 1f, .3f) },
+        {Area.Crossroads, new(.4f,.25f,.25f) },
+        {Area.Cliffs, new(.2f,.5f,0f) },
+        {Area.Deepnest, new(.3f,0f,.6f)},
+        {Area.KingdomsEdge, new(.2f,.4f,.6f) }
+    };
 
     #endregion
 
@@ -39,9 +55,8 @@ internal class LorePage
     static LorePage()
     {
         _emptySprite = GameObject.Find("_GameCameras").transform.Find("HudCamera/Inventory/Charms/Backboards/BB 3").GetComponent<SpriteRenderer>().sprite;
+        _loreSprite = SpriteHelper.CreateSprite("Lore");
         _notActive = SpriteHelper.CreateSprite("DisabledPower");
-        for (int i = 1; i < 16; i++)
-            _sprites.Add((Area)i, SpriteHelper.CreateSprite($"/Tablets/{((Area)i)}"));
     }
 
     #endregion
@@ -72,8 +87,8 @@ internal class LorePage
 
                 if (_powers[i].Tag == PowerTag.Remove)
                 {
-                    _loreObjects[i].GetComponentInChildren<SpriteRenderer>().sprite = _notActive;
-                    _loreObjects[i].GetComponentInChildren<SpriteRenderer>().color = PowerManager.ActivePowers.Contains(_powers[i])
+                    _loreObjects[i].GetComponent<SpriteRenderer>().sprite = _notActive;
+                    _loreObjects[i].GetComponent<SpriteRenderer>().color = PowerManager.ActivePowers.Contains(_powers[i])
                         ? Color.red
                         : Color.grey;
                 }
@@ -81,24 +96,22 @@ internal class LorePage
                 {
                     if (_powers[i].Active)
                     {
-                        _loreObjects[i].GetComponentInChildren<SpriteRenderer>().sprite = _sprites[_powers[i].Location];
-                        _loreObjects[i].GetComponentInChildren<SpriteRenderer>().color = Color.white;
+                        _loreObjects[i].GetComponent<SpriteRenderer>().sprite = _loreSprite;
+                        _loreObjects[i].GetComponent<SpriteRenderer>().color = _colors[_powers[i].Location];
                     }
                     else if (PowerManager.ActivePowers.Contains(_powers[i]))
                     {
-                        _loreObjects[i].GetComponentInChildren<SpriteRenderer>().sprite = _notActive;
-                        _loreObjects[i].GetComponentInChildren<SpriteRenderer>().color = Color.red;
+                        _loreObjects[i].GetComponent<SpriteRenderer>().sprite = _notActive;
+                        _loreObjects[i].GetComponent<SpriteRenderer>().color = Color.red;
                     }
                     else
                     {
-                        _loreObjects[i].GetComponentInChildren<SpriteRenderer>().sprite = _emptySprite;
-                        _loreObjects[i].GetComponentInChildren<SpriteRenderer>().color = Color.white;
+                        _loreObjects[i].GetComponent<SpriteRenderer>().sprite = _emptySprite;
+                        _loreObjects[i].GetComponent<SpriteRenderer>().color = Color.white;
                     }
+
                 }
             }
-            _stagEgg.sprite = StagAdoptionPower.Instance.CanSpawnStag
-                ? StagAdoptionPower.Instance.InventorySprites[0]
-                : StagAdoptionPower.Instance.InventorySprites[1];
         }
         catch (Exception exception)
         {
@@ -168,14 +181,9 @@ internal class LorePage
                 tablet.layer = lorePage.layer;
                 // The cursor need a collider to jump to
                 tablet.AddComponent<BoxCollider2D>().offset = new(0f, 0f);
-                GameObject child = new("Image");
-                child.transform.SetParent(tablet.transform);
-                child.transform.localPosition = new(0f, 0f, 0f);
-                child.transform.localScale = new(0.4f, 0.4f, 1f);
-                child.layer = lorePage.layer;
-                child.AddComponent<SpriteRenderer>().sprite = _emptySprite;
-                child.GetComponent<SpriteRenderer>().sortingLayerID = 629535577;
-                child.GetComponent<SpriteRenderer>().sortingLayerName = "HUD";
+                tablet.AddComponent<SpriteRenderer>().sprite = _emptySprite;
+                tablet.GetComponent<SpriteRenderer>().sortingLayerID = 629535577;
+                tablet.GetComponent<SpriteRenderer>().sortingLayerName = "HUD";
                 _loreObjects[i - 1] = tablet;
             }
 
@@ -189,8 +197,7 @@ internal class LorePage
             currentWorkingState.AddLastAction(new Lambda(() =>
             {
                 foreach (Transform child in lorePage.transform)
-                    if(!child.gameObject.name.Contains("Stag"))
-                        child.gameObject.SetActive(true); 
+                    child.gameObject.SetActive(true);
             }));
 
             // Create main state
@@ -221,8 +228,8 @@ internal class LorePage
                             if(power.Active)
                                 confirmButton.SetActive(PlayerData.instance.GetBool(nameof(PlayerData.instance.atBench)));
                             else
-                               confirmButton.SetActive(PlayerData.instance.GetBool(nameof(PlayerData.instance.atBench))
-                                   && (PowerManager.IsAreaGlobal(power.Location) || SettingManager.Instance.CurrentArea == power.Location));
+                               confirmButton.SetActive(PlayerData.instance.GetBool(nameof(PlayerData.instance.atBench)) 
+                                   && (PowerManager.IsAreaGlobal(power.Location) || SettingManager.Instance.CurrentArea == power.Location)); 
                         }
                         else
                         {
@@ -274,10 +281,10 @@ internal class LorePage
             currentWorkingState.AddTransition("FINISHED", "Powers");
             currentWorkingState.AddLastAction(new Lambda(() =>
             {
-                if (indexVariable.Value == 9 || indexVariable.Value % 10 == 9)
+                if (indexVariable.Value == 9 || indexVariable.Value % 10 == 9 || indexVariable.Value == 55)
                 {
-                    fsm.SendEvent(indexVariable.Value == 59 ? "STAG" : "OUT");
                     indexVariable.Value = -1;
+                    fsm.SendEvent("OUT");
                     return;
                 }
                 indexVariable.Value = indexVariable.Value == -2 ? 0 : indexVariable.Value + 1;
@@ -290,8 +297,10 @@ internal class LorePage
             currentWorkingState.AddTransition("FINISHED", "Powers");
             currentWorkingState.AddLastAction(new Lambda(() =>
             {
-                if (indexVariable.Value < 10)
+                if (indexVariable.Value <= 5)
                     indexVariable.Value += 50;
+                else if (indexVariable.Value < 10)
+                    indexVariable.Value += 40;
                 else
                     indexVariable.Value -= 10;
                 fsm.SendEvent("FINISHED");
@@ -304,6 +313,8 @@ internal class LorePage
             {
                 if (indexVariable.Value >= 50)
                     indexVariable.Value -= 50;
+                else if (indexVariable.Value >= 46)
+                    indexVariable.Value -= 40;
                 else
                     indexVariable.Value += 10;
                 fsm.SendEvent("FINISHED");
@@ -324,17 +335,17 @@ internal class LorePage
                             return;
 
                         power.DisablePower();
-                        _loreObjects[indexVariable.Value].GetComponentInChildren<SpriteRenderer>().sprite = _notActive;
-                        _loreObjects[indexVariable.Value].GetComponentInChildren<SpriteRenderer>().color = Color.red;
+                        _loreObjects[indexVariable.Value].GetComponent<SpriteRenderer>().sprite = _notActive;
+                        _loreObjects[indexVariable.Value].GetComponent<SpriteRenderer>().color = Color.red;
                         power.Tag = power.DefaultTag != PowerTag.Remove && power.DefaultTag != PowerTag.Disable
                         ? PowerTag.Disable
                         : power.DefaultTag;
                     }
-                    else if (power.Tag == PowerTag.Global || PowerManager.IsAreaGlobal(power.Location) || SettingManager.Instance.CurrentArea == power.Location)
+                    else if(power.Tag == PowerTag.Global || PowerManager.IsAreaGlobal(power.Location) || SettingManager.Instance.CurrentArea == power.Location)
                     {
-
-                        _loreObjects[indexVariable.Value].GetComponentInChildren<SpriteRenderer>().sprite = _sprites[power.Location];
-                        _loreObjects[indexVariable.Value].GetComponentInChildren<SpriteRenderer>().color = Color.white;
+                        
+                        _loreObjects[indexVariable.Value].GetComponent<SpriteRenderer>().sprite = _loreSprite;
+                        _loreObjects[indexVariable.Value].GetComponent<SpriteRenderer>().color = _colors[power.Location];
                         power.Tag = power.DefaultTag == PowerTag.Remove || power.DefaultTag == PowerTag.Disable
                         ? PowerTag.Local
                         : power.DefaultTag;
@@ -343,81 +354,12 @@ internal class LorePage
                 }
             }));
 
-            // Stag egg
-            GameObject stagEgg = new("Stag Egg");
-            stagEgg.transform.SetParent(lorePage.transform);
-            stagEgg.transform.localScale = new(1f, 1f, 1f);
-            stagEgg.transform.position = new(4.0254f, -5.3418f, -3f);
-            stagEgg.layer = lorePage.layer;
-            _stagEgg = stagEgg.AddComponent<SpriteRenderer>();
-            stagEgg.AddComponent<BoxCollider2D>().offset = new(0f,0f);
-            _stagEgg.sortingLayerID = 629535577;
-            _stagEgg.sortingLayerName = "HUD";
-            currentWorkingState = new FsmState(fsm.Fsm)
-            {
-                Name = "Stag Egg",
-                Actions = new FsmStateAction[]
-                {
-                    new Lambda(() => fsm.gameObject.LocateMyFSM("Update Cursor").FsmVariables.FindFsmGameObject("Item").Value = _stagEgg.gameObject),
-                    new SetSpriteRendererOrder()
-                    {
-                        gameObject = new() { GameObject = fsm.FsmVariables.FindFsmGameObject("Cursor Glow") },
-                        order = 0,
-                        delay = 0f
-                    },
-                    new Lambda(() => fsm.gameObject.LocateMyFSM("Update Cursor").SendEvent("UPDATE CURSOR")),
-                    new Lambda(() =>
-                    {
-                        if(!stagEgg.activeSelf)
-                        {
-                            confirmButton.SetActive(false);
-                            fsm.SendEvent("UI RIGHT");
-                            return;
-                        }
-                        powerTitle.GetComponent<TextMeshPro>().text = StagAdoptionPower.Instance.CanSpawnStag ? "Stag Egg" : "Broken Stag Egg";
-                        powerDescription.GetComponent<TextMeshPro>().text = StagAdoptionPower.Instance.CanSpawnStag
-                        ? "You can feel something moving in there... maybe tapping it does the trick?"
-                        : "The empty shell of a stag. They probably now live a happier life... somewhere.";
-                        confirmButton.SetActive(StagAdoptionPower.Instance.CanSpawnStag);
-                    })
-                }
-            };
-            currentWorkingState.AddTransition("UI RIGHT", "R Arrow");
-            currentWorkingState.AddTransition("UI LEFT", "Left Press");
-            fsm.AddState(currentWorkingState);
-            currentWorkingState = new FsmState(fsm.Fsm)
-            {
-                Name = "Spawn",
-                Actions = new FsmStateAction[]
-                {
-                    new Lambda(() =>
-                    {
-                        if(!StagAdoptionPower.Instance.CanSpawnStag)
-                            fsm.SendEvent("FINISHED");
-                        StagAdoptionPower.Instance.SpawnStag();
-                        _stagEgg.sprite = StagAdoptionPower.Instance.InventorySprites[1];
-                        powerTitle.GetComponent<TextMeshPro>().text = "Broken Stag Egg";
-                        powerDescription.GetComponent<TextMeshPro>().text = "The empty shell of a stag. They probably now live a happier life... somewhere.";
-                    })
-                }
-            };
-            fsm.AddState(currentWorkingState);
-            fsm.GetState("Stag Egg").AddTransition("UI CONFIRM", currentWorkingState);
-            currentWorkingState.AddTransition("FINISHED", "Stag Egg");
-            fsm.GetState("Right Press").AddTransition("STAG", "Stag Egg");
-            stagEgg.SetActive(false);
             lorePage.SetActive(false);
         }
         catch (Exception exception)
         {
             LoreMaster.Instance.LogError("An error occured in the inventory: " + exception.Message);
-            LoreMaster.Instance.LogError("An error occured in the inventory: " + exception.StackTrace);
         }
-    }
-
-    internal static void ActivateStagEgg()
-    {
-        _stagEgg.gameObject.SetActive(true);
     }
 
     #endregion

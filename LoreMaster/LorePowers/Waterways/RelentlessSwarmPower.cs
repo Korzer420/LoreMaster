@@ -7,7 +7,7 @@ public class RelentlessSwarmPower : Power
 {
     #region Constructors
 
-    public RelentlessSwarmPower() : base("Relentless Swarm", Area.WaterWays) { }
+    public RelentlessSwarmPower() : base("Relentless Swarm", Area.Waterways) { }
 
     #endregion
 
@@ -24,7 +24,7 @@ public class RelentlessSwarmPower : Power
 
     #endregion
 
-    #region Protected Methods
+    #region Control
 
     /// <inheritdoc/>
     protected override void Enable() => On.SpellFluke.DoDamage += SpellFluke_DoDamage;

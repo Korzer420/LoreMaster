@@ -1,12 +1,9 @@
-using ItemChanger.Extensions;
-using ItemChanger.FsmStateActions;
+using HutongGames.PlayMaker;
+using HutongGames.PlayMaker.Actions;
 using LoreMaster.Enums;
-using LoreMaster.Extensions;
 using Modding;
 using System;
 using UnityEngine;
-using HutongGames.PlayMaker;
-using HutongGames.PlayMaker.Actions;
 
 namespace LoreMaster.LorePowers.Ancient_Basin;
 
@@ -41,40 +38,28 @@ public class WeDontTalkAboutShadePower : Power
 
     private void OnSetPlayerDataIntAction(On.HutongGames.PlayMaker.Actions.SetPlayerDataInt.orig_OnEnter orig, SetPlayerDataInt self)
     {
-        if (string.Equals(self.Fsm.FsmComponent.gameObject.name, "Hero Death") && string.Equals(self.Fsm.FsmComponent.FsmName, "Hero Death Anim") && string.Equals(self.Fsm.FsmComponent.ActiveStateName, "Remove Geo") && string.Equals(self.intName.Value, "geoPool") && Active)
-        {
+        if (string.Equals(self.Fsm.GameObjectName, "Hero Death") && string.Equals(self.Fsm.Name, "Hero Death Anim") 
+            && string.Equals(self.State.Name, "Remove Geo") && string.Equals(self.intName.Value, "geoPool"))
             self.value.Value += PlayerData.instance.GetInt(nameof(PlayerData.instance.geoPool)) > 1 ? PlayerData.instance.GetInt(nameof(PlayerData.instance.geoPool)) / 2 : 0;
-        }
-
         orig(self);
     }
 
     private void OnPlayerDataBoolTestAction(On.HutongGames.PlayMaker.Actions.PlayerDataBoolTest.orig_OnEnter orig, PlayerDataBoolTest self)
     {
-        if (string.Equals(self.Fsm.FsmComponent.FsmName, "Deactivate if !SoulLimited") && Active)
-        {
+        if (string.Equals(self.Fsm.Name, "Deactivate if !SoulLimited"))
             self.isFalse = string.Equals(PlayerData.instance.GetString(nameof(PlayerData.instance.shadeScene)), "None") ? FsmEvent.GetFsmEvent("DEACTIVATE") : null;
-        }
-
         orig(self);
     }
 
     #endregion
 
-    #region Protected Methods
-
-    /// <inheritdoc/>
-    protected override void Initialize()
-    {
-
-        On.HutongGames.PlayMaker.Actions.PlayerDataBoolTest.OnEnter += OnPlayerDataBoolTestAction;
-        On.HutongGames.PlayMaker.Actions.SetPlayerDataInt.OnEnter += OnSetPlayerDataIntAction;
-
-    }
+    #region Control
 
     /// <inheritdoc/>
     protected override void Enable()
     {
+        On.HutongGames.PlayMaker.Actions.PlayerDataBoolTest.OnEnter += OnPlayerDataBoolTestAction;
+        On.HutongGames.PlayMaker.Actions.SetPlayerDataInt.OnEnter += OnSetPlayerDataIntAction;
         ModHooks.AfterPlayerDeadHook += AfterPlayerDied;
         PlayerData.instance.SetBool("soulLimited", false);
     }
@@ -82,7 +67,10 @@ public class WeDontTalkAboutShadePower : Power
     /// <inheritdoc/>
     protected override void Disable()
     {
+        On.HutongGames.PlayMaker.Actions.PlayerDataBoolTest.OnEnter -= OnPlayerDataBoolTestAction;
+        On.HutongGames.PlayMaker.Actions.SetPlayerDataInt.OnEnter -= OnSetPlayerDataIntAction;
         ModHooks.AfterPlayerDeadHook -= AfterPlayerDied;
+        // Reapply the soul limiter if it should be active right now (when the shade is active)
         if (!PlayerData.instance.GetString(nameof(PlayerData.instance.shadeScene)).Equals("None"))
             PlayerData.instance.StartSoulLimiter();
     }

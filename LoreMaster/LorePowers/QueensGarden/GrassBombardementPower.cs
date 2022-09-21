@@ -38,131 +38,17 @@ public class GrassBombardementPower : Power
     /// <summary>
     /// Gets or sets the explosion prefab.
     /// </summary>
-    public static GameObject Explosion => 
+    public static GameObject Explosion =>
         LoreMaster.Instance.PreloadedObjects["Ceiling Dropper"].LocateMyFSM("Ceiling Dropper").GetState("Explode").GetFirstActionOfType<SpawnObjectFromGlobalPool>().gameObject.Value;
 
     #endregion
 
-    #region Protected Methods
+    #region Event handler
 
-    protected override void Initialize()
+    private void HeroController_Start(On.HeroController.orig_Start orig, HeroController self)
     {
-        PlayMakerFSM fsm = HeroController.instance.spellControl;
-        FsmState normalBomb = new(fsm.Fsm)
-        {
-            Name = "Normal bomb",
-            Actions = new FsmStateAction[]
-            {
-                new Lambda(()=>
-                {
-                    HeroController.instance.TakeMP(fsm.FsmVariables.FindFsmInt("MP Cost").Value);
-                    _activeBomb = GameObject.Instantiate(_bombPrefab);
-                    _activeBomb.transform.localPosition = HeroController.instance.transform.localPosition - new Vector3(2f,0f,0f);
-                    _activeBomb.transform.localScale = new(2f,2f,1f);
-                    _activeBomb.name = "Grass bomb";
-                    _activeBomb.SetActive(true);
-                })
-            }
-        };
-        normalBomb.AddTransition("FINISHED", "Spell End");
-
-        FsmState powerBomb = new(fsm.Fsm) 
-        { 
-            Name = "Power bomb",
-            Actions = new FsmStateAction[] 
-            {
-                new Lambda(() =>
-                {
-                    FakeDamage = true;
-                    HeroController.instance.TakeHealth(1);
-                    _activeBomb = GameObject.Instantiate(_bombPrefab);
-                    _activeBomb.transform.localPosition = HeroController.instance.transform.localPosition + new Vector3(2f,0f,0f);
-                    _activeBomb.transform.localScale = new(2f,2f,1f);
-                    _activeBomb.name = "Power bomb";
-                    _activeBomb.SetActive(true);
-                })
-            }
-        };
-        powerBomb.AddTransition("FINISHED", "Spell End");
-
-        // The power bomb doesn't require soul, therefore we modify the can cast condition.
-        fsm.GetState("Can Cast? QC").ReplaceAction(new Lambda(() =>
-        {
-            if (fsm.FsmVariables.FindFsmInt("MP").Value < fsm.FsmVariables.FindFsmInt("MP Cost").Value
-            && !(SettingManager.Instance.BombQuickCast && Active && InputHandler.Instance.inputActions.right.IsPressed 
-            && PlayerData.instance.GetInt(nameof(PlayerData.instance.healthBlue)) > 0 && _activeBomb == null))
-                fsm.SendEvent("CANCEL");
-        })
-        { Name = "Can cast?"}, 2);
-
-        // The power bomb doesn't require soul, therefore we modify the can cast condition.
-        fsm.GetState("Can Cast?").ReplaceAction(new Lambda(() =>
-        {
-            if (fsm.FsmVariables.FindFsmInt("MP").Value < fsm.FsmVariables.FindFsmInt("MP Cost").Value
-            && !(Active && InputHandler.Instance.inputActions.right.IsPressed
-            && PlayerData.instance.GetInt(nameof(PlayerData.instance.healthBlue)) > 0 && _activeBomb == null))
-                fsm.SendEvent("CANCEL");
-        })
-        { Name = "Can cast?" }, 2);
-
-        fsm.GetState("Spell Choice").AddTransition("BOMB", normalBomb);
-        fsm.GetState("Spell Choice").AddTransition("POWERBOMB", powerBomb);
-        fsm.GetState("Spell Choice").ReplaceAction(new Lambda(() =>
-        {
-            if (Active && InputHandler.Instance.inputActions.left.IsPressed && _activeBomb == null)
-                fsm.SendEvent("BOMB");
-            else if (Active && InputHandler.Instance.inputActions.right.IsPressed 
-            && PlayerData.instance.GetInt(nameof(PlayerData.instance.healthBlue)) > 0 && _activeBomb == null)
-                fsm.SendEvent("POWERBOMB");
-            else if (InputHandler.Instance.inputActions.down.IsPressed)
-                fsm.SendEvent("QUAKE");
-            else
-                fsm.SendEvent("FIREBALL");
-        })
-        {
-            Name = "Check for Left"
-        }, 1);
-
-        fsm.GetState("QC").AddTransition("BOMB", normalBomb);
-        fsm.GetState("QC").AddTransition("POWERBOMB", powerBomb);
-        fsm.GetState("QC").ReplaceAction(new Lambda(() =>
-        {
-            if (Active && SettingManager.Instance.BombQuickCast && InputHandler.Instance.inputActions.left.IsPressed && _activeBomb == null)
-                fsm.SendEvent("BOMB");
-            else if (Active && SettingManager.Instance.BombQuickCast && InputHandler.Instance.inputActions.right.IsPressed
-            && PlayerData.instance.GetInt(nameof(PlayerData.instance.healthBlue)) > 0 && _activeBomb == null)
-                fsm.SendEvent("POWERBOMB");
-            else if (InputHandler.Instance.inputActions.down.IsPressed)
-                fsm.SendEvent("QUAKE");
-            else
-                fsm.SendEvent("FIREBALL");
-        })
-        {
-            Name = "Check for Left"
-        }, 3);
-
-        if (_bombPrefab == null)
-        {
-            _bombPrefab = new("Bomb");
-            _bombPrefab.SetActive(false);
-            _bombPrefab.AddComponent<SpriteRenderer>().sprite = SpriteHelper.CreateSprite("LifebloodBomb");
-            Rigidbody2D rigidbody = _bombPrefab.AddComponent<Rigidbody2D>();
-            rigidbody.gravityScale = 1f;
-            rigidbody.mass = 200f;
-            _bombPrefab.AddComponent<BoxCollider2D>();
-            _bombPrefab.AddComponent<Bomb>();
-            GameObject.DontDestroyOnLoad(_bombPrefab);
-        }
-    }
-
-    protected override void Enable()
-    {
-        On.PlayMakerFSM.OnEnable += PlayMakerFSM_OnEnable;
-    }
-
-    protected override void Disable()
-    {
-        On.PlayMakerFSM.OnEnable -= PlayMakerFSM_OnEnable;
+        orig(self);
+        ModifyHero();
     }
 
     private void PlayMakerFSM_OnEnable(On.PlayMakerFSM.orig_OnEnable orig, PlayMakerFSM self)
@@ -225,9 +111,149 @@ public class GrassBombardementPower : Power
         }
         else if (string.Equals(self.FsmName, "break_floor"))
             self.GetState("Idle").AddTransition("POWERBOMBED", "PlayerData");
-        else if(string.Equals(self.FsmName, "breakable_wall_v2"))
+        else if (string.Equals(self.FsmName, "breakable_wall_v2"))
             self.GetState("Idle").AddTransition("POWERBOMBED", "PD Bool?");
         orig(self);
+    }
+
+    #endregion
+
+    #region Control
+
+    /// <inheritdoc/>
+    protected override void Initialize()
+    { 
+        On.HeroController.Start += HeroController_Start;
+        ModifyHero();
+    }
+    
+    /// <inheritdoc/>
+    protected override void Enable()
+    => On.PlayMakerFSM.OnEnable += PlayMakerFSM_OnEnable;
+    
+    /// <inheritdoc/>
+    protected override void Disable()
+    => On.PlayMakerFSM.OnEnable -= PlayMakerFSM_OnEnable;
+    
+    /// <inheritdoc/>
+    protected override void Terminate()
+    => On.HeroController.Start -= HeroController_Start;
+    
+    #endregion
+
+    #region Methods
+
+    /// <summary>
+    /// Modify the spell fsm.
+    /// </summary>
+    private void ModifyHero()
+    {
+        PlayMakerFSM fsm = HeroController.instance.spellControl;
+        FsmState normalBomb = new(fsm.Fsm)
+        {
+            Name = "Normal bomb",
+            Actions = new FsmStateAction[]
+            {
+                new Lambda(()=>
+                {
+                    HeroController.instance.TakeMP(fsm.FsmVariables.FindFsmInt("MP Cost").Value);
+                    _activeBomb = GameObject.Instantiate(_bombPrefab);
+                    _activeBomb.transform.localPosition = HeroController.instance.transform.localPosition - new Vector3(2f,0f,0f);
+                    _activeBomb.transform.localScale = new(2f,2f,1f);
+                    _activeBomb.name = "Grass bomb";
+                    _activeBomb.SetActive(true);
+                })
+            }
+        };
+        normalBomb.AddTransition("FINISHED", "Spell End");
+
+        FsmState powerBomb = new(fsm.Fsm)
+        {
+            Name = "Power bomb",
+            Actions = new FsmStateAction[]
+            {
+                new Lambda(() =>
+                {
+                    FakeDamage = true;
+                    HeroController.instance.TakeHealth(1);
+                    _activeBomb = GameObject.Instantiate(_bombPrefab);
+                    _activeBomb.transform.localPosition = HeroController.instance.transform.localPosition + new Vector3(2f,0f,0f);
+                    _activeBomb.transform.localScale = new(2f,2f,1f);
+                    _activeBomb.name = "Power bomb";
+                    _activeBomb.SetActive(true);
+                })
+            }
+        };
+        powerBomb.AddTransition("FINISHED", "Spell End");
+
+        // The power bomb doesn't require soul, therefore we modify the can cast condition.
+        fsm.GetState("Can Cast? QC").ReplaceAction(new Lambda(() =>
+        {
+            if (fsm.FsmVariables.FindFsmInt("MP").Value < fsm.FsmVariables.FindFsmInt("MP Cost").Value
+            && !(SettingManager.Instance.BombQuickCast && Active && InputHandler.Instance.inputActions.right.IsPressed
+            && PlayerData.instance.GetInt(nameof(PlayerData.instance.healthBlue)) > 0 && _activeBomb == null))
+                fsm.SendEvent("CANCEL");
+        })
+        { Name = "Can cast?" }, 2);
+
+        // The power bomb doesn't require soul, therefore we modify the can cast condition.
+        fsm.GetState("Can Cast?").ReplaceAction(new Lambda(() =>
+        {
+            if (fsm.FsmVariables.FindFsmInt("MP").Value < fsm.FsmVariables.FindFsmInt("MP Cost").Value
+            && !(Active && InputHandler.Instance.inputActions.right.IsPressed
+            && PlayerData.instance.GetInt(nameof(PlayerData.instance.healthBlue)) > 0 && _activeBomb == null))
+                fsm.SendEvent("CANCEL");
+        })
+        { Name = "Can cast?" }, 2);
+
+        fsm.GetState("Spell Choice").AddTransition("BOMB", normalBomb);
+        fsm.GetState("Spell Choice").AddTransition("POWERBOMB", powerBomb);
+        fsm.GetState("Spell Choice").ReplaceAction(new Lambda(() =>
+        {
+            if (Active && InputHandler.Instance.inputActions.left.IsPressed && _activeBomb == null)
+                fsm.SendEvent("BOMB");
+            else if (Active && InputHandler.Instance.inputActions.right.IsPressed
+            && PlayerData.instance.GetInt(nameof(PlayerData.instance.healthBlue)) > 0 && _activeBomb == null)
+                fsm.SendEvent("POWERBOMB");
+            else if (InputHandler.Instance.inputActions.down.IsPressed)
+                fsm.SendEvent("QUAKE");
+            else
+                fsm.SendEvent("FIREBALL");
+        })
+        {
+            Name = "Check for Left"
+        }, 1);
+
+        fsm.GetState("QC").AddTransition("BOMB", normalBomb);
+        fsm.GetState("QC").AddTransition("POWERBOMB", powerBomb);
+        fsm.GetState("QC").ReplaceAction(new Lambda(() =>
+        {
+            if (Active && SettingManager.Instance.BombQuickCast && InputHandler.Instance.inputActions.left.IsPressed && _activeBomb == null)
+                fsm.SendEvent("BOMB");
+            else if (Active && SettingManager.Instance.BombQuickCast && InputHandler.Instance.inputActions.right.IsPressed
+            && PlayerData.instance.GetInt(nameof(PlayerData.instance.healthBlue)) > 0 && _activeBomb == null)
+                fsm.SendEvent("POWERBOMB");
+            else if (InputHandler.Instance.inputActions.down.IsPressed)
+                fsm.SendEvent("QUAKE");
+            else
+                fsm.SendEvent("FIREBALL");
+        })
+        {
+            Name = "Check for Left"
+        }, 3);
+
+        if (_bombPrefab == null)
+        {
+            _bombPrefab = new("Bomb");
+            _bombPrefab.SetActive(false);
+            _bombPrefab.AddComponent<SpriteRenderer>().sprite = SpriteHelper.CreateSprite("LifebloodBomb");
+            Rigidbody2D rigidbody = _bombPrefab.AddComponent<Rigidbody2D>();
+            rigidbody.gravityScale = 1f;
+            rigidbody.mass = 200f;
+            _bombPrefab.AddComponent<BoxCollider2D>();
+            _bombPrefab.AddComponent<Bomb>();
+            GameObject.DontDestroyOnLoad(_bombPrefab);
+        }
     }
 
     #endregion
