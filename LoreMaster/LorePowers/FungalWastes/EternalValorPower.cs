@@ -43,7 +43,7 @@ public class EternalValorPower : Power
 
     #endregion
 
-    #region Protected Methods
+    #region Control
 
     /// <inheritdoc/>
     protected override void Enable() => ModHooks.SlashHitHook += ModHooks_SlashHitHook;

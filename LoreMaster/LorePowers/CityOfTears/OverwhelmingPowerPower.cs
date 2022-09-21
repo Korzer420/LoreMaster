@@ -93,7 +93,7 @@ public class OverwhelmingPowerPower : Power
 
     #endregion
 
-    #region Protected Methods
+    #region Control
 
     /// <inheritdoc/>
     protected override void Initialize()

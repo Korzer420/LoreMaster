@@ -1,4 +1,4 @@
-using HutongGames.PlayMaker;
+using HutongGames.PlayMaker.Actions;
 using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
 using LoreMaster.Enums;
@@ -8,7 +8,6 @@ using System;
 using System.Collections;
 using System.Linq;
 using UnityEngine;
-using HutongGames.PlayMaker.Actions;
 
 namespace LoreMaster.LorePowers.HowlingCliffs;
 
@@ -49,9 +48,12 @@ public class JonisProtectionPower : Power
         _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(FadingLifeblood());
     };
 
-    public PlayMakerFSM[] DialogueFsm 
+    /// <summary>
+    /// Get the dialogue fsms.
+    /// </summary>
+    public PlayMakerFSM[] DialogueFsm
     {
-        get 
+        get
         {
             if (_dialogueFSM == null)
                 Initialize();
@@ -115,49 +117,36 @@ public class JonisProtectionPower : Power
     private void ModifyFSM(On.PlayMakerFSM.orig_OnEnable orig, PlayMakerFSM self)
     {
         // Shops and Stags should not be interrupted by this effect.
-        if (string.Equals(self.FsmName,"Shop Region") || string.Equals(self.FsmName,"Stag Control"))
-        {
-            if (self.GetState("Take Control").GetFirstActionOfType<Lambda>() == null)
-                self.GetState("Take Control").AddLastAction(new Lambda(() =>
-                {
-                    _immune = true;
-                }));
-        }
-
+        if (string.Equals(self.FsmName, "Shop Region") || string.Equals(self.FsmName, "Stag Control"))
+            self.GetState("Take Control").ReplaceAction(new Lambda(() =>_immune = true)
+            { Name = "Force Immunity" });
         orig(self);
     }
 
     private void OnSendEventByNameAction(On.HutongGames.PlayMaker.Actions.SendEventByName.orig_OnEnter orig, SendEventByName self)
     {
-        if (self.Fsm.FsmComponent.gameObject.name.Contains("tablet") && string.Equals(self.Fsm.FsmComponent.FsmName, "Inspection") && string.Equals(self.Fsm.FsmComponent.ActiveStateName, "Prompt Up") && string.Equals(self.sendEvent.Value, "LORE PROMPT UP"))
-        {
+        if (self.Fsm.GameObjectName.Contains("tablet") && string.Equals(self.Fsm.Name, "Inspection") && string.Equals(self.State.Name, "Prompt Up") && string.Equals(self.sendEvent.Value, "LORE PROMPT UP"))
             _immune = true;
-        }
-
         orig(self);
     }
 
     private void OnSetPlayerDataBoolAction(On.HutongGames.PlayMaker.Actions.SetPlayerDataBool.orig_OnEnter orig, SetPlayerDataBool self)
     {
-        if (self.Fsm.FsmComponent.gameObject.name.Contains("tablet") && string.Equals(self.Fsm.FsmComponent.FsmName, "Inspection") && string.Equals(self.Fsm.FsmComponent.ActiveStateName, "Regain Control"))
-        {
+        if (self.Fsm.GameObjectName.Contains("tablet") && string.Equals(self.Fsm.Name, "Inspection") && string.Equals(self.State.Name, "Regain Control"))
             _immune = false;
-        }
-
         orig(self);
     }
 
     #endregion
 
-        #region Protected Methods
+    #region Control
 
-        /// <inheritdoc/>
+    /// <inheritdoc/>
     protected override void Initialize()
     {
         _dialogueFSM[0] = GameObject.Find("_GameCameras/HudCamera/DialogueManager").LocateMyFSM("Box Open");
         _dialogueFSM[1] = GameObject.Find("_GameCameras/HudCamera/DialogueManager").LocateMyFSM("Box Open YN");
         _dialogueFSM[2] = GameObject.Find("_GameCameras/HudCamera/DialogueManager").LocateMyFSM("Box Open Dream");
-
         On.HutongGames.PlayMaker.Actions.SendEventByName.OnEnter += OnSendEventByNameAction;
         On.HutongGames.PlayMaker.Actions.SetPlayerDataBool.OnEnter += OnSetPlayerDataBoolAction;
     }
@@ -181,6 +170,13 @@ public class JonisProtectionPower : Power
         On.InvAnimateUpAndDown.AnimateUp -= InvAnimateUpAndDown_AnimateUp;
         On.InvAnimateUpAndDown.AnimateDown -= InvAnimateUpAndDown_AnimateDown;
         FakeDamage = false;
+    }
+
+    /// <inheritdoc/>
+    protected override void Terminate()
+    {
+        On.HutongGames.PlayMaker.Actions.SendEventByName.OnEnter -= OnSendEventByNameAction;
+        On.HutongGames.PlayMaker.Actions.SetPlayerDataBool.OnEnter -= OnSetPlayerDataBoolAction;
     }
 
     #endregion

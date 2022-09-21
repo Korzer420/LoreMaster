@@ -28,21 +28,18 @@ public class WisdomOfTheSagePower : Power
     private void OnSetFsmIntAction(On.HutongGames.PlayMaker.Actions.SetFsmInt.orig_DoSetFsmInt orig, HutongGames.PlayMaker.Actions.SetFsmInt self)
     {
         orig(self);
-        if (string.Equals(self.Fsm.FsmComponent.gameObject.name, "Charm Effects") && string.Equals(self.Fsm.FsmComponent.FsmName, "Set Spell Cost"))
-        {
+        if (string.Equals(self.Fsm.GameObjectName, "Charm Effects") && string.Equals(self.Fsm.Name, "Set Spell Cost"))
             GameObject.Find("Knight").LocateMyFSM("Spell Control").FsmVariables.FindFsmInt("MP Cost").Value -= _soulBonus;
-        }
     }
 
     #endregion
 
-    #region Protected Methods
+    #region Control
 
     /// <inheritdoc/>
     protected override void Initialize()
-    {
-        On.HutongGames.PlayMaker.Actions.SetFsmInt.DoSetFsmInt += OnSetFsmIntAction;
-    }
+    => On.HutongGames.PlayMaker.Actions.SetFsmInt.DoSetFsmInt += OnSetFsmIntAction;
+    
 
     /// <inheritdoc/>
     protected override void Enable()
@@ -59,6 +56,10 @@ public class WisdomOfTheSagePower : Power
             GameObject.Find("Knight").LocateMyFSM("Spell Control").FsmVariables.FindFsmInt("MP Cost").Value += _soulBonus;
         _soulBonus = 0;
     }
+
+    /// <inheritdoc/>
+    protected override void Terminate()
+    => On.HutongGames.PlayMaker.Actions.SetFsmInt.DoSetFsmInt -= OnSetFsmIntAction;
 
     #endregion
 

@@ -1,9 +1,5 @@
-using ItemChanger.Extensions;
-using ItemChanger.FsmStateActions;
-using LoreMaster.Enums;
-using LoreMaster.Extensions;
-using System;
 using HutongGames.PlayMaker.Actions;
+using LoreMaster.Enums;
 
 namespace LoreMaster.LorePowers.QueensGarden;
 
@@ -19,10 +15,9 @@ public class FlowerRingPower : Power
 
     private void OnConvertFloatToIntAction(On.HutongGames.PlayMaker.Actions.ConvertFloatToInt.orig_OnEnter orig, ConvertFloatToInt self)
     {
-        if (string.Equals(self.Fsm.FsmComponent.FsmName, "nailart_damage") && string.Equals(self.Fsm.FsmComponent.ActiveStateName, "Set"))
+        if (string.Equals(self.Fsm.Name, "nailart_damage") && string.Equals(self.State.Name, "Set"))
         {
             float damageMultiplier = 1f;
-
             if (PlayerData.instance.GetBool(nameof(PlayerData.instance.elderbugGaveFlower)))
                 damageMultiplier += .1f;
             if (PlayerData.instance.GetBool(nameof(PlayerData.instance.givenEmilitiaFlower)))
@@ -44,15 +39,15 @@ public class FlowerRingPower : Power
 
     #endregion
 
-    #region Protected Methods
+    #region Control
 
     /// <inheritdoc/>
-    /// <inheritdoc/>
+    protected override void Enable()
+    => On.HutongGames.PlayMaker.Actions.ConvertFloatToInt.OnEnter += OnConvertFloatToIntAction;
 
-    protected override void Initialize()
-    {
-        On.HutongGames.PlayMaker.Actions.ConvertFloatToInt.OnEnter += OnConvertFloatToIntAction;
-    }
+    /// <inheritdoc/>
+    protected override void Disable()
+    => On.HutongGames.PlayMaker.Actions.ConvertFloatToInt.OnEnter -= OnConvertFloatToIntAction;
 
     #endregion
 }

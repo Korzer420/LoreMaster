@@ -27,9 +27,15 @@ public class QueenThornsPower : Power
 
     #region Properties
 
+    /// <summary>
+    /// Gets the value which indicates if the player can heal (current health smaller than max health)
+    /// </summary>
     public bool CanHeal => PlayerData.instance.GetBool("equippedCharm_27")
         || (PlayerData.instance.GetInt("Health") < PlayerData.instance.GetInt("maxHealth"));
 
+    /// <summary>
+    /// Gets the thorn object-
+    /// </summary>
     public GameObject Thorns => _thorns == null ? _thorns = HeroController.instance.transform.Find("Charm Effects/Thorn Hit").gameObject : _thorns;
 
     #endregion
@@ -132,7 +138,7 @@ public class QueenThornsPower : Power
 
     #endregion
 
-    #region Protected Methods
+    #region Control
 
     /// <inheritdoc/>
     protected override void Initialize()

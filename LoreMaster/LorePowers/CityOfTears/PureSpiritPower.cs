@@ -37,7 +37,7 @@ internal class PureSpiritPower : Power
 
     #endregion
 
-    #region Protected Methods
+    #region Control
 
     protected override void Initialize()
     {

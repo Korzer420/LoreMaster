@@ -17,7 +17,7 @@ public class SacredShellPower : Power
 
     #endregion
 
-    #region Protected Methods
+    #region Control
 
     /// <inheritdoc/>
     protected override void Enable() => ModHooks.AfterTakeDamageHook += ModHooks_AfterTakeDamageHook;

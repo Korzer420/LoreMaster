@@ -101,6 +101,11 @@ public abstract class Power
     protected virtual void Disable() { }
 
     /// <summary>
+    /// Called when powers disable themself entirely (so that <see cref="Initialize"/> will be called upon next activation).
+    /// </summary>
+    protected virtual void Terminate() { }
+
+    /// <summary>
     /// Enables the twisted version of this power.
     /// </summary>
     protected virtual void TwistEnable() { }
@@ -165,6 +170,8 @@ public abstract class Power
     /// <param name="backToMenu">This is used to tell <see cref="EnablePower"/> to do the initialize again, if you reload the game.</param>
     internal void DisablePower(bool backToMenu = false)
     {
+        if (backToMenu)
+            Terminate();
         _initialized = !backToMenu;
         if (!Active)
             return;
@@ -183,8 +190,6 @@ public abstract class Power
             LoreMaster.Instance.LogError("Error while loading " + PowerName + ": " + exception.StackTrace);
         }
     } 
-
-    #endregion
 
     #endregion
 }

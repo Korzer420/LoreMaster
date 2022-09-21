@@ -12,7 +12,7 @@ public class OneOfUsPower : Power
 {
     #region Members
 
-    private GameObject _cloud;
+    private GameObject _cloud = GameObject.Find("_GameManager").transform.Find("GlobalPool/Knight Spore Cloud(Clone)").gameObject;
 
     #endregion
 
@@ -24,21 +24,17 @@ public class OneOfUsPower : Power
 
     #region Properties
 
+    /// <summary>
+    /// Gets the cloud object
+    /// </summary>
     public GameObject Cloud => _cloud == null ? GameObject.Find("_GameManager").transform.Find("GlobalPool/Knight Spore Cloud(Clone)").gameObject : _cloud;
 
     #endregion
 
-    #region Protected Methods
+    #region Control
 
     /// <inheritdoc/>
     protected override void Enable() => _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(EmitCloud());
-
-    /// <inheritdoc/>
-    protected override void Disable()
-    {
-        if (_runningCoroutine != null)
-            LoreMaster.Instance.Handler.StopCoroutine(_runningCoroutine);
-    }
 
     #endregion
 
@@ -56,8 +52,8 @@ public class OneOfUsPower : Power
             {
                 GameObject newCloud = GameObject.Instantiate(Cloud, HeroController.instance.transform.position,
                 Quaternion.identity);
-                newCloud.LocateMyFSM("Control").ChangeTransition("Init", "NORMAL", Active ? "Deep" : "Normal");
                 newCloud.SetActive(true);
+                newCloud.LocateMyFSM("Control").ChangeTransition("Init", "NORMAL", "Deep");
                 yield return new WaitForSeconds(4.1f);
                 GameObject.Destroy(newCloud);
             }

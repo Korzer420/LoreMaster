@@ -19,7 +19,7 @@ public class EternalSentinelPower : Power
 
     #region Constructors
 
-    public EternalSentinelPower() : base("Eternal Sentinel", Area.WaterWays) { }
+    public EternalSentinelPower() : base("Eternal Sentinel", Area.Waterways) { }
 
     #endregion
 
@@ -44,31 +44,66 @@ public class EternalSentinelPower : Power
         BaldurSprite.color = Color.white;
     }
 
-    private void PlayMakerFSM_OnEnable(On.PlayMakerFSM.orig_OnEnable orig, PlayMakerFSM self)
+    private void OnSetPositionAction(On.HutongGames.PlayMaker.Actions.SetPosition.orig_OnEnter orig, SetPosition self)
     {
-        if (self.gameObject.name.Contains("Knight Dung Trail(Clone)") && string.Equals(self.FsmName,"Control"))
+        if (string.Equals(self.Fsm.GameObjectName, "Knight Dung Trail(Clone)") && string.Equals(self.Fsm.Name, "Control") 
+            && string.Equals(self.State.Name, "Init"))
         {
-            self.GetState("Init").ReplaceAction(new Lambda(() =>
-            {
-                self.transform.localPosition = HeroController.instance.transform.position;
-                if (Active)
-                    self.transform.localScale = new(2.5f, 2.5f);
-                else
-                    self.transform.localScale = new(1f, 1f);
-                self.GetComponent<DamageEffectTicker>().SetDamageInterval(Active ? .3f : .15f);
-            })
-            { Name = "Extend Cloud" });
+            self.Fsm.FsmComponent.gameObject.transform.localPosition = HeroController.instance.transform.position;
+            self.Fsm.FsmComponent.gameObject.transform.localScale = Active ? new(2.5f, 2.5f) : new(1f, 1f);
+            self.Fsm.FsmComponent.gameObject.GetComponent<DamageEffectTicker>().SetDamageInterval(Active ? 0.15f : 0.3f);
         }
-        
+
         orig(self);
+    }
+
+    private void HeroController_Start(On.HeroController.orig_Start orig, HeroController self)
+    {
+        orig(self);
+        ModifyHero();
     }
 
     #endregion
 
-    #region Protected Methods
+    #region Control
 
     /// <inheritdoc/>
     protected override void Initialize()
+    {
+        ModifyHero();
+        On.HutongGames.PlayMaker.Actions.SetPosition.OnEnter += OnSetPositionAction;
+        On.HeroController.Start += HeroController_Start;
+    }
+
+    /// <inheritdoc/>
+    protected override void Enable()
+    {
+        if (PlayerData.instance.GetBool(nameof(PlayerData.instance.equippedCharm_10)))
+            BaldurSprite.color = new(1f, 0.4f, 0f);
+        ModHooks.CharmUpdateHook += CharmUpdate;
+    }
+
+    /// <inheritdoc/>
+    protected override void Disable()
+    {
+        ModHooks.CharmUpdateHook -= CharmUpdate;
+        BaldurSprite.color = Color.white;
+        if (PlayerData.instance.GetInt(nameof(PlayerData.instance.blockerHits)) > 4)
+            PlayerData.instance.SetInt(nameof(PlayerData.instance.blockerHits), 4);
+    }
+
+    /// <inheritdoc/>
+    protected override void Terminate()
+    {
+        On.HutongGames.PlayMaker.Actions.SetPosition.OnEnter -= OnSetPositionAction;
+        On.HeroController.Start -= HeroController_Start;
+    }
+
+    #endregion
+
+    #region Methods
+
+    private void ModifyHero()
     {
         GameObject baldurShield = GameObject.Find("Knight/Charm Effects").transform.Find("Blocker Shield").gameObject;
 
@@ -88,25 +123,6 @@ public class EternalSentinelPower : Power
         }));
 
         _baldurSprite = baldurShield.GetComponentInChildren<tk2dSprite>();
-    }
-
-    /// <inheritdoc/>
-    protected override void Enable()
-    {
-        if (PlayerData.instance.GetBool(nameof(PlayerData.instance.equippedCharm_10)))
-            BaldurSprite.color = new(1f, 0.4f, 0f);
-        ModHooks.CharmUpdateHook += CharmUpdate;
-        On.PlayMakerFSM.OnEnable += PlayMakerFSM_OnEnable;
-    }
-
-    /// <inheritdoc/>
-    protected override void Disable()
-    {
-        ModHooks.CharmUpdateHook -= CharmUpdate;
-        BaldurSprite.color = Color.white;
-        On.PlayMakerFSM.OnEnable -= PlayMakerFSM_OnEnable;
-        if (PlayerData.instance.GetInt(nameof(PlayerData.instance.blockerHits)) > 4)
-            PlayerData.instance.SetInt(nameof(PlayerData.instance.blockerHits), 4);
     }
 
     #endregion

@@ -32,7 +32,7 @@ public class MantisStylePower : Power
 
     #endregion
 
-    #region Protected Methods
+    #region Control
 
     /// <inheritdoc/>
     protected override void Initialize()

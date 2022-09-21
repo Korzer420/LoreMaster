@@ -1,8 +1,4 @@
-using ItemChanger.Extensions;
-using ItemChanger.FsmStateActions;
 using LoreMaster.Enums;
-using LoreMaster.Extensions;
-using UnityEngine;
 
 namespace LoreMaster.LorePowers.FogCanyon;
 
@@ -21,30 +17,25 @@ public class JellyfishFlowPower : Power
 
     private void OnSetVelocity2DAction(On.HutongGames.PlayMaker.Actions.SetVelocity2d.orig_OnEnter orig, HutongGames.PlayMaker.Actions.SetVelocity2d self)
     {
-        if (string.Equals(self.Fsm.FsmComponent.gameObject.name, "Knight") && string.Equals(self.Fsm.FsmComponent.FsmName, "Surface Water"))
-        {
-            if (string.Equals(self.Fsm.FsmComponent.ActiveStateName, "Swim Right"))
-            {
+        if (string.Equals(self.Fsm.GameObjectName, "Knight") && string.Equals(self.Fsm.Name, "Surface Water"))
+            if (string.Equals(self.State.Name, "Swim Right"))
                 self.x.Value = Active ? 20f : 5f;
-            }
-            else if (string.Equals(self.Fsm.FsmComponent.ActiveStateName, "Swim Left"))
-            {
+            else if (string.Equals(self.State.Name, "Swim Left"))
                 self.x.Value = Active ? -20f : -5f;
-            }
-        }
-
         orig(self);
     }
 
     #endregion
 
-    #region Protected Methods
+    #region Control
 
     /// <inheritdoc/>
     protected override void Initialize()
-    {
-        On.HutongGames.PlayMaker.Actions.SetVelocity2d.OnEnter += OnSetVelocity2DAction;
-    }
+    => On.HutongGames.PlayMaker.Actions.SetVelocity2d.OnEnter += OnSetVelocity2DAction;
+
+    /// <inheritdoc/>
+    protected override void Terminate()
+    => On.HutongGames.PlayMaker.Actions.SetVelocity2d.OnEnter -= OnSetVelocity2DAction;
 
     #endregion
 }
