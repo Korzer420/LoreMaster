@@ -9,83 +9,46 @@ using UnityEngine;
 
 namespace LoreMaster.Helper;
 
+/// <summary>
+/// Offers functions to help with modifying fsms.
+/// </summary>
 public static class FsmHelper
 {
-    #region FSM
-
-    public static PlayMakerFSM GetFSM(string gameObjectName, string fsmName)
+    /// <summary>
+    /// Check if the passed action is in the correct context for modifications. Leave unneeded values null.
+    /// </summary>
+    /// <param name="fsmName">The fsm in which the action should be.</param>
+    /// <param name="gameObjectName">The name of the gameobject on which the fsm of this action is attached.</param>
+    /// <param name="stateName">The name of the state in which this action should be.</param>
+    /// <param name="action">The action for the comparison.</param>
+    /// <returns></returns>
+    public static bool IsCorrectContext(string fsmName, string gameObjectName, string stateName, FsmStateAction action)
     {
-        GameObject gameObject = GameObject.Find(gameObjectName);
-
-        if (gameObject == null)
-            return null;
-
-        return GetFSM(gameObject, fsmName);
+        if (action == null)
+            return false;
+        if (!string.IsNullOrEmpty(fsmName) && !string.Equals(fsmName, action.Fsm.Name, StringComparison.OrdinalIgnoreCase))
+            return false;
+        if (!string.IsNullOrEmpty(gameObjectName) && !string.Equals(gameObjectName, action.Fsm.GameObjectName, StringComparison.OrdinalIgnoreCase))
+            return false;
+        if (!string.IsNullOrEmpty(stateName) && !string.Equals(stateName, action.State.Name, StringComparison.OrdinalIgnoreCase))
+            return false;
+       return true;
     }
 
-    public static PlayMakerFSM GetFSM(GameObject gameObject, string fsmName)
+    /// <summary>
+    /// Move a transition from one state to another.
+    /// </summary>
+    /// <param name="state"></param>
+    /// <param name="transitionName"></param>
+    /// <param name="newState"></param>
+    public static void AdjustTransition(this FsmState state, string transitionName, string newState)
     {
-        try
-        {
-            PlayMakerFSM playMakerFSM = gameObject.LocateMyFSM(fsmName);
-            return playMakerFSM;
-        }
-        catch (Exception)
-        {
-            return null;
-        }
+        FsmTransition transition = state.Transitions.FirstOrDefault(x => string.Equals(x.FsmEvent.Name, transitionName));
+        if (transition == null)
+            throw new Exception($"Couldn't find transition {transitionName} in state {state.Name}");
+        FsmState destination = state.Fsm.States.FirstOrDefault(x => string.Equals(x.Name, newState));
+        if (destination == null)
+            throw new Exception("Couldn't find destination state.");
+        transition.SetToState(destination);
     }
-
-    public static PlayMakerFSM GetFSMByIndex(string gameObjectName, int index)
-    {
-        GameObject gameObject = GameObject.Find(gameObjectName);
-
-        if (gameObject == null)
-            return null;
-
-        return GetFSMByIndex(gameObject, index);
-    }
-
-    public static PlayMakerFSM GetFSMByIndex(GameObject gameObject, int index)
-    {
-        try
-        {
-            return gameObject.GetComponents<PlayMakerFSM>()[index];
-        }
-        catch (Exception)
-        {
-            return null;
-        }
-    }
-
-    public static List<PlayMakerFSM> GetFSMs(string gameObjectName)
-    {
-        GameObject gameObject = GameObject.Find(gameObjectName);
-
-        if (gameObject == null)
-            return null;
-
-        return GetFSMs(gameObject);
-    }
-
-    public static List<PlayMakerFSM> GetFSMs(GameObject gameObject)
-    {
-        try
-        {
-            return gameObject.GetComponents<PlayMakerFSM>().ToList();
-        }
-        catch (Exception)
-        {
-            return null;
-        }
-    }
-
-    #endregion
-
-    #region States
-
-    public static FsmState GetState(PlayMakerFSM playMakerFSM, string stateName)
-    => playMakerFSM.GetState(stateName);
-
-    #endregion
 }

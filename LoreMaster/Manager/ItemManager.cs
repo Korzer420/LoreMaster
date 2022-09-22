@@ -132,7 +132,7 @@ internal static class ItemManager
         catch (Exception exception)
         {
             LoreMaster.Instance.LogError("Error while setting up treasure charts: " + exception.Message);
-            LoreMaster.Instance.LogError("Error while setting up treasure charts: " + exception.StackTrace);
+            LoreMaster.Instance.LogError(exception.StackTrace);
         }
 
         StagEggLocation stagEggLocation = new()
@@ -156,8 +156,14 @@ internal static class ItemManager
                 sprite = new CustomSprite("Stag_Egg", false)
             }
         });
-
-        ItemChangerMod.AddPlacements(new AbstractPlacement[] { stagPlacement, new ZoteLocation().Wrap() });
+        ZoteLocation zote = new ZoteLocation()
+        {
+            sceneName = "Deepnest_33",
+             flingType = FlingType.DirectDeposit,
+              name = "Zote_Deepnest"
+        };
+        
+        ItemChangerMod.AddPlacements(new AbstractPlacement[] { stagPlacement, zote.Wrap() });
     }
 
     /// <summary>

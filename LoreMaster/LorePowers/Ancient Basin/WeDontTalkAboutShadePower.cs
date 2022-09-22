@@ -31,6 +31,8 @@ public class WeDontTalkAboutShadePower : Power
 
     #region Event Handler
 
+    #region Normal handler
+
     /// <summary>
     /// Removes the soul limited punishment from the player.
     /// </summary>
@@ -38,7 +40,7 @@ public class WeDontTalkAboutShadePower : Power
 
     private void OnSetPlayerDataIntAction(On.HutongGames.PlayMaker.Actions.SetPlayerDataInt.orig_OnEnter orig, SetPlayerDataInt self)
     {
-        if (string.Equals(self.Fsm.GameObjectName, "Hero Death") && string.Equals(self.Fsm.Name, "Hero Death Anim") 
+        if (string.Equals(self.Fsm.GameObjectName, "Hero Death") && string.Equals(self.Fsm.Name, "Hero Death Anim")
             && string.Equals(self.State.Name, "Remove Geo") && string.Equals(self.intName.Value, "geoPool"))
             self.value.Value += PlayerData.instance.GetInt(nameof(PlayerData.instance.geoPool)) > 1 ? PlayerData.instance.GetInt(nameof(PlayerData.instance.geoPool)) / 2 : 0;
         orig(self);
@@ -50,6 +52,31 @@ public class WeDontTalkAboutShadePower : Power
             self.isFalse = string.Equals(PlayerData.instance.GetString(nameof(PlayerData.instance.shadeScene)), "None") ? FsmEvent.GetFsmEvent("DEACTIVATE") : null;
         orig(self);
     }
+
+    #endregion
+
+    #region Twisted handler
+
+    private void SpawnShade(On.HealthManager.orig_Die orig, HealthManager self, float? attackDirection, AttackTypes attackType, bool ignoreEvasion)
+    {
+        orig(self, attackDirection, attackType, ignoreEvasion);
+        if (!string.Equals(self.gameObject.name, "Hollow Knight Boss"))
+        {
+            GameObject shade = GameObject.Instantiate(LoreMaster.Instance.PreloadedObjects["Shade Sibling (25)"]);
+            shade.transform.position = self.transform.position;
+            shade.SetActive(true);
+        }
+    }
+    private void ForceShadeEnemy(On.HutongGames.PlayMaker.Actions.IntCompare.orig_OnEnter orig, IntCompare self)
+    {
+        orig(self);
+        if (string.Equals(self.State.Name, "Friendly?") && self.Fsm.GameObjectName.Contains("Shade Sibling")
+            && string.Equals(self.Fsm.Name, "Control") && self.integer1.Value == self.integer2.Value)
+            self.Fsm.FsmComponent.SendEvent("FINISHED");
+    }
+
+
+    #endregion
 
     #endregion
 
@@ -73,6 +100,20 @@ public class WeDontTalkAboutShadePower : Power
         // Reapply the soul limiter if it should be active right now (when the shade is active)
         if (!PlayerData.instance.GetString(nameof(PlayerData.instance.shadeScene)).Equals("None"))
             PlayerData.instance.StartSoulLimiter();
+    }
+
+    /// <inheritdoc/>
+    protected override void TwistEnable()
+    {
+        On.HealthManager.Die += SpawnShade;
+        On.HutongGames.PlayMaker.Actions.IntCompare.OnEnter += ForceShadeEnemy;
+    }
+
+    /// <inheritdoc/>
+    protected override void TwistDisable()
+    {
+        On.HealthManager.Die -= SpawnShade;
+        On.HutongGames.PlayMaker.Actions.IntCompare.OnEnter -= ForceShadeEnemy;
     }
 
     #endregion

@@ -1,14 +1,8 @@
-using HutongGames.PlayMaker;
-using ItemChanger.Extensions;
-using ItemChanger.FsmStateActions;
 using LoreMaster.Enums;
 using LoreMaster.UnityComponents;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace LoreMaster.LorePowers.Deepnest;
@@ -75,7 +69,7 @@ public class LaughableThreatPower : Power
         foreach (GameObject enemy in _enemies)
             if (!_hasAttacked && enemy.GetComponent<Pacify>() == null)
                 enemy.AddComponent<Pacify>();
-            else if(_hasAttacked)
+            else if(_hasAttacked && enemy.GetComponent<Pacify>() != null)
                 Component.Destroy(enemy.GetComponent<Pacify>());
     }
 

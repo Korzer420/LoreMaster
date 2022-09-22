@@ -88,7 +88,8 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         ("Ruins1_23", "Inspect Region"), // Inspect region for soul sanctum tablet.
         ("Ruins1_23", "Mage"),
         ("Deepnest_East_16", "Quake Floor"),
-        ("Crossroads_47", "Stag")
+        ("Crossroads_47", "Stag"),
+        ("Abyss_15", "Shade Sibling (25)")
     };
 
     /// <summary>
@@ -138,6 +139,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
             catch (Exception exception)
             {
                 LoreMaster.Instance.LogError("Error while setting up rando: " + exception.Message);
+                LoreMaster.Instance.LogError(exception.StackTrace);
             }
         }
         catch (Exception exception)

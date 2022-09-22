@@ -235,7 +235,8 @@ internal static class PowerManager
         // Unsure if this is needed, but just in case.
         ActivePowers.Clear();
 #if DEBUG
-        ActivePowers.AddRange(_powerList.Values);
+        _powerList["ABYSS_TUT_TAB_01"].Tag = PowerTag.Global;
+        ActivePowers.Add(_powerList["ABYSS_TUT_TAB_01"]);
 #endif
     }
 

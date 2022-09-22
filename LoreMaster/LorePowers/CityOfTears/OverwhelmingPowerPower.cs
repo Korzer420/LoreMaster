@@ -100,7 +100,7 @@ public class OverwhelmingPowerPower : Power
     {
         GameObject spell = GameObject.Find("Knight/Spells");
 
-        PlayMakerFSM spellControl = FsmHelper.GetFSM("Knight", "Spell Control");
+        PlayMakerFSM spellControl = HeroController.instance.spellControl;
         spellControl.GetState("Spell Choice").ReplaceAction(new Lambda(() =>
         {
             _hasFullSoulMeter = PlayerData.instance.GetInt(nameof(PlayerData.instance.MPCharge)) >= 99 

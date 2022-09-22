@@ -6,7 +6,7 @@ namespace LoreMaster.Enums;
 public enum PowerState
 {
     /// <summary>
-    /// The power was obtained but is not active.
+    /// The power was not obtained but is not active.
     /// </summary>
     Disabled,
 

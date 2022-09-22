@@ -1,5 +1,7 @@
 using LoreMaster.Enums;
 using Modding;
+using System;
+using UnityEngine;
 
 namespace LoreMaster.LorePowers.Dirtmouth;
 
@@ -14,6 +16,19 @@ public class CaringShellPower : Power
             "Then while I cried, why all this bad things happened to me, everything faded to orange. But then, at the lowest point of my life, a mighty knight appeared and saved me. Someone with this strength is the first " +
             "person to acknowledge me after such a long time. In just that moment, all my sadness just disappeared. I'm the happiest girl in the world. UwU";
     }
+
+    #endregion
+
+    #region Properties
+
+    /// <summary>
+    /// Deactivates all hazard respawns.
+    /// </summary>
+    public override Action TwistedSceneAction => () => 
+    {
+        foreach (DeactivateInDarknessWithoutLantern hazardRespawn in GameObject.FindObjectsOfType<DeactivateInDarknessWithoutLantern>())
+            hazardRespawn.gameObject.SetActive(false);
+    };
 
     #endregion
 

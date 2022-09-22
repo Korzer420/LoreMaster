@@ -26,7 +26,7 @@ public class RequiemPower : Power
     {
         if (GameManager.instance.RespawningHero)
         {
-            if (InputHandler.Instance.inputActions.cast.IsPressed)
+            if (State == PowerState.Twisted || InputHandler.Instance.inputActions.cast.IsPressed)
             {
                 PlayerData.instance.SetInt(nameof(PlayerData.instance.respawnType), 2);
                 info.SceneName = "Town";
@@ -77,7 +77,6 @@ public class RequiemPower : Power
     #region Control
 
     /// <inheritdoc/>
-    /// <inheritdoc/>
     protected override void Enable()
     {
         On.GameManager.BeginSceneTransition += CheckForDeathInput;
@@ -85,13 +84,18 @@ public class RequiemPower : Power
     }
 
     /// <inheritdoc/>
-    /// <inheritdoc/>
     protected override void Disable()
     {
         On.GameManager.BeginSceneTransition -= CheckForDeathInput;
         On.HeroController.LocateSpawnPoint -= MockSpawnPoint;
     }
 
+    /// <inheritdoc/>
+    protected override void TwistEnable() => Enable();
+    
+    /// <inheritdoc/>
+    protected override void TwistDisable() => Disable();
+    
     #endregion
 
     #region Methods

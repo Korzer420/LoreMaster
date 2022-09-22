@@ -1,4 +1,5 @@
 using LoreMaster.Enums;
+using LoreMaster.Helper;
 
 namespace LoreMaster.LorePowers.Dirtmouth;
 
@@ -7,42 +8,30 @@ namespace LoreMaster.LorePowers.Dirtmouth;
 /// </summary>
 public class WellFocusedPower : Power
 {
-    #region Members
-
-    private float _baseUnFocusSpeed;
-
-    private float _baseFocusSpeed;
-
-    #endregion
-
     #region Constructors
 
     public WellFocusedPower() : base("Well Focused", Area.Dirtmouth) { }
 
     #endregion
 
+    #region Event handler
+
+    private void PlayerDataBoolTest_OnEnter(On.HutongGames.PlayMaker.Actions.PlayerDataBoolTest.orig_OnEnter orig, HutongGames.PlayMaker.Actions.PlayerDataBoolTest self)
+    {
+        if (FsmHelper.IsCorrectContext("Spell Control", "Knight", "Slug?", self))
+            self.Fsm.Variables.FindFsmFloat("Time Per MP Drain").Value *= State == PowerState.Active ? 0.7f : (State == PowerState.Twisted ? 2f : 1f);
+        orig(self);
+    }
+
+    #endregion
+
     #region Control
 
     /// <inheritdoc/>
-    protected override void Enable()
-    {
-        PlayMakerFSM playMakerFSM = HeroController.instance.spellControl;
-        _baseUnFocusSpeed = playMakerFSM.Fsm.GetFsmFloat("Time Per MP Drain UnCH").Value;
-        _baseFocusSpeed = playMakerFSM.Fsm.GetFsmFloat("Time Per MP Drain CH").Value;
-
-        playMakerFSM.Fsm.GetFsmFloat("Time Per MP Drain UnCH").Value *= 0.7f;
-        playMakerFSM.Fsm.GetFsmFloat("Time Per MP Drain CH").Value *= 0.7f;
-
-    }
+    protected override void Initialize() => On.HutongGames.PlayMaker.Actions.PlayerDataBoolTest.OnEnter += PlayerDataBoolTest_OnEnter;
 
     /// <inheritdoc/>
-    protected override void Disable()
-    {
-        PlayMakerFSM playMakerFSM = HeroController.instance.spellControl;
-
-        playMakerFSM.Fsm.GetFsmFloat("Time Per MP Drain UnCH").Value = _baseUnFocusSpeed;
-        playMakerFSM.Fsm.GetFsmFloat("Time Per MP Drain CH").Value = _baseFocusSpeed;
-    }
+    protected override void Terminate() => On.HutongGames.PlayMaker.Actions.PlayerDataBoolTest.OnEnter -= PlayerDataBoolTest_OnEnter;
 
     #endregion
 }

@@ -1,5 +1,6 @@
 using HutongGames.PlayMaker.Actions;
 using LoreMaster.Enums;
+using LoreMaster.Helper;
 using MonoMod.Cil;
 using System;
 using UnityEngine;
@@ -74,6 +75,20 @@ public class ScrewTheRulesPower : Power
         }
     }
 
+    private void HealthManager_TakeDamage(On.HealthManager.orig_TakeDamage orig, HealthManager self, HitInstance hitInstance)
+    {
+        if (hitInstance.AttackType == AttackTypes.Nail)
+            hitInstance.Multiplier = 100 / ((float)PlayerData.instance.GetInt("maxHealth") / PlayerData.instance.GetInt("health")) / 100;
+        orig(self, hitInstance);
+    }
+
+    private void PreventFury(On.HutongGames.PlayMaker.Actions.PlayerDataBoolTest.orig_OnEnter orig, PlayerDataBoolTest self)
+    {
+        orig(self);
+        if (FsmHelper.IsCorrectContext("Fury", "Charm Effects", "Check HP", self))
+            self.Fsm.FsmComponent.SendEvent("CANCEL");
+    }
+
     #endregion
 
     #region Control
@@ -110,6 +125,23 @@ public class ScrewTheRulesPower : Power
     {
         On.HutongGames.PlayMaker.Actions.FloatMultiply.OnEnter -= OnFloatMultiplyAction;
         On.HutongGames.PlayMaker.Actions.SetFsmFloat.OnEnter -= OnSetFsmFloatAction;
+    }
+
+    /// <inheritdoc/>
+    protected override void TwistEnable()
+    {
+        // This should remove the fury buff if it is active at the time.
+        if (PlayerData.instance.GetInt("health") == 1 && !PlayerData.instance.GetBool("equippedCharm_27"))
+            HeroController.instance.AddHealth(1);
+        On.HealthManager.TakeDamage += HealthManager_TakeDamage;
+        On.HutongGames.PlayMaker.Actions.PlayerDataBoolTest.OnEnter += PreventFury;
+    }
+
+    /// <inheritdoc/>
+    protected override void TwistDisable()
+    {
+        On.HealthManager.TakeDamage -= HealthManager_TakeDamage;
+        On.HutongGames.PlayMaker.Actions.PlayerDataBoolTest.OnEnter -= PreventFury;
     }
 
     #endregion

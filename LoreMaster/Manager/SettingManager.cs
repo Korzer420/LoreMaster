@@ -123,6 +123,7 @@ internal class SettingManager
             _fromMenu = true;
 
             PowerManager.ResetPowers();
+            ItemManager.ResetItems();
             ModHooks.LanguageGetHook += LoreManager.Instance.GetText;
             On.DeactivateIfPlayerdataTrue.OnEnable += ForceMyla;
             On.DeactivateIfPlayerdataFalse.OnEnable += PreventMylaZombie;

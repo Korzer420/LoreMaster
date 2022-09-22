@@ -77,18 +77,38 @@ public abstract class Power
     public virtual Action SceneAction => () => { };
 
     /// <summary>
+    /// Gets the action that should be executed on a scene change if the power is twisted. (gameplay scene only)
+    /// </summary>
+    public virtual Action TwistedSceneAction => () => { };
+
+    /// <summary>
     /// Gets or sets the indicator, if fake damage is applied. This is used to prevent some powers to break the flower.
     /// </summary>
     public static bool FakeDamage { get; set; }
 
+    /// <summary>
+    /// Gets or sets the flag that indicates whether the power should stay twisted even if it is obtained.
+    /// </summary>
+    public bool StayTwisted { get; set; }
+
+    /// <summary>
+    /// Gets or sets the current state of powers.
+    /// </summary>
+    public PowerState State { get; set; }
+
     #endregion
 
-    #region Methods
+    #region Control Methods
 
     /// <summary>
     /// Initialize the power. (Modifies fsm and get prefabs). This get's called the first time this power calls<see cref="Enable"/> once you entered a save file.
     /// </summary>
     protected virtual void Initialize() => _initialized = true;
+
+    /// <summary>
+    /// Called when powers disable themself entirely (so that <see cref="Initialize"/> will be called upon next activation).
+    /// </summary>
+    protected virtual void Terminate() { }
 
     /// <summary>
     /// Enables this power in the overworld.
@@ -99,11 +119,6 @@ public abstract class Power
     /// Disables this power in the overworld.
     /// </summary>
     protected virtual void Disable() { }
-
-    /// <summary>
-    /// Called when powers disable themself entirely (so that <see cref="Initialize"/> will be called upon next activation).
-    /// </summary>
-    protected virtual void Terminate() { }
 
     /// <summary>
     /// Enables the twisted version of this power.
@@ -148,11 +163,13 @@ public abstract class Power
             return;
         try
         {
+            TwistEnable();
+            State = PowerState.Twisted;
             if (InitializePower())
             {
                 Active = true;
-                Enable();
-                LoreMaster.Instance.LogDebug("Enabled " + PowerName);
+                //Enable();
+                //LoreMaster.Instance.LogDebug("Enabled " + PowerName);
             }
         }
         catch (Exception exception)
