@@ -1,3 +1,4 @@
+using HutongGames.PlayMaker;
 using LoreMaster.Enums;
 using LoreMaster.Helper;
 using LoreMaster.Manager;
@@ -50,6 +51,8 @@ public class GreaterMindPower : Power
 
     #endregion
 
+    #region Properties
+
     /// <summary>
     /// Desperate attempt to make the tracker work, if it doesn't work before...
     /// </summary>
@@ -63,6 +66,27 @@ public class GreaterMindPower : Power
         catch (Exception)
         { }
     };
+
+    #endregion
+
+    #region Event handler
+
+    private void PlayerDataBoolTest_OnEnter(On.HutongGames.PlayMaker.Actions.PlayerDataBoolTest.orig_OnEnter orig, HutongGames.PlayMaker.Actions.PlayerDataBoolTest self)
+    {
+        orig(self);
+        if (self.IsCorrectContext("Hero Death Anim", "Hero Death", "Break Glass HP") && PowerManager.ActivePowers.Count > 0)
+        {
+            Power power = PowerManager.ActivePowers.Last();
+            power.DisablePower(false);
+            PowerManager.ActivePowers.Remove(power);
+            PlayMakerFSM playMakerFSM = PlayMakerFSM.FindFsmOnGameObject(FsmVariables.GlobalVariables.GetFsmGameObject("Enemy Dream Msg").Value, "Display");
+            playMakerFSM.FsmVariables.GetFsmInt("Convo Amount").Value = 1;
+            playMakerFSM.FsmVariables.GetFsmString("Convo Title").Value = $"Remove_Power_{power.PowerName}";
+            playMakerFSM.SendEvent("DISPLAY ENEMY DREAM");
+        }
+    }
+
+    #endregion
 
     #region Control
 
@@ -88,6 +112,14 @@ public class GreaterMindPower : Power
 
     /// <inheritdoc/>
     protected override void Disable() => _loreTracker?.SetActive(false);
+
+    /// <inheritdoc/>
+    protected override void TwistEnable() => On.HutongGames.PlayMaker.Actions.PlayerDataBoolTest.OnEnter += PlayerDataBoolTest_OnEnter;
+    
+
+    /// <inheritdoc/>
+    protected override void TwistDisable() => On.HutongGames.PlayMaker.Actions.PlayerDataBoolTest.OnEnter -= PlayerDataBoolTest_OnEnter;
+    
 
     #endregion
 
@@ -124,9 +156,9 @@ public class GreaterMindPower : Power
         {
             TextMeshPro currentCounter = _loreTracker.GetComponent<DisplayItemAmount>().textObject;
             if (ModHooks.GetMod("Randomizer 4") is Mod && RandomizerManager.RandoTracker(currentArea, out string areaLore))
-            { 
+            {
                 currentCounter.text = $"{_areas[currentArea]}: {areaLore}";
-                if(globalActive)
+                if (globalActive)
                     currentCounter.text = $"<color=#7FFF7B>{currentCounter.text}</color>";
             }
             else

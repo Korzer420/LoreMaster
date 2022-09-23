@@ -108,7 +108,7 @@ public class TrueFormPower : Power
     private void CreateObject_OnEnter(On.HutongGames.PlayMaker.Actions.CreateObject.orig_OnEnter orig, CreateObject self)
     {
         orig(self);
-        if (FsmHelper.IsCorrectContext("Shade Control", "Fleeing Shade", "Killed", self))
+        if (self.IsCorrectContext("Shade Control", "Fleeing Shade", "Killed"))
         {
             PlayMakerFSM deathFsm = self.Fsm.Variables.FindFsmGameObject("Corpse").Value.LocateMyFSM("Shade Control");
             FsmState state = deathFsm.GetState("Death Start");

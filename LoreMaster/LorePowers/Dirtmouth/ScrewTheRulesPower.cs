@@ -85,7 +85,7 @@ public class ScrewTheRulesPower : Power
     private void PreventFury(On.HutongGames.PlayMaker.Actions.PlayerDataBoolTest.orig_OnEnter orig, PlayerDataBoolTest self)
     {
         orig(self);
-        if (FsmHelper.IsCorrectContext("Fury", "Charm Effects", "Check HP", self))
+        if (self.IsCorrectContext("Fury", "Charm Effects", "Check HP"))
             self.Fsm.FsmComponent.SendEvent("CANCEL");
     }
 

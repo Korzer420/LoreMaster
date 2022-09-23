@@ -543,12 +543,12 @@ internal class SettingManager
         try
         {
 #if DEBUG
-            foreach (Power power in PowerManager.GetAllPowers())
-            {
-                if (!PowerManager.ActivePowers.Contains(power))
-                    PowerManager.ActivePowers.Add(power);
-                power.Tag = PowerTag.Global;
-            }
+            //foreach (Power power in PowerManager.GetAllPowers())
+            //{
+            //    if (!PowerManager.ActivePowers.Contains(power))
+            //        PowerManager.ActivePowers.Add(power);
+            //    power.Tag = PowerTag.Global;
+            //}
 #endif
             if (File.Exists(optionFile))
             {

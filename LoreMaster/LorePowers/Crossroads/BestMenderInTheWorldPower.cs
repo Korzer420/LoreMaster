@@ -39,54 +39,6 @@ public class BestMenderInTheWorldPower : Power
         Description += "DON'T EVEN DARE KILLING THEM! I'LL END YOUR GAME IF YOU DO THAT!";
     }
 
-    private void HealthManager_ApplyExtraDamage(On.HealthManager.orig_ApplyExtraDamage orig, HealthManager self, int damageAmount)
-    {
-        if (string.Equals(self.gameObject.name, "Mender Bug") && damageAmount > 0)
-            damageAmount = 0;
-        orig(self, damageAmount);
-    }
-
-    private void HealthManager_Hit(On.HealthManager.orig_Hit orig, HealthManager self, HitInstance hitInstance)
-    {
-        if (string.Equals(self.gameObject.name, "Mender Bug") && hitInstance.DamageDealt > 0)
-        {
-            if (hitInstance.AttackType == AttackTypes.Nail)
-            {
-                hitInstance.DamageDealt = 1;
-                _menderbugHits++;
-                if (_menderbugHits >= 100)
-                {
-                    PlayerData.instance.SetInt(nameof(PlayerData.instance.permadeathMode), 2);
-                    HeroController.instance.TakeDamage(null, GlobalEnums.CollisionSide.top, 100, 1);
-                }
-                else if (_menderbugHits < 2 || (_menderbugHits % 20 == 0 && _menderbugHits != 0))
-                    WarnPlayer(self.gameObject);
-            }
-            else
-                hitInstance.DamageDealt = 0;
-        }
-        orig(self, hitInstance);
-    }
-
-    private void Pacify(On.PlayMakerFSM.orig_OnEnable orig, PlayMakerFSM self)
-    {
-        if (string.Equals(self.FsmName, "Mender Bug Ctrl"))
-        {
-            self.GetState("Idle").ClearTransitions();
-            self.GetState("Init").ClearTransitions();
-            self.GetState("Init").AddTransition("FINISHED", "Chance");
-            self.GetComponent<HealthManager>().hp = 10000;
-        }
-        orig(self);
-    }
-
-    private void RandomInt_OnEnter(On.HutongGames.PlayMaker.Actions.RandomInt.orig_OnEnter orig, HutongGames.PlayMaker.Actions.RandomInt self)
-    {
-        if (string.Equals(self.Fsm.GameObjectName, "Mender Bug"))
-            self.min.Value = Active ? 50 : 40;
-        orig(self);
-    }
-
     #endregion
 
     #region Properties
@@ -146,6 +98,54 @@ public class BestMenderInTheWorldPower : Power
         }
         else
             orig(self, flingAngleMin, flingAngleMax, impactMultiplier);
+    }
+
+    private void HealthManager_ApplyExtraDamage(On.HealthManager.orig_ApplyExtraDamage orig, HealthManager self, int damageAmount)
+    {
+        if (string.Equals(self.gameObject.name, "Mender Bug") && damageAmount > 0)
+            damageAmount = 0;
+        orig(self, damageAmount);
+    }
+
+    private void HealthManager_Hit(On.HealthManager.orig_Hit orig, HealthManager self, HitInstance hitInstance)
+    {
+        if (string.Equals(self.gameObject.name, "Mender Bug") && hitInstance.DamageDealt > 0)
+        {
+            if (hitInstance.AttackType == AttackTypes.Nail)
+            {
+                hitInstance.DamageDealt = 1;
+                _menderbugHits++;
+                if (_menderbugHits >= 200)
+                {
+                    PlayerData.instance.SetInt(nameof(PlayerData.instance.permadeathMode), 2);
+                    HeroController.instance.TakeDamage(null, GlobalEnums.CollisionSide.top, 100, 1);
+                }
+                else if (_menderbugHits < 2 || (_menderbugHits % 20 == 0 && _menderbugHits != 0))
+                    WarnPlayer(self.gameObject);
+            }
+            else
+                hitInstance.DamageDealt = 0;
+        }
+        orig(self, hitInstance);
+    }
+
+    private void Pacify(On.PlayMakerFSM.orig_OnEnable orig, PlayMakerFSM self)
+    {
+        if (string.Equals(self.FsmName, "Mender Bug Ctrl"))
+        {
+            self.GetState("Idle").ClearTransitions();
+            self.GetState("Init").ClearTransitions();
+            self.GetState("Init").AddTransition("FINISHED", "Chance");
+            self.GetComponent<HealthManager>().hp = 10000;
+        }
+        orig(self);
+    }
+
+    private void RandomInt_OnEnter(On.HutongGames.PlayMaker.Actions.RandomInt.orig_OnEnter orig, HutongGames.PlayMaker.Actions.RandomInt self)
+    {
+        if (string.Equals(self.Fsm.GameObjectName, "Mender Bug"))
+            self.min.Value = State == PowerState.Active ? 50 : 40;
+        orig(self);
     }
 
     #endregion

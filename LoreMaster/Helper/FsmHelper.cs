@@ -1,11 +1,7 @@
 using HutongGames.PlayMaker;
 using ItemChanger.Extensions;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
 
 namespace LoreMaster.Helper;
 
@@ -22,10 +18,8 @@ public static class FsmHelper
     /// <param name="stateName">The name of the state in which this action should be.</param>
     /// <param name="action">The action for the comparison.</param>
     /// <returns></returns>
-    public static bool IsCorrectContext(string fsmName, string gameObjectName, string stateName, FsmStateAction action)
+    public static bool IsCorrectContext(this FsmStateAction action, string fsmName, string gameObjectName, string stateName)
     {
-        if (action == null)
-            return false;
         if (!string.IsNullOrEmpty(fsmName) && !string.Equals(fsmName, action.Fsm.Name, StringComparison.OrdinalIgnoreCase))
             return false;
         if (!string.IsNullOrEmpty(gameObjectName) && !string.Equals(gameObjectName, action.Fsm.GameObjectName, StringComparison.OrdinalIgnoreCase))

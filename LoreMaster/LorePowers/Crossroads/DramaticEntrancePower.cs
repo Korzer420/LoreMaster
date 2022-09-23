@@ -82,14 +82,14 @@ public class DramaticEntrancePower : Power
     #region Control
 
     /// <inheritdoc/>
-    protected override void Enable()
+    protected override void Initialize()
     {
         On.HutongGames.PlayMaker.Actions.SendEventByName.OnEnter += SendEventByName_OnEnter;
         On.HutongGames.PlayMaker.Actions.SetFsmString.OnEnter += SetFsmString_OnEnter;
     }
 
     /// <inheritdoc/>
-    protected override void Disable()
+    protected override void Terminate()
     {
         On.HutongGames.PlayMaker.Actions.SendEventByName.OnEnter -= SendEventByName_OnEnter;
         On.HutongGames.PlayMaker.Actions.SetFsmString.OnEnter -= SetFsmString_OnEnter;
@@ -101,19 +101,28 @@ public class DramaticEntrancePower : Power
 
     private void PrepareForBattle()
     {
-        if (_alreadyEntered)
+        if (_alreadyEntered || State == PowerState.Disabled)
             return;
         _alreadyEntered = true;
+        if (State == PowerState.Twisted)
+        {
+            HeroController.instance.ClearMP();
+            PlayerData.instance.SetInt("health", 1);
+            FakeDamage = true;
+            HeroController.instance.proxyFSM.SendEvent("HeroCtrl-HeroDamaged");
+            FakeDamage = false;
+            return;
+        }
         if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name.Contains("GG_"))
         {
-            if (PlayerData.instance.GetBool(nameof(PlayerData.instance.equippedCharm_27)))
-            {
-                EventRegister.SendEvent("ADD BLUE HEALTH");
-                EventRegister.SendEvent("ADD BLUE HEALTH");
-            }
-            else if (PlayerData.instance.GetInt(nameof(PlayerData.instance.health)) < PlayerData.instance.GetInt(nameof(PlayerData.instance.maxHealth)))
-                HeroController.instance.AddHealth(1);
-            HeroController.instance.AddMPCharge(33);
+                if (PlayerData.instance.GetBool(nameof(PlayerData.instance.equippedCharm_27)))
+                {
+                    EventRegister.SendEvent("ADD BLUE HEALTH");
+                    EventRegister.SendEvent("ADD BLUE HEALTH");
+                }
+                else if (PlayerData.instance.GetInt(nameof(PlayerData.instance.health)) < PlayerData.instance.GetInt(nameof(PlayerData.instance.maxHealth)))
+                    HeroController.instance.AddHealth(1);
+                HeroController.instance.AddMPCharge(33);
         }
         else
         {

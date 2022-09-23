@@ -18,7 +18,7 @@ public class WellFocusedPower : Power
 
     private void PlayerDataBoolTest_OnEnter(On.HutongGames.PlayMaker.Actions.PlayerDataBoolTest.orig_OnEnter orig, HutongGames.PlayMaker.Actions.PlayerDataBoolTest self)
     {
-        if (FsmHelper.IsCorrectContext("Spell Control", "Knight", "Slug?", self))
+        if (self.IsCorrectContext("Spell Control", "Knight", "Slug?"))
             self.Fsm.Variables.FindFsmFloat("Time Per MP Drain").Value *= State == PowerState.Active ? 0.7f : (State == PowerState.Twisted ? 2f : 1f);
         orig(self);
     }

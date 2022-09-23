@@ -176,7 +176,10 @@ internal static class PowerManager
                     if (power is EyeOfTheWatcherPower watcherPower)
                         watcherPower.EyeActive = true;
                     power.EnablePower();
-                    ActivePowers.Add(power);
+                    if (power is GreaterMindPower)
+                        ActivePowers.Insert(0, power);
+                    else
+                        ActivePowers.Add(power);
                     UpdateTracker(SettingManager.Instance.CurrentArea);
                     LorePage.UpdateLorePage();
                 }
@@ -235,8 +238,8 @@ internal static class PowerManager
         // Unsure if this is needed, but just in case.
         ActivePowers.Clear();
 #if DEBUG
-        _powerList["ABYSS_TUT_TAB_01"].Tag = PowerTag.Global;
-        ActivePowers.Add(_powerList["ABYSS_TUT_TAB_01"]);
+        //_powerList["ABYSS_TUT_TAB_01"].Tag = PowerTag.Global;
+        //ActivePowers.Add(_powerList["ABYSS_TUT_TAB_01"]);
 #endif
     }
 

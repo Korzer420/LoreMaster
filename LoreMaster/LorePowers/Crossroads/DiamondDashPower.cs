@@ -1,3 +1,4 @@
+using HutongGames.PlayMaker.Actions;
 using LoreMaster.Enums;
 using LoreMaster.Helper;
 using LoreMaster.Manager;
@@ -65,6 +66,26 @@ public class DiamondDashPower : Power
             _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(HoldPosition());
     }
 
+    private void Wait_OnEnter(On.HutongGames.PlayMaker.Actions.Wait.orig_OnEnter orig, HutongGames.PlayMaker.Actions.Wait self)
+    {
+        if (self.IsCorrectContext("Superdash", "Knight", "Wall Charge") || self.IsCorrectContext("Superdash", "Knight", "Ground Charge"))
+        {
+            LoreMaster.Instance.Log("Timer before is: " + self.time.Value);
+            self.time.Value += State == PowerState.Active ? (HasDiamondCore ? -.5f : -.25f) : (State == PowerState.Twisted ? .6f : 0f);
+        }
+        orig(self);
+    }
+
+    private void FsmStateAction_Finish(On.HutongGames.PlayMaker.FsmStateAction.orig_Finish orig, HutongGames.PlayMaker.FsmStateAction self)
+    {
+        orig(self);
+        if (self is Wait waitAction && (self.IsCorrectContext("Superdash", "Knight", "Wall Charge") || self.IsCorrectContext("Superdash", "Knight", "Ground Charge")))
+        {
+            LoreMaster.Instance.Log("Finish Timer is: " + waitAction.time.Value);
+            waitAction.time.Value -= State == PowerState.Active ? (HasDiamondCore ? -.5f : -.25f) : (State == PowerState.Twisted ? .6f : 0f);
+        }
+    }
+
     #endregion
 
     #region Control
@@ -77,14 +98,24 @@ public class DiamondDashPower : Power
         _corelessSprite = SpriteHelper.CreateSprite("DiamondHeart_Coreless");
         _shelllessSprite = SpriteHelper.CreateSprite("DiamondHeart_Shellless");
         _diamondSprite = SpriteHelper.CreateSprite("DiamondHeart");
+        On.HutongGames.PlayMaker.Actions.Wait.OnEnter += Wait_OnEnter;
+        On.HutongGames.PlayMaker.FsmStateAction.Finish += FsmStateAction_Finish;
     }
+
+    /// <inheritdoc/>
+    protected override void Terminate()
+    {
+        On.HutongGames.PlayMaker.Actions.Wait.OnEnter -= Wait_OnEnter;
+        On.HutongGames.PlayMaker.FsmStateAction.Finish -= FsmStateAction_Finish;
+    }
+
+    
 
     /// <inheritdoc/>
     protected override void Enable()
     {
         if (_crystalHeartSprite != null)
             _crystalHeartSprite.sprite = HasDiamondCore ? _diamondSprite : _corelessSprite;
-        HeroController.instance.superDash.FsmVariables.FindFsmFloat("Charge Time").Value = HasDiamondCore ? .2f : .5f;
         On.HeroController.Update += HeroController_Update;
     }
 
@@ -93,7 +124,6 @@ public class DiamondDashPower : Power
     {
         if (_crystalHeartSprite != null)
             _crystalHeartSprite.sprite = HasDiamondCore ? _shelllessSprite : _originalSprite;
-        HeroController.instance.superDash.FsmVariables.FindFsmFloat("Charge Time").Value = .8f;
         _currentlyHold = false;
         On.HeroController.Update -= HeroController_Update;
     }

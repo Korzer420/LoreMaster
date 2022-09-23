@@ -165,18 +165,18 @@ public abstract class Power
         {
             TwistEnable();
             State = PowerState.Twisted;
-            if (InitializePower())
-            {
-                Active = true;
-                //Enable();
-                //LoreMaster.Instance.LogDebug("Enabled " + PowerName);
-            }
+            InitializePower();
+            //if (InitializePower())
+            //{
+            //    Active = true;
+            //    //Enable();
+            //    //LoreMaster.Instance.LogDebug("Enabled " + PowerName);
+            //}
         }
         catch (Exception exception)
         {
             LoreMaster.Instance.LogError("Error while loading " + PowerName + ": " + exception.Message);
-            LoreMaster.Instance.LogError("Error while loading " + PowerName + ": " + exception.Source);
-            LoreMaster.Instance.LogError("Error while loading " + PowerName + ": " + exception.StackTrace);
+            LoreMaster.Instance.LogError(exception.StackTrace);
             Active = false;
         }
     }

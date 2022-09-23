@@ -142,5 +142,4 @@ public class ReluctantPilgrimPower : Power
     }
 
     #endregion
-
 }
