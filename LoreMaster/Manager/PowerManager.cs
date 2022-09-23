@@ -341,7 +341,7 @@ internal static class PowerManager
     public static void ExecuteSceneActions()
     {
         foreach (Power power in ActivePowers)
-            if (power.Active && power.SceneAction != null)
+            if (power.Active || power.State == PowerState.Twisted && power.SceneAction != null)
                 try
                 {
                     power.SceneAction.Invoke();

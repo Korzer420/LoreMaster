@@ -1,5 +1,8 @@
 using LoreMaster.Enums;
+using LoreMaster.UnityComponents;
 using System;
+using System.Collections;
+using System.Linq;
 using UnityEngine;
 
 namespace LoreMaster.LorePowers.FogCanyon;
@@ -81,18 +84,59 @@ public class FriendOfTheJellyfishPower : Power
     /// </summary>
     private void MakeJellyfishHarmless()
     {
-        HealthManager[] enemies = GameObject.FindObjectsOfType<HealthManager>();
-        if (enemies.Length == 0)
-            return;
-        foreach (HealthManager item in enemies)
-            // Uumuu is called Mega Jellyfish in the files, that's why we check for jelly fish without mega in their name
-            if (item.gameObject.name.Contains("Jellyfish") && !item.gameObject.name.Contains("Mega"))
+        if (State == PowerState.Active)
+        {
+            HealthManager[] enemies = GameObject.FindObjectsOfType<HealthManager>();
+            if (enemies.Length == 0)
+                return;
+            foreach (HealthManager item in enemies)
+                // Uumuu is called Mega Jellyfish in the files, that's why we check for jelly fish without mega in their name
+                if (item.gameObject.name.Contains("Jellyfish") && !item.gameObject.name.Contains("Mega"))
+                {
+                    HeroController.Destroy(item.gameObject.GetComponent<DamageHero>());
+                    // The tentacles of the jelly have their own component.
+                    if (!item.gameObject.name.Contains("Baby"))
+                        HeroController.Destroy(item.transform.Find("Tentacle Box").GetComponent<DamageHero>());
+                }
+        }
+        else
+        {
+            // We create an area in which the jellyfish can spawn based on the transitions
+            Transform[] points = GameObject.FindObjectsOfType<TransitionPoint>().Select(x => x.transform).ToArray();
+            // Less than two makes it impossible to create a field.
+            if (points.Length < 2)
+                return;
+            float[] borderPoints = new float[4];
+            borderPoints[0] = points.Min(x => x.position.x);
+            borderPoints[1] = points.Max(x => x.position.x); 
+            borderPoints[2] = points.Min(x => x.position.y);
+            borderPoints[3] = points.Max(x => x.position.y);
+            for (int i = 0; i < LoreMaster.Instance.Generator.Next(3, 11); i++)
             {
-                HeroController.Destroy(item.gameObject.GetComponent<DamageHero>());
-                // The tentacles of the jelly have their own component.
-                if (!item.gameObject.name.Contains("Baby"))
-                    HeroController.Destroy(item.transform.Find("Tentacle Box").GetComponent<DamageHero>());
+                GameObject ooma = GameObject.Instantiate(LoreMaster.Instance.PreloadedObjects["Jellyfish"]);
+                // To prevent many of them getting stuck in terrain they ignore it.
+                ooma.AddComponent<IgnoreTerrain>();
+                ooma.SetActive(true);
+                Vector3 position;
+                do
+                    position = new Vector3(LoreMaster.Instance.Generator.Next((int)borderPoints[0], (int)borderPoints[1]), LoreMaster.Instance.Generator.Next((int)borderPoints[2], (int)borderPoints[3]));
+                while (Vector3.Distance(position, HeroController.instance.transform.position) < 5);
+                ooma.transform.position = position;
             }
+
+            for (int i = 0; i < LoreMaster.Instance.Generator.Next(10, 31); i++)
+            {
+                GameObject babyJelly = GameObject.Instantiate(LoreMaster.Instance.PreloadedObjects["Jellyfish Baby"]);
+                // To prevent many of them getting stuck in terrain they ignore it.
+                babyJelly.AddComponent<IgnoreTerrain>();
+                babyJelly.SetActive(true);
+                Vector3 position;
+                do
+                    position = new Vector3(LoreMaster.Instance.Generator.Next((int)borderPoints[0], (int)borderPoints[1]), LoreMaster.Instance.Generator.Next((int)borderPoints[2], (int)borderPoints[3]));
+                while (Vector3.Distance(position, HeroController.instance.transform.position) < 5);
+                babyJelly.transform.position = position;
+            }
+        }
     }
 
     #endregion

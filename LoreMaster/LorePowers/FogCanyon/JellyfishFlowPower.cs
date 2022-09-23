@@ -19,9 +19,9 @@ public class JellyfishFlowPower : Power
     {
         if (string.Equals(self.Fsm.GameObjectName, "Knight") && string.Equals(self.Fsm.Name, "Surface Water"))
             if (string.Equals(self.State.Name, "Swim Right"))
-                self.x.Value = Active ? 20f : 5f;
+                self.x.Value = State == PowerState.Active ? 20f : (State == PowerState.Twisted ? 0f : 5f);
             else if (string.Equals(self.State.Name, "Swim Left"))
-                self.x.Value = Active ? -20f : -5f;
+                self.x.Value = State == PowerState.Active ? -20f : (State == PowerState.Twisted ? 0f : -5f);
         orig(self);
     }
 

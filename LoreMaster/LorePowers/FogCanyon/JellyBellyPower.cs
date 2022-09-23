@@ -1,5 +1,6 @@
 using LoreMaster.Enums;
 using Modding;
+using System.Collections;
 using UnityEngine;
 
 namespace LoreMaster.LorePowers.FogCanyon;
@@ -45,6 +46,7 @@ public class JellyBellyPower : Power
     {
         HeroController.instance.BIG_FALL_TIME += 2.2f;
         ModHooks.HeroUpdateHook += Float;
+        LoreMaster.Instance.Handler.StartCoroutine(ChangeFallTime());
     }
 
     /// <inheritdoc/>
@@ -55,6 +57,22 @@ public class JellyBellyPower : Power
         if (HeroController.instance.BIG_FALL_TIME < 1.1f)
             HeroController.instance.BIG_FALL_TIME = 1.1f;
         PlayerRigidBody.gravityScale = .79f;
+    }
+
+    /// <inheritdoc/>
+    protected override void TwistEnable() => LoreMaster.Instance.Handler.StartCoroutine(ChangeFallTime());
+
+    #endregion
+
+    #region Methods
+
+    private IEnumerator ChangeFallTime()
+    {
+        while(true)
+        {
+            HeroController.instance.BIG_FALL_TIME = State == PowerState.Twisted ? .25f : 3.3f;
+            yield return null;
+        }
     }
 
     #endregion

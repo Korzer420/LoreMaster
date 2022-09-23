@@ -6,6 +6,7 @@ public class IgnoreTerrain : MonoBehaviour
 {
     void Start()
     {
+        if(transform.Find("Terrain Buffer") != null)
         transform.Find("Terrain Buffer").GetComponent<BoxCollider2D>().enabled = false;
     }
 
@@ -13,9 +14,7 @@ public class IgnoreTerrain : MonoBehaviour
     {
         // Allow the fleeing shade to move through terrain.
         if (collision.gameObject.layer == 8)
-        {
-            LoreMaster.Instance.Log("Is terrain!");
             Physics2D.IgnoreCollision(collision.collider, GetComponent<BoxCollider2D>());
-        }
+        
     }
 }

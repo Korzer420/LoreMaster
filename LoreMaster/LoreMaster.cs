@@ -90,7 +90,9 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         ("Deepnest_East_16", "Quake Floor"),
         ("Crossroads_47", "Stag"),
         ("Abyss_15", "Shade Sibling (25)"),
-        ("Fungus1_22", "Plant Trap")
+        ("Fungus1_22", "Plant Trap"),
+        ("Fungus3_02", "Jellyfish"),
+        ("Fungus3_02", "Jellyfish Baby")
     };
 
     /// <summary>
