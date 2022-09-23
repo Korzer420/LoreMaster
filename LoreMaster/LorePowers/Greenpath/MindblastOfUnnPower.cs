@@ -2,6 +2,8 @@ using LoreMaster.Enums;
 using LoreMaster.Manager;
 using LoreMaster.UnityComponents;
 using Modding;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -9,9 +11,21 @@ namespace LoreMaster.LorePowers.Greenpath;
 
 public class MindblastOfUnnPower : Power
 {
+    #region Members
+
+    private List<HealthManager> _enemies = new();
+
+    #endregion
+
     #region Constructors
 
     public MindblastOfUnnPower() : base("Mindblast of Unn", Area.Greenpath) { }
+
+    #endregion
+
+    #region Properties
+
+    public override Action SceneAction => () => _enemies.Clear();
 
     #endregion
 
@@ -20,7 +34,7 @@ public class MindblastOfUnnPower : Power
     private void AddMindblastDamage(On.HealthManager.orig_TakeDamage orig, HealthManager self, HitInstance hitInstance)
     {
         MindBlast mindBlast = self.gameObject.GetComponent<MindBlast>();
-        if (mindBlast != null && hitInstance.DamageDealt > 0)
+        if (State == PowerState.Active && mindBlast != null && hitInstance.DamageDealt > 0)
             hitInstance.DamageDealt += mindBlast.ExtraDamage;
         orig(self, hitInstance);
     }
@@ -81,6 +95,19 @@ public class MindblastOfUnnPower : Power
         mindBlast.ExtraDamage += extraDamage;
     }
 
+    private void HealthManager_Hit(On.HealthManager.orig_Hit orig, HealthManager self, HitInstance hitInstance)
+    {
+        MindBlast mindBlast = self.gameObject.GetComponent<MindBlast>();
+        if (!PlayerData.instance.GetBool("hasDreamNail") && !_enemies.Contains(self))
+        {
+            self.hp *= 3;
+            _enemies.Add(self);
+        }
+        else if (PlayerData.instance.GetBool("hasDreamNail") && mindBlast == null)
+            hitInstance.DamageDealt = 0;
+        orig(self, hitInstance);
+    }
+
     #endregion
 
     #region Control
@@ -101,6 +128,20 @@ public class MindblastOfUnnPower : Power
         ModHooks.CharmUpdateHook -= UpdateDreamNailColor;
         foreach (tk2dSprite dreamNailComponent in HeroManager.DreamNailSprites)
             dreamNailComponent.color = Color.white;
+    }
+
+    /// <inheritdoc/>
+    protected override void TwistEnable()
+    {
+        On.EnemyDreamnailReaction.RecieveDreamImpact += Apply_Mindblast;
+        On.HealthManager.Hit += HealthManager_Hit;    
+    }
+
+    /// <inheritdoc/>
+    protected override void TwistDisable()
+    {
+        On.EnemyDreamnailReaction.RecieveDreamImpact -= Apply_Mindblast;
+        On.HealthManager.Hit -= HealthManager_Hit;
     }
 
     #endregion

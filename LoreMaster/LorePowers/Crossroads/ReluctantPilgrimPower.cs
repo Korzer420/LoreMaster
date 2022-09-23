@@ -121,6 +121,8 @@ public class ReluctantPilgrimPower : Power
         return arg;
     }
 
+    private bool HeroController_CanAttack(On.HeroController.orig_CanAttack orig, HeroController self) => self && HeroController.instance.cState.onGround;
+
     #endregion
 
     #region Control
@@ -139,6 +141,16 @@ public class ReluctantPilgrimPower : Power
         ModHooks.GetPlayerIntHook -= GetBeamDamage;
         IL.HeroController.Attack -= Attack_Modify;
         ModHooks.ObjectPoolSpawnHook -= MuteElegy;
+    }
+
+    protected override void TwistEnable()
+    {
+        On.HeroController.CanAttack += HeroController_CanAttack;
+    }
+
+    protected override void TwistDisable()
+    {
+        On.HeroController.CanAttack -= HeroController_CanAttack;
     }
 
     #endregion

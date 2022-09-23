@@ -26,7 +26,7 @@ public class TouchGrassPower : Power
     /// <summary>
     /// Gets the needed time to stand on grass to heal.
     /// </summary>
-    public float HealTime => PlayerData.instance.GetBool("equippedCharm_28") ? 4f : 8f;
+    public float HealTime => State == PowerState.Active ? (PlayerData.instance.GetBool("equippedCharm_28") ? 4f : 8f) : 1.5f;
 
     #endregion
 
@@ -93,10 +93,14 @@ public class TouchGrassPower : Power
         On.GrassSpriteBehaviour.OnTriggerEnter2D -= GrassSpriteBehaviour_OnTriggerEnter2D;
         On.GrassWind.OnTriggerEnter2D -= GrassWind_OnTriggerEnter2D;
         On.GrassCut.OnTriggerEnter2D -= GrassCut_OnTriggerEnter2D;
-        if (_runningCoroutine != null)
-            LoreMaster.Instance.Handler.StopCoroutine(_runningCoroutine);
         _currentlyRunning = false;
     }
+
+    /// <inheritdoc/>
+    protected override void TwistEnable() => Enable();
+
+    /// <inheritdoc/>
+    protected override void TwistDisable() => Disable();
 
     #endregion
 
@@ -127,7 +131,7 @@ public class TouchGrassPower : Power
             float passedTime = 0f;
             while (passedTime <= HealTime)
             {
-                if(_triggeredCollider == null || HeroManager.Collider == null || (!_triggeredCollider.IsTouching(HeroManager.Collider) && !HeroManager.Collider.IsTouching(_triggeredCollider)))
+                if (_triggeredCollider == null || HeroManager.Collider == null || (!_triggeredCollider.IsTouching(HeroManager.Collider) && !HeroManager.Collider.IsTouching(_triggeredCollider)))
                 {
                     _currentlyRunning = false;
                     yield break;
@@ -138,7 +142,18 @@ public class TouchGrassPower : Power
                     passedTime += Time.deltaTime;
                 }
             }
-            if (PlayerData.instance.GetInt("Health") < PlayerData.instance.GetInt(nameof(PlayerData.instance.maxHealth)))
+            if (State == PowerState.Twisted)
+            {
+                if (PlayerData.instance.GetInt("health") + PlayerData.instance.GetInt("healthBlue") == 1)
+                    HeroController.instance.TakeDamage(null, GlobalEnums.CollisionSide.top, 1, 1);
+                else
+                {
+                    FakeDamage = true;
+                    HeroController.instance.TakeHealth(1);
+                    FakeDamage = false;
+                }
+            }
+            else if (PlayerData.instance.GetInt("Health") < PlayerData.instance.GetInt(nameof(PlayerData.instance.maxHealth)))
                 HeroController.instance.AddHealth(1);
         }
     }

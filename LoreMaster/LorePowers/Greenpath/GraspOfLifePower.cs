@@ -138,6 +138,9 @@ public class GraspOfLifePower : Power
     /// <inheritdoc/>
     protected override void Disable() => On.GrassSpriteBehaviour.OnTriggerEnter2D -= GrassSpriteBehaviour_OnTriggerEnter2D;
 
+    /// <inheritdoc/>
+    protected override void TwistEnable() => _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(SpawnFoolEater());
+    
     #endregion
 
     #region Private Methods
@@ -179,6 +182,30 @@ public class GraspOfLifePower : Power
         }
     }
 
-    #endregion
+    private IEnumerator SpawnFoolEater()
+    {
+        float passedTime = 0f;
+        while(true)
+        {
+            if(HeroController.instance.cState.onGround && !PlayerData.instance.GetBool("atBench"))
+                passedTime += Time.deltaTime;
+            if (passedTime >= 2f)
+            {
+                passedTime = 0f;
+                if (_grasses.Count >= 10)
+                {
+                    GameObject.Destroy(_grasses[0]);
+                    _grasses.RemoveAt(0);
+                }
+                GameObject fool = GameObject.Instantiate(LoreMaster.Instance.PreloadedObjects["Plant Trap"]);
+                fool.SetActive(true);
+                fool.transform.position = new(HeroController.instance.transform.localPosition.x, HeroController.instance.transform.Find("HeroBox").GetComponent<BoxCollider2D>().bounds.min.y + 2f, -0.06f);
+                fool.transform.localScale = new(1f, 1f, 1f);
+                _grasses.Add(fool);
+            }
+            yield return null;
+        }
+    }
 
+    #endregion
 }

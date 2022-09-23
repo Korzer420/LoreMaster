@@ -43,7 +43,7 @@ public class BestMenderInTheWorldPower : Power
 
     #region Properties
 
-    public override Action SceneAction => () => 
+    public override Action SceneAction => () =>
     {
         _signsHit.Clear();
         _menderbugHits = 0;
@@ -66,13 +66,22 @@ public class BestMenderInTheWorldPower : Power
                     Name = "Unbreakable",
                     Actions = new FsmStateAction[]
                     {
-                        new Lambda(() => LoreMaster.Instance.Handler.StartCoroutine(Shuckle(self.transform)))
+                        new Lambda(() =>
+                        {
+                            if(State == PowerState.Active)
+                                LoreMaster.Instance.Handler.StartCoroutine(Shuckle(self.transform));
+                            else if(PlayerData.instance.GetInt("geo") > 50)
+                                HeroController.instance.TakeGeo(50);
+                            else
+                                HeroController.instance.TakeDamage(null, GlobalEnums.CollisionSide.top, 1, 1);
+
+                        })
                     }
                 };
                 self.AddState(state);
                 state.ClearTransitions();
                 state.AddTransition("FINISHED", cancel);
-                cancel.AddTransition("FINISHED", "Idle");
+                cancel.AddTransition("FINISHED", State == PowerState.Active ? "Idle" : "No Rotate Check");
             }
         }
         orig(self);
@@ -84,6 +93,8 @@ public class BestMenderInTheWorldPower : Power
         {
             Component.Destroy(self.GetComponent<NonBouncer>());
             LoreMaster.Instance.Handler.StartCoroutine(Shuckle(self.transform));
+            if (State == PowerState.Twisted)
+                orig(self, damageInstance);
         }
         else
             orig(self, damageInstance);
@@ -95,6 +106,8 @@ public class BestMenderInTheWorldPower : Power
         {
             Component.Destroy(self.GetComponent<NonBouncer>());
             LoreMaster.Instance.Handler.StartCoroutine(Shuckle(self.transform));
+            if (State == PowerState.Twisted)
+                orig(self, flingAngleMin, flingAngleMax, impactMultiplier);
         }
         else
             orig(self, flingAngleMin, flingAngleMax, impactMultiplier);
@@ -152,6 +165,7 @@ public class BestMenderInTheWorldPower : Power
 
     #region Control
 
+    /// <inheritdoc/>
     protected override void Enable()
     {
         On.Breakable.Break += Breakable_Break;
@@ -159,6 +173,7 @@ public class BestMenderInTheWorldPower : Power
         On.PlayMakerFSM.OnEnable += PlayMakerFSM_OnEnable;
     }
 
+    /// <inheritdoc/>
     protected override void Disable()
     {
         On.Breakable.Break -= Breakable_Break;
@@ -166,12 +181,37 @@ public class BestMenderInTheWorldPower : Power
         On.PlayMakerFSM.OnEnable -= PlayMakerFSM_OnEnable;
     }
 
+    /// <inheritdoc/>
+    protected override void TwistEnable()
+    {
+        On.Breakable.Break += Breakable_Break;
+        On.BreakablePole.Hit += BreakablePole_Hit;
+        On.PlayMakerFSM.OnEnable += PlayMakerFSM_OnEnable;
+    }
+
+    /// <inheritdoc/>
+    protected override void TwistDisable()
+    {
+        On.Breakable.Break -= Breakable_Break;
+        On.BreakablePole.Hit -= BreakablePole_Hit;
+        On.PlayMakerFSM.OnEnable -= PlayMakerFSM_OnEnable;
+    }
+
+
     #endregion
 
     #region Methods
 
     private IEnumerator Shuckle(Transform transform)
     {
+        if (State == PowerState.Twisted)
+        {
+            if (PlayerData.instance.GetInt("geo") > 50)
+                HeroController.instance.TakeGeo(50);
+            else
+                HeroController.instance.TakeDamage(null, GlobalEnums.CollisionSide.top, 1, 1);
+            yield break;
+        }
         if (!_signsHit.ContainsKey(transform.gameObject))
             _signsHit.Add(transform.gameObject, 0);
         if (_signsHit[transform.gameObject] <= 2)
@@ -195,7 +235,7 @@ public class BestMenderInTheWorldPower : Power
     private void WarnPlayer(GameObject menderBug)
     {
         if (_menderbugHits < 2)
-            _trackJournal.Invoke(menderBug.GetComponent<EnemyDeathEffectsUninfected>(), new object[] {});
+            _trackJournal.Invoke(menderBug.GetComponent<EnemyDeathEffectsUninfected>(), new object[] { });
         PlayMakerFSM playMakerFSM = PlayMakerFSM.FindFsmOnGameObject(FsmVariables.GlobalVariables.GetFsmGameObject("Enemy Dream Msg").Value, "Display");
         playMakerFSM.FsmVariables.GetFsmInt("Convo Amount").Value = 1;
         playMakerFSM.FsmVariables.GetFsmString("Convo Title").Value = _menderbugHits < 2 ? "Menderbug_Journal" : $"Menderbug_Warning_{_menderbugHits / 20}";

@@ -89,7 +89,8 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         ("Ruins1_23", "Mage"),
         ("Deepnest_East_16", "Quake Floor"),
         ("Crossroads_47", "Stag"),
-        ("Abyss_15", "Shade Sibling (25)")
+        ("Abyss_15", "Shade Sibling (25)"),
+        ("Fungus1_22", "Plant Trap")
     };
 
     /// <summary>

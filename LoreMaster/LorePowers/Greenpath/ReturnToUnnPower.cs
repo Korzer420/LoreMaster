@@ -55,6 +55,9 @@ public class ReturnToUnnPower : Power
         _movementSpeedBuff = false;
     }
 
+    /// <inheritdoc/>
+    protected override void TwistEnable() => _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(DragLeft());
+    
     #endregion
 
     #region Private Methods
@@ -91,6 +94,27 @@ public class ReturnToUnnPower : Power
                 HeroController.instance.DASH_COOLDOWN_CH += .5f;
                 _movementSpeedBuff = false;
             }
+        }
+    }
+
+    /// <summary>
+    /// Slowly drags the player to the left
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator DragLeft()
+    {
+        while (true)
+        {
+            if (!HeroController.instance.acceptingInput || PlayerData.instance.GetBool("atBench")
+                || (!HeroController.instance.cState.facingRight && HeroController.instance.hero_state == GlobalEnums.ActorStates.running))
+            {
+                HeroController.instance.cState.inConveyorZone = false;
+                yield return new WaitUntil(() => HeroController.instance.acceptingInput && (HeroController.instance.cState.facingRight
+                || HeroController.instance.hero_state != GlobalEnums.ActorStates.running) && !PlayerData.instance.GetBool("atBench"));
+            }
+            HeroController.instance.SetConveyorSpeed(-2.5f);
+            HeroController.instance.cState.inConveyorZone = true;
+            yield return null;
         }
     }
 

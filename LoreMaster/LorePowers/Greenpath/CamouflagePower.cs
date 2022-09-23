@@ -1,5 +1,6 @@
 using LoreMaster.Enums;
 using LoreMaster.Manager;
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -19,14 +20,7 @@ public class CamouflagePower : Power
 
     #endregion
 
-    #region Control
-
-    /// <inheritdoc/>
-    protected override void Enable()
-    {
-        _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(WaitForCamouflage());
-        On.HeroController.CanTakeDamage += HeroController_CanTakeDamage;
-    }
+    #region Event handler
 
     private bool HeroController_CanTakeDamage(On.HeroController.orig_CanTakeDamage orig, HeroController self)
     {
@@ -35,6 +29,25 @@ public class CamouflagePower : Power
         if (_isCamouflaged)
             return false;
         return result;
+    }
+
+    private void HeroController_Start(On.HeroController.orig_Start orig, HeroController self)
+    {
+        orig(self);
+        Color color = self.GetComponent<tk2dSprite>().color;
+        color.a = 0f;
+        self.GetComponent<tk2dSprite>().color = color;
+    }
+
+    #endregion
+
+    #region Control
+
+    /// <inheritdoc/>
+    protected override void Enable()
+    {
+        _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(WaitForCamouflage());
+        On.HeroController.CanTakeDamage += HeroController_CanTakeDamage;
     }
 
     /// <inheritdoc/>
@@ -46,6 +59,24 @@ public class CamouflagePower : Power
         PlayerData.instance.SetBool(nameof(PlayerData.instance.isInvincible), false);
         HeroManager.Sprite.color = Color.white;
         On.HeroController.CanTakeDamage -= HeroController_CanTakeDamage;
+    }
+
+    /// <inheritdoc/>
+    protected override void TwistEnable()
+    {
+        Color color = HeroController.instance.GetComponent<tk2dSprite>().color;
+        color.a = 0f;
+        HeroController.instance.GetComponent<tk2dSprite>().color = color;
+        On.HeroController.Start += HeroController_Start;
+    }
+
+    /// <inheritdoc/>
+    protected override void TwistDisable()
+    {
+        Color color = HeroController.instance.GetComponent<tk2dSprite>().color;
+        color.a = 1f;
+        HeroController.instance.GetComponent<tk2dSprite>().color = color;
+        On.HeroController.Start -= HeroController_Start;
     }
 
     #endregion
