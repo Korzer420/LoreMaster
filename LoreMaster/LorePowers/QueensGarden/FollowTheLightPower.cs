@@ -30,7 +30,7 @@ public class FollowTheLightPower : Power
     {
         var fsm = HeroController.instance.gameObject.LocateMyFSM("Dream Nail");
         GameObject dreamGate = fsm.GetState("Spawn Gate").GetFirstActionOfType<SpawnObjectFromGlobalPool>().gameObject.Value;
-        fsm.AddState(new(fsm.Fsm)
+        fsm.AddState(new FsmState(fsm.Fsm)
         {
             Name = "Set Light Gate",
             Actions = new FsmStateAction[]
@@ -53,7 +53,7 @@ public class FollowTheLightPower : Power
                 })
             }
         });
-        fsm.AddState(new(fsm.Fsm)
+        fsm.AddState(new FsmState(fsm.Fsm)
         {
             Name = "Move to Light Gate",
             Actions = new FsmStateAction[]
