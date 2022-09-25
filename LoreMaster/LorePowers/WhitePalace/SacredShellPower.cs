@@ -13,7 +13,9 @@ public class SacredShellPower : Power
 
     #region Event Handler
 
-    private int ModHooks_AfterTakeDamageHook(int hazardType, int damageAmount) => damageAmount > 1 ? 1 : damageAmount;
+    private int ModHooks_AfterTakeDamageHook(int hazardType, int damageAmount) => State == PowerState.Twisted 
+        ? damageAmount *= 2
+        : (damageAmount > 1 ? 1 : damageAmount);
 
     #endregion
 
@@ -24,6 +26,12 @@ public class SacredShellPower : Power
 
     /// <inheritdoc/>
     protected override void Disable() => ModHooks.AfterTakeDamageHook -= ModHooks_AfterTakeDamageHook;
+
+    /// <inheritdoc/>
+    protected override void TwistEnable() => ModHooks.AfterTakeDamageHook += ModHooks_AfterTakeDamageHook;
+
+    /// <inheritdoc/>
+    protected override void TwistDisable() => ModHooks.AfterTakeDamageHook -= ModHooks_AfterTakeDamageHook;
 
     #endregion
 }

@@ -31,6 +31,8 @@ public class BagOfMushroomsPower : Power
 
     private Coroutine _recoverSoul;
 
+    private float _twistedTimeScale = 1f;
+
     #endregion
 
     #region Constructors
@@ -50,7 +52,7 @@ public class BagOfMushroomsPower : Power
     {
         get
         {
-            if(_mushroomBag == null)
+            if (_mushroomBag == null)
             {
                 _mushroomBag = new("Mushroom Bag");
                 _mushroomBag.transform.SetParent(GameObject.Find("Knight")?.transform);
@@ -101,7 +103,7 @@ public class BagOfMushroomsPower : Power
     private void AdjustTimeScale()
     {
         if (Time.timeScale != 0)
-            Time.timeScale = HasEatenTwice ? 1.2f : 1.4f;
+            Time.timeScale = State == PowerState.Twisted ? _twistedTimeScale : (HasEatenTwice ? 1.2f : 1.4f);
     }
 
     /// <summary>
@@ -116,8 +118,8 @@ public class BagOfMushroomsPower : Power
             return;
 
         Matrix4x4 matrix = cam.projectionMatrix;
-        matrix.m01 += Mathf.Sin(Time.time * 1.25f) * 1f;
-        matrix.m10 += Mathf.Sin(Time.time * 1.75f) * 1f;
+        matrix.m01 += Mathf.Sin(Time.time * (State == PowerState.Active ? 1.25f : 1.1f)) * 1f;
+        matrix.m10 += Mathf.Sin(Time.time * (State == PowerState.Active ? 1.75f : 1.4f)) * 1f;
 
         cam.projectionMatrix = matrix;
     }
@@ -242,9 +244,21 @@ public class BagOfMushroomsPower : Power
         MushroomBag.SetActive(false);
     }
 
+    /// <inheritdoc/>
+    protected override void TwistEnable() => StartRoutine(() => HighOnShrooms());
+
+    /// <inheritdoc/>
+    protected override void TwistDisable()
+    {
+        if (_activeEffect != 0)
+            RevertMushroom();
+    }
+
     #endregion
 
     #region Private Methods
+
+    #region Normal
 
     /// <summary>
     /// Changes the choice the player has made.
@@ -366,6 +380,7 @@ public class BagOfMushroomsPower : Power
             ModHooks.HeroUpdateHook -= AdjustTimeScale;
             if (Time.timeScale != 0)
                 Time.timeScale = 1f;
+            _twistedTimeScale = 0f;
         }
     }
 
@@ -463,6 +478,53 @@ public class BagOfMushroomsPower : Power
             HeroController.instance.AddMPCharge(soulGain);
         }
     }
+
+    #endregion
+
+    #region Twisted
+
+    private IEnumerator HighOnShrooms()
+    {
+        float passedTime = 0f;
+        float timer = LoreMaster.Instance.Generator.Next(30, 301);
+        while (true)
+        {
+            passedTime += Time.deltaTime;
+
+            if (passedTime > timer)
+            {
+                passedTime = 0f;
+                timer = LoreMaster.Instance.Generator.Next(10, 61);
+                if (SettingManager.Instance.DisableYellowMushroom)
+                {
+                    _twistedTimeScale = 1 + (float)LoreMaster.Instance.Generator.NextDouble();
+                    AdrenalineMushroom(true);
+                    while (passedTime < timer)
+                    {
+                        passedTime += Time.deltaTime;
+                        yield return null;
+                    }
+                    AdrenalineMushroom(false);
+                }
+                else
+                {
+                    CleansingMushroom(true);
+                    while (passedTime < timer)
+                    {
+                        passedTime += Time.deltaTime;
+                        yield return null;
+                    }
+                    CleansingMushroom(false);
+                }
+                passedTime = 0f;
+                timer = LoreMaster.Instance.Generator.Next(30, 301);
+            }
+
+            yield return null;
+        }
+    }
+
+    #endregion
 
     #endregion
 }

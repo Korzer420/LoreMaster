@@ -112,6 +112,10 @@ internal class LoreManager
             text = StagAdoptionPower.Instance.CanSpawnStag ? "You can feel something moving inside, maybe knocking let it hatch?" : "The remains of an egg shell.";
         else if (key.Contains("Remove_Power_"))
             text = $"You lost {key.Substring(13, key.Length - 15)}";
+        else if (string.Equals(key, "Coward_1"))
+            text = "Only cowards retreat from battle...";
+        else if (string.Equals(key, "Temple_Door"))
+            text = "Want to enter the temple?";
         return text;
     }
 

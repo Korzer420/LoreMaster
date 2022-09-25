@@ -12,6 +12,7 @@ public class HappyFatePower : Power
 
     private bool _isHappy = true; // :)
     private Transform[] _nailObjects = new Transform[5];
+    private int _happyCounter = 0;
 
     #endregion
 
@@ -23,9 +24,9 @@ public class HappyFatePower : Power
 
     #region Properties
 
-    public Transform[] NailObjects 
+    public Transform[] NailObjects
     {
-        get 
+        get
         {
             if (_nailObjects.Any(x => x == null))
                 Initialize();
@@ -44,9 +45,12 @@ public class HappyFatePower : Power
     /// <returns></returns>
     private int RemoveHappiness(int damage)
     {
-        if (damage > 0 && _isHappy)
+        if (damage > 0 && ((_isHappy && State == PowerState.Active) || (_happyCounter < 10 && State == PowerState.Twisted)))
         {
-            _isHappy = false;
+            if (State == PowerState.Active)
+                _isHappy = false;
+            else
+                _happyCounter++;
             HappynessChange();
         }
         return damage;
@@ -60,8 +64,8 @@ public class HappyFatePower : Power
     /// <returns></returns>
     private int AdjustNail(string name, int orig)
     {
-        if (name.Equals("nailDamage") && _isHappy)
-            orig += 3;
+        if (name.Equals("nailDamage"))
+            orig += State == PowerState.Active && _isHappy ? 3 : (State == PowerState.Twisted ? Mathf.Min(1, orig - _happyCounter) : 0);
         return orig;
     }
 
@@ -77,11 +81,22 @@ public class HappyFatePower : Power
     private void ResetHappiness(On.HeroController.orig_SetBenchRespawn orig, HeroController self, string spawnMarker, string sceneName, int spawnType, bool facingRight)
     {
         orig(self, spawnMarker, sceneName, spawnType, facingRight);
-        if (!_isHappy)
+        if (State == PowerState.Twisted)
+            ResetDepression();
+        else if (!_isHappy)
         {
             _isHappy = true;
             HappynessChange();
         }
+    }
+
+    private void HeroController_Start(On.HeroController.orig_Start orig, HeroController self)
+    {
+        orig(self);
+        if (_isHappy && State == PowerState.Active)
+            HappynessChange();
+        else if (State == PowerState.Twisted)
+            _happyCounter = 0;
     }
 
     #endregion
@@ -107,6 +122,7 @@ public class HappyFatePower : Power
         ModHooks.TakeHealthHook += RemoveHappiness;
         _isHappy = true;
         HappynessChange();
+        On.HeroController.Start += HeroController_Start;
     }
 
     /// <inheritdoc/>
@@ -120,6 +136,26 @@ public class HappyFatePower : Power
             _isHappy = false;
             HappynessChange();
         }
+        On.HeroController.Start -= HeroController_Start;
+    }
+
+    /// <inheritdoc/>
+    protected override void TwistEnable()
+    {
+        On.HeroController.SetBenchRespawn += ResetHappiness;
+        ModHooks.GetPlayerIntHook += AdjustNail;
+        ModHooks.TakeHealthHook += RemoveHappiness;
+        On.HeroController.Start += HeroController_Start;
+    }
+
+    /// <inheritdoc/>
+    protected override void TwistDisable()
+    {
+        On.HeroController.SetBenchRespawn -= ResetHappiness;
+        ModHooks.GetPlayerIntHook -= AdjustNail;
+        ModHooks.TakeHealthHook -= RemoveHappiness;
+        On.HeroController.Start -= HeroController_Start;
+        ResetDepression();
     }
 
     #endregion
@@ -128,6 +164,18 @@ public class HappyFatePower : Power
 
     private void HappynessChange()
     {
+        if (State == PowerState.Twisted)
+        {
+            HeroController.instance.WALK_SPEED -= .2f;
+            HeroController.instance.RUN_SPEED -= .2f;
+            HeroController.instance.RUN_SPEED_CH -= .2f;
+            HeroController.instance.RUN_SPEED_CH_COMBO -= .2f;
+            HeroController.instance.DASH_COOLDOWN += .02f;
+            HeroController.instance.DASH_COOLDOWN_CH += .02f;
+            PlayMakerFSM.BroadcastEvent("UPDATE NAIL DAMAGE");
+            return;
+        }
+
         if (_isHappy)
         {
             foreach (Transform child in NailObjects)
@@ -170,6 +218,21 @@ public class HappyFatePower : Power
             yield return new WaitForSeconds(1f);
             HeroController.instance.AddMPCharge(1);
         }
+    }
+
+    /// <summary>
+    /// Does reset mean jump to the start or removing it? If it's the latter one, please give me this...
+    /// </summary>
+    private void ResetDepression()
+    {
+        HeroController.instance.WALK_SPEED += .2f * _happyCounter;
+        HeroController.instance.RUN_SPEED += .2f * _happyCounter;
+        HeroController.instance.RUN_SPEED_CH += .2f * _happyCounter;
+        HeroController.instance.RUN_SPEED_CH_COMBO += .2f * _happyCounter;
+        HeroController.instance.DASH_COOLDOWN -= .02f * _happyCounter;
+        HeroController.instance.DASH_COOLDOWN_CH -= .02f * _happyCounter;
+        _happyCounter = 0;
+        PlayMakerFSM.BroadcastEvent("UPDATE NAIL DAMAGE");
     }
 
     #endregion

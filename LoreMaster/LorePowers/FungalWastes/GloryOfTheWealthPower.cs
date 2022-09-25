@@ -53,9 +53,9 @@ public class GloryOfTheWealthPower : Power
             // We only increase if it would drop geo anyway
             if (geoDrops.Any(x => x != 0))
             {
-                enemy.SetGeoSmall(geoDrops[0] * 2);
-                enemy.SetGeoMedium(geoDrops[1] * 2);
-                enemy.SetGeoLarge(geoDrops[2] * 2);
+                enemy.SetGeoSmall(State == PowerState.Twisted ? 1 : geoDrops[0] * 2);
+                enemy.SetGeoMedium(State == PowerState.Twisted ? 0 : geoDrops[1] * 2);
+                enemy.SetGeoLarge(State == PowerState.Twisted ? 0 : geoDrops[2] * 2);
             }
         }
         _active = false;
@@ -112,6 +112,7 @@ public class GloryOfTheWealthPower : Power
         GameObject prefab = GameObject.Find("_GameCameras").transform.Find("HudCamera/Inventory/Inv/Inv_Items/Geo").gameObject;
         GameObject hudCanvas = GameObject.Find("_GameCameras").transform.Find("HudCamera/Hud Canvas").gameObject;
         _payObject = GameObject.Instantiate(prefab, hudCanvas.transform, true);
+        _payObject.SetActive(true);
         _payObject.transform.localPosition = new(-2.06f, -2.32f, 0f);
         _payObject.transform.localScale = new(1f, 1f, 1f);
         _payObject.GetComponent<DisplayItemAmount>().playerDataInt = _payObject.name;
@@ -124,6 +125,7 @@ public class GloryOfTheWealthPower : Power
         _payObject.GetComponent<BoxCollider2D>().offset = new Vector2(0.5f, 0f);
         _payObject.transform.GetChild(0).localPosition = new(1.5f, -.95f, 0f);
         _payObject.transform.GetChild(0).localScale = new(2f, 2f, 1f);
+        _payObject.SetActive(false);
     }
 
     /// <inheritdoc/>

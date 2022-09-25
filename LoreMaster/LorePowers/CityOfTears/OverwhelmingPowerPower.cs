@@ -1,12 +1,7 @@
-using HutongGames.PlayMaker;
-using ItemChanger.Extensions;
-using ItemChanger.FsmStateActions;
 using LoreMaster.Enums;
-using LoreMaster.Extensions;
 using LoreMaster.Helper;
 using LoreMaster.Manager;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace LoreMaster.LorePowers.CityOfTears;
@@ -27,68 +22,71 @@ public class OverwhelmingPowerPower : Power
 
     #region Event Handler
 
-    /// <summary>
-    /// Modifies the fireball if we catch the fireball
-    /// </summary>
-    /// <param name="orig"></param>
-    /// <param name="self"></param>
-    private void CheckFireball(On.PlayMakerFSM.orig_OnEnable orig, PlayMakerFSM self)
+    private void SetFsmInt_OnEnter(On.HutongGames.PlayMaker.Actions.SetFsmInt.orig_OnEnter orig, HutongGames.PlayMaker.Actions.SetFsmInt self)
     {
-        if (!string.Equals(self.FsmName,"Fireball Control"))
-        {
-            orig(self);
-            return;
-        }
-
-        FsmState setDamageState = self.GetState("Init");
-        if (self.gameObject.name.Contains("Spiral"))
-            setDamageState.ReplaceAction(new Lambda(() =>
-            {
-                float direction = self.FsmVariables.FindFsmFloat("X Scale").Value > 0 ? -.8f : .8f;
-                if (_hasFullSoulMeter && Active)
-                {
-                    self.gameObject.LocateMyFSM("damages_enemy").FsmVariables.GetFsmInt("damageDealt").Value *= 2;
-                    self.transform.localScale = new(self.transform.localScale.x + 1f, self.transform.localScale.y + 1f);
-                    self.GetComponent<tk2dSprite>().color = Color.cyan;
-                    // Roll to determine if the player takes damage.
-                    if (LoreMaster.Instance.Generator.Next(1, 11) == 1)
-                        LoreMaster.Instance.Handler.StartCoroutine(Overload());
-                }
-                else
-                    self.GetComponent<tk2dSprite>().color = Color.white;
-
-                if (direction < 0f)
-                    self.SendEvent("LEFT");
-                else
-                    self.SendEvent("RIGHT");
-            })
-            {
-                Name = "Overpower Fireball"
-            }, 3);
-        else
-            setDamageState.ReplaceAction(new Lambda(() =>
-            {
-                if (_hasFullSoulMeter && Active)
-                {
-                    self.gameObject.LocateMyFSM("damages_enemy").FsmVariables.GetFsmInt("damageDealt").Value *= 2;
-                    self.transform.localScale = new(self.transform.localScale.x + 1f, self.transform.localScale.y + 1f);
-                    self.GetComponent<tk2dSprite>().color = Color.cyan;
-                    // Roll to determine if the player takes damage.
-                    if (LoreMaster.Instance.Generator.Next(1, 11) == 1)
-                        LoreMaster.Instance.Handler.StartCoroutine(Overload());
-                }
-                else
-                    self.GetComponent<tk2dSprite>().color = Color.white;
-
-                if (self.FsmVariables.FindFsmFloat("Velocity").Value < 0f)
-                    self.SendEvent("LEFT");
-                else
-                    self.SendEvent("RIGHT");
-            })
-            {
-                Name = "Overpower Fireball"
-            }, 1);
         orig(self);
+        if (self.IsCorrectContext("Set Damage", null, "Set Damage"))
+        {
+            tk2dSprite sprite = self.Fsm.FsmComponent.transform.parent?.GetComponent<tk2dSprite>();
+            if (_hasFullSoulMeter && State == PowerState.Active)
+            {
+                self.Fsm.FsmComponent.gameObject.LocateMyFSM("damages_enemy").FsmVariables.FindFsmInt("damageDealt").Value *= 2;
+                sprite.color = Color.cyan;
+                self.Fsm.FsmComponent.transform.localScale = new(2f, 2f);
+            }
+            else if (State != PowerState.Twisted || _hasFullSoulMeter)
+            {
+                sprite.color = Color.white;
+                self.Fsm.FsmComponent.transform.localScale = new(1f, 1f);
+            }
+            else if (!_hasFullSoulMeter && State == PowerState.Twisted)
+            {
+                self.Fsm.FsmComponent.gameObject.LocateMyFSM("damages_enemy").FsmVariables.FindFsmInt("damageDealt").Value = 1;
+                sprite.color = Color.gray;
+            }
+        }
+    }
+
+    private void GetPlayerDataInt_OnEnter(On.HutongGames.PlayMaker.Actions.GetPlayerDataInt.orig_OnEnter orig, HutongGames.PlayMaker.Actions.GetPlayerDataInt self)
+    {
+        orig(self);
+        if (self.IsCorrectContext("Spell Control", "Knight", "Can Cast? QC") || self.IsCorrectContext("Spell Control", "Knight", "Can Cast?"))
+            _hasFullSoulMeter = PlayerData.instance.GetInt(nameof(PlayerData.instance.MPCharge)) >= 99
+            && !PlayerData.instance.GetBool(nameof(PlayerData.instance.soulLimited));
+    }
+
+    private void FloatCompare_OnEnter(On.HutongGames.PlayMaker.Actions.FloatCompare.orig_OnEnter orig, HutongGames.PlayMaker.Actions.FloatCompare self)
+    {
+        orig(self);
+        if (self.IsCorrectContext("Fireball Control", null, "Init"))
+        {
+            tk2dSprite sprite = self.Fsm.FsmComponent.gameObject.GetComponent<tk2dSprite>();
+            if (_hasFullSoulMeter && State == PowerState.Active)
+            {
+                self.Fsm.FsmComponent.gameObject.LocateMyFSM("damages_enemy").FsmVariables.FindFsmInt("damageDealt").Value *= 2;
+                sprite.color = Color.cyan;
+                self.Fsm.FsmComponent.transform.localScale = new(2f, 2f);
+            }
+            else if (State != PowerState.Twisted || _hasFullSoulMeter)
+            {
+                sprite.color = Color.white;
+                self.Fsm.FsmComponent.transform.localScale = new(1f, 1f);
+            }
+            else if (!_hasFullSoulMeter && State == PowerState.Twisted)
+            {
+                self.Fsm.FsmComponent.gameObject.LocateMyFSM("damages_enemy").FsmVariables.FindFsmInt("damageDealt").Value = 1;
+                sprite.color = Color.gray;
+            }
+        }
+    }
+
+    private void SetGravity2dScale_OnEnter(On.HutongGames.PlayMaker.Actions.SetGravity2dScale.orig_OnEnter orig, HutongGames.PlayMaker.Actions.SetGravity2dScale self)
+    {
+        orig(self);
+        // Roll to determine if the player takes damage.
+        if (_hasFullSoulMeter && State == PowerState.Active
+            && self.IsCorrectContext("Spell Control", "Knight", "Spell End") && LoreMaster.Instance.Generator.Next(1, 11) == 1)
+            LoreMaster.Instance.Handler.StartCoroutine(Overload());
     }
 
     #endregion
@@ -98,73 +96,20 @@ public class OverwhelmingPowerPower : Power
     /// <inheritdoc/>
     protected override void Initialize()
     {
-        GameObject spell = GameObject.Find("Knight/Spells");
-
-        PlayMakerFSM spellControl = HeroController.instance.spellControl;
-        spellControl.GetState("Spell Choice").ReplaceAction(new Lambda(() =>
-        {
-            _hasFullSoulMeter = PlayerData.instance.GetInt(nameof(PlayerData.instance.MPCharge)) >= 99 
-            && !PlayerData.instance.GetBool(nameof(PlayerData.instance.soulLimited));
-            if (spellControl.FsmVariables.FindFsmBool("Pressed Up").Value)
-                spellControl.SendEvent("SCREAM");
-        })
-        { Name = "Full Soul Check" }, 0);
-        spellControl.GetState("Can Cast? QC").ReplaceAction(new Lambda(() =>
-        {
-            _hasFullSoulMeter = PlayerData.instance.GetInt(nameof(PlayerData.instance.MPCharge)) >= 99 
-            && !PlayerData.instance.GetBool(nameof(PlayerData.instance.soulLimited));
-            spellControl.FsmVariables.FindFsmInt("MP").Value = PlayerData.instance.GetInt("MPCharge");
-        })
-        { Name = "Full Soul Check" }, 1);
-
-        List<GameObject> spells = new();
-
-        // Get all spell objects (all objects with the hero spell tag, should have the Set Damage fsm)
-        foreach (Transform child in spell.transform)
-        {
-            if (child.tag.Equals("Hero Spell"))
-                spells.Add(child.gameObject);
-            foreach (Transform subChild in child)
-                if (subChild.tag.Equals("Hero Spell"))
-                    spells.Add(subChild.gameObject);
-        }
-
-        // Modify the damage fsm of each spell
-        foreach (GameObject spellObject in spells)
-        {
-            PlayMakerFSM spellDamageFSM = spellObject.LocateMyFSM("Set Damage");
-            if (spellDamageFSM == null)
-                continue;
-            spellDamageFSM.GetState("Finished").ReplaceAction(new Lambda(() =>
-            {
-                // The transform checks are for the case that this modifications get applied before acquiring Grasp of Life.
-                if (_hasFullSoulMeter && Active && spellObject.transform.parent != null && spellObject.transform.parent.parent != null && spellObject.transform.parent.parent.name.Equals("Spells"))
-                {
-                    spellObject.LocateMyFSM("damages_enemy").FsmVariables.GetFsmInt("damageDealt").Value *= 2;
-                    spell.transform.localScale = new(2, 2);
-                    spellObject.transform.parent.GetComponent<tk2dSprite>().color = Color.cyan;
-                    // Roll to determine if the player takes damage.
-                    if (LoreMaster.Instance.Generator.Next(1, 11) == 1)
-                        LoreMaster.Instance.Handler.StartCoroutine(Overload());
-                }
-                else if(spellObject.transform.parent != null && spellObject.transform.parent.parent != null && spellObject.transform.parent.parent.name.Equals("Spells"))
-                {
-                    spell.transform.localScale = new(1, 1);
-                    spellObject.transform.parent.GetComponent<tk2dSprite>().color = Color.white;
-                }
-
-                if (!PlayerData.instance.GetBool(nameof(PlayerData.instance.equippedCharm_19)))
-                    spellDamageFSM.SendEvent("FINISHED");
-            })
-            { Name = "Empower Spell" });
-        }
+        On.HutongGames.PlayMaker.Actions.GetPlayerDataInt.OnEnter += GetPlayerDataInt_OnEnter;
+        On.HutongGames.PlayMaker.Actions.SetFsmInt.OnEnter += SetFsmInt_OnEnter;
+        On.HutongGames.PlayMaker.Actions.FloatCompare.OnEnter += FloatCompare_OnEnter;
+        On.HutongGames.PlayMaker.Actions.SetGravity2dScale.OnEnter += SetGravity2dScale_OnEnter;
     }
 
     /// <inheritdoc/>
-    protected override void Enable() => On.PlayMakerFSM.OnEnable += CheckFireball;
-
-    /// <inheritdoc/>
-    protected override void Disable() => On.PlayMakerFSM.OnEnable -= CheckFireball;
+    protected override void Terminate()
+    {
+        On.HutongGames.PlayMaker.Actions.GetPlayerDataInt.OnEnter -= GetPlayerDataInt_OnEnter;
+        On.HutongGames.PlayMaker.Actions.SetFsmInt.OnEnter -= SetFsmInt_OnEnter;
+        On.HutongGames.PlayMaker.Actions.FloatCompare.OnEnter -= FloatCompare_OnEnter;
+        On.HutongGames.PlayMaker.Actions.SetGravity2dScale.OnEnter -= SetGravity2dScale_OnEnter;
+    }
 
     #endregion
 
@@ -179,7 +124,7 @@ public class OverwhelmingPowerPower : Power
         // The shade spawn is determined by the soul limiter, which means to prevent the shade from spawning until the effect is over.
         if (string.Equals(PlayerData.instance.shadeScene, "None")
             || (PowerManager.HasObtainedPower("ABYSS_TUT_TAB_01")))
-        { 
+        {
             PlayerData.instance.EndSoulLimiter();
             PlayMakerFSM.BroadcastEvent("SOUL LIMITER DOWN");
         }

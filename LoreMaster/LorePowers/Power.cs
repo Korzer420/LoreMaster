@@ -1,6 +1,7 @@
 using LoreMaster.Enums;
 using LoreMaster.Manager;
 using System;
+using System.Collections;
 using UnityEngine;
 
 namespace LoreMaster.LorePowers;
@@ -206,7 +207,28 @@ public abstract class Power
             LoreMaster.Instance.LogError("Error while loading " + PowerName + ": " + exception.Source);
             LoreMaster.Instance.LogError("Error while loading " + PowerName + ": " + exception.StackTrace);
         }
-    } 
+    }
+
+    #endregion
+
+    #region Extras
+
+    /// <summary>
+    /// Start a coroutine on this power. This coroutine will be cancelled once the power disables itself.
+    /// </summary>
+    /// <param name="coroutine"></param>
+    protected void StartRoutine(Func<IEnumerator> coroutine, bool overwrite = true)
+    {
+        if (_runningCoroutine != null)
+            if (overwrite)
+                LoreMaster.Instance.Handler.StopCoroutine(_runningCoroutine);
+            else
+            {
+                LoreMaster.Instance.LogDebug($"Power {PowerName} tried starting a main coroutine while one is already active.");
+                return;
+            }
+        _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(coroutine.Invoke());
+    }
 
     #endregion
 }

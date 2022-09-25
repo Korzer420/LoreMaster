@@ -1,10 +1,19 @@
 using LoreMaster.Enums;
 using Modding;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
 namespace LoreMaster.LorePowers.FungalWastes;
 
 public class PaleLuckPower : Power
 {
+    #region Members
+
+    private List<HealthManager> _recentEnemies = new();
+
+    #endregion
+
     #region Constructors
 
     public PaleLuckPower() : base("Pale Luck", Area.FungalWastes) { }
@@ -39,6 +48,20 @@ public class PaleLuckPower : Power
         return damage;
     }
 
+    private void HealthManager_Hit(On.HealthManager.orig_Hit orig, HealthManager self, HitInstance hitInstance)
+    {
+        if (LoreMaster.Instance.Generator.Next(1, 21) == 1)
+        {
+            hitInstance.DamageDealt = 0;
+            if (!_recentEnemies.Contains(self))
+            { 
+                self.hp += PlayerData.instance.GetInt("nailDamage");
+                LoreMaster.Instance.Handler.StartCoroutine(PreventDoubleHeal(self));
+            }
+        }
+        orig(self, hitInstance);
+    }
+
     #endregion
 
     #region Methods
@@ -49,6 +72,22 @@ public class PaleLuckPower : Power
     /// <inheritdoc/>
     protected override void Disable() => ModHooks.AfterTakeDamageHook -= ModHooks_TakeDamageHook;
 
+    /// <inheritdoc/>
+    protected override void TwistEnable() => On.HealthManager.Hit += HealthManager_Hit;
+
+    /// <inheritdoc/>
+    protected override void TwistDisable() => On.HealthManager.Hit -= HealthManager_Hit;
+
+    #endregion
+
+    #region Methods
+
+    private IEnumerator PreventDoubleHeal(HealthManager healthManager)
+    {
+        _recentEnemies.Add(healthManager);
+        yield return new WaitForSeconds(.2f);
+        _recentEnemies.Remove(healthManager);
+    }
 
     #endregion
 }

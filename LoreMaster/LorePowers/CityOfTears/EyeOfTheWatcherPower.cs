@@ -1,8 +1,7 @@
 using HutongGames.PlayMaker;
+using HutongGames.PlayMaker.Actions;
 using ItemChanger.Extensions;
-using ItemChanger.FsmStateActions;
 using LoreMaster.Enums;
-using LoreMaster.Extensions;
 using LoreMaster.Helper;
 using System;
 using System.Collections;
@@ -18,6 +17,8 @@ public class EyeOfTheWatcherPower : Power
     private Sprite _eyeSprite = SpriteHelper.CreateSprite("EyeOfLurien");
 
     private GameObject _eye;
+
+    private bool _adjustedDarkness = true;
 
     #endregion
 
@@ -35,7 +36,9 @@ public class EyeOfTheWatcherPower : Power
     /// <inheritdoc/>
     public override Action SceneAction => () =>
     {
-        _eye.GetComponent<SpriteRenderer>().color = Color.white;
+        if (_eye != null)
+            _eye.GetComponent<SpriteRenderer>().color = Color.white;
+        _adjustedDarkness = false;
     };
 
     /// <summary>
@@ -44,7 +47,7 @@ public class EyeOfTheWatcherPower : Power
     public bool CanRevive => EyeActive && PlayerData.instance.GetBool(nameof(PlayerData.instance.hasLantern));
 
     /// <summary>
-    /// Gets or sets the value that indicates if the eye is active.
+    /// Gets or sets the value that indicates if the eye is active
     /// </summary>
     public bool EyeActive { get; set; } = true;
 
@@ -90,38 +93,54 @@ public class EyeOfTheWatcherPower : Power
         }
     }
 
-    private void OnActivateGameObjectAction(On.HutongGames.PlayMaker.Actions.ActivateGameObject.orig_OnEnter orig, HutongGames.PlayMaker.Actions.ActivateGameObject self)
+    private void OnActivateGameObjectAction(On.HutongGames.PlayMaker.Actions.ActivateGameObject.orig_OnEnter orig, ActivateGameObject self)
     {
-        if (string.Equals(self.Fsm.GameObjectName, "Vignette") && string.Equals(self.Fsm.Name, "Darkness Control") 
-            && string.Equals(self.State.Name, "Scene Reset 2"))
+        if (self.IsCorrectContext("Darkness Control", "Vignette", "Scene Reset 2"))
         {
-            self.Fsm.FsmComponent.GetState("Scene Reset 2").AddTransition("LANTERN", "Lantern 2");
-            if (Active && EyeActive)
+            if (State == PowerState.Active && !self.Fsm.FsmComponent.GetState("Scene Reset 2").Transitions.Any(x => string.Equals(x.ToState, "Lantern 2")))
+                self.Fsm.FsmComponent.GetState("Scene Reset 2").AddTransition("LANTERN", "Lantern 2");
+            if (State == PowerState.Active && EyeActive)
                 self.Fsm.FsmComponent.SendEvent("LANTERN");
         }
 
         orig(self);
     }
 
-    private void OnSendMessageAction(On.HutongGames.PlayMaker.Actions.SendMessage.orig_OnEnter orig, HutongGames.PlayMaker.Actions.SendMessage self)
+    private void OnSendMessageAction(On.HutongGames.PlayMaker.Actions.SendMessage.orig_OnEnter orig, SendMessage self)
     {
-        if (string.Equals(self.Fsm.GameObjectName, "Telescope Inspect") && string.Equals(self.Fsm.Name, "Conversation Control") 
-            && string.Equals(self.State.Name, "Stop"))
+        if (self.IsCorrectContext("Conversation Control", "Telescope Inspect", "Stop"))
             EyeActive = true;
         orig(self);
     }
 
-    private void OnPlayerDataBoolTestAction(On.HutongGames.PlayMaker.Actions.PlayerDataBoolTest.orig_OnEnter orig, HutongGames.PlayMaker.Actions.PlayerDataBoolTest self)
+    private void OnPlayerDataBoolTestAction(On.HutongGames.PlayMaker.Actions.PlayerDataBoolTest.orig_OnEnter orig, PlayerDataBoolTest self)
     {
-        if (self.Fsm.GameObjectName.Contains("Toll Gate Machine") && string.Equals(self.Fsm.Name, "Disable if No Lantern"))
-            self.isFalse = (Active && EyeActive) ? null : FsmEvent.GetFsmEvent("DISABLE");
-        else if (string.Equals(self.Fsm.GameObjectName, "Area Title Controller") && string.Equals(self.Fsm.Name, "Deactivate in darkness without lantern"))
-            self.isFalse = (Active && EyeActive) ? null : FsmEvent.GetFsmEvent("NO LANTERN");
-        else if (string.Equals(self.Fsm.GameObjectName, "Ghost Warrior NPC") && string.Equals(self.Fsm.Name, "FSM"))
-            self.isFalse = (Active && EyeActive) ? null : FsmEvent.GetFsmEvent("DEACTIVE");
-        else if (string.Equals(self.Fsm.Name, "Vignette") && string.Equals(self.Fsm.Name, "Darkness Control") 
-            && (string.Equals(self.State.Name, "Scene Reset") || string.Equals(self.State.Name, "Dark Lev Check")))
-            self.isFalse = (Active && EyeActive) ? FsmEvent.GetFsmEvent("LANTERN") : null;
+        if (self.IsCorrectContext("Disable if No Lantern", "Toll Gate Machine", null))
+            self.isFalse = (State == PowerState.Active && EyeActive) ? null : FsmEvent.GetFsmEvent("DISABLE");
+        else if (self.IsCorrectContext("Deactivate in darkness without lantern", "Area Title Controller", null))
+            self.isFalse = (State == PowerState.Active && EyeActive) ? null : FsmEvent.GetFsmEvent("NO LANTERN");
+        else if (self.IsCorrectContext("FSM", "Ghost Warrior NPC", null))
+            self.isFalse = (State == PowerState.Active && EyeActive) ? null : FsmEvent.GetFsmEvent("DEACTIVE");
+        else if (self.IsCorrectContext("Vignette", "Darkness Control", null) && (string.Equals(self.State.Name, "Scene Reset")
+            || string.Equals(self.State.Name, "Dark Lev Check")))
+        {
+            self.isTrue = State == PowerState.Twisted ? null : FsmEvent.GetFsmEvent("LANTERN");
+            self.isFalse = (State == PowerState.Active && EyeActive) ? FsmEvent.GetFsmEvent("LANTERN") : null;
+        }
+        orig(self);
+    }
+
+    private void IntSwitch_OnEnter(On.HutongGames.PlayMaker.Actions.IntSwitch.orig_OnEnter orig, IntSwitch self)
+    {
+        if (self.IsCorrectContext("Darkness Control", "Vignette", null) && string.Equals(self.sendEvent[0].Name, "NORMAL"))
+        {
+            if (!_adjustedDarkness)
+            {
+                _adjustedDarkness = true;
+                LoreMaster.Instance.Log("Called in state: " + self.State.Name);
+                self.Fsm.Variables.FindFsmInt("Darkness Level").Value = Mathf.Min(self.Fsm.Variables.FindFsmInt("Darkness Level").Value + 1, 2);
+            }
+        }
         orig(self);
     }
 
@@ -155,12 +174,18 @@ public class EyeOfTheWatcherPower : Power
     }
 
     /// <inheritdoc/>
-    protected override void Terminate() 
+    protected override void TwistEnable() => On.HutongGames.PlayMaker.Actions.IntSwitch.OnEnter += IntSwitch_OnEnter;
+
+    /// <inheritdoc/>
+    protected override void TwistDisable() => On.HutongGames.PlayMaker.Actions.IntSwitch.OnEnter -= IntSwitch_OnEnter;
+
+    /// <inheritdoc/>
+    protected override void Terminate()
     {
         On.HutongGames.PlayMaker.Actions.PlayerDataBoolTest.OnEnter -= OnPlayerDataBoolTestAction;
         On.HutongGames.PlayMaker.Actions.ActivateGameObject.OnEnter -= OnActivateGameObjectAction;
     }
-    
+
     #endregion
 
     #region Private Methods

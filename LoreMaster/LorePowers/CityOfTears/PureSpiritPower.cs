@@ -3,6 +3,7 @@ using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
 using LoreMaster.Enums;
 using LoreMaster.Extensions;
+using LoreMaster.Helper;
 using System.Collections;
 using UnityEngine;
 
@@ -11,13 +12,6 @@ namespace LoreMaster.LorePowers.CityOfTears;
 internal class PureSpiritPower : Power
 {
     #region Members
-
-    private readonly Vector3[] _positions = new Vector3[]
-    {
-        new(0, 2f, 0.0054f),
-        new(Mathf.Sqrt(3f), -1f, 0.0054f),
-        new(-Mathf.Sqrt(3f), -1f, 0.0054f)
-    };
 
     private GameObject _orbContainer;
 
@@ -37,6 +31,59 @@ internal class PureSpiritPower : Power
 
     #endregion
 
+    #region Properties
+
+    public GameObject Hitbox => _hitbox == null ? _hitbox = HeroController.instance.transform.Find("Charm Effects/Thorn Hit/Hit D").gameObject : _hitbox;
+
+    #endregion
+
+    #region Event handler
+
+    private void SetGravity2dScale_OnEnter(On.HutongGames.PlayMaker.Actions.SetGravity2dScale.orig_OnEnter orig, SetGravity2dScale self)
+    {
+        orig(self);
+        if (self.IsCorrectContext("Spell Control", "Knight", "Spell End"))
+        {
+            if (State == PowerState.Active)
+            {
+                if (Active && PlayerData.instance.GetInt(nameof(PlayerData.instance.MPCharge)) == 0
+                    && _orbContainer.transform.childCount < 3 && _followed == HeroController.instance.transform)
+                    SpawnOrb();
+                LoreMaster.Instance.Handler.StartCoroutine(WaitForSpell());
+            }
+            else if (State == PowerState.Twisted)
+            {
+                HeroController.instance.TakeReserveMP(100);
+                HeroController.instance.TakeMP(100);
+            }
+        }
+
+    }
+
+    private void RecycleSelf_OnEnter(On.HutongGames.PlayMaker.Actions.RecycleSelf.orig_OnEnter orig, RecycleSelf self)
+    {
+        if (self.IsCorrectContext("Fireball Control", null, null))
+            if (_followed == self.Fsm.FsmComponent.transform)
+            {
+                _followed = null;
+                _canThrow = false;
+                _fireball = null;
+            }
+        orig(self);
+    }
+
+    private void PlayerDataBoolTest_OnEnter(On.HutongGames.PlayMaker.Actions.PlayerDataBoolTest.orig_OnEnter orig, PlayerDataBoolTest self)
+    {
+        orig(self);
+        if (self.IsCorrectContext("Fireball Control", null, "Set Damage"))
+            if (Active && _canThrow)
+                _followed = self.Fsm.FsmComponent.transform;
+            else
+                _fireball = self.Fsm.FsmComponent.gameObject;
+    }
+
+    #endregion
+
     #region Control
 
     protected override void Initialize()
@@ -47,78 +94,29 @@ internal class PureSpiritPower : Power
             GameObject.DontDestroyOnLoad(_orbContainer);
             _orbContainer.transform.localScale = new(1f, 1f, 1f);
         }
-        _hitbox = HeroController.instance.transform.Find("Charm Effects/Thorn Hit/Hit D").gameObject;
+        On.HutongGames.PlayMaker.Actions.SetGravity2dScale.OnEnter += SetGravity2dScale_OnEnter;
+        
+    }
 
-        PlayMakerFSM fsm = HeroController.instance.spellControl;
-        fsm.GetState("Spell End").ReplaceAction(new Lambda(() =>
-        {
-            if (Active && PlayerData.instance.GetInt(nameof(PlayerData.instance.MPCharge)) == 0
-            && _orbContainer.transform.childCount < 3 && _followed == HeroController.instance.transform)
-                SpawnOrb();
-            LoreMaster.Instance.Handler.StartCoroutine(WaitForSpell());
-        })
-        {
-            Name = "Is Empty?"
-        });
+    protected override void Terminate()
+    {
+        if (_orbContainer != null)
+            GameObject.Destroy(_orbContainer);
+        On.HutongGames.PlayMaker.Actions.SetGravity2dScale.OnEnter -= SetGravity2dScale_OnEnter;
+
     }
 
     protected override void Enable()
     {
         _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(FollowHero());
-        On.PlayMakerFSM.OnEnable += PlayMakerFSM_OnEnable;
-    }
-
-    private void PlayMakerFSM_OnEnable(On.PlayMakerFSM.orig_OnEnable orig, PlayMakerFSM self)
-    {
-        if (string.Equals(self.FsmName, "Fireball Control"))
-        {
-            self.GetState("Set Damage").ReplaceAction(new Lambda(() =>
-            {
-                if (Active && _canThrow)
-                    _followed = self.transform;
-                else
-                    _fireball = self.gameObject;
-                if (!PlayerData.instance.GetBool(nameof(PlayerData.instance.equippedCharm_19)))
-                    self.SendEvent("FINISHED");
-            })
-            { Name = "Throw orbs?" }, self.gameObject.name.Contains("Spiral") ? 4 : 3);
-
-            if (self.gameObject.name.Contains("Spiral"))
-            {
-                self.GetState("Shrink").AddLastAction(new Lambda(() =>
-                {
-                    if (Active && _followed == self.transform)
-                    {
-                        _followed = null;
-                        _canThrow = false;
-                    }
-                }));
-                self.GetState("Recycle").AddFirstAction(new Lambda(() => _fireball = null));
-            }
-            else
-            {
-                self.GetState("Wall Impact").AddLastAction(new Lambda(() =>
-                {
-                    if (Active && _followed == self.transform)
-                        _followed = null;
-                }));
-                self.GetState("Dissipate").AddLastAction(new Lambda(() =>
-                {
-                    if (Active && _followed == self.transform)
-                        _followed = null;
-                }));
-                self.GetState("Diss R").AddFirstAction(new Lambda(() => _fireball = null));
-                self.GetState("Break R").AddFirstAction(new Lambda(() => _fireball = null));
-            }
-        }
-        orig(self);
+        On.HutongGames.PlayMaker.Actions.RecycleSelf.OnEnter += RecycleSelf_OnEnter;
+        On.HutongGames.PlayMaker.Actions.PlayerDataBoolTest.OnEnter += PlayerDataBoolTest_OnEnter;
     }
 
     protected override void Disable()
     {
         foreach (Transform child in _orbContainer.transform)
             GameObject.Destroy(child.gameObject);
-        On.PlayMakerFSM.OnEnable -= PlayMakerFSM_OnEnable;
         _canThrow = false;
         _followed = null;
     }
@@ -281,7 +279,7 @@ internal class PureSpiritPower : Power
             yield return new WaitForSeconds(.5f);
             if (hitbox != null)
                 hitbox.SetActive(true);
-            else 
+            else
                 yield break;
             yield return new WaitForSeconds(0.1f);
             if (hitbox != null)

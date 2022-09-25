@@ -1,4 +1,6 @@
 using LoreMaster.Enums;
+using LoreMaster.Helper;
+using LoreMaster.UnityComponents;
 using SFCore.Utils;
 using System.Collections;
 using UnityEngine;
@@ -31,8 +33,11 @@ public class OneOfUsPower : Power
     #region Control
 
     /// <inheritdoc/>
-    protected override void Enable() => _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(EmitCloud());
+    protected override void Enable() => StartRoutine(() => EmitCloud());
 
+    /// <inheritdoc/>
+    protected override void TwistEnable() => StartRoutine(() => EmitCloud());
+    
     #endregion
 
     #region Private Methods
@@ -45,10 +50,15 @@ public class OneOfUsPower : Power
         while (true)
         {
             yield return new WaitForSeconds(12f);
-            if (!InputHandler.Instance.inputActions.superDash.IsPressed && !GameManager.instance.isPaused)
+            if ((State == PowerState.Twisted && !PlayerData.instance.GetBool("atBench")) || (!InputHandler.Instance.inputActions.superDash.IsPressed && !GameManager.instance.isPaused))
             {
                 GameObject newCloud = GameObject.Instantiate(Cloud, HeroController.instance.transform.position,
                 Quaternion.identity);
+                if (State == PowerState.Twisted)
+                {
+                    Component.Destroy(newCloud.GetComponent<DamageEffectTicker>());
+                    newCloud.AddComponent<VenomZone>();
+                }
                 newCloud.SetActive(true);
                 newCloud.LocateMyFSM("Control").ChangeTransition("Init", "NORMAL", "Deep");
                 yield return new WaitForSeconds(4.1f);

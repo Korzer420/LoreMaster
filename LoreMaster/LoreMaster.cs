@@ -92,7 +92,9 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         ("Abyss_15", "Shade Sibling (25)"),
         ("Fungus1_22", "Plant Trap"),
         ("Fungus3_02", "Jellyfish"),
-        ("Fungus3_02", "Jellyfish Baby")
+        ("Fungus3_02", "Jellyfish Baby"),
+        ("Ruins_Elevator", "Ghost NPC"),
+        ("Room_nailsmith", "Nailsmith")
     };
 
     /// <summary>

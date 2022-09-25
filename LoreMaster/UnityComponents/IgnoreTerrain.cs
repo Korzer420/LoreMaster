@@ -15,6 +15,5 @@ public class IgnoreTerrain : MonoBehaviour
         // Allow the fleeing shade to move through terrain.
         if (collision.gameObject.layer == 8)
             Physics2D.IgnoreCollision(collision.collider, GetComponent<BoxCollider2D>());
-        
     }
 }

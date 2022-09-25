@@ -44,7 +44,12 @@ public class HotStreakPower : Power
     private int EmpowerNail(string name, int damage)
     {
         if (string.Equals(name, "nailDamage"))
-            damage += _damageStacks;
+        {
+            if (State == PowerState.Active)
+                damage += _damageStacks;
+            else
+                damage = Mathf.Max(1, _damageStacks);
+        }
         return damage;
     }
 
@@ -69,6 +74,12 @@ public class HotStreakPower : Power
         _hasHitEnemy = false;
         UpdateNail();
     }
+
+    /// <inheritdoc/>
+    protected override void TwistEnable() => Enable();
+
+    /// <inheritdoc/>
+    protected override void TwistDisable() => Disable();
 
     #endregion
 

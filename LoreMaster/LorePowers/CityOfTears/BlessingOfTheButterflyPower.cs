@@ -22,6 +22,8 @@ public class BlessingOfTheButterflyPower : Power
 
     private MethodInfo _takeDamage;
 
+    private bool _doubleJumpOnCooldown;
+
     #endregion
 
     #region Constructors
@@ -99,13 +101,27 @@ public class BlessingOfTheButterflyPower : Power
             LoreMaster.Instance.LogError("Couldn't find Vector2 match for double jump.");
     }
 
+    private bool HeroController_CanDoubleJump(On.HeroController.orig_CanDoubleJump orig, HeroController self)
+    {
+        return orig(self) && !_doubleJumpOnCooldown;
+    }
+
+    private void DoubleJumpCooldown(On.HeroController.orig_DoDoubleJump orig, HeroController self)
+    {
+        orig(self);
+        LoreMaster.Instance.Handler.StartCoroutine(DoubleJumpCooldown());
+    }
+
     #endregion
 
     #region Control
 
+    /// <inheritdoc/>
     protected override void Initialize()
     {
         _wings = HeroController.instance.transform.Find("Effects/Double J Wings").gameObject;
+        if (_leftHitbox != null)
+            GameObject.Destroy(_leftHitbox);
         _leftHitbox = GameObject.Instantiate(HeroController.instance.transform.Find("Charm Effects/Thorn Hit/Hit L").gameObject, Wings.transform);
         _leftHitbox.transform.localPosition = new(-1.0555f, -0.6111f, 0f);
         _leftHitbox.transform.localScale = new(3.5f, 2.3f);
@@ -125,6 +141,8 @@ public class BlessingOfTheButterflyPower : Power
                 fsm.SendEvent("CANCEL");
         }), 2);
 
+        if (_rightHitbox != null)
+            GameObject.Destroy(_rightHitbox);
         _rightHitbox = GameObject.Instantiate(HeroController.instance.transform.Find("Charm Effects/Thorn Hit/Hit R").gameObject, Wings.transform);
         _rightHitbox.transform.localPosition = new(1.02f, -0.6111f);
         _rightHitbox.transform.localScale = new(3.5f, 2.3f);
@@ -146,7 +164,8 @@ public class BlessingOfTheButterflyPower : Power
 
         _takeDamage = ReflectionHelper.GetMethodInfo(typeof(HealthManager), "TakeDamage");
     }
-
+    
+    /// <inheritdoc/>
     protected override void Enable()
     {
         Wings.GetComponent<tk2dSprite>().color = Color.magenta;
@@ -157,7 +176,8 @@ public class BlessingOfTheButterflyPower : Power
         On.HeroController.DoDoubleJump += HeroController_DoDoubleJump;
         IL.HeroController.DoubleJump += HeroController_DoubleJump;
     }
-
+    
+    /// <inheritdoc/>
     protected override void Disable()
     {
         Wings.GetComponent<tk2dSprite>().color = Color.white;
@@ -167,6 +187,20 @@ public class BlessingOfTheButterflyPower : Power
         On.HeroController.TakeDamage -= HeroController_TakeDamage;
         On.HeroController.DoDoubleJump -= HeroController_DoDoubleJump;
         IL.HeroController.DoubleJump -= HeroController_DoubleJump;
+    }
+    
+    /// <inheritdoc/>
+    protected override void TwistEnable()
+    {
+        On.HeroController.CanDoubleJump += HeroController_CanDoubleJump;
+        On.HeroController.DoDoubleJump += DoubleJumpCooldown;
+    }
+
+    /// <inheritdoc/>
+    protected override void TwistDisable()
+    {
+        On.HeroController.CanDoubleJump -= HeroController_CanDoubleJump;
+        On.HeroController.DoDoubleJump -= DoubleJumpCooldown;
     }
 
     #endregion
@@ -191,6 +225,14 @@ public class BlessingOfTheButterflyPower : Power
         yield return new WaitForSeconds(.15f);
         _leftHitbox.SetActive(false);
         _rightHitbox.SetActive(false);
+    }
+
+    private IEnumerator DoubleJumpCooldown()
+    {
+        _doubleJumpOnCooldown = true;
+        yield return new WaitForSeconds(3f);
+        Wings.SetActive(true);
+        _doubleJumpOnCooldown = false;
     }
 
     #endregion

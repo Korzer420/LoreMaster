@@ -39,7 +39,9 @@ public class UnitedWeStandPower : Power
     private void HatchlingSpawn(On.KnightHatchling.orig_OnEnable orig, KnightHatchling self)
     {
         orig(self);
-        self.normalDetails.damage = 10 + CompanionAmount * 2;
+        self.normalDetails.damage = State == PowerState.Twisted 
+            ? Math.Max(1, 10 - CompanionAmount) 
+            : 10 + CompanionAmount * 2;
     }
 
     #endregion
@@ -54,10 +56,13 @@ public class UnitedWeStandPower : Power
     }
 
     /// <inheritdoc/>
-    protected override void Disable()
-    {
-        On.KnightHatchling.OnEnable -= HatchlingSpawn;
-    }
+    protected override void Disable() => On.KnightHatchling.OnEnable -= HatchlingSpawn;
+
+    /// <inheritdoc/>
+    protected override void TwistEnable() => Enable();
+
+    /// <inheritdoc/>
+    protected override void TwistDisable() => Disable();
 
     #endregion
 
@@ -100,7 +105,9 @@ public class UnitedWeStandPower : Power
                     fsmState = companionFsm.GetState("Antic");
                     fsmState.ReplaceAction(new Lambda(() =>
                     {
-                        companionFsm.FsmVariables.FindFsmFloat("Attack Timer").Value = Active ? Mathf.Max(0.3f, 1.5f - (CompanionAmount * 0.1f)) : 1.5f;
+                        companionFsm.FsmVariables.FindFsmFloat("Attack Timer").Value = State == PowerState.Twisted 
+                        ? 1.5f + (CompanionAmount * .1f)
+                        : (Active ? Mathf.Max(0.3f, 1.5f - (CompanionAmount * 0.1f)) : 1.5f);
                     }), 3);
                 }
                 else if (companion.tag.Equals("Weaverling"))
@@ -109,9 +116,18 @@ public class UnitedWeStandPower : Power
                     fsmState = companionFsm.GetState("Run Dir");
                     fsmState.ReplaceAction(new Lambda(() =>
                     {
-                        float weaverScale = 1f + (CompanionAmount * 0.1f);
-                        companionFsm.FsmVariables.FindFsmFloat("Scale").Value = Active ? Mathf.Min(2.2f, weaverScale) : 1f;
-                        companionFsm.FsmVariables.FindFsmFloat("Neg Scale").Value = Active ? Mathf.Max(-2.2f, weaverScale * -1f) : -1f;
+                        float weaverScale = State == PowerState.Twisted 
+                        ? (CompanionAmount > 9 ? .1f : 1 - CompanionAmount * 0.1f)
+                        : 1f + (CompanionAmount * 0.1f);
+
+                        companionFsm.FsmVariables.FindFsmFloat("Scale").Value = State == PowerState.Twisted 
+                        ? Mathf.Min(.1f, weaverScale)
+                        : (Active ? Mathf.Min(2.2f, weaverScale) : 1f);
+
+                        companionFsm.FsmVariables.FindFsmFloat("Neg Scale").Value = State == PowerState.Twisted
+                        ? Mathf.Max(- .1f, weaverScale * -1f) 
+                        : (Active ? Mathf.Max(-2.2f, weaverScale * -1f) : -1f);
+
                         companion.transform.localScale = new Vector3(weaverScale, weaverScale);
                         companion.transform.SetScaleMatching(weaverScale);
 

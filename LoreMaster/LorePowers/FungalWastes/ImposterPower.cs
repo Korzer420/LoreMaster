@@ -1,4 +1,5 @@
 using LoreMaster.Enums;
+using LoreMaster.Helper;
 
 namespace LoreMaster.LorePowers.FungalWastes;
 
@@ -15,15 +16,17 @@ public class ImposterPower : Power
 
     #region Event Handler
 
-    /// <summary>
-    /// Event handler when the player is healing.
-    /// </summary>
-    private void ExtraHeal(On.HeroController.orig_AddHealth orig, HeroController self, int amount)
+    private void CallMethodProper_OnEnter(On.HutongGames.PlayMaker.Actions.CallMethodProper.orig_OnEnter orig, HutongGames.PlayMaker.Actions.CallMethodProper self)
     {
-        if (PlayerData.instance.GetBool("equippedCharm_17") && LoreMaster.Instance.Generator.Next(0, 5) == 0 && PlayerData.instance.healthBlue < 5)
-            EventRegister.SendEvent("ADD BLUE HEALTH");
-
-        orig(self, amount);
+        if((self.IsCorrectContext("Spell Control", "Knight", "Focus Heal") || self.IsCorrectContext("Spell Control", "Knight", "Focus Heal 2"))
+            && string.Equals(self.methodName.Value, "AddHealth"))
+        {
+            if (State == PowerState.Twisted && LoreMaster.Instance.Generator.Next(0, 5) == 0)
+                self.parameters[0].SetValue(0);
+            else if (State == PowerState.Active && PlayerData.instance.GetBool("equippedCharm_17") && LoreMaster.Instance.Generator.Next(0, 5) == 0 && PlayerData.instance.healthBlue < 5)
+                EventRegister.SendEvent("ADD BLUE HEALTH");
+        }
+        orig(self);
     }
 
     #endregion
@@ -31,10 +34,16 @@ public class ImposterPower : Power
     #region Control
 
     /// <inheritdoc/>
-    protected override void Enable() => On.HeroController.AddHealth += ExtraHeal;
+    protected override void Enable() => On.HutongGames.PlayMaker.Actions.CallMethodProper.OnEnter += CallMethodProper_OnEnter;
 
     /// <inheritdoc/>
-    protected override void Disable() => On.HeroController.AddHealth -= ExtraHeal;
+    protected override void Disable() => On.HutongGames.PlayMaker.Actions.CallMethodProper.OnEnter -= CallMethodProper_OnEnter;
+
+    /// <inheritdoc/>
+    protected override void TwistEnable() => Enable();
+
+    /// <inheritdoc/>
+    protected override void TwistDisable() => Disable();
 
     #endregion
 }

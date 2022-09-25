@@ -46,28 +46,30 @@ public class MantisStylePower : Power
     }
 
     /// <inheritdoc/>
-    protected override void Enable()
-    {
-        for (int i = 0; i < 4; i++)
-        {
-            Vector3 currentScale = Attacks[i].GetComponent<NailSlash>().scale;
-            if (i < 2)
-                Attacks[i].GetComponent<NailSlash>().scale = new Vector3(currentScale.x + .4f, currentScale.y, currentScale.z);
-            else
-                Attacks[i].GetComponent<NailSlash>().scale = new Vector3(currentScale.x, currentScale.y + .4f, currentScale.z);
-        }
-    }
+    protected override void Enable() => ModifyNailLenght(.4f);
+    
+    /// <inheritdoc/>
+    protected override void Disable() => ModifyNailLenght(-.4f);
+    
+    /// <inheritdoc/>
+    protected override void TwistEnable() => ModifyNailLenght(-.6f);
 
     /// <inheritdoc/>
-    protected override void Disable()
+    protected override void TwistDisable() => ModifyNailLenght(.6f);
+
+    #endregion
+
+    #region Methods
+
+    private void ModifyNailLenght(float length)
     {
         for (int i = 0; i < 4; i++)
         {
             Vector3 currentScale = Attacks[i].GetComponent<NailSlash>().scale;
             if (i < 2)
-                Attacks[i].GetComponent<NailSlash>().scale = new Vector3(currentScale.x - .4f, currentScale.y, currentScale.z);
+                Attacks[i].GetComponent<NailSlash>().scale = new Vector3(currentScale.x + length, currentScale.y, currentScale.z);
             else
-                Attacks[i].GetComponent<NailSlash>().scale = new Vector3(currentScale.x, currentScale.y - .4f, currentScale.z);
+                Attacks[i].GetComponent<NailSlash>().scale = new Vector3(currentScale.x, currentScale.y + length, currentScale.z);
         }
     }
 

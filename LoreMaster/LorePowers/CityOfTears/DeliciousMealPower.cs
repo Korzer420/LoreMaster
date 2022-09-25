@@ -15,6 +15,9 @@ public class DeliciousMealPower : Power
     private bool _saturation;
     private GameObject _eggObject;
 
+    private GameObject _poggy;
+    private float _hungerTimer = 120f;
+
     #endregion
 
     #region Constructors
@@ -44,6 +47,13 @@ public class DeliciousMealPower : Power
             EatEgg();
     }
 
+    private int ModHooks_GetPlayerIntHook(string name, int damage)
+    {
+        if (string.Equals(name, "nailDamage"))
+            damage = Convert.ToInt32(damage * 1.2f);
+        return damage;
+    }
+
     #endregion
 
     #region Control
@@ -60,6 +70,29 @@ public class DeliciousMealPower : Power
     {
         ModHooks.HeroUpdateHook -= ConsumeEgg;
         ModHooks.LanguageGetHook -= CheckForEgg;
+    }
+
+    /// <inheritdoc/>
+    protected override void TwistEnable()
+    {
+        ModHooks.HeroUpdateHook += ConsumeEgg;
+        ModHooks.LanguageGetHook += CheckForEgg;
+        _poggy = GameObject.Instantiate(LoreMaster.Instance.PreloadedObjects["Ghost NPC"].transform.Find("Character Sprite").gameObject);
+        GameObject.DontDestroyOnLoad(_poggy);
+        _poggy.SetActive(true);
+        Component.Destroy(_poggy.GetComponent<PlayMakerFSM>());
+        Component.Destroy(_poggy.GetComponent<PlayMakerFSM>());
+        StartRoutine(() => RumblingStomach());
+    }
+
+    /// <inheritdoc/>
+    protected override void TwistDisable()
+    {
+        ModHooks.HeroUpdateHook -= ConsumeEgg;
+        ModHooks.LanguageGetHook -= CheckForEgg;
+        GameObject.Destroy(_poggy);
+        _poggy = null;
+        _hungerTimer = 120f;
     }
 
     #endregion
@@ -80,16 +113,21 @@ public class DeliciousMealPower : Power
         if (PlayerData.instance.GetInt(nameof(PlayerData.instance.rancidEggs)) == 0)
             return;
         PlayerData.instance.SetInt(nameof(PlayerData.instance.rancidEggs), PlayerData.instance.GetInt(nameof(PlayerData.instance.rancidEggs)) - 1);
-        EggObject.GetComponentInChildren<TextMeshPro>().text = PlayerData.instance.GetInt(nameof(PlayerData.instance.rancidEggs)).ToString();
+        LoreMaster.Instance.Handler.StartCoroutine(UpdateUI());
         _saturation = true;
         _selectedEgg = false;
+        if (State == PowerState.Twisted)
+        {
+            _hungerTimer = 120f;
+            return;
+        }
+        
         LoreMaster.Instance.Handler.StartCoroutine(Saturation());
     }
 
     /// <summary>
     /// The saturation event duration.
     /// </summary>
-    /// <returns></returns>
     private IEnumerator Saturation()
     {
         ModHooks.GetPlayerIntHook += ModHooks_GetPlayerIntHook;
@@ -141,11 +179,48 @@ public class DeliciousMealPower : Power
         PlayMakerFSM.BroadcastEvent("UPDATE NAIL DAMAGE");
     }
 
-    private int ModHooks_GetPlayerIntHook(string name, int damage)
+    private IEnumerator UpdateUI()
     {
-        if (string.Equals(name, "nailDamage"))
-            damage = Convert.ToInt32(damage * 1.2f);
-        return damage;
+        TextMeshPro rancidEggCount = EggObject.GetComponentInChildren<TextMeshPro>();
+        rancidEggCount.text = PlayerData.instance.GetInt(nameof(PlayerData.instance.rancidEggs)).ToString();
+        float size = 2f;
+        while (size > 1f)
+        {
+            size -= Time.deltaTime * 2;
+            rancidEggCount.transform.localScale = new(size, size, size);
+            rancidEggCount.color = new Color(size - 1f, 2f - size, 2f - size);
+            yield return null;
+        }
+        if (State == PowerState.Twisted)
+            _saturation = false;
+        // Just in case we set the values normally at the end
+        rancidEggCount.transform.localScale = new(1f, 1f, 1f);
+        rancidEggCount.color = Color.white;
+    }
+
+    private IEnumerator RumblingStomach()
+    {
+        _hungerTimer = 120f;
+        tk2dSprite poggySprite = _poggy.GetComponent<tk2dSprite>();
+        poggySprite.color = Color.white;
+        // This should render the ghost in front of every object.
+        poggySprite.SortingOrder = 1;
+        _poggy.transform.localScale = new(-1.08f, 1.08f, 1.08f);
+        while (true)
+        {
+            _hungerTimer -= Time.deltaTime;
+            poggySprite.color = new Color(1f, _hungerTimer / 120, _hungerTimer / 120);
+            _poggy.transform.position = HeroController.instance.transform.position - new Vector3(_hungerTimer / 120 * 12, 2 - (_hungerTimer / 30), 0f);
+            if (!HeroController.instance.acceptingInput || PlayerData.instance.GetBool("atBench"))
+                yield return new WaitUntil(() => HeroController.instance.acceptingInput && !PlayerData.instance.GetBool("atBench"));
+            if (_hungerTimer <= 0f)
+            {
+                _hungerTimer = 120f;
+                HeroController.instance.TakeDamage(null, GlobalEnums.CollisionSide.left, 99, 1);
+                yield return new WaitForSeconds(4f);
+            }
+            yield return null;
+        }
     }
 
     #endregion

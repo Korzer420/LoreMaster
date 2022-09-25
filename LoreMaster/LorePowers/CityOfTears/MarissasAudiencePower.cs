@@ -8,6 +8,9 @@ using UnityEngine;
 
 namespace LoreMaster.LorePowers.CityOfTears;
 
+/// <summary>
+/// Spawns minions or revek based on if you have killed Marissa. The revek logic is taken from Hollow Twitch: https://github.com/Sid-003/HKTwitch/blob/master/HollowTwitch/Commands/Enemies.cs#L167
+/// </summary>
 public class MarissasAudiencePower : Power
 {
     #region Members
@@ -44,7 +47,7 @@ public class MarissasAudiencePower : Power
 
     public GameObject[] Companions
     {
-        get 
+        get
         {
             if (_companions.Any(x => x == null))
                 Initialize();
@@ -66,7 +69,7 @@ public class MarissasAudiencePower : Power
     }
 
     /// <inheritdoc/>
-    protected override void Enable() => _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(GatherAudience());
+    protected override void Enable() => StartRoutine(() => GatherAudience());
 
     /// <inheritdoc/>
     protected override void Disable()
@@ -81,6 +84,20 @@ public class MarissasAudiencePower : Power
             GameObject.Destroy(_revek);
     }
 
+    /// <inheritdoc/>
+    protected override void TwistEnable() 
+    { 
+        Enable();
+        UnityEngine.SceneManagement.SceneManager.activeSceneChanged += ReactivateRevek;
+    }
+
+    /// <inheritdoc/>
+    protected override void TwistDisable()
+    {
+        Disable();
+        UnityEngine.SceneManagement.SceneManager.activeSceneChanged -= ReactivateRevek;
+    }
+
     #endregion
 
     #region Private Methods
@@ -93,12 +110,15 @@ public class MarissasAudiencePower : Power
     {
         while (true)
         {
-            if (IsMarissaDead)
+            if (IsMarissaDead || State == PowerState.Twisted)
             {
-                Tag = PowerTag.Global;
+                if (State == PowerState.Active)
+                    Tag = PowerTag.Global;
                 yield return new WaitForSeconds(LoreMaster.Instance.Generator.Next(45, 121));
                 _revek = GameObject.Instantiate(LoreMaster.Instance.PreloadedObjects["Ghost Battle Revek"], HeroController.instance.transform.position, Quaternion.identity);
                 _revek.SetActive(true);
+                if (State == PowerState.Twisted)
+                    GameObject.DontDestroyOnLoad(_revek);
                 PlayMakerFSM revekFSM = _revek.LocateMyFSM("Control");
                 yield return null;
                 revekFSM.SetState("Appear Pause");
@@ -133,6 +153,22 @@ public class MarissasAudiencePower : Power
                     GameObject.Destroy(companion);
                 _extraCompanions.Clear();
             }
+        }
+    }
+
+    private void ReactivateRevek(UnityEngine.SceneManagement.Scene arg0, UnityEngine.SceneManagement.Scene arg1)
+    {
+        try
+        {
+            if(_revek != null)
+            {
+                _revek.SetActive(false);
+                _revek.SetActive(true);
+                _revek.LocateMyFSM("Control").SetState("Appear Pause");
+            }
+        }
+        catch (System.Exception)
+        {
         }
     }
 

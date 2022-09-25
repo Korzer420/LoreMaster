@@ -238,7 +238,7 @@ public class BestMenderInTheWorldPower : Power
             _trackJournal.Invoke(menderBug.GetComponent<EnemyDeathEffectsUninfected>(), new object[] { });
         PlayMakerFSM playMakerFSM = PlayMakerFSM.FindFsmOnGameObject(FsmVariables.GlobalVariables.GetFsmGameObject("Enemy Dream Msg").Value, "Display");
         playMakerFSM.FsmVariables.GetFsmInt("Convo Amount").Value = 1;
-        playMakerFSM.FsmVariables.GetFsmString("Convo Title").Value = _menderbugHits < 2 ? "Menderbug_Journal" : $"Menderbug_Warning_{_menderbugHits / 20}";
+        playMakerFSM.FsmVariables.GetFsmString("Convo Title").Value = _menderbugHits < 2 ? "Menderbug_Journal" : $"Menderbug_Warning_{_menderbugHits / 40}";
         playMakerFSM.SendEvent("DISPLAY ENEMY DREAM");
     }
 

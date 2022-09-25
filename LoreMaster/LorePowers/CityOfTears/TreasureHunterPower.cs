@@ -136,7 +136,7 @@ internal class TreasureHunterPower : Power
 
     private void SetPlayerDataBool_OnEnter(On.HutongGames.PlayMaker.Actions.SetPlayerDataBool.orig_OnEnter orig, SetPlayerDataBool self)
     {
-        if (string.Equals(self.Fsm.GameObjectName, "Relic Dealer") && string.Equals(self.Fsm.Name, "npc_control") && string.Equals(self.State.Name, "Convo End"))
+        if (self.IsCorrectContext("npc_control", "Relic Dealer", "Convo End"))
             if (ModHooks.GetMod("QoL", true) is Mod)
                 QoLQuickSell();
         orig(self);
@@ -148,7 +148,9 @@ internal class TreasureHunterPower : Power
         {
             if (string.Equals(self.State.Name, "Sell Item") && string.Equals(self.Fsm.Name, "Confirm Control") && string.Equals(self.methodName.Value, "AddGeo"))
             {
-                if (Treasures[_specialRelics[self.Fsm.Variables.FindFsmInt("Relic Number").Value - 1]] == TreasureState.GivenLemm)
+                if (State == PowerState.Twisted)
+                    self.parameters[0].SetValue(_treasureBonus[self.Fsm.Variables.FindFsmInt("Relic Number").Value - 1]);
+                else if (Treasures[_specialRelics[self.Fsm.Variables.FindFsmInt("Relic Number").Value - 1]] == TreasureState.GivenLemm)
                     self.parameters[0].SetValue(_treasureBonus[self.Fsm.Variables.FindFsmInt("Relic Number").Value - 1] * 3);
                 else if (Treasures[_specialRelics[self.Fsm.Variables.FindFsmInt("Relic Number").Value - 1]] == TreasureState.Obtained)
                     self.parameters[0].SetValue(500);
@@ -185,7 +187,6 @@ internal class TreasureHunterPower : Power
             LoreMaster.Instance.LogError("Error while modifying relic price: " + exception.Message);
             LoreMaster.Instance.LogError(exception.StackTrace);
         }
-
         orig(self);
     }
 
@@ -240,15 +241,11 @@ internal class TreasureHunterPower : Power
         orig(self);
     }
 
-    private void IntOperator_OnEnter(On.HutongGames.PlayMaker.Actions.IntOperator.orig_OnEnter orig, IntOperator self)
-    {
-        orig(self);
-    }
-
     #endregion
 
     #region Control
 
+    /// <inheritdoc/>
     protected override void Enable()
     {
         On.HutongGames.PlayMaker.Actions.GetPlayerDataInt.OnEnter += GetPlayerDataInt_OnEnter;
@@ -256,11 +253,11 @@ internal class TreasureHunterPower : Power
         On.HutongGames.PlayMaker.Actions.SetPlayerDataBool.OnEnter += SetPlayerDataBool_OnEnter;
         On.HutongGames.PlayMaker.Actions.CallMethodProper.OnEnter += CallMethodProper_OnEnter;
         On.HutongGames.PlayMaker.Actions.PlayerDataIntAdd.OnEnter += PlayerDataIntAdd_OnEnter;
-        On.HutongGames.PlayMaker.Actions.IntOperator.OnEnter += IntOperator_OnEnter;
         On.PlayMakerFSM.OnEnable += PlayMakerFSM_OnEnable;
         IL.EnemyDeathEffects.EmitEssence += EnemyDeathEffects_EmitEssence;
     }
 
+    /// <inheritdoc/>
     protected override void Disable()
     {
         On.HutongGames.PlayMaker.Actions.GetPlayerDataInt.OnEnter -= GetPlayerDataInt_OnEnter;
@@ -268,9 +265,24 @@ internal class TreasureHunterPower : Power
         On.HutongGames.PlayMaker.Actions.SetPlayerDataBool.OnEnter -= SetPlayerDataBool_OnEnter;
         On.HutongGames.PlayMaker.Actions.CallMethodProper.OnEnter -= CallMethodProper_OnEnter;
         On.HutongGames.PlayMaker.Actions.PlayerDataIntAdd.OnEnter -= PlayerDataIntAdd_OnEnter;
-        On.HutongGames.PlayMaker.Actions.IntOperator.OnEnter -= IntOperator_OnEnter;
         On.PlayMakerFSM.OnEnable -= PlayMakerFSM_OnEnable;
         IL.EnemyDeathEffects.EmitEssence -= EnemyDeathEffects_EmitEssence;
+    }
+
+    /// <inheritdoc/>
+    protected override void TwistEnable() 
+    {
+        On.HutongGames.PlayMaker.Actions.ActivateGameObject.OnEnter += ActivateGameObject_OnEnter;
+        On.HutongGames.PlayMaker.Actions.CallMethodProper.OnEnter += CallMethodProper_OnEnter;
+        On.HutongGames.PlayMaker.Actions.SetPlayerDataBool.OnEnter += SetPlayerDataBool_OnEnter;
+    }
+
+    /// <inheritdoc/>
+    protected override void TwistDisable()
+    {
+        On.HutongGames.PlayMaker.Actions.ActivateGameObject.OnEnter -= ActivateGameObject_OnEnter;
+        On.HutongGames.PlayMaker.Actions.CallMethodProper.OnEnter -= CallMethodProper_OnEnter;
+        On.HutongGames.PlayMaker.Actions.SetPlayerDataBool.OnEnter -= SetPlayerDataBool_OnEnter;
     }
 
     #endregion
@@ -283,7 +295,17 @@ internal class TreasureHunterPower : Power
         TreasureState[] states = Treasures.Values.Take(4).ToArray();
         for (int i = 1; i < 5; i++)
         {
-            if (states[i - 1] == TreasureState.NotObtained)
+            if (State == PowerState.Twisted)
+            {
+                Transform relic = self.Fsm.GameObject.transform.Find($"Item List/Shop Item Rlc {i}(Clone)");
+                if (relic == null)
+                    continue;
+
+                relic.GetComponent<ShopItemStats>().cost = _treasureBonus[i - 1];
+                relic.transform.Find("Item Sprite").GetComponent<SpriteRenderer>().sprite = _treasureSprites[i + 6];
+                relic.transform.Find("Item cost").GetComponent<TextMeshPro>().text = $"<color=#ff0000>{_treasureBonus[i - 1]}</color>";
+            }
+            else if (states[i - 1] == TreasureState.NotObtained)
                 continue;
             else if (states[i - 1] == TreasureState.Obtained)
             {
@@ -321,14 +343,19 @@ internal class TreasureHunterPower : Power
         int trinket = 1;
         foreach (string key in _specialRelics)
         {
-            if (Treasures[key] == TreasureState.Obtained)
+            if (State == PowerState.Twisted)
+                finalGeo -= PlayerData.instance.GetInt($"trinket{trinket}") * _treasureBonus[trinket - 1];
+            else
             {
-                finalGeo += 500;
-                PlayerData.instance.DecrementInt($"trinket{trinket}");
-                Treasures[key] = TreasureState.GivenLemm;
+                if (Treasures[key] == TreasureState.Obtained)
+                {
+                    finalGeo += 500;
+                    PlayerData.instance.DecrementInt($"trinket{trinket}");
+                    Treasures[key] = TreasureState.GivenLemm;
+                }
+                if (Treasures[key] == TreasureState.GivenLemm)
+                    finalGeo += PlayerData.instance.GetInt($"trinket{trinket}") * _treasureBonus[trinket - 1];
             }
-            if (Treasures[key] == TreasureState.GivenLemm)
-                finalGeo += PlayerData.instance.GetInt($"trinket{trinket}") * _treasureBonus[trinket - 1];
             trinket++;
         }
         if (finalGeo != 0)

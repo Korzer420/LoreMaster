@@ -69,6 +69,18 @@ public class DiamondCorePower : Power
             return _speed > -39f && _speed < 39f;
         return false;
     }
+    private void ListenForJump_OnEnter(On.HutongGames.PlayMaker.Actions.ListenForJump.orig_OnEnter orig, HutongGames.PlayMaker.Actions.ListenForJump self)
+    {
+        if (self.IsCorrectContext("Superdash", "Knight", "Cancelable"))
+            self.wasPressed = State == PowerState.Twisted ? null : FsmEvent.GetFsmEvent("NORM CANCEL");
+        orig(self);
+    }
+    private void ListenForSuperdash_OnEnter(On.HutongGames.PlayMaker.Actions.ListenForSuperdash.orig_OnEnter orig, HutongGames.PlayMaker.Actions.ListenForSuperdash self)
+    {
+        if (self.IsCorrectContext("Superdash", "Knight", "Cancelable"))
+            self.wasPressed = State == PowerState.Twisted ? null : FsmEvent.GetFsmEvent("NORM CANCEL");
+        orig(self);
+    }
 
     #endregion
 
@@ -110,6 +122,8 @@ public class DiamondCorePower : Power
             })
             { Name = "Wall Crash" }, 8);
             _trailSprite = GameObject.Find("Knight").transform.Find("Effects/SD Trail").GetComponent<tk2dSprite>();
+            On.HutongGames.PlayMaker.Actions.ListenForJump.OnEnter += ListenForJump_OnEnter;
+            On.HutongGames.PlayMaker.Actions.ListenForSuperdash.OnEnter += ListenForSuperdash_OnEnter;
         }
         catch (Exception exception)
         {
