@@ -30,10 +30,18 @@ public class LaughableThreatPower : Power
 
     public override Action SceneAction => () => 
     {
-        _hasAttacked = false;
-        _enemies.Clear();
-        _enemies.AddRange(GameObject.FindObjectsOfType<HealthManager>().Select(x => x.gameObject));
-        UpdateEnemyCollider();
+        if (State == PowerState.Active)
+        {
+            _hasAttacked = false;
+            _enemies.Clear();
+            _enemies.AddRange(GameObject.FindObjectsOfType<HealthManager>().Select(x => x.gameObject));
+            UpdateEnemyCollider();
+        }
+        else
+        {
+            PlayMakerFSM.BroadcastEvent("ALERT");
+            PlayMakerFSM.BroadcastEvent("TOOK DAMAGE");
+        }
     };
 
     #endregion

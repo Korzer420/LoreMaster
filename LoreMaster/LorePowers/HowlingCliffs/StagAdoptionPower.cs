@@ -5,6 +5,7 @@ using LoreMaster.Enums;
 using LoreMaster.Helper;
 using Modding;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace LoreMaster.LorePowers.HowlingCliffs;
@@ -50,10 +51,59 @@ public class StagAdoptionPower : Power
 
     #endregion
 
+    #region Event handler
+
+    private void SendEventByName_OnEnter(On.HutongGames.PlayMaker.Actions.SendEventByName.orig_OnEnter orig, HutongGames.PlayMaker.Actions.SendEventByName self)
+    {
+        if (self.IsCorrectContext("Stag Control", "Stag", "Check Result"))
+        {
+            if (LoreMaster.Instance.Generator.Next(0, 20) == 0)
+                self.sendEvent.Value = "Stag Nest";
+            else
+            {
+                List<string> viableLocations = new() { "Dirtmouth" };
+                if (PlayerData.instance.GetBool("openedCrossroads"))
+                    viableLocations.Add("Crossroads");
+                if (PlayerData.instance.GetBool("openedGreenpath"))
+                    viableLocations.Add("Greenpath");
+                if (PlayerData.instance.GetBool("openedRuins1"))
+                    viableLocations.Add("City Storerooms");
+                if (PlayerData.instance.GetBool("openedDeepnest"))
+                    viableLocations.Add("Deepnest");
+                if (PlayerData.instance.GetBool("openedFungalWastes"))
+                    viableLocations.Add("Fungal Wastes");
+                if (PlayerData.instance.GetBool("openedHiddenStation"))
+                    viableLocations.Add("Hidden Station");
+                if (PlayerData.instance.GetBool("openedRuins2"))
+                    viableLocations.Add("Kings Station");
+                if (PlayerData.instance.GetBool("openedRestingGrounds"))
+                    viableLocations.Add("Resting Grounds");
+                if (PlayerData.instance.GetBool("openedRoyalGardens"))
+                    viableLocations.Add("Royal Gardens");
+                string vanilla = self.sendEvent.Value;
+                if(viableLocations.Count > 1)
+                    do
+                        self.sendEvent.Value = viableLocations[LoreMaster.Instance.Generator.Next(0, viableLocations.Count)];
+                    while (self.sendEvent.Value == vanilla);
+            }
+        }
+        orig(self);
+    }
+
+    #endregion
+
     #region Control
 
+    /// <inheritdoc/>
     protected override void Initialize() => LorePage.ActivateStagEgg();
-    
+
+    /// <inheritdoc/>
+    protected override void TwistEnable() => On.HutongGames.PlayMaker.Actions.SendEventByName.OnEnter += SendEventByName_OnEnter;
+
+    /// <inheritdoc/>
+    protected override void TwistDisable() => On.HutongGames.PlayMaker.Actions.SendEventByName.OnEnter -= SendEventByName_OnEnter;
+
+
     #endregion
 
     private bool ModHooks_SetPlayerBoolHook(string name, bool orig)
@@ -73,7 +123,7 @@ public class StagAdoptionPower : Power
         GameObject miniStag = GameObject.Instantiate(LoreMaster.Instance.PreloadedObjects["Stag"]);
         miniStag.SetActive(true);
         MenuFsm.SendEvent("SPAWN");
-        
+
         // Adjust the fsm to prevent the stag from not appearing and modifying data supposed for normal stags.
         PlayMakerFSM fsm = miniStag.LocateMyFSM("Stag Control");
         fsm.GetState("Reset HUD and Flower Check").ClearTransitions();
@@ -82,7 +132,7 @@ public class StagAdoptionPower : Power
         fsm.GetState("Activate 2").AddTransition("FINISHED", "Start Audio");
         fsm.GetState("Convo?").ClearTransitions();
         fsm.GetState("Convo?").AddTransition("FINISHED", "Open map");
-        fsm.GetState("In Range").AddFirstAction(new Lambda(() => 
+        fsm.GetState("In Range").AddFirstAction(new Lambda(() =>
         {
             GameObject prompt = fsm.FsmVariables.FindFsmGameObject("Prompt").Value;
             prompt.transform.position = miniStag.transform.position + new Vector3(0f, 2f, 0f);
@@ -93,7 +143,7 @@ public class StagAdoptionPower : Power
         {
             mapState.Actions[0],
             mapState.Actions[1],
-            new Lambda(() => 
+            new Lambda(() =>
             {
                 MenuFsm.FsmVariables.FindFsmGameObject("Requester").Value = miniStag;
                 MenuFsm.SendEvent("OPEN STAG MENU");

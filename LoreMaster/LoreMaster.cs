@@ -94,7 +94,9 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         ("Fungus3_02", "Jellyfish"),
         ("Fungus3_02", "Jellyfish Baby"),
         ("Ruins_Elevator", "Ghost NPC"),
-        ("Room_nailsmith", "Nailsmith")
+        ("Room_nailsmith", "Nailsmith"),
+        ("Deepnest_41", "Spider Flyer"),
+        ("Deepnest_East_10", "Dream Gate")
     };
 
     /// <summary>

@@ -8,6 +8,7 @@ using LoreMaster.Extensions;
 using LoreMaster.Helper;
 using UnityEngine;
 using LoreMaster.Manager;
+using System.Collections;
 
 namespace LoreMaster.LorePowers.QueensGarden;
 
@@ -19,6 +20,10 @@ public class GrassBombardementPower : Power
     private GameObject _bombPrefab;
 
     private GameObject _activeBomb;
+
+    private int _neededJumps;
+
+    private int _jumped;
 
     #endregion
 
@@ -40,6 +45,11 @@ public class GrassBombardementPower : Power
     /// </summary>
     public static GameObject Explosion =>
         LoreMaster.Instance.PreloadedObjects["Ceiling Dropper"].LocateMyFSM("Ceiling Dropper").GetState("Explode").GetFirstActionOfType<SpawnObjectFromGlobalPool>().gameObject.Value;
+
+    /// <summary>
+    /// Gets or sets the needed jumps for a bomb drop (twisted only)
+    /// </summary>
+    public int Jumps { get; set; }
 
     #endregion
 
@@ -116,29 +126,102 @@ public class GrassBombardementPower : Power
         orig(self);
     }
 
+    private void ListenForUp_OnEnter(On.HutongGames.PlayMaker.Actions.ListenForUp.orig_OnEnter orig, ListenForUp self)
+    {
+        if (self.IsCorrectContext("Spell Control", "Knight", "QC") && string.Equals(self.isPressed.Name, "SCREAM") && SettingManager.Instance.BombQuickCast)
+        {
+            if (InputHandler.Instance.inputActions.left.IsPressed)
+                self.Fsm.FsmComponent.SendEvent("BOMB");
+            else if (InputHandler.Instance.inputActions.right.IsPressed)
+                self.Fsm.FsmComponent.SendEvent("POWERBOMB");
+        }
+        orig(self);
+    }
+
+    private void BoolTest_OnEnter(On.HutongGames.PlayMaker.Actions.BoolTest.orig_OnEnter orig, BoolTest self)
+    {
+        if (self.IsCorrectContext("Spell Control", "Knight", "Spell Choice") && string.Equals(self.isTrue.Name, "SCREAM"))
+        {
+            if (InputHandler.Instance.inputActions.left.IsPressed)
+                self.Fsm.FsmComponent.SendEvent("BOMB");
+            else if (InputHandler.Instance.inputActions.right.IsPressed)
+                self.Fsm.FsmComponent.SendEvent("POWERBOMB");
+        }
+        orig(self);
+    }
+
+    private void IntCompare_OnEnter(On.HutongGames.PlayMaker.Actions.IntCompare.orig_OnEnter orig, IntCompare self)
+    {
+        if ((self.IsCorrectContext("Spell Control", "Knight", "Can Cast? QC") && SettingManager.Instance.BombQuickCast)
+            || self.IsCorrectContext("Spell Control", "Knight", "Can Cast?"))
+        {
+            if (InputHandler.Instance.inputActions.right.IsPressed && PlayerData.instance.GetInt("healthBlue") > 0)
+                self.Fsm.FsmComponent.SendEvent("POWERBOMB");
+            else if (InputHandler.Instance.inputActions.left.IsPressed && self.integer1.Value >= self.integer2.Value)
+                self.Fsm.FsmComponent.SendEvent("BOMB");
+        }
+        orig(self);
+    }
+
+    private void HeroController_CancelJump(On.HeroController.orig_CancelJump orig, HeroController self)
+    {
+        orig(self);
+        _jumped++;
+        if (_jumped >= _neededJumps)
+        {
+            _jumped = 0;
+            StartRoutine(() => PoopBomb());
+        }
+    }
+
     #endregion
 
     #region Control
 
     /// <inheritdoc/>
     protected override void Initialize()
-    { 
+    {
         On.HeroController.Start += HeroController_Start;
         ModifyHero();
     }
-    
+
     /// <inheritdoc/>
     protected override void Enable()
-    => On.PlayMakerFSM.OnEnable += PlayMakerFSM_OnEnable;
-    
+    {
+        On.PlayMakerFSM.OnEnable += PlayMakerFSM_OnEnable;
+        On.HutongGames.PlayMaker.Actions.IntCompare.OnEnter += IntCompare_OnEnter;
+        On.HutongGames.PlayMaker.Actions.BoolTest.OnEnter += BoolTest_OnEnter;
+        On.HutongGames.PlayMaker.Actions.ListenForUp.OnEnter += ListenForUp_OnEnter;
+    }
+
     /// <inheritdoc/>
     protected override void Disable()
-    => On.PlayMakerFSM.OnEnable -= PlayMakerFSM_OnEnable;
-    
+    { 
+        On.PlayMakerFSM.OnEnable -= PlayMakerFSM_OnEnable;
+        On.HutongGames.PlayMaker.Actions.IntCompare.OnEnter -= IntCompare_OnEnter;
+        On.HutongGames.PlayMaker.Actions.BoolTest.OnEnter -= BoolTest_OnEnter;
+        On.HutongGames.PlayMaker.Actions.ListenForUp.OnEnter -= ListenForUp_OnEnter;
+    }
+
+    /// <inheritdoc/>
+    protected override void TwistEnable()
+    {
+        On.HeroController.CancelJump += HeroController_CancelJump;
+        _jumped = 0;
+        _neededJumps = 12;
+    }
+
+    /// <inheritdoc/>
+    protected override void TwistDisable()
+    {
+        On.HeroController.CancelJump -= HeroController_CancelJump;
+        _jumped = 0;
+    }
+
     /// <inheritdoc/>
     protected override void Terminate()
     => On.HeroController.Start -= HeroController_Start;
-    
+
     #endregion
 
     #region Methods
@@ -186,61 +269,10 @@ public class GrassBombardementPower : Power
         };
         powerBomb.AddTransition("FINISHED", "Spell End");
 
-        // The power bomb doesn't require soul, therefore we modify the can cast condition.
-        fsm.GetState("Can Cast? QC").ReplaceAction(new Lambda(() =>
-        {
-            if (fsm.FsmVariables.FindFsmInt("MP").Value < fsm.FsmVariables.FindFsmInt("MP Cost").Value
-            && !(SettingManager.Instance.BombQuickCast && Active && InputHandler.Instance.inputActions.right.IsPressed
-            && PlayerData.instance.GetInt(nameof(PlayerData.instance.healthBlue)) > 0 && _activeBomb == null))
-                fsm.SendEvent("CANCEL");
-        })
-        { Name = "Can cast?" }, 2);
-
-        // The power bomb doesn't require soul, therefore we modify the can cast condition.
-        fsm.GetState("Can Cast?").ReplaceAction(new Lambda(() =>
-        {
-            if (fsm.FsmVariables.FindFsmInt("MP").Value < fsm.FsmVariables.FindFsmInt("MP Cost").Value
-            && !(Active && InputHandler.Instance.inputActions.right.IsPressed
-            && PlayerData.instance.GetInt(nameof(PlayerData.instance.healthBlue)) > 0 && _activeBomb == null))
-                fsm.SendEvent("CANCEL");
-        })
-        { Name = "Can cast?" }, 2);
-
         fsm.GetState("Spell Choice").AddTransition("BOMB", normalBomb);
         fsm.GetState("Spell Choice").AddTransition("POWERBOMB", powerBomb);
-        fsm.GetState("Spell Choice").ReplaceAction(new Lambda(() =>
-        {
-            if (Active && InputHandler.Instance.inputActions.left.IsPressed && _activeBomb == null)
-                fsm.SendEvent("BOMB");
-            else if (Active && InputHandler.Instance.inputActions.right.IsPressed
-            && PlayerData.instance.GetInt(nameof(PlayerData.instance.healthBlue)) > 0 && _activeBomb == null)
-                fsm.SendEvent("POWERBOMB");
-            else if (InputHandler.Instance.inputActions.down.IsPressed)
-                fsm.SendEvent("QUAKE");
-            else
-                fsm.SendEvent("FIREBALL");
-        })
-        {
-            Name = "Check for Left"
-        }, 1);
-
         fsm.GetState("QC").AddTransition("BOMB", normalBomb);
         fsm.GetState("QC").AddTransition("POWERBOMB", powerBomb);
-        fsm.GetState("QC").ReplaceAction(new Lambda(() =>
-        {
-            if (Active && SettingManager.Instance.BombQuickCast && InputHandler.Instance.inputActions.left.IsPressed && _activeBomb == null)
-                fsm.SendEvent("BOMB");
-            else if (Active && SettingManager.Instance.BombQuickCast && InputHandler.Instance.inputActions.right.IsPressed
-            && PlayerData.instance.GetInt(nameof(PlayerData.instance.healthBlue)) > 0 && _activeBomb == null)
-                fsm.SendEvent("POWERBOMB");
-            else if (InputHandler.Instance.inputActions.down.IsPressed)
-                fsm.SendEvent("QUAKE");
-            else
-                fsm.SendEvent("FIREBALL");
-        })
-        {
-            Name = "Check for Left"
-        }, 3);
 
         if (_bombPrefab == null)
         {
@@ -254,6 +286,18 @@ public class GrassBombardementPower : Power
             _bombPrefab.AddComponent<Bomb>();
             GameObject.DontDestroyOnLoad(_bombPrefab);
         }
+    }
+
+    private IEnumerator PoopBomb()
+    {
+        yield return new WaitForSeconds(0.2f);
+        _activeBomb = GameObject.Instantiate(_bombPrefab);
+        _activeBomb.transform.localPosition = HeroController.instance.transform.localPosition + (HeroController.instance.cState.facingRight ? new Vector3(-2f, 0f, 0f) : new(2f, 0f, 0f));
+        _activeBomb.transform.localScale = new(2f, 2f, 1f);
+        _activeBomb.name = "Grass bomb";
+        _activeBomb.SetActive(true);
+        _jumped = 0;
+        _neededJumps = LoreMaster.Instance.Generator.Next(7, 15);
     }
 
     #endregion

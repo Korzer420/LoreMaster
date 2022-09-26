@@ -1,11 +1,23 @@
 using LoreMaster.Enums;
+using Modding;
+using MonoMod.Cil;
+using MonoMod.RuntimeDetour;
+using System;
 using System.Collections;
+using System.Reflection;
 using UnityEngine;
+using static BossSequenceController;
 
 namespace LoreMaster.LorePowers.WhitePalace;
 
 public class ShiningBoundPower : Power
 {
+    #region Member
+
+    private ILHook _fakeBinding;
+
+    #endregion
+    
     #region Constructors
 
     public ShiningBoundPower() : base("Shining Bound", Area.WhitePalace)
@@ -19,6 +31,61 @@ public class ShiningBoundPower : Power
 
     /// <inheritdoc/>
     protected override void Enable() => _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(GatherShiningSoul());
+
+    protected override void TwistEnable()
+    {
+        IL.BossSequenceController.ApplyBindings += BossSequenceController_ApplyBindings;
+        try
+        {
+            BossSequenceController.ApplyBindings();
+        }
+        catch (Exception exception)
+        {
+            LoreMaster.Instance.LogError(exception.Message);
+            LoreMaster.Instance.LogError(exception.StackTrace);
+        }
+        _fakeBinding = new ILHook(typeof(GGCheckBoundCharms).GetMethod("get_IsTrue", BindingFlags.Public | BindingFlags.Instance), FakeBinding);
+    }
+
+    protected override void TwistDisable()
+    {
+        if (_fakeBinding != null)
+        {
+            _fakeBinding.Dispose();
+            _fakeBinding = null;
+        }
+        IL.BossSequenceController.ApplyBindings -= BossSequenceController_ApplyBindings;
+        BossSequenceController.RestoreBindings();
+    }
+
+    private void BossSequenceController_ApplyBindings(ILContext il)
+    {
+        ILCursor cursor = new(il);
+        cursor.Goto(0);
+
+        if (cursor.TryGotoNext(MoveType.After,
+            x => x.MatchCall(typeof(BossSequenceController), "get_BoundCharms")))
+            cursor.EmitDelegate<Func<bool, bool>>(x => 
+            {
+                if (ReflectionHelper.GetField<BossSequenceData>(typeof(BossSequenceController), "currentData") == null)
+                    ReflectionHelper.SetField(typeof(BossSequenceController), "currentData", new BossSequenceData());
+                return true;
+            });
+        else
+            LoreMaster.Instance.LogError("Couldn't find modification point");
+    }
+
+    private void FakeBinding(ILContext il)
+    {
+        ILCursor cursor = new(il);
+        cursor.Goto(0);
+
+        if (cursor.TryGotoNext(MoveType.After,
+            x => x.MatchCall(typeof(BossSequenceController), "get_BoundCharms")))
+            cursor.EmitDelegate<Func<bool, bool>>(x => true);
+        else
+            LoreMaster.Instance.LogError("Couldn't find modification point");
+    }
 
     #endregion
 

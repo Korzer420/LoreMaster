@@ -1,5 +1,6 @@
 using HutongGames.PlayMaker.Actions;
 using LoreMaster.Enums;
+using LoreMaster.Helper;
 
 namespace LoreMaster.LorePowers.QueensGarden;
 
@@ -15,7 +16,7 @@ public class FlowerRingPower : Power
 
     private void OnConvertFloatToIntAction(On.HutongGames.PlayMaker.Actions.ConvertFloatToInt.orig_OnEnter orig, ConvertFloatToInt self)
     {
-        if (string.Equals(self.Fsm.Name, "nailart_damage") && string.Equals(self.State.Name, "Set"))
+        if (self.IsCorrectContext("nailart_damage", null, "Set"))
         {
             float damageMultiplier = 1f;
             if (PlayerData.instance.GetBool(nameof(PlayerData.instance.elderbugGaveFlower)))
@@ -37,6 +38,9 @@ public class FlowerRingPower : Power
         orig(self);
     }
 
+    private bool HeroController_CanNailCharge(On.HeroController.orig_CanNailCharge orig, HeroController self)
+    => orig(self) && PlayerData.instance.GetBool("hasXunFlower") && !PlayerData.instance.GetBool("xunFlowerBroken");
+
     #endregion
 
     #region Control
@@ -48,6 +52,12 @@ public class FlowerRingPower : Power
     /// <inheritdoc/>
     protected override void Disable()
     => On.HutongGames.PlayMaker.Actions.ConvertFloatToInt.OnEnter -= OnConvertFloatToIntAction;
+
+    /// <inheritdoc/>
+    protected override void TwistEnable() => On.HeroController.CanNailCharge += HeroController_CanNailCharge;
+
+    /// <inheritdoc/>
+    protected override void TwistDisable() => On.HeroController.CanNailCharge -= HeroController_CanNailCharge;
 
     #endregion
 }

@@ -1,5 +1,6 @@
 using HutongGames.PlayMaker;
 using LoreMaster.Enums;
+using LoreMaster.Helper;
 using UnityEngine;
 
 namespace LoreMaster.LorePowers.KingdomsEdge;
@@ -29,6 +30,17 @@ internal class YouLikeJazzPower : Power
 
     #endregion
 
+    #region Event handler
+
+    private void PlayerDataBoolTest_OnEnter(On.HutongGames.PlayMaker.Actions.PlayerDataBoolTest.orig_OnEnter orig, HutongGames.PlayMaker.Actions.PlayerDataBoolTest self)
+    {
+        if (self.IsCorrectContext("Hatchling Spawn", "Charm Effects", "Check Equipped"))
+            self.Fsm.FsmComponent.SendEvent("EQUIPPED");
+        orig(self);
+    }
+
+    #endregion
+
     #region Control
 
     /// <inheritdoc/>
@@ -45,6 +57,20 @@ internal class YouLikeJazzPower : Power
         HatchlingVariables.FindFsmInt("Hatchling Max").Value = 4;
         HatchlingVariables.FindFsmInt("Soul Cost").Value = 8;
         HatchlingVariables.FindFsmFloat("Hatch Time").Value = 4f;
+    }
+
+    protected override void TwistEnable()
+    {
+        HatchlingVariables.FindFsmInt("Soul Cost").Value = 15;
+        On.HutongGames.PlayMaker.Actions.PlayerDataBoolTest.OnEnter += PlayerDataBoolTest_OnEnter;
+        PlayMakerFSM.BroadcastEvent("CHARM EQUIP CHECK");
+    }
+
+    protected override void TwistDisable()
+    {
+        HatchlingVariables.FindFsmInt("Soul Cost").Value = 8;
+        On.HutongGames.PlayMaker.Actions.PlayerDataBoolTest.OnEnter -= PlayerDataBoolTest_OnEnter;
+        PlayMakerFSM.BroadcastEvent("CHARM EQUIP CHECK");
     }
 
     #endregion

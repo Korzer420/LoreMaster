@@ -4,8 +4,10 @@ using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
 using LoreMaster.Enums;
 using LoreMaster.Extensions;
+using LoreMaster.Helper;
 using Modding;
 using UnityEngine;
+using static UnityEngine.ParticleSystem;
 
 namespace LoreMaster.LorePowers.Waterways;
 
@@ -50,8 +52,8 @@ public class EternalSentinelPower : Power
             && string.Equals(self.State.Name, "Init"))
         {
             self.Fsm.FsmComponent.gameObject.transform.localPosition = HeroController.instance.transform.position;
-            self.Fsm.FsmComponent.gameObject.transform.localScale = Active ? new(2.5f, 2.5f) : new(1f, 1f);
-            self.Fsm.FsmComponent.gameObject.GetComponent<DamageEffectTicker>().SetDamageInterval(Active ? 0.15f : 0.3f);
+            self.Fsm.FsmComponent.gameObject.transform.localScale = State == PowerState.Active ? new(2.5f, 2.5f) : new(1f, 1f);
+            self.Fsm.FsmComponent.gameObject.GetComponent<DamageEffectTicker>().SetDamageInterval(State == PowerState.Active ? 0.15f : 0.3f);
         }
 
         orig(self);
@@ -61,6 +63,29 @@ public class EternalSentinelPower : Power
     {
         orig(self);
         ModifyHero();
+    }
+
+    private void Wait_OnEnter(On.HutongGames.PlayMaker.Actions.Wait.orig_OnEnter orig, Wait self)
+    {
+        if (self.IsCorrectContext("Control", null, "Wait") && self.Fsm.FsmComponent.gameObject.name.Contains("Knight Dung Trail"))
+        { 
+            self.time.Value = State == PowerState.Twisted ? (PlayerData.instance.GetBool("equippedCharm_10") ? 10f : 5f) : 1.1f;
+            if (State == PowerState.Twisted)
+            {
+                Component.Destroy(self.Fsm.FsmComponent.gameObject.GetComponent<AutoRecycleSelf>());
+                Component.Destroy(self.Fsm.FsmComponent.gameObject.GetComponent<DamageEffectTicker>());
+                MainModule module = self.Fsm.FsmComponent.transform.GetChild(0).GetComponent<ParticleSystem>().main;
+                module.loop = true;
+            }
+        }
+        orig(self);
+    }
+
+    private void PlayerDataBoolTest_OnEnter(On.HutongGames.PlayMaker.Actions.PlayerDataBoolTest.orig_OnEnter orig, PlayerDataBoolTest self)
+    {
+        if (self.IsCorrectContext("Control", "Dung", "Check"))
+            self.Fsm.FsmComponent.SendEvent("EQUIPPED");
+        orig(self);
     }
 
     #endregion
@@ -73,6 +98,7 @@ public class EternalSentinelPower : Power
         ModifyHero();
         On.HutongGames.PlayMaker.Actions.SetPosition.OnEnter += OnSetPositionAction;
         On.HeroController.Start += HeroController_Start;
+        On.HutongGames.PlayMaker.Actions.Wait.OnEnter += Wait_OnEnter;
     }
 
     /// <inheritdoc/>
@@ -97,6 +123,18 @@ public class EternalSentinelPower : Power
     {
         On.HutongGames.PlayMaker.Actions.SetPosition.OnEnter -= OnSetPositionAction;
         On.HeroController.Start -= HeroController_Start;
+    }
+
+    protected override void TwistEnable()
+    {
+        On.HutongGames.PlayMaker.Actions.PlayerDataBoolTest.OnEnter += PlayerDataBoolTest_OnEnter;
+        PlayMakerFSM.BroadcastEvent("CHARM EQUIP CHECK");
+    }
+
+    protected override void TwistDisable()
+    {
+        On.HutongGames.PlayMaker.Actions.PlayerDataBoolTest.OnEnter -= PlayerDataBoolTest_OnEnter;
+        PlayMakerFSM.BroadcastEvent("CHARM EQUIP CHECK");
     }
 
     #endregion

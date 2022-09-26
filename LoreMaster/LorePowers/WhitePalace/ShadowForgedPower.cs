@@ -1,7 +1,6 @@
 using HutongGames.PlayMaker.Actions;
-using ItemChanger.Extensions;
-using ItemChanger.FsmStateActions;
 using LoreMaster.Enums;
+using LoreMaster.Helper;
 using System;
 using UnityEngine;
 
@@ -21,19 +20,28 @@ public class ShadowForgedPower : Power
 
     #endregion
 
-    #region Properties
+    #region Event handler
 
-    /// <inheritdoc/>
-    public override Action SceneAction => () =>
+    private void HeroController_Start(On.HeroController.orig_Start orig, HeroController self)
     {
-        // Each scene we try to find the shade cloak clip and adjust it, since it isn't loaded by default.
-        if (_shadow == null)
-        {
-            _shadow = GameObject.Find("Knight/Effects").transform.Find("Shadow Recharge").gameObject.GetComponent<tk2dSpriteAnimator>().CurrentClip;
-            if(_shadow != null)
-                _shadow.fps += 10f;
-        }
-    };
+        orig(self);
+        HeroController.instance.SHADOW_DASH_COOLDOWN += State == PowerState.Twisted ? .4f : -.2f;
+        _shadow = GameObject.Find("Knight/Effects").transform.Find("Shadow Recharge").gameObject.GetComponent<tk2dSpriteAnimator>().GetClipByName("Shadow Recharge");
+    }
+
+    private void Wait_OnEnter(On.HutongGames.PlayMaker.Actions.Wait.orig_OnEnter orig, Wait self)
+    {
+        if (self.IsCorrectContext("Recharge Effect", "Shadow Recharge", "Wait"))
+            self.time.Value += State == PowerState.Active ? -.2f : (State == PowerState.Twisted ? .4f : 0f);
+        orig(self);
+    }
+
+    private void SetFsmInt_OnEnter(On.HutongGames.PlayMaker.Actions.SetFsmInt.orig_OnEnter orig, SetFsmInt self)
+    {
+        if (self.IsCorrectContext("Set Sharp Shadow Damage", "Attacks", "Set"))
+            self.setValue.Value = State == PowerState.Twisted ? Convert.ToInt32(self.setValue.Value * .5f) : self.setValue.Value * 2;
+        orig(self);
+    }
 
     #endregion
 
@@ -42,37 +50,48 @@ public class ShadowForgedPower : Power
     /// <inheritdoc/>
     protected override void Initialize()
     {
-        PlayMakerFSM fsm = GameObject.Find("Knight/Effects").transform.Find("Shadow Recharge").gameObject.LocateMyFSM("Recharge Effect");
-        _shadow = fsm.gameObject.GetComponent<tk2dSpriteAnimator>().CurrentClip;
-        fsm.GetState("Init").AddLastAction(new Lambda(() =>
-        {
-            fsm.FsmVariables.GetFsmFloat("Wait time").Value = Active ? .2f : .4f;
-        }));
-        fsm = GameObject.Find("Knight/Attacks").LocateMyFSM("Set Sharp Shadow Damage");
-        fsm.GetState("Set").RemoveFirstActionOfType<SetFsmInt>();
-        fsm.GetState("Set").AddLastAction(new Lambda(() =>
-        {
-            int damage = fsm.FsmVariables.FindFsmInt("nailDamage").Value;
-            if (Active)
-                damage *= 2;
-            fsm.transform.Find("Sharp Shadow").gameObject.LocateMyFSM("damages_enemy").FsmVariables.FindFsmInt("damageDealt").Value = damage;
-        }));
+        _shadow = GameObject.Find("Knight/Effects").transform.Find("Shadow Recharge").gameObject.GetComponent<tk2dSpriteAnimator>().GetClipByName("Shadow Recharge");
+        On.HutongGames.PlayMaker.Actions.Wait.OnEnter += Wait_OnEnter;
+        
     }
+
+    /// <inheritdoc/>
+    protected override void Terminate() => On.HutongGames.PlayMaker.Actions.Wait.OnEnter -= Wait_OnEnter;
 
     /// <inheritdoc/>
     protected override void Enable()
     {
         HeroController.instance.SHADOW_DASH_COOLDOWN -= .2f;
-        if (_shadow != null)
-            _shadow.fps += 10f;
+        _shadow.fps += 10f;
+        On.HeroController.Start += HeroController_Start;
+        On.HutongGames.PlayMaker.Actions.SetFsmInt.OnEnter += SetFsmInt_OnEnter;
     }
 
     /// <inheritdoc/>
     protected override void Disable()
     {
         HeroController.instance.SHADOW_DASH_COOLDOWN += .2f;
-        if (_shadow != null)
-            _shadow.fps -= 10f;
+        _shadow.fps -= 10f;
+        On.HeroController.Start -= HeroController_Start;
+        On.HutongGames.PlayMaker.Actions.SetFsmInt.OnEnter -= SetFsmInt_OnEnter;
+    }
+
+    /// <inheritdoc/>
+    protected override void TwistEnable()
+    {
+        HeroController.instance.SHADOW_DASH_COOLDOWN += .4f;
+        On.HeroController.Start += HeroController_Start;
+        On.HutongGames.PlayMaker.Actions.SetFsmInt.OnEnter += SetFsmInt_OnEnter;
+        _shadow.fps -= 15f;
+    }
+
+    /// <inheritdoc/>
+    protected override void TwistDisable()
+    {
+        HeroController.instance.SHADOW_DASH_COOLDOWN -= .4f;
+        On.HeroController.Start -= HeroController_Start;
+        _shadow.fps += 15f;
+        On.HutongGames.PlayMaker.Actions.SetFsmInt.OnEnter -= SetFsmInt_OnEnter;
     }
 
     #endregion

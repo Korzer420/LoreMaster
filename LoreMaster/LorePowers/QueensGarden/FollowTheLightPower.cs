@@ -3,6 +3,7 @@ using HutongGames.PlayMaker.Actions;
 using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
 using LoreMaster.Enums;
+using LoreMaster.Helper;
 using UnityEngine;
 
 namespace LoreMaster.LorePowers.QueensGarden;
@@ -23,12 +24,63 @@ public class FollowTheLightPower : Power
 
     #endregion
 
+    #region Event handler
+
+    private void HeroController_Start(On.HeroController.orig_Start orig, HeroController self)
+    {
+        orig(self);
+        AddDreamGateTeleport();
+    }
+
+    private void AudioPlayerOneShotSingle_OnEnter(On.HutongGames.PlayMaker.Actions.AudioPlayerOneShotSingle.orig_OnEnter orig, AudioPlayerOneShotSingle self)
+    {
+        orig(self);
+        if (self.IsCorrectContext("Dream Nail", "Knight", "Slash"))
+        {
+            PlayerData.instance.SetInt(nameof(PlayerData.instance.dreamOrbs), PlayerData.instance.GetInt(nameof(PlayerData.instance.dreamOrbs)) -
+                (!PlayerData.instance.GetBool("dreamNailUpgraded") ? 2 : 1));
+            PlayMakerFSM.BroadcastEvent("DREAM ORB COLLECT");
+        }
+    }
+
+    private bool HeroController_CanDreamNail(On.HeroController.orig_CanDreamNail orig, HeroController self) => orig(self)
+        && PlayerData.instance.GetInt("dreamOrbs") > (!PlayerData.instance.GetBool("dreamNailUpgraded") ? 1 : 0);
+
+    #endregion
+
     #region Control
 
     /// <inheritdoc/>
     protected override void Initialize()
     {
-        var fsm = HeroController.instance.gameObject.LocateMyFSM("Dream Nail");
+        AddDreamGateTeleport();
+        On.HeroController.Start += HeroController_Start;
+    }
+
+    /// <inheritdoc/>
+    protected override void Terminate() => On.HeroController.Start -= HeroController_Start;
+
+    /// <inheritdoc/>
+    protected override void TwistEnable()
+    {
+        On.HeroController.CanDreamNail += HeroController_CanDreamNail;
+        On.HutongGames.PlayMaker.Actions.AudioPlayerOneShotSingle.OnEnter += AudioPlayerOneShotSingle_OnEnter;
+    }
+
+    /// <inheritdoc/>
+    protected override void TwistDisable()
+    {
+        On.HeroController.CanDreamNail -= HeroController_CanDreamNail;
+        On.HutongGames.PlayMaker.Actions.AudioPlayerOneShotSingle.OnEnter -= AudioPlayerOneShotSingle_OnEnter;
+    }
+
+    #endregion
+
+    #region Methods
+
+    private void AddDreamGateTeleport()
+    {
+        PlayMakerFSM fsm = HeroController.instance.gameObject.LocateMyFSM("Dream Nail");
         GameObject dreamGate = fsm.GetState("Spawn Gate").GetFirstActionOfType<SpawnObjectFromGlobalPool>().gameObject.Value;
         fsm.AddState(new FsmState(fsm.Fsm)
         {
@@ -37,7 +89,7 @@ public class FollowTheLightPower : Power
             {
                 new Lambda(() =>
                 {
-                    if(Active)
+                    if(State == PowerState.Active)
                     {
                         if(_dreamGate != null)
                             GameObject.Destroy(_dreamGate);
@@ -60,7 +112,7 @@ public class FollowTheLightPower : Power
             {
                 new Lambda(() =>
                 {
-                    if(Active && _dreamGate != null && (PlayerData.instance.GetInt(nameof(PlayerData.instance.dreamOrbs)) > 0 || PlayerData.instance.GetBool(nameof(PlayerData.instance.dreamNailUpgraded))))
+                    if(State == PowerState.Active && _dreamGate != null && (PlayerData.instance.GetInt(nameof(PlayerData.instance.dreamOrbs)) > 0 || PlayerData.instance.GetBool(nameof(PlayerData.instance.dreamNailUpgraded))))
                     {
                         // Check for awoken dreamnail
                         if(!PlayerData.instance.GetBool(nameof(PlayerData.instance.dreamNailUpgraded)))
@@ -84,7 +136,7 @@ public class FollowTheLightPower : Power
         });
         fsm.GetState("Dream Gate?").InsertAction(new Lambda(() =>
         {
-            if (Active)
+            if (State == PowerState.Active)
             {
                 if (InputHandler.Instance.inputActions.left.IsPressed)
                     fsm.SendEvent("PLACE");

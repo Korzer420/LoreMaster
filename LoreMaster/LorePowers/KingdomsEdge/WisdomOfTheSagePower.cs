@@ -29,7 +29,11 @@ public class WisdomOfTheSagePower : Power
     {
         orig(self);
         if (string.Equals(self.Fsm.GameObjectName, "Charm Effects") && string.Equals(self.Fsm.Name, "Set Spell Cost"))
-            GameObject.Find("Knight").LocateMyFSM("Spell Control").FsmVariables.FindFsmInt("MP Cost").Value -= _soulBonus;
+            GameObject.Find("Knight").LocateMyFSM("Spell Control").FsmVariables.FindFsmInt("MP Cost").Value -= State == PowerState.Twisted 
+                ? - ((7 - PlayerData.instance.GetInt(nameof(PlayerData.instance.mrMushroomState)) * 2))
+                : (State == PowerState.Active 
+                ? _soulBonus
+                : 0);
     }
 
     #endregion
@@ -58,6 +62,12 @@ public class WisdomOfTheSagePower : Power
     }
 
     /// <inheritdoc/>
+    protected override void TwistEnable() => Enable();
+
+    /// <inheritdoc/>
+    protected override void TwistDisable() => Disable();
+
+    /// <inheritdoc/>
     protected override void Terminate()
     => On.HutongGames.PlayMaker.Actions.SetFsmInt.DoSetFsmInt -= OnSetFsmIntAction;
 
@@ -71,6 +81,8 @@ public class WisdomOfTheSagePower : Power
     private void UpdateSpellCost()
     {
         _soulBonus = PlayerData.instance.GetInt(nameof(PlayerData.instance.mrMushroomState));
+        if (State == PowerState.Twisted)
+            _soulBonus = (7 - _soulBonus) * 2 * -1;
         GameObject.Find("Knight").LocateMyFSM("Spell Control").FsmVariables.FindFsmInt("MP Cost").Value -= _soulBonus;
     }
 

@@ -3,6 +3,7 @@ using ItemChanger.FsmStateActions;
 using LoreMaster.Enums;
 using LoreMaster.Extensions;
 using System.Collections;
+using System.Reflection;
 using UnityEngine;
 
 namespace LoreMaster.LorePowers.HowlingCliffs;
@@ -46,6 +47,16 @@ public class LifebloodOmenPower : Power
         }
     }
 
+    /// <inheritdoc/>
+    protected override void TwistEnable() => Enable();
+
+    /// <inheritdoc/>
+    protected override void TwistDisable()
+    {
+        Disable();
+        PlayMakerFSM.BroadcastEvent("DREAM GATE OPEN");
+    }
+
     #endregion
 
     #region Private Methods
@@ -81,12 +92,60 @@ public class LifebloodOmenPower : Power
             fsm.GetState("Explode").ReplaceAction(new Lambda(() =>
             {
                 fsm.FsmVariables.FindFsmGameObject("Explode Effects").Value.SetActive(true);
-                for (int i = 0; i < 3 * (index + 1); i++)
-                    EventRegister.SendEvent("ADD BLUE HEALTH");
-            }),4);
+                if (State == PowerState.Twisted)
+                    PlayMakerFSM.BroadcastEvent("DREAM GATE OPEN");
+                else
+                    for (int i = 0; i < 3 * (index + 1); i++)
+                        EventRegister.SendEvent("ADD BLUE HEALTH");
+
+            }), 4);
             fsm.SendEvent("START");
+            if (State == PowerState.Twisted)
+            {
+                foreach (TransitionPoint transition in GameObject.FindObjectsOfType<TransitionPoint>())
+                {
+                    if (!transition.isADoor)
+                    {
+                        GameObject blocker = GameObject.Instantiate(LoreMaster.Instance.PreloadedObjects["Dream Gate"]);
+                        blocker.SetActive(true);
+                        GameObject.Destroy(blocker.transform.GetChild(0));
+                        blocker.LocateMyFSM("Control").GetState("Init").RemoveAction(1);
+                        blocker.transform.localScale = new(1f, 1f);
+                        // Remove camera lock.
+                        GameObject.Destroy(blocker.transform.GetChild(0)); 
+                        if (transition.name.Contains("left"))
+                        {
+                            blocker.transform.eulerAngles = new Vector3(0f, 0f, 0f);
+                            blocker.transform.position = transition.transform.position + new Vector3(1f, 0f);
+                            blocker.GetComponent<BoxCollider2D>().size = transition.GetComponent<BoxCollider2D>().size;
+                        }
+                        else if (transition.name.Contains("right"))
+                        {
+                            blocker.transform.eulerAngles = new Vector3(0f, 0f, 180f);
+                            blocker.transform.position = transition.transform.position - new Vector3(1f, 0f);
+                            blocker.GetComponent<BoxCollider2D>().size = transition.GetComponent<BoxCollider2D>().size;
+                        }
+                        else if (transition.name.Contains("top"))
+                        {
+                            blocker.transform.eulerAngles = new Vector3(0f, 0f, 270f);
+                            Vector3 vector3 = new(transition.GetComponent<BoxCollider2D>().size.y, transition.GetComponent<BoxCollider2D>().size.x);
+                            blocker.GetComponent<BoxCollider2D>().size = vector3;
+                            blocker.transform.position = transition.transform.position - new Vector3(0f, 1f);
+                        }
+                        else
+                        {
+                            blocker.transform.eulerAngles = new Vector3(0f, 0f, 90f);
+                            Vector3 vector3 = new(transition.GetComponent<BoxCollider2D>().size.y, transition.GetComponent<BoxCollider2D>().size.x);
+                            blocker.GetComponent<BoxCollider2D>().size = vector3;
+                            blocker.transform.position = transition.transform.position + new Vector3(0f, 1f);
+                        }
+                        blocker.GetComponent<tk2dSprite>().color = new(0f, .5f, 1f);
+                    }
+                }
+                PlayMakerFSM.BroadcastEvent("DREAM GATE CLOSE");
+            }
             float activeTime = 0f;
-            while(activeTime < 90f && _ghost != null)
+            while ((activeTime < 90f || State == PowerState.Twisted) && _ghost != null)
             {
                 activeTime += Time.deltaTime;
                 yield return null;
@@ -95,6 +154,8 @@ public class LifebloodOmenPower : Power
             {
                 PlayMakerFSM.BroadcastEvent("DREAM AREA DISABLE");
                 GameObject.Destroy(_ghost);
+                if (State == PowerState.Twisted)
+                    PlayMakerFSM.BroadcastEvent("DREAM GATE OPEN");
             }
         }
     }

@@ -16,6 +16,8 @@ public class ConcussiveStrikePower : Power
 
     private MethodInfo _invulnerableCall;
 
+    private GameObject _concussion;
+
     #endregion
 
     #region Constructors
@@ -30,7 +32,7 @@ public class ConcussiveStrikePower : Power
 
     #region Properties
 
-    public GameObject[] NailArts 
+    public GameObject[] NailArts
     {
         get
         {
@@ -78,7 +80,14 @@ public class ConcussiveStrikePower : Power
 
     private void TakeDamage(On.HeroController.orig_TakeDamage orig, HeroController self, GameObject go, GlobalEnums.CollisionSide damageSide, int damageAmount, int hazardType)
     {
-        if (damageAmount > 0 && go.GetComponentInChildren<ConcussionEffect>(true) != null && LoreMaster.Instance.Generator.Next(1, 3) == 1)
+        if (State == PowerState.Twisted)
+        {
+            if (self.GetComponentInChildren<ConcussionEffect>() is ConcussionEffect effect)
+                effect.ConcussiveTime += .5f;
+            else
+                Concussion();
+        }
+        else if (damageAmount > 0 && go.GetComponentInChildren<ConcussionEffect>(true) != null && LoreMaster.Instance.Generator.Next(1, 3) == 1)
         {
             damageAmount--;
             if (damageAmount <= 0)
@@ -90,6 +99,13 @@ public class ConcussiveStrikePower : Power
         }
 
         orig(self, go, damageSide, damageAmount, hazardType);
+    }
+
+    private void HeroController_Move(On.HeroController.orig_Move orig, HeroController self, float move_direction)
+    {
+        if (_concussion != null)
+            move_direction *= -1f;
+        orig(self, move_direction);
     }
 
     #endregion
@@ -119,5 +135,31 @@ public class ConcussiveStrikePower : Power
         On.HeroController.TakeDamage -= TakeDamage;
     }
 
+    /// <inheritdoc/>
+    protected override void TwistEnable()
+    {
+        On.HeroController.Move += HeroController_Move;
+        On.HeroController.TakeDamage += TakeDamage;
+    }
+
+    /// <inheritdoc/>
+    protected override void TwistDisable()
+    {
+        On.HeroController.Move -= HeroController_Move;
+        On.HeroController.TakeDamage -= TakeDamage;
+    }
+
+    #endregion
+
+    #region Methods
+
+    private void Concussion()
+    {
+        _concussion = GameObject.Instantiate(LoreMaster.Instance.PreloadedObjects["Mantis Heavy Flyer"], HeroController.instance.transform);
+        _concussion.name = "Concussion";
+        _concussion.AddComponent<ConcussionEffect>().ConcussiveTime = 1f;
+        _concussion.transform.localPosition = new(0f, 1f);
+        _concussion.transform.localScale = new(1f, 1f);
+    }
     #endregion
 }

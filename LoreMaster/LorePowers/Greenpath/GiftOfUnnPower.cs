@@ -1,7 +1,6 @@
 using HutongGames.PlayMaker;
 using LoreMaster.Enums;
 using LoreMaster.Helper;
-using Modding;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
 using System;

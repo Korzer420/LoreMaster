@@ -3,6 +3,7 @@ using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
 using LoreMaster.Enums;
 using LoreMaster.Extensions;
+using LoreMaster.Helper;
 using Modding;
 using System;
 using System.Collections;
@@ -137,6 +138,13 @@ public class JonisProtectionPower : Power
         orig(self);
     }
 
+    private void GetPlayerDataInt_OnEnter(On.HutongGames.PlayMaker.Actions.GetPlayerDataInt.orig_OnEnter orig, GetPlayerDataInt self)
+    {
+        if (self.IsCorrectContext("Blue Health Control", "Health", "Add Blue Health"))
+            self.Fsm.FsmComponent.SendEvent("FINISHED");
+        orig(self);
+    }
+
     #endregion
 
     #region Control
@@ -147,8 +155,6 @@ public class JonisProtectionPower : Power
         _dialogueFSM[0] = GameObject.Find("_GameCameras/HudCamera/DialogueManager").LocateMyFSM("Box Open");
         _dialogueFSM[1] = GameObject.Find("_GameCameras/HudCamera/DialogueManager").LocateMyFSM("Box Open YN");
         _dialogueFSM[2] = GameObject.Find("_GameCameras/HudCamera/DialogueManager").LocateMyFSM("Box Open Dream");
-        On.HutongGames.PlayMaker.Actions.SendEventByName.OnEnter += OnSendEventByNameAction;
-        On.HutongGames.PlayMaker.Actions.SetPlayerDataBool.OnEnter += OnSetPlayerDataBoolAction;
     }
 
     /// <inheritdoc/>
@@ -159,6 +165,8 @@ public class JonisProtectionPower : Power
         On.PlayMakerFSM.OnEnable += ModifyFSM;
         On.InvAnimateUpAndDown.AnimateUp += InvAnimateUpAndDown_AnimateUp;
         On.InvAnimateUpAndDown.AnimateDown += InvAnimateUpAndDown_AnimateDown;
+        On.HutongGames.PlayMaker.Actions.SendEventByName.OnEnter += OnSendEventByNameAction;
+        On.HutongGames.PlayMaker.Actions.SetPlayerDataBool.OnEnter += OnSetPlayerDataBoolAction;
     }
 
     /// <inheritdoc/>
@@ -170,14 +178,15 @@ public class JonisProtectionPower : Power
         On.InvAnimateUpAndDown.AnimateUp -= InvAnimateUpAndDown_AnimateUp;
         On.InvAnimateUpAndDown.AnimateDown -= InvAnimateUpAndDown_AnimateDown;
         FakeDamage = false;
+        On.HutongGames.PlayMaker.Actions.SendEventByName.OnEnter += OnSendEventByNameAction;
+        On.HutongGames.PlayMaker.Actions.SetPlayerDataBool.OnEnter += OnSetPlayerDataBoolAction;
     }
 
     /// <inheritdoc/>
-    protected override void Terminate()
-    {
-        On.HutongGames.PlayMaker.Actions.SendEventByName.OnEnter -= OnSendEventByNameAction;
-        On.HutongGames.PlayMaker.Actions.SetPlayerDataBool.OnEnter -= OnSetPlayerDataBoolAction;
-    }
+    protected override void TwistEnable() => On.HutongGames.PlayMaker.Actions.GetPlayerDataInt.OnEnter += GetPlayerDataInt_OnEnter;
+
+    /// <inheritdoc/>
+    protected override void TwistDisable() => On.HutongGames.PlayMaker.Actions.GetPlayerDataInt.OnEnter -= GetPlayerDataInt_OnEnter;
 
     #endregion
 

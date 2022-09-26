@@ -62,6 +62,27 @@ public class QueenThornsPower : Power
         }
     }
 
+    private void ActivateGameObject_OnEnter(On.HutongGames.PlayMaker.Actions.ActivateGameObject.orig_OnEnter orig, HutongGames.PlayMaker.Actions.ActivateGameObject self)
+    {
+        orig(self);
+        if (self.IsCorrectContext("Thorn Counter", "Charm Effects", "Counter"))
+            self.Fsm.Variables.FindFsmGameObject("Thorn Hit").Value.SetActive(false);
+    }
+
+    private void PlayerDataBoolTest_OnEnter(On.HutongGames.PlayMaker.Actions.PlayerDataBoolTest.orig_OnEnter orig, HutongGames.PlayMaker.Actions.PlayerDataBoolTest self)
+    {
+        if (self.IsCorrectContext("Thorn Counter", "Charm Effects", "Check Equipped"))
+            self.Fsm.FsmComponent.SendEvent("EQUIPPED");
+        orig(self);
+    }
+
+    private void SetFsmInt_OnEnter(On.HutongGames.PlayMaker.Actions.SetFsmInt.orig_OnEnter orig, HutongGames.PlayMaker.Actions.SetFsmInt self)
+    {
+        if (self.IsCorrectContext("set_thorn_damage", null, "Set") && string.Equals(self.Fsm.FsmComponent.transform.parent?.name, "Thorn Hit"))
+            self.setValue.Value *= 2;
+        orig(self);
+    }
+
     #endregion
 
     #region Internal Methods
@@ -71,17 +92,15 @@ public class QueenThornsPower : Power
     /// </summary>
     internal void ModifyThorns(PlayMakerFSM fsm)
     {
-        // Add transition to queen variant.
-        fsm.GetState("Check Equipped").ReplaceAction(new Lambda(() =>
+        // Add branch state to differ between normal and modified execution
+        fsm.AddState(new FsmState(fsm.Fsm)
         {
-            if (PlayerData.instance.GetBool(nameof(PlayerData.instance.equippedCharm_12)))
-                fsm.SendEvent(Active ? "QUEEN" : "EQUIPPED");
-            else
-                fsm.SendEvent("CANCEL");
-        })
-        {
-            Name = "Check for Queen"
-        }, 0);
+            Name = "Check for Queen",
+            Actions = new FsmStateAction[]
+            {
+                new Lambda(() => fsm.SendEvent(State == PowerState.Active ? "QUEEN" : "FINISHED"))
+            }
+        });
 
         // Create a copy of the counter start for the queen variant.
         FsmState currentWorkingState = fsm.GetState("Counter Start");
@@ -101,8 +120,15 @@ public class QueenThornsPower : Power
                 currentWorkingState.Actions[8], // Wait
             }
         });
-        fsm.GetState("Check Equipped").AddTransition("QUEEN", "Queen Counter Start");
-        fsm.GetState("Queen Counter Start").AddTransition("FINISHED", "Set Thorn Scale");
+
+        // Create a copy of the thorn scale for the queen variant.
+        // (This is an exact copy which is just implemented to prevent the need of adding an extra state or transition + action)
+        currentWorkingState = fsm.GetState("Set Thorn Scale");
+        fsm.AddState(new FsmState(fsm.Fsm)
+        {
+            Name = "Queen Set Thorn Scale",
+            Actions = currentWorkingState.Actions
+        });
 
         // Create a copy of the counter for the queen variant.
         currentWorkingState = fsm.GetState("Counter");
@@ -120,19 +146,11 @@ public class QueenThornsPower : Power
             }
         });
 
-        // Add a state to control if the normal or queen variant should be executed.
-        fsm.AddState(new FsmState(fsm.Fsm)
-        {
-            Name = "Queen?",
-            Actions = new FsmStateAction[]
-            {
-                new Lambda(() => fsm.SendEvent(Active ? "QUEEN" : "FINISHED"))
-            }
-        });
-        fsm.GetState("Set Thorn Scale").RemoveTransitionsTo("Counter");
-        fsm.GetState("Set Thorn Scale").AddTransition("FINISHED", "Queen?");
-        fsm.GetState("Queen?").AddTransition("QUEEN", "Queen Counter");
-        fsm.GetState("Queen?").AddTransition("FINISHED", "Counter");
+        fsm.GetState("Check Equipped").AdjustTransition("EQUIPPED", "Check for Queen");
+        fsm.GetState("Check for Queen").AddTransition("QUEEN", "Queen Counter Start");
+        fsm.GetState("Check for Queen").AddTransition("FINISHED", "Counter Start");
+        fsm.GetState("Queen Counter Start").AddTransition("FINISHED", "Queen Set Thorn Scale");
+        fsm.GetState("Queen Set Thorn Scale").AddTransition("FINISHED", "Queen Counter");
         fsm.GetState("Queen Counter").AddTransition("FINISHED", "Counter End");
     }
 
@@ -143,32 +161,11 @@ public class QueenThornsPower : Power
     /// <inheritdoc/>
     protected override void Initialize()
     {
-        try
+        // Save the old thorns image and create a new one which can be used anytime.
+        if (_sprites[1] == null)
         {
-            // Save the old thorns image and create a new one which can be used anytime.
-            if (_sprites[1] == null)
-            {
-                _sprites[0] = CharmIconList.Instance.spriteList[12];
-                _sprites[1] = SpriteHelper.CreateSprite("Queens_Thorns");
-            }
-
-            PlayMakerFSM fsm = GameObject.Find("Knight/Charm Effects").LocateMyFSM("Thorn Counter");
-            // Adjust thorn damage
-            _thorns = fsm.transform.Find("Thorn Hit").gameObject;
-            foreach (Transform child in _thorns.transform)
-            {
-                fsm = child.gameObject.LocateMyFSM("set_thorn_damage");
-                fsm.GetState("Set").ReplaceAction(new Lambda(() =>
-                {
-                    fsm.FsmVariables.GetFsmInt("Damage").Value = PlayerData.instance.GetInt(nameof(PlayerData.instance.nailDamage));
-                    if (Active)
-                        fsm.FsmVariables.GetFsmInt("Damage").Value *= 2;
-                }), 0);
-            }
-        }
-        catch (Exception error)
-        {
-            LoreMaster.Instance.LogError("Error in Initialize of Queen Thorns: " + error.Message);
+            _sprites[0] = CharmIconList.Instance.spriteList[12];
+            _sprites[1] = SpriteHelper.CreateSprite("Queens_Thorns");
         }
     }
 
@@ -177,14 +174,8 @@ public class QueenThornsPower : Power
     {
         On.HealthManager.TakeDamage += EnemyTakeDamage;
         On.HealthManager.Die += EnemyDeath;
-        try
-        {
-            CharmIconList.Instance.spriteList[12] = _sprites[1];
-        }
-        catch (Exception error)
-        {
-            LoreMaster.Instance.LogError("Error in enable of Queen Thorns: " + error.Message);
-        }
+        CharmIconList.Instance.spriteList[12] = _sprites[1];
+        On.HutongGames.PlayMaker.Actions.SetFsmInt.OnEnter += SetFsmInt_OnEnter;
     }
 
     /// <inheritdoc/>
@@ -193,6 +184,21 @@ public class QueenThornsPower : Power
         On.HealthManager.TakeDamage -= EnemyTakeDamage;
         On.HealthManager.Die -= EnemyDeath;
         CharmIconList.Instance.spriteList[12] = _sprites[0];
+        On.HutongGames.PlayMaker.Actions.SetFsmInt.OnEnter -= SetFsmInt_OnEnter;
+    }
+
+    /// <inheritdoc/>
+    protected override void TwistEnable() 
+    {
+        On.HutongGames.PlayMaker.Actions.PlayerDataBoolTest.OnEnter += PlayerDataBoolTest_OnEnter;
+        On.HutongGames.PlayMaker.Actions.ActivateGameObject.OnEnter += ActivateGameObject_OnEnter;
+    }
+
+    /// <inheritdoc/>
+    protected override void TwistDisable()
+    {
+        On.HutongGames.PlayMaker.Actions.PlayerDataBoolTest.OnEnter -= PlayerDataBoolTest_OnEnter;
+        On.HutongGames.PlayMaker.Actions.ActivateGameObject.OnEnter -= ActivateGameObject_OnEnter;
     }
 
     #endregion

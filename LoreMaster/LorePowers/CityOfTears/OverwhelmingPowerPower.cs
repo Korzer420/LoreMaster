@@ -16,7 +16,15 @@ public class OverwhelmingPowerPower : Power
 
     #region Constructors
 
-    public OverwhelmingPowerPower() : base("Overwhelming Power", Area.CityOfTears) { }
+    public OverwhelmingPowerPower() : base("Overwhelming Power", Area.CityOfTears) => Instance = this;
+
+    #endregion
+
+    #region Properties
+
+    public static OverwhelmingPowerPower Instance { get; set; }
+
+    public bool HasFullSoul => _hasFullSoulMeter;
 
     #endregion
 

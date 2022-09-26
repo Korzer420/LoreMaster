@@ -1,5 +1,7 @@
 using LoreMaster.Enums;
 using Modding;
+using MonoMod.Cil;
+using System;
 
 namespace LoreMaster.LorePowers.WhitePalace;
 
@@ -39,6 +41,13 @@ public class DiminishingCursePower : Power
         orig(self);
     }
 
+    private int ModHooks_GetPlayerIntHook(string name, int orig)
+    {
+        if (name.StartsWith("charmCost_"))
+            orig++;
+        return orig;
+    }
+
     #endregion
 
     #region Control
@@ -57,6 +66,20 @@ public class DiminishingCursePower : Power
         ModHooks.GetPlayerBoolHook -= ModHooks_GetPlayerBoolHook;
         On.HeroController.CharmUpdate -= HeroController_CharmUpdate;
         On.PlayerData.TakeHealth -= HeroController_TakeHealth;
+    }
+
+    /// <inheritdoc/>
+    protected override void TwistEnable()
+    {
+        ModHooks.GetPlayerIntHook += ModHooks_GetPlayerIntHook;
+        HeroController.instance.CharmUpdate();
+    }
+
+    /// <inheritdoc/>
+    protected override void TwistDisable()
+    {
+        ModHooks.GetPlayerIntHook -= ModHooks_GetPlayerIntHook;
+        HeroController.instance.CharmUpdate();
     }
 
     #endregion

@@ -1,8 +1,12 @@
 using HutongGames.PlayMaker.Actions;
 using ItemChanger.Extensions;
+using ItemChanger.FsmStateActions;
 using LoreMaster.Enums;
+using LoreMaster.Helper;
 using LoreMaster.Manager;
 using LoreMaster.UnityComponents;
+using MonoMod.Cil;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -65,6 +69,13 @@ public class DreamBlessingPower : Power
         }
     }
 
+    private void HeroController_Start(On.HeroController.orig_Start orig, HeroController self)
+    {
+        orig(self);
+        HeroController.instance.GetComponent<tk2dSpriteAnimator>().GetClipByName("DN Slash Antic").fps = 6;
+        HeroController.instance.transform.Find("Dream Effects/Slash").GetComponent<tk2dSpriteAnimator>().GetClipByName("DN Antic").fps = 6;
+    }
+
     #endregion
 
     #region Public Methods
@@ -84,6 +95,50 @@ public class DreamBlessingPower : Power
 
     #endregion
 
+    #region Event handler
+
+    private void NerfSoulAmount(ILContext il)
+    {
+        ILCursor cursor = new(il);
+        cursor.Goto(0);
+
+        if (cursor.TryGotoNext(MoveType.After,
+            x => x.MatchLdcI4(33)))
+        {
+            cursor.EmitDelegate<Func<int, int>>(x =>
+            {
+                x = 10;
+                if (PlayerData.instance.GetBool("monomonDefeated"))
+                    x += 5;
+                if (PlayerData.instance.GetBool("lurienDefeated"))
+                    x += 5;
+                if (PlayerData.instance.GetBool("hegemolDefeated"))
+                    x += 5;
+                return x;
+            });
+
+            if (cursor.TryGotoNext(MoveType.After,
+                x => x.MatchLdcI4(66)))
+                cursor.EmitDelegate<Func<int, int>>(x =>
+                {
+                    x = 20;
+                    if (PlayerData.instance.GetBool("monomonDefeated"))
+                        x += 10;
+                    if (PlayerData.instance.GetBool("lurienDefeated"))
+                        x += 10;
+                    if (PlayerData.instance.GetBool("hegemolDefeated"))
+                        x += 10;
+                    return x;
+                });
+            else
+                LoreMaster.Instance.Log("Couldn't find soul amount 2");
+        }
+        else
+            LoreMaster.Instance.Log("Couldn't find soul amount");
+    }
+
+    #endregion
+
     #region Control
 
     /// <inheritdoc/>
@@ -93,6 +148,23 @@ public class DreamBlessingPower : Power
     /// <inheritdoc/>
     protected override void Disable()
            => On.EnemyDreamnailReaction.RecieveDreamImpact -= EnemyDreamnailReaction_RecieveDreamImpact;
+
+    /// <inheritdoc/>
+    protected override void TwistEnable()
+    {
+        HeroController.instance.GetComponent<tk2dSpriteAnimator>().GetClipByName("DN Slash Antic").fps = 6;
+        HeroController.instance.transform.Find("Dream Effects/Slash").GetComponent<tk2dSpriteAnimator>().GetClipByName("DN Antic").fps = 6;
+        On.HeroController.Start += HeroController_Start;
+        IL.EnemyDreamnailReaction.RecieveDreamImpact += NerfSoulAmount;
+    }
+
+    protected override void TwistDisable()
+    {
+        HeroController.instance.GetComponent<tk2dSpriteAnimator>().GetClipByName("DN Slash Antic").fps = 12;
+        HeroController.instance.transform.Find("Dream Effects/Slash").GetComponent<tk2dSpriteAnimator>().GetClipByName("DN Antic").fps = 12;
+        On.HeroController.Start -= HeroController_Start;
+        IL.EnemyDreamnailReaction.RecieveDreamImpact -= NerfSoulAmount;
+    }
 
     #endregion
 }

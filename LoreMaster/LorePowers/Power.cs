@@ -164,8 +164,9 @@ public abstract class Power
             return;
         try
         {
-            TwistEnable();
             State = PowerState.Twisted;
+            TwistEnable();
+            
             InitializePower();
             //if (InitializePower())
             //{

@@ -51,37 +51,50 @@ public class MaskOverchargePower : Power
             _overcharge.SetActive(PlayerData.instance.GetInt(nameof(PlayerData.instance.health)) == _overchargeHealth);
     }
 
-    #endregion
-
-    #region Control
-
-    /// <inheritdoc/>
-    protected override void Initialize()
+    private void HeroController_Start(On.HeroController.orig_Start orig, HeroController self)
     {
+        orig(self);
         _overcharge = new("Mask Overcharge");
         _overcharge.transform.SetParent(GameObject.Find("Knight").transform);
         _overcharge.transform.localPosition = new(0, 0);
         _overcharge.AddComponent<MaskCharge>();
     }
 
+    #endregion
+
+    #region Control
+
     /// <inheritdoc/>
     protected override void Enable()
     {
+        _overcharge = new("Mask Overcharge");
+        _overcharge.transform.SetParent(GameObject.Find("Knight").transform);
+        _overcharge.transform.localPosition = new(0, 0);
+        _overcharge.AddComponent<MaskCharge>();
         On.HeroController.FixedUpdate += HeroController_FixedUpdate;
-        _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(SelectOverchargeHealth());
+        StartRoutine(() => SelectOverchargeHealth());
+        On.HeroController.Start += HeroController_Start;
     }
 
     /// <inheritdoc/>
     protected override void Disable()
     {
+        if (_overcharge != null)
+            GameObject.Destroy(_overcharge);
         On.HeroController.FixedUpdate -= HeroController_FixedUpdate;
-        if (_runningCoroutine != null)
-            LoreMaster.Instance.Handler.StopCoroutine(_runningCoroutine);
         Overcharge.SetActive(false);
         // Reset mask color.
         foreach (tk2dSprite sprite in _healthSprites)
             sprite.color = Color.white;
         _overchargeHealth = -1;
+        On.HeroController.Start -= HeroController_Start;
+    }
+
+    /// <inheritdoc/>
+    protected override void TwistEnable()
+    {
+        StartRoutine(() => SelectOverchargeHealth());
+        LoreMaster.Instance.Handler.StartCoroutine(NotOvercharged());
     }
 
     #endregion
@@ -133,6 +146,25 @@ public class MaskOverchargePower : Power
                 foreach (tk2dSprite sprite in _healthSprites)
                     sprite.color = rolledColor;
             }
+        }
+    }
+
+    /// <summary>
+    /// If the player is not at the overcharged health they loose soul quickly.
+    /// </summary>
+    private IEnumerator NotOvercharged()
+    {
+        float passedTime = 0f;
+        while(State == PowerState.Twisted)
+        {
+            passedTime += Time.deltaTime;
+            if (passedTime >= 1f)
+            {
+                passedTime = 0f;
+                if (PlayerData.instance.GetInt(nameof(PlayerData.instance.health)) != _overchargeHealth)
+                    HeroController.instance.TakeMP(2);
+            }
+            yield return null;
         }
     }
 

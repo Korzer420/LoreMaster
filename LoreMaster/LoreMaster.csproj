@@ -56,6 +56,9 @@
     <Reference Include="Mono.Cecil">
       <HintPath>..\..\..\..\..\Program Files\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\Mono.Cecil.dll</HintPath>
     </Reference>
+    <Reference Include="Mono.Security">
+      <HintPath>..\..\..\..\..\Program Files\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\Mono.Security.dll</HintPath>
+    </Reference>
     <Reference Include="MonoMod.RuntimeDetour">
       <HintPath>..\..\..\..\..\Program Files\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\MonoMod.RuntimeDetour.dll</HintPath>
     </Reference>
