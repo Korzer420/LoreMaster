@@ -91,7 +91,7 @@ public class RandomizerMenu
             _menuElementFactory.Elements[1].SelfChanged += AdjustLoreCap;
             // Add event handler to show/hide the needed lore option depending on the end condition option.
             _menuElementFactory.Elements[5].SelfChanged += ChangeCondition;
-            if (RandomizerManager.Settings.BlackEggTempleCondition == RandomizerEndCondition.Dreamers)
+            if (RandomizerManager.Settings.BlackEggTempleCondition == BlackEggTempleCondition.Dreamers)
                 _menuElementFactory.Elements[6].Hide();
             _menuElementFactory.Elements[6].SelfChanged += ChangeLoreAmount;
             _optionPanel = new(_mainPage, new(0, 300), 80f, true, _menuElementFactory.Elements);
@@ -132,7 +132,7 @@ public class RandomizerMenu
     /// <param name="endCondition"></param>
     private void ChangeCondition(IValueElement endCondition)
     {
-        if ((RandomizerEndCondition)endCondition.Value != RandomizerEndCondition.Dreamers)
+        if ((BlackEggTempleCondition)endCondition.Value != BlackEggTempleCondition.Dreamers)
             _menuElementFactory.Elements[6].Show();
         else
             _menuElementFactory.Elements[6].Hide();

@@ -70,12 +70,12 @@ public class LogicManager
     private static void ModifyLogic(GenerationSettings settings, LogicManagerBuilder builder)
     {
         // If the condition is changed, we need to add that first in order for the npc items to be considered.
-        if (RandomizerManager.Settings.BlackEggTempleCondition != RandomizerEndCondition.Dreamers)
+        if (RandomizerManager.Settings.BlackEggTempleCondition != BlackEggTempleCondition.Dreamers)
         {
             Term loreAmount = builder.GetOrAddTerm("LORE");
             builder.DoLogicEdit(new("Opened_Black_Egg_Temple",
                 "Room_temple[left1] + LORE>" + (RandomizerManager.Settings.NeededLore - 1)
-                + (RandomizerManager.Settings.BlackEggTempleCondition == RandomizerEndCondition.DreamersAndLore ? "+ DREAMER>2" : null)));
+                + (RandomizerManager.Settings.BlackEggTempleCondition == BlackEggTempleCondition.DreamersAndLore ? "+ DREAMER>2" : null)));
             foreach (string key in RandomizerHelper.TabletNames.Keys)
                 builder.AddItem(new SingleItem("Lore_Tablet-" + key, new(loreAmount, 1)));
         }
@@ -85,7 +85,7 @@ public class LogicManager
             foreach (string key in _npcLocationLogic.Keys)
             {
                 builder.AddLogicDef(new(key + "_Dialogue", RandomizerManager.Settings.CursedListening ? $"({_npcLocationLogic[key]}) + LISTEN" : _npcLocationLogic[key]));
-                if (RandomizerManager.Settings.BlackEggTempleCondition == RandomizerEndCondition.Dreamers)
+                if (RandomizerManager.Settings.BlackEggTempleCondition == BlackEggTempleCondition.Dreamers)
                     builder.AddItem(new EmptyItem("Lore_Tablet-" + key));
                 else
                     builder.AddItem(new SingleItem("Lore_Tablet-" + key, new(builder.GetTerm("LORE"), 1)));
@@ -99,7 +99,7 @@ public class LogicManager
             {
                 builder.AddLogicDef(new(key + "_Inspect", RandomizerManager.Settings.CursedReading ? $"({_warriorStatueLocationLogic[key]}) + READ" : _warriorStatueLocationLogic[key]));
 
-                if (RandomizerManager.Settings.BlackEggTempleCondition == RandomizerEndCondition.Dreamers)
+                if (RandomizerManager.Settings.BlackEggTempleCondition == BlackEggTempleCondition.Dreamers)
                     builder.AddItem(new EmptyItem("Lore_Tablet-" + key));
                 else
                     builder.AddItem(new SingleItem("Lore_Tablet-" + key, new(builder.GetTerm("LORE"), 1)));

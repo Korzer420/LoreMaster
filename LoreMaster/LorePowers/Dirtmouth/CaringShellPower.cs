@@ -24,10 +24,11 @@ public class CaringShellPower : Power
     /// <summary>
     /// Deactivates all hazard respawns.
     /// </summary>
-    public override Action TwistedSceneAction => () => 
+    public override Action SceneAction => () =>
     {
-        foreach (DeactivateInDarknessWithoutLantern hazardRespawn in GameObject.FindObjectsOfType<DeactivateInDarknessWithoutLantern>())
-            hazardRespawn.gameObject.SetActive(false);
+        if (State == PowerState.Twisted)
+            foreach (DeactivateInDarknessWithoutLantern hazardRespawn in GameObject.FindObjectsOfType<DeactivateInDarknessWithoutLantern>())
+                hazardRespawn.gameObject.SetActive(false);
     };
 
     #endregion

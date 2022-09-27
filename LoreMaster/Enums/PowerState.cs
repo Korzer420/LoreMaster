@@ -6,7 +6,7 @@ namespace LoreMaster.Enums;
 public enum PowerState
 {
     /// <summary>
-    /// The power was not obtained but is not active.
+    /// The power was not obtained or is not enabled.
     /// </summary>
     Disabled,
 
@@ -16,7 +16,7 @@ public enum PowerState
     Active,
 
     /// <summary>
-    /// The power hasn't been obtained but has their twisted effect active. Hard/Heroic mode only.
+    /// The power is in their twisted state. Hard/Heroic mode only.
     /// </summary>
     Twisted
 }

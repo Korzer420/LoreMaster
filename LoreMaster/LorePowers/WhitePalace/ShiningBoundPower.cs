@@ -27,36 +27,7 @@ public class ShiningBoundPower : Power
 
     #endregion
 
-    #region Control
-
-    /// <inheritdoc/>
-    protected override void Enable() => _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(GatherShiningSoul());
-
-    protected override void TwistEnable()
-    {
-        IL.BossSequenceController.ApplyBindings += BossSequenceController_ApplyBindings;
-        try
-        {
-            BossSequenceController.ApplyBindings();
-        }
-        catch (Exception exception)
-        {
-            LoreMaster.Instance.LogError(exception.Message);
-            LoreMaster.Instance.LogError(exception.StackTrace);
-        }
-        _fakeBinding = new ILHook(typeof(GGCheckBoundCharms).GetMethod("get_IsTrue", BindingFlags.Public | BindingFlags.Instance), FakeBinding);
-    }
-
-    protected override void TwistDisable()
-    {
-        if (_fakeBinding != null)
-        {
-            _fakeBinding.Dispose();
-            _fakeBinding = null;
-        }
-        IL.BossSequenceController.ApplyBindings -= BossSequenceController_ApplyBindings;
-        BossSequenceController.RestoreBindings();
-    }
+    #region Event handler
 
     private void BossSequenceController_ApplyBindings(ILContext il)
     {
@@ -65,7 +36,7 @@ public class ShiningBoundPower : Power
 
         if (cursor.TryGotoNext(MoveType.After,
             x => x.MatchCall(typeof(BossSequenceController), "get_BoundCharms")))
-            cursor.EmitDelegate<Func<bool, bool>>(x => 
+            cursor.EmitDelegate<Func<bool, bool>>(x =>
             {
                 if (ReflectionHelper.GetField<BossSequenceData>(typeof(BossSequenceController), "currentData") == null)
                     ReflectionHelper.SetField(typeof(BossSequenceController), "currentData", new BossSequenceData());
@@ -85,6 +56,41 @@ public class ShiningBoundPower : Power
             cursor.EmitDelegate<Func<bool, bool>>(x => true);
         else
             LoreMaster.Instance.LogError("Couldn't find modification point");
+    }
+
+    #endregion
+
+    #region Control
+
+    /// <inheritdoc/>
+    protected override void Enable() => _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(GatherShiningSoul());
+
+    /// <inheritdoc/>
+    protected override void TwistEnable()
+    {
+        IL.BossSequenceController.ApplyBindings += BossSequenceController_ApplyBindings;
+        try
+        {
+            BossSequenceController.ApplyBindings();
+        }
+        catch (Exception exception)
+        {
+            LoreMaster.Instance.LogError(exception.Message);
+            LoreMaster.Instance.LogError(exception.StackTrace);
+        }
+        _fakeBinding = new ILHook(typeof(GGCheckBoundCharms).GetProperty("IsTrue", BindingFlags.Public | BindingFlags.Instance).GetMethod, FakeBinding);
+    }
+
+    /// <inheritdoc/>
+    protected override void TwistDisable()
+    {
+        if (_fakeBinding != null)
+        {
+            _fakeBinding.Dispose();
+            _fakeBinding = null;
+        }
+        IL.BossSequenceController.ApplyBindings -= BossSequenceController_ApplyBindings;
+        RestoreBindings();
     }
 
     #endregion

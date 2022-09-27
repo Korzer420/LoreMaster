@@ -116,7 +116,7 @@ internal static class PowerManager
 
     #region Properties
 
-    public static List<Power> ActivePowers { get; set; } = new();
+    public static List<Power> ObtainedPowers { get; set; } = new();
 
     /// <summary>
     /// Gets or sets the flag that indicates if powers can be activated. This is used for end cutscenes.
@@ -134,7 +134,7 @@ internal static class PowerManager
     /// </summary>
     /// <param name="key">The ingame language key that is used. For NPC this mod uses just the names of the npc</param>
     /// <param name="power">The power that matches the key, if no match has been found, this will be null.</param>
-    /// <param name="collectIfPossible">If <see langword="true"/>, the power will automatically be added if it isn't in <see cref="ActivePowers"/>.</param>
+    /// <param name="collectIfPossible">If <see langword="true"/>, the power will automatically be added if it isn't in <see cref="ObtainedPowers"/>.</param>
     /// <returns>True if a matching power was found</returns>
     public static bool GetPowerByKey(string key, out Power power, bool collectIfPossible = true)
     {
@@ -144,12 +144,12 @@ internal static class PowerManager
         if (_powerList.TryGetValue(key.ToUpper(), out power))
             try
             {
-                if (collectIfPossible && !ActivePowers.Contains(power))
+                if (collectIfPossible && !ObtainedPowers.Contains(power))
                 {
                     if (power is EyeOfTheWatcherPower watcherPower)
                         watcherPower.EyeActive = true;
+                    ObtainedPowers.Add(power);
                     power.EnablePower();
-                    ActivePowers.Add(power);
                     UpdateTracker(SettingManager.Instance.CurrentArea);
                     LorePage.UpdateLorePage();
                 }
@@ -171,15 +171,15 @@ internal static class PowerManager
             try
             {
                 power = foundPower;
-                if (collectIfPossible && !ActivePowers.Contains(foundPower))
+                if (collectIfPossible && !ObtainedPowers.Contains(foundPower))
                 {
                     if (power is EyeOfTheWatcherPower watcherPower)
                         watcherPower.EyeActive = true;
-                    power.EnablePower();
                     if (power is GreaterMindPower)
-                        ActivePowers.Insert(0, power);
+                        ObtainedPowers.Insert(0, power);
                     else
-                        ActivePowers.Add(power);
+                        ObtainedPowers.Add(power);
+                    power.EnablePower();
                     UpdateTracker(SettingManager.Instance.CurrentArea);
                     LorePage.UpdateLorePage();
                 }
@@ -198,7 +198,7 @@ internal static class PowerManager
     public static bool HasObtainedPower(string key, bool onlyActive = true)
     {
         if (_powerList.TryGetValue(key, out Power power))
-            return ActivePowers.Contains(power) && (!onlyActive || power.Active);
+            return ObtainedPowers.Contains(power) && (!onlyActive || power.State == PowerState.Active);
         return false;
     }
 
@@ -236,7 +236,7 @@ internal static class PowerManager
         for (int i = 0; i < TreasureHunterPower.HasCharts.Length; i++)
             TreasureHunterPower.HasCharts[i] = false;
         // Unsure if this is needed, but just in case.
-        ActivePowers.Clear();
+        ObtainedPowers.Clear();
 #if DEBUG
         //_powerList["ABYSS_TUT_TAB_01"].Tag = PowerTag.Global;
         //ActivePowers.Add(_powerList["ABYSS_TUT_TAB_01"]);
@@ -246,7 +246,7 @@ internal static class PowerManager
     internal static void DisableAllPowers()
     {
         CanPowersActivate = false;
-        foreach (Power power in ActivePowers)
+        foreach (Power power in ObtainedPowers)
             power.DisablePower(true);
     }
 
@@ -256,7 +256,7 @@ internal static class PowerManager
     /// <param name="saveData"></param>
     internal static void LoadPowers(LoreMasterLocalSaveData saveData)
     {
-        ActivePowers.Clear();
+        ObtainedPowers.Clear();
         foreach (string key in saveData.Tags.Keys)
             _powerList[key].Tag = saveData.Tags[key];
 
@@ -264,10 +264,10 @@ internal static class PowerManager
         {
             // Since this method would normally activate the power instantly, we add the power later. This is because I'm unsure when local settings are loaded.
             if (string.Equals(key, "dream warrior"))
-                ActivePowers.Add(new PlaceholderPower());
+                ObtainedPowers.Add(new PlaceholderPower());
             GetPowerByKey(key, out Power pow, false);
             if (pow != null)
-                ActivePowers.Add(pow);
+                ObtainedPowers.Add(pow);
         }
     }
 
@@ -296,13 +296,13 @@ internal static class PowerManager
         foreach (string key in _powerList.Keys)
         {
             saveData.Tags.Add(key, _powerList[key].Tag);
-            if (ActivePowers.Contains(_powerList[key]))
+            if (ObtainedPowers.Contains(_powerList[key]))
                 saveData.AcquiredPowersKeys.Add(key);
         }
 
         // Place the fake powers in the save data as well.
-        if (ActivePowers.Any(x => x is PlaceholderPower))
-            for (int i = 0; i < ActivePowers.Count(x => x is PlaceholderPower); i++)
+        if (ObtainedPowers.Any(x => x is PlaceholderPower))
+            for (int i = 0; i < ObtainedPowers.Count(x => x is PlaceholderPower); i++)
                 saveData.AcquiredPowersKeys.Add("dream warrior");
     }
 
@@ -330,7 +330,7 @@ internal static class PowerManager
     {
         List<Power> neededAreaPowers = _powerList.Values.Where(x => x.Location == toCheck && (x.Tag == PowerTag.Local || x.Tag == PowerTag.Disable || x.Tag == PowerTag.Global)).ToList();
         foreach (Power neededPower in neededAreaPowers)
-            if (!ActivePowers.Contains(neededPower))
+            if (!ObtainedPowers.Contains(neededPower))
                 return false;
         return true;
     }
@@ -340,11 +340,12 @@ internal static class PowerManager
     /// </summary>
     public static void ExecuteSceneActions()
     {
-        foreach (Power power in ActivePowers)
-            if (power.Active || power.State == PowerState.Twisted && power.SceneAction != null)
+        foreach (Power power in ObtainedPowers)
+            if (power.State != PowerState.Disabled && power.SceneAction != null)
                 try
                 {
-                    power.SceneAction.Invoke();
+                    if (power.State == PowerState.Twisted || SettingManager.Instance.GameMode != GameMode.Heroic)
+                        power.SceneAction.Invoke();
                 }
                 catch (Exception exception)
                 {
@@ -360,20 +361,28 @@ internal static class PowerManager
     {
         try
         {
+            IEnumerable<Power> powersToActivate = (int)SettingManager.Instance.GameMode >= 2
+                ? _powerList.Select(x => x.Value).Where(x => x.Location == newArea)
+                : ObtainedPowers.Where(x => x.Location == newArea);
             // Activate all local abilities
-            foreach (Power power in ActivePowers.Where(x => x.Location == newArea))
+            foreach (Power power in powersToActivate)
                 if (power.Tag == PowerTag.Exclude || power.Tag == PowerTag.Local)
                     power.EnablePower();
 
             // Disable all local abilities from all other zone (this has to be done that way for randomizer compability)
             foreach (Area area in ((Area[])Enum.GetValues(typeof(Area))).Skip(1))
                 if (area != newArea && !IsAreaGlobal(area))
-                    foreach (Power power in ActivePowers.Where(x => x.Location == area))
+                {
+                    IEnumerable<Power> powersToDisable = SettingManager.Instance.GameMode != GameMode.Normal
+                        ? _powerList.Select(x => x.Value).Where(x => x.Location == area)
+                        : ObtainedPowers.Where(x => x.Location == area);
+                    foreach (Power power in powersToDisable)
                         if (power.Tag == PowerTag.Local || power.Tag == PowerTag.Exclude)
                             if (power is RequiemPower requiem)
                                 LoreMaster.Instance.Handler.StartCoroutine(requiem.DelayDisabling());
                             else
                                 power.DisablePower();
+                }
         }
         catch (Exception exception)
         {
@@ -386,14 +395,14 @@ internal static class PowerManager
     {
         // Enables the powers beforehand. This has to be done because otherwise the effects will only stay permanent once the player enters the area.
         List<Power> toActivate = new();
-        List<Power> allPowers = new(ActivePowers);
+        List<Power> allPowers = new(ObtainedPowers);
         toActivate.AddRange(allPowers.Where(x => x.Tag == PowerTag.Global));
+        toActivate.AddRange(_powerList.Select(x => x.Value).Where(x => x.Tag == PowerTag.Global && !allPowers.Contains(x)));
 
         foreach (Area area in (Area[])Enum.GetValues(typeof(Area)))
             if (IsAreaGlobal(area))
                 toActivate.AddRange(allPowers.Where(x => x.Tag != PowerTag.Global && x.Location == area));
-
-        foreach (Power power in toActivate)
+        foreach (Power power in toActivate.Distinct())
             power.EnablePower();
     }
 
@@ -404,11 +413,11 @@ internal static class PowerManager
     {
         try
         {
-            if (ActivePowers.Contains(_powerList["COMPLETION_RATE_UNLOCKED"]))
+            if (ObtainedPowers.Contains(_powerList["COMPLETION_RATE_UNLOCKED"]))
             {
                 GreaterMindPower logPower = (GreaterMindPower)_powerList["COMPLETION_RATE_UNLOCKED"];
-                if (logPower.Active)
-                    logPower.UpdateLoreCounter(ActivePowers, _powerList.Values, areaToUpdate, IsAreaGlobal(areaToUpdate));
+                if (logPower.State == PowerState.Active)
+                    logPower.UpdateLoreCounter(ObtainedPowers, _powerList.Values, areaToUpdate, IsAreaGlobal(areaToUpdate));
             }
         }
         catch (Exception exception)

@@ -128,7 +128,7 @@ public static class RandomizerManager
 
     private static int RandoController_OnCalculateHash(RandomizerMod.RC.RandoController controller, int original)
     {
-        if (Settings.PowerBehaviour != LoreSetOption.Default || Settings.BlackEggTempleCondition != RandomizerEndCondition.Dreamers)
+        if (Settings.PowerBehaviour != LoreSetOption.Default || Settings.BlackEggTempleCondition != BlackEggTempleCondition.Dreamers)
             return 72767 + PowerManager.GetAllPowers().Count() + ((int)Settings.PowerBehaviour * 120 + (int)Settings.BlackEggTempleCondition * Settings.NeededLore);
         return 0;
     }
@@ -317,13 +317,13 @@ public static class RandomizerManager
     {
         if (!RandomizerMod.RandomizerMod.IsRandoSave)
             return;
-        if (Settings.BlackEggTempleCondition != RandomizerEndCondition.Dreamers)
+        if (Settings.BlackEggTempleCondition != BlackEggTempleCondition.Dreamers)
             door.GetState("Init").ReplaceAction(new Lambda(() =>
             {
-                if ((Settings.BlackEggTempleCondition == RandomizerEndCondition.Lore
-                && PowerManager.ActivePowers.Count >= Settings.NeededLore)
-                || (Settings.BlackEggTempleCondition == RandomizerEndCondition.DreamersAndLore && door.FsmVariables.FindFsmInt("Guardians Defeated").Value > 2
-                && PowerManager.ActivePowers.Count >= Settings.NeededLore))
+                if ((Settings.BlackEggTempleCondition == BlackEggTempleCondition.Lore
+                && PowerManager.ObtainedPowers.Count >= Settings.NeededLore)
+                || (Settings.BlackEggTempleCondition == BlackEggTempleCondition.DreamersAndLore && door.FsmVariables.FindFsmInt("Guardians Defeated").Value > 2
+                && PowerManager.ObtainedPowers.Count >= Settings.NeededLore))
                     door.SendEvent("READY");
                 else
                     door.SendEvent("FINISHED");
@@ -373,66 +373,66 @@ public static class RandomizerManager
             {
                 case Area.Dirtmouth:
                     maxPowerAmount += 2;
-                    if (PowerManager.GetPowerByKey("GRAVEDIGGER", out power, false) && PowerManager.ActivePowers.Contains(power))
+                    if (PowerManager.GetPowerByKey("GRAVEDIGGER", out power, false) && PowerManager.ObtainedPowers.Contains(power))
                         collectedPowerAmount++;
-                    if (PowerManager.GetPowerByKey("BRETTA", out power, false) && PowerManager.ActivePowers.Contains(power))
+                    if (PowerManager.GetPowerByKey("BRETTA", out power, false) && PowerManager.ObtainedPowers.Contains(power))
                         collectedPowerAmount++;
                     break;
                 case Area.Crossroads:
                     maxPowerAmount++;
-                    if (PowerManager.GetPowerByKey("MYLA", out power, false) && PowerManager.ActivePowers.Contains(power))
+                    if (PowerManager.GetPowerByKey("MYLA", out power, false) && PowerManager.ObtainedPowers.Contains(power))
                         collectedPowerAmount++;
                     break;
                 case Area.Cliffs:
                     maxPowerAmount++;
-                    if (PowerManager.GetPowerByKey("JONI", out power, false) && PowerManager.ActivePowers.Contains(power))
+                    if (PowerManager.GetPowerByKey("JONI", out power, false) && PowerManager.ObtainedPowers.Contains(power))
                         collectedPowerAmount++;
                     break;
                 case Area.FungalWastes:
                     maxPowerAmount++;
-                    if (PowerManager.GetPowerByKey("WILLOH", out power, false) && PowerManager.ActivePowers.Contains(power))
+                    if (PowerManager.GetPowerByKey("WILLOH", out power, false) && PowerManager.ObtainedPowers.Contains(power))
                         collectedPowerAmount++;
                     break;
                 case Area.CityOfTears:
                     maxPowerAmount += 3;
-                    if (PowerManager.GetPowerByKey("POGGY", out power, false) && PowerManager.ActivePowers.Contains(power))
+                    if (PowerManager.GetPowerByKey("POGGY", out power, false) && PowerManager.ObtainedPowers.Contains(power))
                         collectedPowerAmount++;
-                    if (PowerManager.GetPowerByKey("MARISSA", out power, false) && PowerManager.ActivePowers.Contains(power))
+                    if (PowerManager.GetPowerByKey("MARISSA", out power, false) && PowerManager.ObtainedPowers.Contains(power))
                         collectedPowerAmount++;
-                    if (PowerManager.GetPowerByKey("EMILITIA", out power, false) && PowerManager.ActivePowers.Contains(power))
+                    if (PowerManager.GetPowerByKey("EMILITIA", out power, false) && PowerManager.ObtainedPowers.Contains(power))
                         collectedPowerAmount++;
                     break;
                 case Area.Waterways:
                     maxPowerAmount++;
-                    if (PowerManager.GetPowerByKey("FLUKE_HERMIT", out power, false) && PowerManager.ActivePowers.Contains(power))
+                    if (PowerManager.GetPowerByKey("FLUKE_HERMIT", out power, false) && PowerManager.ObtainedPowers.Contains(power))
                         collectedPowerAmount++;
                     break;
                 case Area.Deepnest:
                     maxPowerAmount += 2;
-                    if (PowerManager.GetPowerByKey("MIDWIFE", out power, false) && PowerManager.ActivePowers.Contains(power))
+                    if (PowerManager.GetPowerByKey("MIDWIFE", out power, false) && PowerManager.ObtainedPowers.Contains(power))
                         collectedPowerAmount++;
-                    if (PowerManager.GetPowerByKey("MASKMAKER", out power, false) && PowerManager.ActivePowers.Contains(power))
+                    if (PowerManager.GetPowerByKey("MASKMAKER", out power, false) && PowerManager.ObtainedPowers.Contains(power))
                         collectedPowerAmount++;
                     break;
                 case Area.QueensGarden:
                     maxPowerAmount += 3;
-                    if (PowerManager.GetPowerByKey("MOSSPROPHET", out power, false) && PowerManager.ActivePowers.Contains(power))
+                    if (PowerManager.GetPowerByKey("MOSSPROPHET", out power, false) && PowerManager.ObtainedPowers.Contains(power))
                         collectedPowerAmount++;
-                    if (PowerManager.GetPowerByKey("QUEEN", out power, false) && PowerManager.ActivePowers.Contains(power))
+                    if (PowerManager.GetPowerByKey("QUEEN", out power, false) && PowerManager.ObtainedPowers.Contains(power))
                         collectedPowerAmount++;
-                    if (PowerManager.GetPowerByKey("GRASSHOPPER", out power, false) && PowerManager.ActivePowers.Contains(power))
+                    if (PowerManager.GetPowerByKey("GRASSHOPPER", out power, false) && PowerManager.ObtainedPowers.Contains(power))
                         collectedPowerAmount++;
                     break;
                 case Area.KingdomsEdge:
                     maxPowerAmount += 2;
-                    if (PowerManager.GetPowerByKey("HIVEQUEEN", out power, false) && PowerManager.ActivePowers.Contains(power))
+                    if (PowerManager.GetPowerByKey("HIVEQUEEN", out power, false) && PowerManager.ObtainedPowers.Contains(power))
                         collectedPowerAmount++;
-                    if (PowerManager.GetPowerByKey("BARDOON", out power, false) && PowerManager.ActivePowers.Contains(power))
+                    if (PowerManager.GetPowerByKey("BARDOON", out power, false) && PowerManager.ObtainedPowers.Contains(power))
                         collectedPowerAmount++;
                     break;
                 case Area.Peaks:
                     maxPowerAmount++;
-                    if (PowerManager.GetPowerByKey("QUIRREL", out power, false) && PowerManager.ActivePowers.Contains(power))
+                    if (PowerManager.GetPowerByKey("QUIRREL", out power, false) && PowerManager.ObtainedPowers.Contains(power))
                         collectedPowerAmount++;
                     break;
             }
@@ -452,16 +452,16 @@ public static class RandomizerManager
         if (area == Area.CityOfTears)
         {
             maxPowerAmount += 2;
-            if (PowerManager.ActivePowers.Any(x => x is TouristPower))
+            if (PowerManager.ObtainedPowers.Any(x => x is TouristPower))
                 collectedPowerAmount++;
-            if (PowerManager.ActivePowers.Any(x => x is OverwhelmingPowerPower))
+            if (PowerManager.ObtainedPowers.Any(x => x is OverwhelmingPowerPower))
                 collectedPowerAmount++;
         }
         // Same for the dreamer tablet.
         else if (area == Area.RestingGrounds)
         {
             maxPowerAmount++;
-            if (PowerManager.ActivePowers.Any(x => x is DreamBlessingPower))
+            if (PowerManager.ObtainedPowers.Any(x => x is DreamBlessingPower))
                 collectedPowerAmount++;
         }
 

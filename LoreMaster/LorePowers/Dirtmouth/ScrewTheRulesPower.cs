@@ -23,16 +23,16 @@ public class ScrewTheRulesPower : Power
     private void OnSetFsmFloatAction(On.HutongGames.PlayMaker.Actions.SetFsmFloat.orig_OnEnter orig, SetFsmFloat self)
     {
         if (string.Equals(self.Fsm.GameObjectName, "Charm Effects") && string.Equals(self.Fsm.Name, "Fury") && string.Equals(self.State.Name, "Activate"))
-            self.setValue.Value = Active ? 1.5f : 1.75f;
+            self.setValue.Value = State == PowerState.Active ? 1.5f : 1.75f;
         orig(self);
     }
 
     private void OnFloatMultiplyAction(On.HutongGames.PlayMaker.Actions.FloatMultiply.orig_OnEnter orig, FloatMultiply self)
     {
         if (string.Equals(self.Fsm.Name, "nailart_damage") && string.Equals(self.State.Name, "Fury?"))
-            self.multiplyBy.Value = Active ? 1.5f : 1.75f;
+            self.multiplyBy.Value = State == PowerState.Active ? 1.5f : 1.75f;
         else if (self.Fsm.GameObjectName.Contains("Grubberfly Beam") && string.Equals(self.Fsm.Name, "Control"))
-            self.multiplyBy.Value = Active ? 1.3f : 1.5f;
+            self.multiplyBy.Value = State == PowerState.Active ? 1.3f : 1.5f;
         orig(self);
     }
 

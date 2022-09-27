@@ -66,7 +66,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
     /// Get the version of the mod.
     /// </summary>
     /// <returns></returns>
-    public override string GetVersion() => Assembly.GetExecutingAssembly().GetName().Version.ToString();
+    public override string GetVersion() => Assembly.GetExecutingAssembly().GetName().Version.ToString() +"-beta1";
 
     /// <summary>
     /// Gets the names (objects) that need to be preloaded.
@@ -153,7 +153,6 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         {
             LogError("Error while preloading: " + exception.Message);
         }
-
     }
 
     /// <summary>
@@ -204,27 +203,16 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         return menu;
     }
 
+    /// <summary>
+    /// Initializes all manager
+    /// </summary>
     public void InitializeManager()
     {
         Instance = this;
         LoreManager loreManager = new();
         SettingManager settingManager = new();
         settingManager.Initialize();
-    }
-
-    /// <summary>
-    /// Unloads the mod. (Currently unused)
-    /// </summary>
-    public void Unload()
-    {
-        //Instance = null;
-        //ModHooks.LanguageGetHook -= GetText;
-        //UnityEngine.SceneManagement.SceneManager.activeSceneChanged -= SceneChanged;
-        //On.UIManager.StartNewGame -= StartNewGame;
-        //On.GameManager.ReturnToMainMenu -= ReturnToMenu;
-        //Handler.StopAllCoroutines();
-        //foreach (Power power in ActivePowers.Values)
-        //    power.DisablePower();
+        MenuManager.AddMode();
     }
 
     #endregion

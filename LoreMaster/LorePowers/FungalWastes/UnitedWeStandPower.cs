@@ -3,6 +3,7 @@ using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
 using LoreMaster.Enums;
 using LoreMaster.Extensions;
+using LoreMaster.Helper;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -39,9 +40,42 @@ public class UnitedWeStandPower : Power
     private void HatchlingSpawn(On.KnightHatchling.orig_OnEnable orig, KnightHatchling self)
     {
         orig(self);
-        self.normalDetails.damage = State == PowerState.Twisted 
-            ? Math.Max(1, 10 - CompanionAmount) 
+        self.normalDetails.damage = State == PowerState.Twisted
+            ? Math.Max(1, 10 - CompanionAmount)
             : 10 + CompanionAmount * 2;
+    }
+
+    private void Tk2dPlayAnimation_OnEnter(On.HutongGames.PlayMaker.Actions.Tk2dPlayAnimation.orig_OnEnter orig, HutongGames.PlayMaker.Actions.Tk2dPlayAnimation self)
+    {
+        orig(self);
+        if (self.IsCorrectContext("Control", null, "Run Dir") && self.Fsm.FsmComponent.gameObject.name.Contains("Weaverling"))
+            ModifyWeaverSize(self);
+    }
+
+    private void SetScale_OnEnter(On.HutongGames.PlayMaker.Actions.SetScale.orig_OnEnter orig, HutongGames.PlayMaker.Actions.SetScale self)
+    {
+        orig(self);
+        if (self.IsCorrectContext("Control", null, null) && self.Fsm.FsmComponent.gameObject.name.Contains("Weaverling"))
+            ModifyWeaverSize(self);
+    }
+
+    private void RandomFloat_OnEnter(On.HutongGames.PlayMaker.Actions.RandomFloat.orig_OnEnter orig, HutongGames.PlayMaker.Actions.RandomFloat self)
+    {
+        orig(self);
+        if (self.IsCorrectContext("Control", null, "Antic") && self.Fsm.GameObjectName.Contains("Grimmchild"))
+            self.Fsm.Variables.FindFsmFloat("Attack Timer").Value = State == PowerState.Twisted
+                        ? 1.5f + (CompanionAmount * .1f)
+                        : (State == PowerState.Active
+                        ? Mathf.Max(0.3f, 1.5f - (CompanionAmount * 0.1f))
+                        : 1.5f);
+    }
+
+    private void PlayMakerFSM_OnEnable(On.PlayMakerFSM.orig_OnEnable orig, PlayMakerFSM self)
+    {
+        orig(self);
+        if ((self.Fsm.GameObjectName.Contains("Grimmchild") || self.Fsm.GameObjectName.Contains("Weaverling") && string.Equals(self.FsmName, "Control"))
+            || (string.Equals(self.FsmName, "ProxyFSM") && self.Fsm.GameObjectName.Contains("Knight Hatchling")))
+            _companions.Add(self.Fsm.GameObject);
     }
 
     #endregion
@@ -52,11 +86,23 @@ public class UnitedWeStandPower : Power
     protected override void Enable()
     {
         On.KnightHatchling.OnEnable += HatchlingSpawn;
-        _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(UpdateCompanions());
+        On.HutongGames.PlayMaker.Actions.SetScale.OnEnter += SetScale_OnEnter;
+        On.HutongGames.PlayMaker.Actions.Tk2dPlayAnimation.OnEnter += Tk2dPlayAnimation_OnEnter;
+        On.HutongGames.PlayMaker.Actions.RandomFloat.OnEnter += RandomFloat_OnEnter;
+        On.PlayMakerFSM.OnEnable += PlayMakerFSM_OnEnable;
+        StartRoutine(() => UpdateCompanions());
     }
 
     /// <inheritdoc/>
-    protected override void Disable() => On.KnightHatchling.OnEnable -= HatchlingSpawn;
+    protected override void Disable() 
+    { 
+        On.KnightHatchling.OnEnable -= HatchlingSpawn;
+        On.HutongGames.PlayMaker.Actions.SetScale.OnEnter -= SetScale_OnEnter;
+        On.HutongGames.PlayMaker.Actions.Tk2dPlayAnimation.OnEnter -= Tk2dPlayAnimation_OnEnter;
+        On.HutongGames.PlayMaker.Actions.RandomFloat.OnEnter -= RandomFloat_OnEnter;
+        On.PlayMakerFSM.OnEnable -= PlayMakerFSM_OnEnable;
+        _companions.Clear();
+    }
 
     /// <inheritdoc/>
     protected override void TwistEnable() => Enable();
@@ -68,80 +114,31 @@ public class UnitedWeStandPower : Power
 
     #region Private Methods
 
-    /// <summary>
-    /// Updates the companions continious.
-    /// </summary>
     private IEnumerator UpdateCompanions()
     {
         while (true)
         {
-            yield return new WaitForSeconds(3f);
-            ModifyCompanion();
+            yield return new WaitForSeconds(5f);
+            _companions.RemoveAll(x => x == null);
         }
     }
 
-    /// <summary>
-    /// Updates the companions amount and fsm.
-    /// </summary>
-    private void ModifyCompanion()
+    private void ModifyWeaverSize(FsmStateAction self)
     {
-        _companions.RemoveAll(x => x == null);
-        List<GameObject> foundCompanions = GameObject.FindGameObjectsWithTag("Grimmchild").ToList();
-        foundCompanions.AddRange(GameObject.FindGameObjectsWithTag("Weaverling"));
-        foundCompanions.AddRange(GameObject.FindGameObjectsWithTag("Knight Hatchling"));
+        float weaverScale = State == PowerState.Twisted
+                            ? (CompanionAmount > 9 ? .1f : 1 - CompanionAmount * 0.1f)
+                            : 1f + (CompanionAmount * 0.1f);
 
-        try
-        {
-            foreach (GameObject companion in foundCompanions)
-            {
-                if (_companions.Contains(companion))
-                    continue;
+        self.Fsm.Variables.FindFsmFloat("Scale").Value = State == PowerState.Twisted
+        ? Mathf.Min(.1f, weaverScale)
+        : (State == PowerState.Active ? Mathf.Min(2.2f, weaverScale) : 1f);
 
-                PlayMakerFSM companionFsm;
-                FsmState fsmState;
-                if (companion.tag.Equals("Grimmchild"))
-                {
-                    companionFsm = companion.LocateMyFSM("Control");
-                    fsmState = companionFsm.GetState("Antic");
-                    fsmState.ReplaceAction(new Lambda(() =>
-                    {
-                        companionFsm.FsmVariables.FindFsmFloat("Attack Timer").Value = State == PowerState.Twisted 
-                        ? 1.5f + (CompanionAmount * .1f)
-                        : (Active ? Mathf.Max(0.3f, 1.5f - (CompanionAmount * 0.1f)) : 1.5f);
-                    }), 3);
-                }
-                else if (companion.tag.Equals("Weaverling"))
-                {
-                    companionFsm = companion.LocateMyFSM("Control");
-                    fsmState = companionFsm.GetState("Run Dir");
-                    fsmState.ReplaceAction(new Lambda(() =>
-                    {
-                        float weaverScale = State == PowerState.Twisted 
-                        ? (CompanionAmount > 9 ? .1f : 1 - CompanionAmount * 0.1f)
-                        : 1f + (CompanionAmount * 0.1f);
+        self.Fsm.Variables.FindFsmFloat("Neg Scale").Value = State == PowerState.Twisted
+        ? Mathf.Max(-.1f, weaverScale * -1f)
+        : (State == PowerState.Active ? Mathf.Max(-2.2f, weaverScale * -1f) : -1f);
 
-                        companionFsm.FsmVariables.FindFsmFloat("Scale").Value = State == PowerState.Twisted 
-                        ? Mathf.Min(.1f, weaverScale)
-                        : (Active ? Mathf.Min(2.2f, weaverScale) : 1f);
-
-                        companionFsm.FsmVariables.FindFsmFloat("Neg Scale").Value = State == PowerState.Twisted
-                        ? Mathf.Max(- .1f, weaverScale * -1f) 
-                        : (Active ? Mathf.Max(-2.2f, weaverScale * -1f) : -1f);
-
-                        companion.transform.localScale = new Vector3(weaverScale, weaverScale);
-                        companion.transform.SetScaleMatching(weaverScale);
-
-                        // Imitates the send random event which we removed.
-                        companionFsm.SendEvent(LoreMaster.Instance.Generator.Next(0, 2) == 0 ? "L" : "R");
-                    }), 7);
-                }
-                _companions.Add(companion);
-            }
-        }
-        catch (Exception exception)
-        {
-            LoreMaster.Instance.LogError("Error: " + exception.Message);
-        }
+        self.Fsm.FsmComponent.transform.localScale = new Vector3(weaverScale, weaverScale);
+        self.Fsm.FsmComponent.transform.SetScaleMatching(weaverScale);
     }
 
     #endregion

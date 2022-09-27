@@ -70,7 +70,7 @@ public class DramaticEntrancePower : Power
     private void PlayerDataBoolTest_OnEnter(On.HutongGames.PlayMaker.Actions.PlayerDataBoolTest.orig_OnEnter orig, HutongGames.PlayMaker.Actions.PlayerDataBoolTest self)
     {
         if (self.Fsm.GameObjectName.StartsWith("Tiso ") && string.Equals(self.Fsm.Name, "FSM")
-            && PlayerData.instance.GetBool(nameof(PlayerData.instance.tisoEncounteredTown)) && !PowerManager.ActivePowers.Contains(this)
+            && PlayerData.instance.GetBool(nameof(PlayerData.instance.tisoEncounteredTown)) && !PowerManager.ObtainedPowers.Contains(this)
             && string.Equals("Crossroads_47", UnityEngine.SceneManagement.SceneManager.GetActiveScene().name))
             if (!RandomizerManager.PlayingRandomizer || !RandomizerManager.Settings.RandomizeNpc)
                 self.isTrue = null;

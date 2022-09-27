@@ -58,11 +58,6 @@ public abstract class Power
     public string CustomText { get; set; }
 
     /// <summary>
-    /// Gets or set the flag that indicates if this power is active.
-    /// </summary>
-    public bool Active { get; set; }
-
-    /// <summary>
     /// Gets or sets the tag, to determine how this power activation behave.
     /// </summary>
     public PowerTag Tag { get; set; } = PowerTag.Local;
@@ -76,11 +71,6 @@ public abstract class Power
     /// Gets or sets the action the power should execute on a scene change (gameplay scene only)
     /// </summary>
     public virtual Action SceneAction => () => { };
-
-    /// <summary>
-    /// Gets the action that should be executed on a scene change if the power is twisted. (gameplay scene only)
-    /// </summary>
-    public virtual Action TwistedSceneAction => () => { };
 
     /// <summary>
     /// Gets or sets the indicator, if fake damage is applied. This is used to prevent some powers to break the flower.
@@ -160,26 +150,41 @@ public abstract class Power
     /// </summary>
     internal void EnablePower()
     {
-        if (Active || Tag == PowerTag.Disable || Tag == PowerTag.Remove || !PowerManager.CanPowersActivate)
+        if (State == PowerState.Active || Tag == PowerTag.Disable || Tag == PowerTag.Remove || !PowerManager.CanPowersActivate)
             return;
         try
         {
-            State = PowerState.Twisted;
-            TwistEnable();
-            
-            InitializePower();
-            //if (InitializePower())
-            //{
-            //    Active = true;
-            //    //Enable();
-            //    //LoreMaster.Instance.LogDebug("Enabled " + PowerName);
-            //}
+            if (InitializePower())
+            {
+                if ((!PowerManager.ObtainedPowers.Contains(this) && State != PowerState.Twisted && SettingManager.Instance.GameMode != GameMode.Normal)
+                    || (State == PowerState.Disabled && PowerManager.ObtainedPowers.Contains(this) && StayTwisted))
+                {
+                    TwistEnable();
+                    State = PowerState.Twisted;
+                }
+                else if (State == PowerState.Twisted && PowerManager.ObtainedPowers.Contains(this) && !StayTwisted)
+                {
+                    TwistDisable();
+                    if (SettingManager.Instance.GameMode == GameMode.Hard)
+                        Enable();
+                    State = PowerState.Active;
+                }
+                else if (State == PowerState.Disabled && PowerManager.ObtainedPowers.Contains(this) && !StayTwisted)
+                {
+                    if (SettingManager.Instance.GameMode != GameMode.Heroic)
+                        Enable();
+                    State = PowerState.Active;
+                }
+                else
+                    return;
+                LoreMaster.Instance.Log("Activated " + PowerName);
+            }
         }
         catch (Exception exception)
         {
             LoreMaster.Instance.LogError("Error while loading " + PowerName + ": " + exception.Message);
             LoreMaster.Instance.LogError(exception.StackTrace);
-            Active = false;
+            State = PowerState.Disabled;
         }
     }
 
@@ -189,25 +194,30 @@ public abstract class Power
     /// <param name="backToMenu">This is used to tell <see cref="EnablePower"/> to do the initialize again, if you reload the game.</param>
     internal void DisablePower(bool backToMenu = false)
     {
+        if (State != PowerState.Disabled)
+        {
+            try
+            {
+                if (_runningCoroutine != null)
+                    LoreMaster.Instance.Handler.StopCoroutine(_runningCoroutine);
+                // In heroic mode, powers fake to be active, which is why we ignore them in those cases.
+                if (State == PowerState.Active && SettingManager.Instance.GameMode != GameMode.Heroic)
+                    Disable();
+                else if (State == PowerState.Twisted)
+                    TwistDisable();
+                LoreMaster.Instance.Log("Disabled " + PowerName);
+                State = PowerState.Disabled;
+            }
+            catch (Exception exception)
+            {
+                LoreMaster.Instance.LogError("Error while disabling " + PowerName + ": " + exception.Message);
+                LoreMaster.Instance.LogError("Error while loading " + PowerName + ": " + exception.Source);
+                LoreMaster.Instance.LogError("Error while loading " + PowerName + ": " + exception.StackTrace);
+            }
+        }
         if (backToMenu)
             Terminate();
         _initialized = !backToMenu;
-        if (!Active)
-            return;
-        try
-        {
-            if (_runningCoroutine != null)
-                LoreMaster.Instance.Handler.StopCoroutine(_runningCoroutine);
-            Disable();
-            LoreMaster.Instance.LogDebug("Disabled " + PowerName);
-            Active = false;
-        }
-        catch (Exception exception)
-        {
-            LoreMaster.Instance.LogError("Error while disabling " + PowerName + ": " + exception.Message);
-            LoreMaster.Instance.LogError("Error while loading " + PowerName + ": " + exception.Source);
-            LoreMaster.Instance.LogError("Error while loading " + PowerName + ": " + exception.StackTrace);
-        }
     }
 
     #endregion
@@ -218,6 +228,7 @@ public abstract class Power
     /// Start a coroutine on this power. This coroutine will be cancelled once the power disables itself.
     /// </summary>
     /// <param name="coroutine"></param>
+    /// <param name="overwrite"></param>
     protected void StartRoutine(Func<IEnumerator> coroutine, bool overwrite = true)
     {
         if (_runningCoroutine != null)

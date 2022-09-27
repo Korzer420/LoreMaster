@@ -73,18 +73,18 @@ internal class LorePage
                 if (_powers[i].Tag == PowerTag.Remove)
                 {
                     _loreObjects[i].GetComponentInChildren<SpriteRenderer>().sprite = _notActive;
-                    _loreObjects[i].GetComponentInChildren<SpriteRenderer>().color = PowerManager.ActivePowers.Contains(_powers[i])
+                    _loreObjects[i].GetComponentInChildren<SpriteRenderer>().color = PowerManager.ObtainedPowers.Contains(_powers[i])
                         ? Color.red
                         : Color.grey;
                 }
                 else
                 {
-                    if (_powers[i].Active)
+                    if (_powers[i].State == PowerState.Active)
                     {
                         _loreObjects[i].GetComponentInChildren<SpriteRenderer>().sprite = _sprites[_powers[i].Location];
                         _loreObjects[i].GetComponentInChildren<SpriteRenderer>().color = Color.white;
                     }
-                    else if (PowerManager.ActivePowers.Contains(_powers[i]))
+                    else if (PowerManager.ObtainedPowers.Contains(_powers[i]))
                     {
                         _loreObjects[i].GetComponentInChildren<SpriteRenderer>().sprite = _notActive;
                         _loreObjects[i].GetComponentInChildren<SpriteRenderer>().color = Color.red;
@@ -209,7 +209,7 @@ internal class LorePage
                     new Lambda(() => fsm.gameObject.LocateMyFSM("Update Cursor").SendEvent("UPDATE CURSOR")),
                     new Lambda(() =>
                     {
-                        if (PowerManager.ActivePowers.Contains(_powers[indexVariable.Value]))
+                        if (PowerManager.ObtainedPowers.Contains(_powers[indexVariable.Value]))
                         {
                             Power power = _powers[indexVariable.Value];
                             powerTitle.GetComponent<TextMeshPro>().text = power.Tag == PowerTag.Global || PowerManager.IsAreaGlobal(power.Location)
@@ -218,7 +218,7 @@ internal class LorePage
                             powerDescription.GetComponent<TextMeshPro>().text = LoreManager.Instance.UseHints
                             ? power.Hint.Replace("<br>","\r\n")
                             :power.Description.Replace("<br>","\r\n");
-                            if(power.Active)
+                            if(power.State == PowerState.Active)
                                 confirmButton.SetActive(PlayerData.instance.GetBool(nameof(PlayerData.instance.atBench)));
                             else
                                confirmButton.SetActive(PlayerData.instance.GetBool(nameof(PlayerData.instance.atBench))
@@ -315,11 +315,11 @@ internal class LorePage
             currentWorkingState.AddTransition("FINISHED", "Powers");
             currentWorkingState.AddLastAction(new Lambda(() =>
             {
-                if (PlayerData.instance.GetBool(nameof(PlayerData.instance.atBench)) && PowerManager.ActivePowers.Contains(_powers[indexVariable.Value]))
+                if (PlayerData.instance.GetBool(nameof(PlayerData.instance.atBench)) && PowerManager.ObtainedPowers.Contains(_powers[indexVariable.Value]))
                 {
                     Power power = _powers[indexVariable.Value];
 
-                    if (power.Active)
+                    if (power.State == PowerState.Active && SettingManager.Instance.GameMode != GameMode.Heroic)
                     {
                         if (power is MarissasAudiencePower audience && audience.IsMarissaDead)
                             return;
@@ -331,7 +331,8 @@ internal class LorePage
                         ? PowerTag.Disable
                         : power.DefaultTag;
                     }
-                    else if (power.Tag == PowerTag.Global || PowerManager.IsAreaGlobal(power.Location) || SettingManager.Instance.CurrentArea == power.Location)
+                    else if ((power.Tag == PowerTag.Global || PowerManager.IsAreaGlobal(power.Location) || SettingManager.Instance.CurrentArea == power.Location)
+                     && !power.StayTwisted)
                     {
                         _loreObjects[indexVariable.Value].GetComponentInChildren<SpriteRenderer>().sprite = _sprites[power.Location];
                         _loreObjects[indexVariable.Value].GetComponentInChildren<SpriteRenderer>().color = Color.white;

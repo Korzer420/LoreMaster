@@ -1,7 +1,6 @@
 using LoreMaster.Enums;
 using LoreMaster.UnityComponents;
 using System;
-using System.Collections;
 using System.Linq;
 using UnityEngine;
 
@@ -29,26 +28,17 @@ public class FriendOfTheJellyfishPower : Power
 
     private void PlayMakerFSM_OnEnable(On.PlayMakerFSM.orig_OnEnable orig, PlayMakerFSM self)
     {
-        if (string.Equals(self.FsmName,"Explosion Control"))
+        if (string.Equals(self.FsmName, "Explosion Control"))
         {
-            if (Active)
-            {
-                // This is for godhome oomas
-                if (self.gameObject.name.Contains("Gas Explosion Uumuu"))
-                    HeroController.Destroy(self.transform.Find("Hero Damage").GetComponent<DamageHero>());
-                else
-                    HeroController.Destroy(self.GetComponent<DamageHero>());
-            }
-            else if (self.GetComponent<DamageHero>() == null)
-            {
-                DamageHero damageHero = self.gameObject.AddComponent<DamageHero>();
-                damageHero.damageDealt = 2;
-                damageHero.hazardType = 1;
-            }
+            // This is for godhome oomas
+            if (self.gameObject.name.Contains("Gas Explosion Uumuu"))
+                HeroController.Destroy(self.transform.Find("Hero Damage").GetComponent<DamageHero>());
+            else
+                HeroController.Destroy(self.GetComponent<DamageHero>());
         }
-        else if (string.Equals(self.FsmName,"Lil Jelly"))
+        else if (string.Equals(self.FsmName, "Lil Jelly"))
             self.GetComponent<DamageHero>().damageDealt = 0;
-        else if (string.Equals(self.FsmName,"Jellyfish") && self.gameObject.name.Contains("Jellyfish GG"))
+        else if (string.Equals(self.FsmName, "Jellyfish") && self.gameObject.name.Contains("Jellyfish GG"))
         {
             HeroController.Destroy(self.GetComponent<DamageHero>());
             HeroController.Destroy(self.transform.Find("Tentacle Box").GetComponent<DamageHero>());
@@ -70,11 +60,8 @@ public class FriendOfTheJellyfishPower : Power
     }
 
     /// <inheritdoc/>
-    protected override void Disable()
-    {
-        On.PlayMakerFSM.OnEnable -= PlayMakerFSM_OnEnable;
-    }
-
+    protected override void Disable() => On.PlayMakerFSM.OnEnable -= PlayMakerFSM_OnEnable;
+    
     #endregion
 
     #region Private Methods
@@ -99,6 +86,7 @@ public class FriendOfTheJellyfishPower : Power
                         HeroController.Destroy(item.transform.Find("Tentacle Box").GetComponent<DamageHero>());
                 }
         }
+        // In the twisted version the just spawn randomly
         else
         {
             // We create an area in which the jellyfish can spawn based on the transitions
@@ -108,15 +96,15 @@ public class FriendOfTheJellyfishPower : Power
                 return;
             float[] borderPoints = new float[4];
             borderPoints[0] = points.Min(x => x.position.x);
-            borderPoints[1] = points.Max(x => x.position.x); 
+            borderPoints[1] = points.Max(x => x.position.x);
             borderPoints[2] = points.Min(x => x.position.y);
             borderPoints[3] = points.Max(x => x.position.y);
             for (int i = 0; i < LoreMaster.Instance.Generator.Next(3, 11); i++)
             {
                 GameObject ooma = GameObject.Instantiate(LoreMaster.Instance.PreloadedObjects["Jellyfish"]);
+                ooma.SetActive(true);
                 // To prevent many of them getting stuck in terrain they ignore it.
                 ooma.AddComponent<IgnoreTerrain>();
-                ooma.SetActive(true);
                 Vector3 position;
                 do
                     position = new Vector3(LoreMaster.Instance.Generator.Next((int)borderPoints[0], (int)borderPoints[1]), LoreMaster.Instance.Generator.Next((int)borderPoints[2], (int)borderPoints[3]));
@@ -127,9 +115,9 @@ public class FriendOfTheJellyfishPower : Power
             for (int i = 0; i < LoreMaster.Instance.Generator.Next(10, 31); i++)
             {
                 GameObject babyJelly = GameObject.Instantiate(LoreMaster.Instance.PreloadedObjects["Jellyfish Baby"]);
+                babyJelly.SetActive(true);
                 // To prevent many of them getting stuck in terrain they ignore it.
                 babyJelly.AddComponent<IgnoreTerrain>();
-                babyJelly.SetActive(true);
                 Vector3 position;
                 do
                     position = new Vector3(LoreMaster.Instance.Generator.Next((int)borderPoints[0], (int)borderPoints[1]), LoreMaster.Instance.Generator.Next((int)borderPoints[2], (int)borderPoints[3]));

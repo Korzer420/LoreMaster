@@ -74,11 +74,11 @@ public class GreaterMindPower : Power
     private void PlayerDataBoolTest_OnEnter(On.HutongGames.PlayMaker.Actions.PlayerDataBoolTest.orig_OnEnter orig, HutongGames.PlayMaker.Actions.PlayerDataBoolTest self)
     {
         orig(self);
-        if (self.IsCorrectContext("Hero Death Anim", "Hero Death", "Break Glass HP") && PowerManager.ActivePowers.Count > 0)
+        if (self.IsCorrectContext("Hero Death Anim", "Hero Death", "Break Glass HP") && PowerManager.ObtainedPowers.Count > 0)
         {
-            Power power = PowerManager.ActivePowers.Last();
+            Power power = PowerManager.ObtainedPowers.Last();
             power.DisablePower(false);
-            PowerManager.ActivePowers.Remove(power);
+            PowerManager.ObtainedPowers.Remove(power);
             PlayMakerFSM playMakerFSM = PlayMakerFSM.FindFsmOnGameObject(FsmVariables.GlobalVariables.GetFsmGameObject("Enemy Dream Msg").Value, "Display");
             playMakerFSM.FsmVariables.GetFsmInt("Convo Amount").Value = 1;
             playMakerFSM.FsmVariables.GetFsmString("Convo Title").Value = $"Remove_Power_{power.PowerName}";
@@ -106,7 +106,7 @@ public class GreaterMindPower : Power
         if (_loreTracker != null)
         {
             _loreTracker.SetActive(true);
-            UpdateLoreCounter(PowerManager.ActivePowers, PowerManager.GetAllPowers(), SettingManager.Instance.CurrentArea, PowerManager.IsAreaGlobal(SettingManager.Instance.CurrentArea));
+            UpdateLoreCounter(PowerManager.ObtainedPowers, PowerManager.GetAllPowers(), SettingManager.Instance.CurrentArea, PowerManager.IsAreaGlobal(SettingManager.Instance.CurrentArea));
         }
     }
 

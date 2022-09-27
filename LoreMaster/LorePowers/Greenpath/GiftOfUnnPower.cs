@@ -28,15 +28,15 @@ public class GiftOfUnnPower : Power
     {
         if (string.Equals(self.Fsm.GameObjectName, "Knight") && string.Equals(self.Fsm.Name, "Spell Control"))
             if (string.Equals(self.State.Name, "Start Slug Anim"))
-                self.isFalse = Active ? null : FsmEvent.GetFsmEvent("FINISHED");
+                self.isFalse = State == PowerState.Active ? null : FsmEvent.GetFsmEvent("FINISHED");
             else if (string.Equals(self.State.Name, "Slug?"))
-                self.isFalse = Active ? FsmEvent.GetFsmEvent("SLUG") : null;
+                self.isFalse = State == PowerState.Active ? FsmEvent.GetFsmEvent("SLUG") : null;
         orig(self);
     }
 
     private void OnSpawnObjectFromGlobalPoolAction(On.HutongGames.PlayMaker.Actions.SpawnObjectFromGlobalPool.orig_OnEnter orig, HutongGames.PlayMaker.Actions.SpawnObjectFromGlobalPool self)
     {
-        if (Active && string.Equals(self.Fsm.GameObjectName, "Knight") && string.Equals(self.Fsm.Name, "Spell Control")
+        if (State == PowerState.Active && string.Equals(self.Fsm.GameObjectName, "Knight") && string.Equals(self.Fsm.Name, "Spell Control")
             && string.Equals(self.State.Name, "Focus Heal 2") && PlayerData.instance.GetBool(nameof(PlayerData.instance.equippedCharm_28)))
             HeroController.instance.AddMPCharge(15);
         orig(self);

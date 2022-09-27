@@ -2,6 +2,7 @@ using HutongGames.PlayMaker;
 using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
 using LoreMaster.Enums;
+using LoreMaster.Helper;
 using System.Collections;
 using UnityEngine;
 
@@ -21,28 +22,29 @@ public class ReturnToUnnPower : Power
 
     #endregion
 
+    #region Event handler
+
+    private void SetFloatValue_OnEnter(On.HutongGames.PlayMaker.Actions.SetFloatValue.orig_OnEnter orig, HutongGames.PlayMaker.Actions.SetFloatValue self)
+    {
+        orig(self);
+        if (self.IsCorrectContext("Spell Control", "Knight", "Slug Speed") && string.Equals(self.floatVariable?.Name, "Slug Speed L"))
+            self.floatVariable.Value += PlayerData.instance.GetBool("equippedCharm_7") ? -6 : -3f;
+    }
+
+    #endregion
+
     #region Control
 
     /// <inheritdoc/>
-    protected override void Initialize()
-    {
-        FsmState slugSpeed = GameObject.Find("Knight").LocateMyFSM("Spell Control").GetState("Start MP Drain");
-
-        slugSpeed.AddLastAction(new Lambda(() =>
-        {
-            if (Active)
-                slugSpeed.Fsm.Variables.FindFsmFloat("Slug Speed L").Value -= PlayerData.instance.GetBool("equippedCharm_7") ? 6f : 3f;
-        }));
+    protected override void Enable() 
+    { 
+        StartRoutine(() => AdjustMovementSpeed());
+        On.HutongGames.PlayMaker.Actions.SetFloatValue.OnEnter += SetFloatValue_OnEnter;
     }
-
-    /// <inheritdoc/>
-    protected override void Enable() => _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(AdjustMovementSpeed());
 
     /// <inheritdoc/>
     protected override void Disable()
     {
-        if (_runningCoroutine != null)
-            LoreMaster.Instance.Handler.StopCoroutine(_runningCoroutine);
         if (_movementSpeedBuff)
         {
             HeroController.instance.WALK_SPEED -= 3f;
@@ -53,6 +55,7 @@ public class ReturnToUnnPower : Power
             HeroController.instance.DASH_COOLDOWN_CH += .5f;
         }
         _movementSpeedBuff = false;
+        On.HutongGames.PlayMaker.Actions.SetFloatValue.OnEnter -= SetFloatValue_OnEnter;
     }
 
     /// <inheritdoc/>

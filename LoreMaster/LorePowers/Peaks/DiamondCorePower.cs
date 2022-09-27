@@ -47,7 +47,8 @@ public class DiamondCorePower : Power
 
     public override Action SceneAction => () =>
     {
-        _enemies = GameObject.FindObjectsOfType<HealthManager>();
+        if (State == PowerState.Active)
+            _enemies = GameObject.FindObjectsOfType<HealthManager>();
         if (_crystalHeartSprite == null)
         {
             _crystalHeartSprite = GameObject.Find("_GameCameras").transform.Find("HudCamera/Inventory/Inv/Equipment/Super Dash").GetComponent<SpriteRenderer>();
@@ -61,7 +62,13 @@ public class DiamondCorePower : Power
 
     #endregion
 
-    #region Event Handler
+    #region Event handler
+
+    private void HeroController_Start(On.HeroController.orig_Start orig, HeroController self)
+    {
+        orig(self);
+        _trailSprite = GameObject.Find("Knight").transform.Find("Effects/SD Trail").GetComponent<tk2dSprite>();
+    }
 
     private bool HeroController_CanTakeDamage(On.HeroController.orig_CanTakeDamage orig, HeroController self)
     {
@@ -69,12 +76,38 @@ public class DiamondCorePower : Power
             return _speed > -39f && _speed < 39f;
         return false;
     }
+
+    private void CallMethodProper_OnEnter(On.HutongGames.PlayMaker.Actions.CallMethodProper.orig_OnEnter orig, HutongGames.PlayMaker.Actions.CallMethodProper self)
+    {
+        orig(self);
+        if (self.IsCorrectContext("Superdash", "Knight", "Enter Super Dash") && string.Equals(self.methodName.Value, "SetCState"))
+            LoreMaster.Instance.Handler.StartCoroutine(ChargeUp());
+    }
+
+    private void ActivateGameObject_OnEnter(On.HutongGames.PlayMaker.Actions.ActivateGameObject.orig_OnEnter orig, HutongGames.PlayMaker.Actions.ActivateGameObject self)
+    {
+        orig(self);
+        if (State == PowerState.Active && (self.IsCorrectContext("Superdash", "Knight", "Dash Start") || self.IsCorrectContext("Superdash", "Knight", "Hit Wall")) && string.Equals(self.gameObject.GameObject.Name, "SuperDash Damage"))
+        {
+            if (string.Equals(self.State.Name, "Dash Start"))
+            {
+                _carryingSpeed = HeroController.instance.cState.facingRight ? 30f : -30f;
+                _carryingDamage = 10;
+                LoreMaster.Instance.Handler.StartCoroutine(ChargeUp());
+            }
+            else
+                foreach (HealthManager enemy in _enemies)
+                    _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(StunEnemy(enemy.gameObject));
+        }
+    }
+
     private void ListenForJump_OnEnter(On.HutongGames.PlayMaker.Actions.ListenForJump.orig_OnEnter orig, HutongGames.PlayMaker.Actions.ListenForJump self)
     {
         if (self.IsCorrectContext("Superdash", "Knight", "Cancelable"))
             self.wasPressed = State == PowerState.Twisted ? null : FsmEvent.GetFsmEvent("NORM CANCEL");
         orig(self);
     }
+
     private void ListenForSuperdash_OnEnter(On.HutongGames.PlayMaker.Actions.ListenForSuperdash.orig_OnEnter orig, HutongGames.PlayMaker.Actions.ListenForSuperdash self)
     {
         if (self.IsCorrectContext("Superdash", "Knight", "Cancelable"))
@@ -95,33 +128,8 @@ public class DiamondCorePower : Power
             _corelessSprite = SpriteHelper.CreateSprite("DiamondHeart_Coreless");
             _shelllessSprite = SpriteHelper.CreateSprite("DiamondHeart_Shellless");
             _diamondSprite = SpriteHelper.CreateSprite("DiamondHeart");
-            HeroController.instance.superDash.GetState("Dash Start").ReplaceAction(new Lambda(() =>
-            {
-                HeroController.instance.superDash.FsmVariables.FindFsmGameObject("SuperDash Damage").Value.SetActive(true);
-                if (Active)
-                {
-                    _carryingSpeed = HeroController.instance.cState.facingRight ? 30f : -30f;
-                    _carryingDamage = 10;
-                    LoreMaster.Instance.Handler.StartCoroutine(ChargeUp());
-                }
-            }), 25);
-
-            HeroController.instance.superDash.GetState("Enter Super Dash").ReplaceAction(new Lambda(() =>
-            {
-                HeroController.instance.SetCState("superDashing", true);
-                if (Active)
-                    LoreMaster.Instance.Handler.StartCoroutine(ChargeUp());
-            }), 6);
-            HeroController.instance.superDash.GetState("Hit Wall").ReplaceAction(new Lambda(() =>
-            {
-                if (Active)
-                    foreach (HealthManager enemy in _enemies)
-                        _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(StunEnemy(enemy.gameObject));
-
-                HeroController.instance.superDash.FsmVariables.FindFsmGameObject("SuperDash Damage").Value.SetActive(false);
-            })
-            { Name = "Wall Crash" }, 8);
             _trailSprite = GameObject.Find("Knight").transform.Find("Effects/SD Trail").GetComponent<tk2dSprite>();
+            On.HeroController.Start += HeroController_Start;
             On.HutongGames.PlayMaker.Actions.ListenForJump.OnEnter += ListenForJump_OnEnter;
             On.HutongGames.PlayMaker.Actions.ListenForSuperdash.OnEnter += ListenForSuperdash_OnEnter;
         }
@@ -132,6 +140,14 @@ public class DiamondCorePower : Power
     }
 
     /// <inheritdoc/>
+    protected override void Terminate()
+    {
+        On.HeroController.Start -= HeroController_Start;
+        On.HutongGames.PlayMaker.Actions.ListenForJump.OnEnter -= ListenForJump_OnEnter;
+        On.HutongGames.PlayMaker.Actions.ListenForSuperdash.OnEnter -= ListenForSuperdash_OnEnter;
+    }
+
+    /// <inheritdoc/>
     protected override void Enable()
     {
         _enemies = GameObject.FindObjectsOfType<HealthManager>();
@@ -139,6 +155,8 @@ public class DiamondCorePower : Power
         if (HasDiamondDash)
             HeroController.instance.superDash.FsmVariables.FindFsmFloat("Charge Time").Value = .2f;
         On.HeroController.CanTakeDamage += HeroController_CanTakeDamage;
+        On.HutongGames.PlayMaker.Actions.ActivateGameObject.OnEnter += ActivateGameObject_OnEnter;
+        On.HutongGames.PlayMaker.Actions.CallMethodProper.OnEnter += CallMethodProper_OnEnter;
     }
 
     /// <inheritdoc/>
@@ -153,6 +171,8 @@ public class DiamondCorePower : Power
             CrystalHeartSprite.sprite = _originalSprite;
         _enemies = null;
         On.HeroController.CanTakeDamage -= HeroController_CanTakeDamage;
+        On.HutongGames.PlayMaker.Actions.ActivateGameObject.OnEnter -= ActivateGameObject_OnEnter;
+        On.HutongGames.PlayMaker.Actions.CallMethodProper.OnEnter -= CallMethodProper_OnEnter;
         HeroController.instance.superDash.FsmVariables.FindFsmFloat("Current SD Speed").Value = 30f;
         HeroController.instance.superDash.FsmVariables.FindFsmFloat("Speed").Value = 30f;
         HeroController.instance.superDash.FsmVariables.FindFsmFloat("Superdash Speed").Value = 30f;

@@ -107,9 +107,8 @@ public class RequiemPower : Power
     internal IEnumerator DelayDisabling()
     {
         yield return new WaitUntil(() => HeroController.instance.acceptingInput);
-        DisablePower(FakeDamage);
+        DisablePower(false);
     }
-
 
     /// <summary>
     /// Wait for the player to get control before removing the spawn points.

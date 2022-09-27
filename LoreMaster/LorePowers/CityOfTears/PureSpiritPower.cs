@@ -2,7 +2,6 @@ using HutongGames.PlayMaker.Actions;
 using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
 using LoreMaster.Enums;
-using LoreMaster.Extensions;
 using LoreMaster.Helper;
 using System.Collections;
 using UnityEngine;
@@ -46,7 +45,7 @@ internal class PureSpiritPower : Power
         {
             if (State == PowerState.Active)
             {
-                if (Active && PlayerData.instance.GetInt(nameof(PlayerData.instance.MPCharge)) == 0
+                if (PlayerData.instance.GetInt(nameof(PlayerData.instance.MPCharge)) == 0
                     && _orbContainer.transform.childCount < 3 && _followed == HeroController.instance.transform)
                     SpawnOrb();
                 LoreMaster.Instance.Handler.StartCoroutine(WaitForSpell());
@@ -76,7 +75,7 @@ internal class PureSpiritPower : Power
     {
         orig(self);
         if (self.IsCorrectContext("Fireball Control", null, "Set Damage"))
-            if (Active && _canThrow)
+            if (_canThrow)
                 _followed = self.Fsm.FsmComponent.transform;
             else
                 _fireball = self.Fsm.FsmComponent.gameObject;
@@ -119,6 +118,8 @@ internal class PureSpiritPower : Power
             GameObject.Destroy(child.gameObject);
         _canThrow = false;
         _followed = null;
+        On.HutongGames.PlayMaker.Actions.RecycleSelf.OnEnter -= RecycleSelf_OnEnter;
+        On.HutongGames.PlayMaker.Actions.PlayerDataBoolTest.OnEnter -= PlayerDataBoolTest_OnEnter;
     }
 
     #endregion

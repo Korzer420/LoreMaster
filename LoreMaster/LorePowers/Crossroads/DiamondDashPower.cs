@@ -66,13 +66,10 @@ public class DiamondDashPower : Power
             _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(HoldPosition());
     }
 
-    private void Wait_OnEnter(On.HutongGames.PlayMaker.Actions.Wait.orig_OnEnter orig, HutongGames.PlayMaker.Actions.Wait self)
+    private void Wait_OnEnter(On.HutongGames.PlayMaker.Actions.Wait.orig_OnEnter orig, Wait self)
     {
         if (self.IsCorrectContext("Superdash", "Knight", "Wall Charge") || self.IsCorrectContext("Superdash", "Knight", "Ground Charge"))
-        {
-            LoreMaster.Instance.Log("Timer before is: " + self.time.Value);
             self.time.Value += State == PowerState.Active ? (HasDiamondCore ? -.5f : -.25f) : (State == PowerState.Twisted ? .6f : 0f);
-        }
         orig(self);
     }
 
@@ -80,10 +77,7 @@ public class DiamondDashPower : Power
     {
         orig(self);
         if (self is Wait waitAction && (self.IsCorrectContext("Superdash", "Knight", "Wall Charge") || self.IsCorrectContext("Superdash", "Knight", "Ground Charge")))
-        {
-            LoreMaster.Instance.Log("Finish Timer is: " + waitAction.time.Value);
             waitAction.time.Value -= State == PowerState.Active ? (HasDiamondCore ? -.5f : -.25f) : (State == PowerState.Twisted ? .6f : 0f);
-        }
     }
 
     #endregion
@@ -108,8 +102,6 @@ public class DiamondDashPower : Power
         On.HutongGames.PlayMaker.Actions.Wait.OnEnter -= Wait_OnEnter;
         On.HutongGames.PlayMaker.FsmStateAction.Finish -= FsmStateAction_Finish;
     }
-
-    
 
     /// <inheritdoc/>
     protected override void Enable()

@@ -3,7 +3,7 @@ namespace LoreMaster.Enums;
 /// <summary>
 /// Specifies the conditions, which allows the player to enter the black egg temple.
 /// </summary>
-public enum RandomizerEndCondition
+public enum BlackEggTempleCondition
 {
     /// <summary>
     /// Default, the player needs 3 dreamers to enter the temple.

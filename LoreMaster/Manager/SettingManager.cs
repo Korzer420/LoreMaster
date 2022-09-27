@@ -16,6 +16,7 @@ using LoreMaster.LorePowers.QueensGarden;
 using LoreMaster.LorePowers.WhitePalace;
 using LoreMaster.Randomizer;
 using LoreMaster.UnityComponents;
+using MenuChanger.Attributes;
 using Modding;
 using On.HutongGames.PlayMaker.Actions;
 using System;
@@ -31,7 +32,7 @@ namespace LoreMaster.Manager;
 /// <summary>
 /// Game manager for modifying all things besides the lore and powers. (Fsm and stuff)
 /// </summary>
-internal class SettingManager
+public class SettingManager
 {
     #region Members
 
@@ -84,12 +85,25 @@ internal class SettingManager
     /// <summary>
     /// Gets or sets the value which indicates what has to be done, to open the black egg temple.
     /// </summary>
-    public RandomizerEndCondition EndCondition { get; set; }
+    public BlackEggTempleCondition EndCondition { get; set; }
+
+    [MenuRange(0, 60)]
+    public int NeededLore { get; set; } = 0;
 
     /// <summary>
     /// The running instance of this manager.
     /// </summary>
     public static SettingManager Instance { get; set; }
+
+    /// <summary>
+    /// Gets or sets the current game mode.
+    /// </summary>
+    public GameMode GameMode { get; set; } = GameMode.Hard;
+
+    /// <summary>
+    /// If true turn on powers global, making ALL 60 twisted abilities active in hard-/heroic mod.
+    /// </summary>
+    public bool NightmareDifficulty { get; set; }
 
     #endregion
 
@@ -152,7 +166,7 @@ internal class SettingManager
         orig(self);
         try
         {
-            if (PlayerData.instance.GetBool("killedBindingSeal") && !PowerManager.ActivePowers.Any(x => x is SacredShellPower))
+            if (PlayerData.instance.GetBool("killedBindingSeal") && !PowerManager.ObtainedPowers.Any(x => x is SacredShellPower))
                 PowerManager.GetPowerByKey("POP", out Power power);
             else
                 ModHooks.SetPlayerBoolHook += TrackPathOfPain;
@@ -305,16 +319,10 @@ internal class SettingManager
             self.GetState("Check").RemoveTransitionsTo("Destroy");
         // The game asks for the language key for the fountain once you entered the room. To not give the power immediatly, we bind it on the inspect instead.
         else if (string.Equals(self.gameObject.name, "Fountain Inspect") && string.Equals(self.FsmName, "Conversation Control"))
-        {
-            string placeHolder = string.Empty;
             self.GetState("Anim End").ReplaceAction(new Lambda(() => PowerManager.GetPowerByKey("FOUNTAIN_PLAQUE_DESC", out Power power)) { Name = "Fountain Power" });
-        }
         // The game asks for the language key for the dreamer tablet once you entered the room. To not give the power immediatly, we bind it on the inspect instead.
         else if (string.Equals(self.gameObject.name, "Dreamer Plaque Inspect") && string.Equals(self.FsmName, "Conversation Control"))
-        {
-            string placeHolder = string.Empty;
             self.GetState("Anim End").ReplaceAction(new Lambda(() => PowerManager.GetPowerByKey("DREAMERS_INSPECT_RG5", out Power power)) { Name = "Dreamer Power" });
-        }
         // Prevent Moss Prophet from dying
         else if (string.Equals(self.gameObject.name, "Moss Cultist") && string.Equals(self.FsmName, "FSM"))
         {
@@ -330,8 +338,6 @@ internal class SettingManager
             {
                 self.transform.localScale = new(2f, 2f, 2f);
                 self.transform.localPosition = new(126.36f, 12.35f, 0f);
-                if (!LoreManager.Instance.CanListen)
-                    self.GetState("Idle").ClearTransitions();
             }
             else if (string.Equals(self.FsmName, "Conversation Control"))
             {
@@ -490,7 +496,7 @@ internal class SettingManager
                 if (string.IsNullOrEmpty(tabletName))
                 {
                     // We add a fake power
-                    PowerManager.ActivePowers.Add(new PlaceholderPower());
+                    PowerManager.ObtainedPowers.Add(new PlaceholderPower());
                     return;
                 }
                 string placeHolder = string.Empty;
@@ -556,7 +562,7 @@ internal class SettingManager
 
                 string headline = reader.ReadLine();
                 if (headline.ToLower().Contains("%override%"))
-                    PowerManager.ActivePowers.Clear();
+                    PowerManager.ObtainedPowers.Clear();
                 else if (!headline.ToLower().Contains("%modify%"))
                 {
                     LoreMaster.Instance.LogError("Invalid option file. Use %override% or %modify% in the first line.");
@@ -590,10 +596,10 @@ internal class SettingManager
                     power.Tag = tag;
 
                     currentLine = currentLine.Substring(tagText.Length);
-                    if (currentLine.Contains("add") && !PowerManager.ActivePowers.Contains(power))
+                    if (currentLine.Contains("add") && !PowerManager.ObtainedPowers.Contains(power))
                     {
                         LoreMaster.Instance.Log($"Add {power.PowerName} to player.");
-                        PowerManager.ActivePowers.Add(power);
+                        PowerManager.ObtainedPowers.Add(power);
                     }
                 }
             }
