@@ -408,7 +408,7 @@ internal class SettingManager
             || string.Equals(self.gameObject.name, "Fountain Inspect") || string.Equals(self.gameObject.name, "Fountain Donation")))))
         {
             // There are a few exceptions with npc which we want to ignore.
-            if (self.gameObject.LocateMyFSM("Conversation Control") != null && !(string.Equals(self.gameObject.name, "Moth NPC")
+            if (self.gameObject.LocateMyFSM("Conversation Control") is PlayMakerFSM fsm && !(string.Equals(self.gameObject.name, "Moth NPC")
                 || string.Equals(self.gameObject.name, "Corpse Inspect")
                 || string.Equals(self.gameObject.name, "Dream Nail Get") || string.Equals(self.gameObject.name, "Centipede Inspect")
                 || string.Equals(self.gameObject.name, "Goam Inspect") || string.Equals(self.gameObject.name, "Zap Bug Inspect")
@@ -416,7 +416,8 @@ internal class SettingManager
                 || string.Equals(self.transform.parent?.name, "Dreamer Monomon") || string.Equals(self.gameObject.name, "Mage Door")
                 || string.Equals(self.gameObject.name, "Love Door") || string.Equals(self.gameObject.name, "Jiji Door")
                 || string.Equals(self.gameObject.name, "Waterways Machine") || string.Equals(self.transform.parent?.name, "Bathhouse Door")
-                || string.Equals(self.gameObject.name, "Coffin") || string.Equals(self.gameObject.name, "Tram Call Box")))
+                || string.Equals(self.gameObject.name, "Coffin") || string.Equals(self.gameObject.name, "Tram Call Box")
+                || fsm.GetState("Check Key") != null))
                 self.GetState("Idle").ClearTransitions();
         }
         else if (string.Equals(self.FsmName, "Stag Control") && !LoreManager.Instance.CanListen)
