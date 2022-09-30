@@ -34,6 +34,21 @@
 	<_RandoItems Include="Resources\Randomizer\*.*" />
   </ItemGroup>
   
+  <ItemGroup>
+    <EmbeddedResource Remove="Resources\Base\CurseDispell.png" />
+    <EmbeddedResource Remove="Resources\Base\SummoningScroll.png" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <_CopyItems Remove="Resources\Base\CurseDispell.png" />
+    <_CopyItems Remove="Resources\Base\SummoningScroll.png" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Content Include="Resources\Base\CurseDispell.png" />
+    <Content Include="Resources\Base\SummoningScroll.png" />
+  </ItemGroup>
+  
     <ItemGroup>
     <Reference Include="Assembly-CSharp">
       <HintPath>..\..\..\..\..\Program Files\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\Assembly-CSharp.dll</HintPath>
@@ -131,6 +146,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>AdditionalText.resx</DependentUpon>
     </Compile>
+    <Compile Update="Properties\ElderbugDialog.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ElderbugDialog.resx</DependentUpon>
+    </Compile>
     <Compile Update="Properties\PowerDescriptions.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -152,6 +172,10 @@
     <EmbeddedResource Update="Properties\AdditionalText.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>AdditionalText.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Properties\ElderbugDialog.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ElderbugDialog.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Properties\PowerDescriptions.resx">
       <Generator>ResXFileCodeGenerator</Generator>

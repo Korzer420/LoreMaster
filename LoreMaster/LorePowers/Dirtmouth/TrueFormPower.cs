@@ -198,10 +198,10 @@ public class TrueFormPower : Power
         GameObject shade;
         while (true)
         {
-            if (PlayerData.instance.GetBool("atBench"))
-                yield return new WaitUntil(() => !PlayerData.instance.GetBool("atBench"));
+            if (PlayerData.instance.GetBool("atBench") || !HeroController.instance.acceptingInput)
+                yield return new WaitUntil(() => !PlayerData.instance.GetBool("atBench") && HeroController.instance.acceptingInput);
             passedTime += Time.deltaTime;
-            if (passedTime >= 30f)
+            if (passedTime >= 120f)
             {
                 passedTime = 0f;
                 _exit = HeroController.instance.sceneEntryGate?.transform;

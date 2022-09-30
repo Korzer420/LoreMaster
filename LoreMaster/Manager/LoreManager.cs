@@ -2,7 +2,9 @@ using LoreMaster.Enums;
 using LoreMaster.LorePowers;
 using LoreMaster.LorePowers.HowlingCliffs;
 using LoreMaster.LorePowers.RestingGrounds;
+using LoreMaster.Randomizer;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace LoreMaster.Manager;
 
@@ -19,10 +21,14 @@ internal class LoreManager
 
     #region Properties
 
-    public List<Power> ActivePowers { get; set; } = new();
-
+    /// <summary>
+    /// Gets or sets that powers should display their custom text (if available)
+    /// </summary>
     public bool UseCustomText { get; set; } = true;
 
+    /// <summary>
+    /// Gets or sets if hints should be displayed instead of clear descriptions.
+    /// </summary>
     public bool UseHints { get; set; } = true;
 
     /// <summary>
@@ -34,6 +40,16 @@ internal class LoreManager
     /// Gets or sets the value, that indicates if the player can listen to npc.
     /// </summary>
     public bool CanListen { get; set; } = true;
+
+    /// <summary>
+    /// Gets or sets the amount of joker scrolls, that the player can use to obtain a power of their choice.
+    /// </summary>
+    public int JokerScrolls { get; set; } = 3;
+
+    /// <summary>
+    /// Gets or sets the amount of cleansing scrolls, that the player can use to undo a twisted obtain power of their choice.
+    /// </summary>
+    public int CleansingScrolls { get; set; } = 3;
 
     public static LoreManager Instance { get; set; }
 
@@ -116,12 +132,61 @@ internal class LoreManager
             text = "Only cowards retreat from battle...";
         else if (string.Equals(key, "Temple_Door"))
             text = "Want to enter the temple?";
+        else if (key.StartsWith("Elderbug_"))
+        {
+            LoreMaster.Instance.Log("Look for key: " + key);
+            if (key.EndsWith("Casual"))
+                text = Properties.ElderbugDialog.ResourceManager.GetString(RandomizerManager.PlayingRandomizer ? "Elderbug_Casual_Randomizer" : "Elderbug_Casual_Normal");
+            else if (key == "Elderbug_Reward_2")
+                text = Properties.ElderbugDialog.ResourceManager.GetString("Elderbug_Gain_Listening");
+            else if (key == "Elderbug_Met")
+            {
+                PlayerData.instance.SetBool(nameof(PlayerData.instance.metElderbug), true);
+                text = Properties.ElderbugDialog.ResourceManager.GetString(key);
+                if (RandomizerManager.PlayingRandomizer)
+                    text += "<page>" + Properties.ElderbugDialog.ResourceManager.GetString("Elderbug_Randomizer");
+
+                if (SettingManager.Instance.GameMode != GameMode.Normal || (RandomizerManager.PlayingRandomizer && RandomizerManager.Settings.RandomizeNpc))
+                {
+                    SettingManager.Instance.ElderbugState++;
+                    text += "<page>" + Properties.ElderbugDialog.ResourceManager.GetString("Elderbug_Extra_Intro") + "<page>" + Properties.ElderbugDialog.ResourceManager.GetString("Elderbug_Task_1");
+                }
+                else if (RandomizerManager.PlayingRandomizer)
+                {
+                    PowerManager.ControlState = PowerControlState.ToggleAccess;
+                    text += "<page>" + Properties.ElderbugDialog.ResourceManager.GetString("Elderbug_Randomizer_Not_Randomized");
+                    SettingManager.Instance.ElderbugState--;
+                }
+                else
+                {
+                    PowerManager.ControlState = PowerControlState.ToggleAccess;
+                    text += "<page>" + Properties.ElderbugDialog.ResourceManager.GetString("Elderbug_Normal");
+                    SettingManager.Instance.ElderbugState--;
+                }
+            }
+            else if (key.EndsWith("Hint"))
+                text = RollElderbugHint();
+            else
+                text = Properties.ElderbugDialog.ResourceManager.GetString(key);
+            
+        }
         return text;
     }
 
     #endregion
 
     #region Methods
+
+    private string RollElderbugHint()
+    {
+        List<string> viablePowerNames = PowerManager.GetAllPowers()
+            .Except(PowerManager.ObtainedPowers)
+            .Select(x => x.GetType().Name.Substring(0, x.GetType().Name.Length - 5))
+            .ToList();
+        if (!viablePowerNames.Any())
+            return Properties.ElderbugDialog.Elderbug_Tip_WellFocused;
+        return Properties.ElderbugDialog.ResourceManager.GetString("Elderbug_Tip_" + viablePowerNames[LoreMaster.Instance.Generator.Next(0, viablePowerNames.Count)]);
+    }
 
     public bool ModifyText(string key, ref string displayText)
     {

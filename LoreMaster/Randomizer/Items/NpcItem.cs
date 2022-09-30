@@ -9,7 +9,7 @@ internal class NpcItem : LoreItem
 {
     public NpcItem() { }
 
-    public static NpcItem CreateItem(string itemName, string key, string shopDescription, string sprite = "Lore", string sheet = "Minor NPC")
+    public static NpcItem CreateItem(string itemName, string key, string shopDescription, string sprite = "Lore", string sheet = "Minor NPC", bool isRandoSprite = true)
     {
         return new()
         {
@@ -19,7 +19,7 @@ internal class NpcItem : LoreItem
                 name = new BoxedString(itemName?.Replace('_', ' ')),
                 lore = new BoxedString("You shouldn't be able to see this."),
                 shopDesc = new BoxedString(shopDescription),
-                sprite = new CustomSprite(sprite)
+                sprite = new CustomSprite(sprite, isRandoSprite)
             },
             loreKey = key,
             loreSheet = sheet

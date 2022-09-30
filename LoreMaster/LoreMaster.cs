@@ -1,5 +1,4 @@
 using LoreMaster.LorePowers.CityOfTears;
-using LoreMaster.LorePowers.FungalWastes;
 using LoreMaster.Manager;
 using LoreMaster.Randomizer;
 using LoreMaster.SaveManagement;
@@ -23,7 +22,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         if (LoreManager.Instance == null)
             InitializeManager();
         LorePage.PassPowers(PowerManager.GetAllPowers().ToList());
-        InventoryHelper.AddInventoryPage(InventoryPageType.Empty, "Lore", "LoreMaster", "LoreMaster", "metElderbug", LorePage.GeneratePage);
+        InventoryHelper.AddInventoryPage(InventoryPageType.Empty, "Lore", "LoreMaster", "LoreMaster", "LoreArtifact", LorePage.GeneratePage);
         InventoryHelper.AddInventoryPage(InventoryPageType.Empty, "Treasures", "TreasureCharts", "TreasureCharts", "hasTreasureCharts", TreasureHunterPower.BuildInventory);
     }
 
@@ -133,7 +132,6 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
                         PreloadedObjects.Add(subKey, toAdd);
                         GameObject.DontDestroyOnLoad(toAdd);
                     }
-
             try
             {
                 ItemManager.CreateCustomItems();
@@ -257,8 +255,15 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         {
             PowerManager.LoadPowers(saveData);
             PowerManager.LoadPowerData(saveData.PowerData);
-            LoreManager.Instance.CanRead = ModHooks.GetMod("Randomizer 4") is not Mod mod || saveData.HasReadAbility;
-            LoreManager.Instance.CanListen = ModHooks.GetMod("Randomizer 4") is not Mod mod2 || saveData.HasListenAbility;
+            LoreManager.Instance.CanRead = saveData.HasReadAbility;
+            LoreManager.Instance.CanListen = saveData.HasListenAbility;
+            LoreManager.Instance.CleansingScrolls = saveData.CleansingScrolls;
+            LoreManager.Instance.JokerScrolls = saveData.JokerScrolls;
+            SettingManager.Instance.EndCondition = saveData.EndCondition;
+            SettingManager.Instance.NeededLore = saveData.NeededLore;
+            SettingManager.Instance.GameMode = saveData.GameMode;
+            SettingManager.Instance.ElderbugState = saveData.ElderbugState;
+            PowerManager.ControlState = saveData.PageState;
         }
         catch (Exception exception)
         {
@@ -277,6 +282,13 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         saveData.PowerData = PowerManager.PreparePowerData();
         saveData.HasReadAbility = LoreManager.Instance.CanRead;
         saveData.HasListenAbility = LoreManager.Instance.CanListen;
+        saveData.EndCondition = SettingManager.Instance.EndCondition;
+        saveData.NeededLore = SettingManager.Instance.NeededLore;
+        saveData.GameMode = SettingManager.Instance.GameMode;
+        saveData.ElderbugState = SettingManager.Instance.ElderbugState;
+        saveData.PageState = PowerManager.ControlState;
+        saveData.CleansingScrolls = LoreManager.Instance.CleansingScrolls;
+        saveData.JokerScrolls = LoreManager.Instance.JokerScrolls;
         return saveData;
     }
 

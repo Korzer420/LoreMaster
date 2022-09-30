@@ -11,7 +11,7 @@ public class WeDontTalkAboutShadePower : Power
 {
     #region Constructors
 
-    public WeDontTalkAboutShadePower() : base("We don't talk about the Shade", Area.AncientBasin) { }
+    public WeDontTalkAboutShadePower() : base("We don't talk about Shade", Area.AncientBasin) { }
 
     #endregion
 

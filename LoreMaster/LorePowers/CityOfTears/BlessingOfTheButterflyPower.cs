@@ -162,6 +162,8 @@ public class BlessingOfTheButterflyPower : Power
                 fsm.SendEvent("CANCEL");
         }),2);
 
+        _leftHitbox.gameObject.SetActive(false);
+        _rightHitbox.gameObject.SetActive(false);
         _takeDamage = ReflectionHelper.GetMethodInfo(typeof(HealthManager), "TakeDamage");
     }
     

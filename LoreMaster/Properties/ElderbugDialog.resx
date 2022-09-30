@@ -1,0 +1,387 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Elderbug_All_Tasks_Done" xml:space="preserve">
+    <value>You have done it! You learned about everything in this world! Well… almost. There still are some knowledge bits that are not receivable yet. They say, that it may be accessable once the event "Patch 2.1" happens. Whatever that might be. Anyway, this kingdom is now yours. I have nothing to offer you anymore. I might consider leaving this place now… There are still some places elsewhere that are full of knowledge.</value>
+  </data>
+  <data name="Elderbug_Casual_Normal" xml:space="preserve">
+    <value>In this version of Hallownest I've nothing left to offer to you. Good luck on your journey.</value>
+  </data>
+  <data name="Elderbug_Casual_Rando" xml:space="preserve">
+    <value>What an amusing twisted version of this land has been created. May you find your movement items early this run. Hehe...</value>
+  </data>
+  <data name="Elderbug_Done_Task_1" xml:space="preserve">
+    <value>Oh, I can sense the power that coursing through your shell. You managed to obtain a spell, congratulations. As an reward I'll teach you how to comprehent the knowledge written on the tablets.</value>
+  </data>
+  <data name="Elderbug_End" xml:space="preserve">
+    <value>Disappointed? Well I'm sorry, but once "Patch 2.1" happen, there will be a conclusion to this story. Take care of yourself...</value>
+  </data>
+  <data name="Elderbug_Extra_Intro" xml:space="preserve">
+    <value>Mh, but it seems like you'll have problems understanding the text and people of this world. I can teach you those skills, but since I don't want to waste time on a student which dies soon after learning, allow me to put you to a test first.</value>
+  </data>
+  <data name="ELDERBUG_FLOWER_ACCEPT" xml:space="preserve">
+    <value>Oh, thank you very much. I haven't received such a kind hearted gift in years. I... just can't you leave without some kind of reward. Otherwise I'd feel pretty bad. It is not much, but maybe this does help you.</value>
+  </data>
+  <data name="ELDERBUG_FLOWER_DECLINE" xml:space="preserve">
+    <value>No? Oh what a shame. I hope you change you mind about that decision. I'd really appreciate it.</value>
+  </data>
+  <data name="ELDERBUG_FLOWER_REQUEST" xml:space="preserve">
+    <value>Oh! What a beautiful flower you have there. You know, I have a weakness for flowers. The always remind of the peaceful and happy things in life. I'm sorry, if this is a bit rude, but may I have that one?</value>
+  </data>
+  <data name="ELDERBUG_FLOWER_REREQUEST" xml:space="preserve">
+    <value>Ah, you returned to me with this pretty flower. May I have it, this time?</value>
+  </data>
+  <data name="Elderbug_Gain_Listening" xml:space="preserve">
+    <value>Seems like you achieved your first steps into the world of knowledge. I stand by my word of course. Take this.</value>
+  </data>
+  <data name="Elderbug_Met" xml:space="preserve">
+    <value>Greetings little knight! To come so far to defeat some kind of moth god creature, admirable indeed. Curious, how I'm able to know about this? Well, let just say, the knowledge I acquired in my lifetime has allowed to me ascend even beyond the power of those "Higher Beings". Although it might seem impossible to achieve for a small creature like you, it is quite the opposite. Not looking like a big threat may allow you to sneak your way into this kingdom and learning about it without being in danger of being killed by those fools and then crushing them afterwards.</value>
+  </data>
+  <data name="Elderbug_Normal" xml:space="preserve">
+    <value>Taking a normal adventure, I suppose? In this case, I don't have much to offer. Take this relic, this will allow you to control the wisdom of the kingdom. Remember "Knowledge is Power".</value>
+  </data>
+  <data name="Elderbug_Not_Enough_Lore" xml:space="preserve">
+    <value>You're still too weak to be teached the language. Return to me once you obtained 5 different parts of knowledge.</value>
+  </data>
+  <data name="Elderbug_Not_Listening" xml:space="preserve">
+    <value>Want to know what I eat for breakfast? No? Then pick up the ability. Or do you really only want to talk with me and the snail shaman for the rest of your "life"?</value>
+  </data>
+  <data name="Elderbug_Not_Reading" xml:space="preserve">
+    <value>Don't be shy, just pick it up. Mh? Did you expect me to actual teach you how to read this language? Oh silly you. Why waste time on learning such basic skills normally, when M A G I C does the trick.</value>
+  </data>
+  <data name="Elderbug_Pickup_Reminder" xml:space="preserve">
+    <value>Don't rush! I know that you thirsty for the lore, but take your time and pick up my reward first. It is a bit rude ignoring a self crafted present, isn't it?</value>
+  </data>
+  <data name="Elderbug_Randomizer" xml:space="preserve">
+    <value>Going on a twisted adventure, I see. I'll still proceed as normal I suppose.</value>
+  </data>
+  <data name="Elderbug_Randomizer_Not_Randomized" xml:space="preserve">
+    <value>But it seems like that my inventory was unaffected by that. In that case, let me just give the artifact to control the obtained powers. Good luck with your Randomizer. Hehe...</value>
+  </data>
+  <data name="Elderbug_Remind_Task" xml:space="preserve">
+    <value>A bit forgetful aren't we? Climb down the well and return to me with a spell.</value>
+  </data>
+  <data name="Elderbug_Task_1" xml:space="preserve">
+    <value>Below this well, you'll find the forgotten crossroads. Fight your way through it until you reach a creature of void. They will give you a powerful tool which helps you proceeding further into this kingdom. After you obtained it, return to me and I'll teach you how to read the tablet scattered around this place.</value>
+  </data>
+  <data name="Elderbug_Task_10" xml:space="preserve">
+    <value>So… much… POWER! You are so close to be called a "Lore Master". Here two more scrolls to undo curses. Return to me with ALL 60 Powers obtained.</value>
+  </data>
+  <data name="Elderbug_Task_2" xml:space="preserve">
+    <value>Ok, for your next task, gather the knowledge written on these tablets scattered around this kingdom and acquire their power. Note, that to allow some knowledge to be used outside of their normal area, you need to fully understand everything that culture has to offer. Return to me once you obtained 5 different parts of knowledge, then I'll teach you the language to interact with the bugs of this world.</value>
+  </data>
+  <data name="Elderbug_Task_3" xml:space="preserve">
+    <value>Doesn't it feel much better to be able to understand what others are talking about? I think so. Anyway, some bugs may offer you valuable knowledge as well. You should consider talking to anyone that you stumble across your journey. Come back to me after your obtained 10 powers total.</value>
+  </data>
+  <data name="Elderbug_Task_4" xml:space="preserve">
+    <value>You slowly understand how valuable this knowledge is, do you? Take this old relic with you. It allows you to be aware of what knowledge you already understood. Return to me with a total of 15 powers.</value>
+  </data>
+  <data name="Elderbug_Task_5" xml:space="preserve">
+    <value>Some knowledge is placed very… unfortunate. For thoses cases, I'll allow you to use this. This scroll will allow my mind to share the knowledge about the tablet or bug which you touch on the relic. Be careful though, those scrolls can only be used once. Return to me with a total of 20 powers.</value>
+  </data>
+  <data name="Elderbug_Task_6" xml:space="preserve">
+    <value>Not all knowledge of this world is blessed. While I can't relieve a curse on you that easily, I at least can allow your artifact to seal unwanted powers. For this process you have to be in a calm state, on a bench maybe. Here apply this stone to your artifact. Return to me with a total of 30 powers, for even more.</value>
+  </data>
+  <data name="Elderbug_Task_7" xml:space="preserve">
+    <value>You are halfway done! Maybe some day I'll be able to call you "Lore Master" if you keep up that pace. Here is another scroll. This one may cleanse you from cursed knowledge you obtained if used. If there are no cursed pieces of wisdom in this kingdom, this will turn to geo instead. Anyway once you obtained 40 powers, return to me again.</value>
+  </data>
+  <data name="Elderbug_Task_8" xml:space="preserve">
+    <value>How does it feel? Are you afraid of what you could do? Don't waste any thought on something like that. Gain even more knowledge. Let me see 50 powers coursing through you and then I'll reward you even more.</value>
+  </data>
+  <data name="Elderbug_Task_9" xml:space="preserve">
+    <value>Incredible! With all this power, even Higher Beings are pitiful for someone like you, but don't stop now, you can achieve even more!. Take another scroll. Return to me with 55 powers total. You are on the path to ascend above all else!</value>
+  </data>
+  <data name="Elderbug_Tip_BagOfMushrooms" xml:space="preserve">
+    <value>In a search for food, you have to adapt sometimes. Although I wouldn't recommend eating random mushrooms at all.</value>
+  </data>
+  <data name="Elderbug_Tip_BestMenderInTheWorld" xml:space="preserve">
+    <value>There are some bugs that even I respect on a high level even though there knowledge is quite low. The Menderbugs of course! In this rotten corpse of a kingdom they still fulfill their duty with a smile. I'd recommend not hurting them by the way. Else, I'll take care of you. What does that mean? Did you know that turning your save file to steel soul mode is incredibly easy? You figure out the rest...</value>
+  </data>
+  <data name="Elderbug_Tip_BlessingOfTheButterfly" xml:space="preserve">
+    <value>I enjoyed fl... ehm walking through the city. Sure, the rain is annoying but there's a beautiful voice halling through the street. I sometimes wonder, what knowledge is hidden beyond this voice...</value>
+  </data>
+  <data name="Elderbug_Tip_Camouflage" xml:space="preserve">
+    <value>The moss creatures of greenpath liked to hide tablets pointing towards the history of this area. I'd take a closer look at the room with the moss knights.</value>
+  </data>
+  <data name="Elderbug_Tip_CaringShell" xml:space="preserve">
+    <value>Being alone is a terrible feeling. In those cases some of us flee into their dreams to imagine a better life. So did this girl, before the left this city. But I think the infection got her at last. Poor girl, trapped inside the depth of the wastes, all alone.</value>
+  </data>
+  <data name="Elderbug_Tip_ConcussiveStrike" xml:space="preserve">
+    <value>There is a big caterpillar located within the ruins of this kingdom. This is a really old creature, which probably has gathered a lot of knowledge through his lifetime.</value>
+  </data>
+  <data name="Elderbug_Tip_DeliciousMeal" xml:space="preserve">
+    <value>I remember a banket with a lot of eggs which was served somewhere in the city. They disappeared fairly quickly though, though not because the bugs eat them quickly, rather because they were stolen by someone. I always suspected the theft fleed into the kitchen of the Bath House. I wonder if this is true...</value>
+  </data>
+  <data name="Elderbug_Tip_DiamondCore" xml:space="preserve">
+    <value>There is another adventure with a familiar looking mask traveling through this kingdom. He held some kind of glowing stone. Maybe you can catch up to him in the crystal peak?</value>
+  </data>
+  <data name="Elderbug_Tip_DiamondDash" xml:space="preserve">
+    <value>Some cute girl climbed down this well not a long time ago. Considering that she wear a helmet and had a pickaxe, I'd guess she walked to crystal peaks.</value>
+  </data>
+  <data name="Elderbug_Tip_DiminishingCurse" xml:space="preserve">
+    <value>The pale king hides the secret of his actions somewhere in his palace. It would take a closer look at the walls there.</value>
+  </data>
+  <data name="Elderbug_Tip_DramaticEntrance" xml:space="preserve">
+    <value>Fighting with strenght? How pathetic, but it seems fitting with those weird bugs that go to the colosseum. Like this green caped guys, talking about some kind triforce that he need to collect... wait, did I mixed something up?</value>
+  </data>
+  <data name="Elderbug_Tip_DreamBlessing" xml:space="preserve">
+    <value>A piece of knowledge is linked to the artifact of the Moth tribe.</value>
+  </data>
+  <data name="Elderbug_Tip_EternalSentinel" xml:space="preserve">
+    <value>If you ignore his odor, the dung defender is pretty kind hearted and pleasant bug.</value>
+  </data>
+  <data name="Elderbug_Tip_EternalValor" xml:space="preserve">
+    <value>Although the Mantis of the Wastes define themselves through strength, you can't deny that they are certainly intelligent.</value>
+  </data>
+  <data name="Elderbug_Tip_EyeOfTheWatcher" xml:space="preserve">
+    <value>The bugs of the city always felt being watched. What fascinates me is that they always seemed so surprised once they learned that they truly have been watched. I mean, what do you expect if a bug titled "The Watcher" with a telescope is hiding inside a big tower?</value>
+  </data>
+  <data name="Elderbug_Tip_FlowerRing" xml:space="preserve">
+    <value>What a drama it had to be that one of the five knights had a relationship with a mantis. Did the father kill his own daughter after he found out? Who knows, that is another mystery which became forgotten in time.</value>
+  </data>
+  <data name="Elderbug_Tip_FollowTheLight" xml:space="preserve">
+    <value>It leaves me a bit confused that some creatures actual embraces the infection, especially the moss ones. Do you think the words the spoke are coming from Radiance herself or is the bug still talking through his own mind?</value>
+  </data>
+  <data name="Elderbug_Tip_FriendOfTheJellyfish" xml:space="preserve">
+    <value>If you ask me, the jellyfishs seem a bit out of place. But Monomon seemed to like studying them. Maybe somewhere she has written down her notes.</value>
+  </data>
+  <data name="Elderbug_Tip_GiftOfUnn" xml:space="preserve">
+    <value>From what I heard, the pilgrims where sometimes... a bit tedious to tolerate. I recall an incident where one pilgrim kicked a tablet enforcing the way of Unn, off the path. Let's just say... the pilgrim reached the city not in one piece. This happened somewhere above the Stone Sanctuary.</value>
+  </data>
+  <data name="Elderbug_Tip_GloryOfTheWealth" xml:space="preserve">
+    <value>Imagine walking all the way down the pilgrim's path only to be held outside of the city with a gate. The life of a pilgrims seems hard sometimes.</value>
+  </data>
+  <data name="Elderbug_Tip_GraspOfLife" xml:space="preserve">
+    <value>The creatures of Greenpath were caution of the White Lady. The even put a warning in front of her territory. Well, before she arrived it was there area after all.</value>
+  </data>
+  <data name="Elderbug_Tip_GrassBombardement" xml:space="preserve">
+    <value>The is another lonely grave within the Garden of the Queen. I always wondered who could've created that. Maybe the ghost of those who are buried there, might know the answer.</value>
+  </data>
+  <data name="Elderbug_Tip_GreaterMind" xml:space="preserve">
+    <value>Did you walk by the temple below? They say within this giant egg is some kind of lore hidden. I know the truth, but since this is supposed to be the end of your journey, I'll tell no more.</value>
+  </data>
+  <data name="Elderbug_Tip_HappyFate" xml:space="preserve">
+    <value>Some people assume that they stand above others just because of their appearance or wealth. Nothing comes close to the power knowledge offers. This woman... her ignorance made me sick. Should I...? No, stop thinking about it. Scorching the weak is not an option Elderbug... yet.</value>
+  </data>
+  <data name="Elderbug_Tip_HotStreak" xml:space="preserve">
+    <value>After the bugs moved through the big door into the city they needed to climb down to reach the streets. For a normal bug that seems highly dangerous. Maybe there is a warning sign or something hidden on the path?</value>
+  </data>
+  <data name="Elderbug_Tip_Imposter" xml:space="preserve">
+    <value>A shared mind comes with many weaknesses and strengths. Personally, I prefer being on my own.</value>
+  </data>
+  <data name="Elderbug_Tip_Infested" xml:space="preserve">
+    <value>Even in a society of spiders, they have someone is charge of helping birthing bug. I heard rumors that after the beast put herself to sleep, this creature moved down to from their village. You might want to take some kind of light source with you though.</value>
+  </data>
+  <data name="Elderbug_Tip_JellyBelly" xml:space="preserve">
+    <value>Monomon had to write down some of her research somewhere. Maybe a closer look inside her archive can't hurt.</value>
+  </data>
+  <data name="Elderbug_Tip_JellyfishFlow" xml:space="preserve">
+    <value>The owner of the archive Monomon was probably the most knowledgable bug in this entire kingdom. It is a shame that I didn't a chance to talk to her, before she became a dreamer.</value>
+  </data>
+  <data name="Elderbug_Tip_JonisProtection" xml:space="preserve">
+    <value>Calling someone a heretic for studying this blue substance is very telling if you ask me. There is a reason why the king did that. Maybe he feared the power? A secret waiting for being revealed someday.</value>
+  </data>
+  <data name="Elderbug_Tip_LaughableThreat" xml:space="preserve">
+    <value>Before you arrived here, there was some kind of annoying bug only talking about his 57 precepts. I know I said every bit of knowledge is important, but this case is an exception...</value>
+  </data>
+  <data name="Elderbug_Tip_LifebloodOmen" xml:space="preserve">
+    <value>There are many damaged walls around this kingdom. Even behind something like that, a valuable tablet could be hidden. Taking a closer look at the Cliffs would be recommended.</value>
+  </data>
+  <data name="Elderbug_Tip_MantisStyle" xml:space="preserve">
+    <value>The style of fighting from the mantis is impressive. Maybe I should start studying it, to expand my knowledge even more.</value>
+  </data>
+  <data name="Elderbug_Tip_MarissasAudience" xml:space="preserve">
+    <value>There are some posters talking about the beautiful Marissa somewhere in the city. You have to search EVERYWHERE for knowledge, even on something like that. Imagine some kind a bug hold its nail against your throat and will only let you leave if you can name the actress that is on stage today. Would you really want to be killed just because you only glanced over? I THINK NOT.</value>
+  </data>
+  <data name="Elderbug_Tip_MaskOvercharge" xml:space="preserve">
+    <value>Masks are truly fascinating, aren't they? You hide your true self and live on with some other identity.</value>
+  </data>
+  <data name="Elderbug_Tip_MindblastOfUnn" xml:space="preserve">
+    <value>This lifeblood substance even reached the top of Greenpath. I remember there being a tablet as well somewhere.</value>
+  </data>
+  <data name="Elderbug_Tip_OneOfUs" xml:space="preserve">
+    <value>The thorns in the wastes are not caused by the shrooms or the mantis but rather by the White Lady herself. You can see that yourself if you go to through the crossing point of those areas.</value>
+  </data>
+  <data name="Elderbug_Tip_OverwhelmingPower" xml:space="preserve">
+    <value>I heard rumors that the bugs of the soul sanctum have written some kind of "Record Bela". After I searched through there with the annoying spell twisted on my back, I decided to take one of their computers and "hack" the text onto it. Hm? Don't ask me how, be real you are also annoyed about the representation in EVERY SINGLE MOVIE where this is a thing. Just imagine that, roll your eyes and proceed your journey.</value>
+  </data>
+  <data name="Elderbug_Tip_PaleLuck" xml:space="preserve">
+    <value>The Mantis created some kind of thorn trials to practice their agility. But nowadays this area is flooded with the shrooms again. I'd be curious of what the shroom say about destroying their biom to create such trials.</value>
+  </data>
+  <data name="Elderbug_Tip_PureSpirit" xml:space="preserve">
+    <value>The bugs of the soul sanctum had the right idea, but hiding in the city was there biggest mistake. Only the knowledge of all of Hallownest can defeat the infection. I mean, look at me. Am I infected? Of course not!</value>
+  </data>
+  <data name="Elderbug_Tip_QueenThorns" xml:space="preserve">
+    <value>Knowledge of a higher being is interesting indeed. If you want to achieve your purpose who will stumble upon this knowledge anyway.</value>
+  </data>
+  <data name="Elderbug_Tip_RelentlessSwarm" xml:space="preserve">
+    <value>Ugh, I can't stand for the flukes invading the waterways. Even if one of them is able to "talk", there isn't much knowledge to gather.</value>
+  </data>
+  <data name="Elderbug_Tip_ReluctantPilgrim" xml:space="preserve">
+    <value>I always wondered where the pilgrims came from. I thought mortal bugs would lose their mind once the left the bounds of this kingdom. The start of their journey is below in the crossroads somewhere.</value>
+  </data>
+  <data name="Elderbug_Tip_Requiem" xml:space="preserve">
+    <value>Did you know that when I arrived I had to bury the bug that normally buries the dead? Oh how ironic.</value>
+  </data>
+  <data name="Elderbug_Tip_ReturnToUnn" xml:space="preserve">
+    <value>Look at the top of every room. Behind the grass and vines might be hidden knowledge. I wonder if this "Shaw" screaming creature just ignored it or didn't notice it.</value>
+  </data>
+  <data name="Elderbug_Tip_SacredShell" xml:space="preserve">
+    <value>The knowledge of the truth that the Pale King sealed away has to be the most precious.</value>
+  </data>
+  <data name="Elderbug_Tip_ScrewTheRules" xml:space="preserve">
+    <value>Right before the big door leading to this town and the kingdom is a tablet written about obeying to the rules of this kingdom. Considering that you couldn't read at the time, it couldn't stop you, I suppose.</value>
+  </data>
+  <data name="Elderbug_Tip_ShadowForged" xml:space="preserve">
+    <value>There is a hidden room somewhere in the white palace which holds the origin of the guards that you can find there.</value>
+  </data>
+  <data name="Elderbug_Tip_ShiningBound" xml:space="preserve">
+    <value>Oh the wisdom, so near the Pale King himself. I wonder if it was written by him.</value>
+  </data>
+  <data name="Elderbug_Tip_SoulExtractEfficiency" xml:space="preserve">
+    <value>Hidden deep in the soul sanctum there is another record. Trust your feet and ehm.. ears to find it.</value>
+  </data>
+  <data name="Elderbug_Tip_StagAdoption" xml:space="preserve">
+    <value>Personally, I'd not take a stag to travel through this kingdom, even if I wouldn't be able to telep.. ehm running really quickly.</value>
+  </data>
+  <data name="Elderbug_Tip_TouchGrass" xml:space="preserve">
+    <value>With so many thorns around I'd think twice before proceeding to walk through Greenpath. But even there you'd have to look for knowledge.</value>
+  </data>
+  <data name="Elderbug_Tip_Tourist" xml:space="preserve">
+    <value>Isn't it strange that the only mentioning of the Hollow Knight is at the fountain in the city? I mean, maybe this was intended to hide the sad truth behind it existence. Truly a tragedy...</value>
+  </data>
+  <data name="Elderbug_Tip_TreasureHunter" xml:space="preserve">
+    <value>You have to admire the courage of the relic seeker that opened some kind of "shop" within a foreign city. I prefer staying up here for my sleep, much warmer and as a bonus you also stay dry.</value>
+  </data>
+  <data name="Elderbug_Tip_UnitedWeStand" xml:space="preserve">
+    <value>Did you visit Leg Eater? Definitely an interesting creature isn't it. I wonder if the shrooms below whispered them something, that they became insane.</value>
+  </data>
+  <data name="Elderbug_Tip_WeDontTalkAboutShade" xml:space="preserve">
+    <value>Deep below the kingdom and even the palace there is a door which seals the truth of the king's actions. Before that, there might be a tablet telling about this.</value>
+  </data>
+  <data name="Elderbug_Tip_WellFocused" xml:space="preserve">
+    <value>On the path where you took your first steps into this kingdom, there might be some kind of tablet.</value>
+  </data>
+  <data name="Elderbug_Tip_WisdomOfTheSage" xml:space="preserve">
+    <value>Under the mushrooms there is a special one which some tablet talks about. Even if this tablet is hidden beyond the bounds of a normal bug of this kingdom, for someone like you this shouldn't be a problem though.</value>
+  </data>
+  <data name="Elderbug_Tip_YouLikeJazz" xml:space="preserve">
+    <value>The bees of the hive have isoleted themself from the rest of the kingdom. This didn't prevent me from entering their domain though. Maybe you should visit them, too.</value>
+  </data>
+</root>

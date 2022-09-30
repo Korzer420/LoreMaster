@@ -20,10 +20,10 @@ public class ZoteLocation : AutoLocation
     {
         if(string.Equals(fsm.FsmName, "Activation"))
             fsm.GetState("Init").ClearTransitions();
-        else
-        {
-            fsm.GetState("Zote Trapped?").ClearTransitions();
-            fsm.GetState("Zote Trapped?").AddTransition("DESTROY", "Cut");
-        }
+        //else
+        //{
+        //    fsm.GetState("Zote Trapped?").ClearTransitions();
+        //    fsm.GetState("Zote Trapped?").AddTransition("DESTROY", "Cut");
+        //}
     }
 }

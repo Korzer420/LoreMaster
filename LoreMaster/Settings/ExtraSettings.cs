@@ -1,10 +1,6 @@
 using LoreMaster.Enums;
 using LoreMaster.LorePowers;
 using LoreMaster.Manager;
-using MenuChanger;
-using MenuChanger.MenuElements;
-using System;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace LoreMaster.Settings;
@@ -34,6 +30,12 @@ internal class ExtraSettings
     public Dictionary<string, PowerTag> PowerTags { get; set; } = new();
 
     public bool SteelSoul { get; set; }
+
+    public CursedLore UseCursedLore { get; set; }
+
+    public int MinCursedLore { get; set; } = 1;
+
+    public int MaxCursedLore { get; set; } = 10;
 
     #endregion
 }

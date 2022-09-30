@@ -350,8 +350,8 @@ public static class RandomizerManager
     {
         if (!RandomizerMod.RandomizerMod.IsRandoSave)
         {
-            LoreManager.Instance.CanListen = true;
-            LoreManager.Instance.CanRead = true;
+            LoreManager.Instance.CanListen = SettingManager.Instance.GameMode == GameMode.Normal;
+            LoreManager.Instance.CanRead = SettingManager.Instance.GameMode == GameMode.Normal;
             return LoreSetOption.Default;
         }
         else

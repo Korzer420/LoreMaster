@@ -94,7 +94,6 @@ internal class PureSpiritPower : Power
             _orbContainer.transform.localScale = new(1f, 1f, 1f);
         }
         On.HutongGames.PlayMaker.Actions.SetGravity2dScale.OnEnter += SetGravity2dScale_OnEnter;
-        
     }
 
     protected override void Terminate()

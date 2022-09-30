@@ -10,7 +10,7 @@ public abstract class Power
 {
     #region Members
 
-    protected bool _initialized;
+    protected bool _initialized = false;
     protected Coroutine _runningCoroutine;
 
     #endregion
@@ -94,7 +94,7 @@ public abstract class Power
     /// <summary>
     /// Initialize the power. (Modifies fsm and get prefabs). This get's called the first time this power calls<see cref="Enable"/> once you entered a save file.
     /// </summary>
-    protected virtual void Initialize() => _initialized = true;
+    protected virtual void Initialize() { }
 
     /// <summary>
     /// Called when powers disable themself entirely (so that <see cref="Initialize"/> will be called upon next activation).
@@ -132,8 +132,10 @@ public abstract class Power
     {
         try
         {
+            LoreMaster.Instance.Log("Called Initialize");
             if (_initialized)
                 return true;
+            LoreMaster.Instance.Log("Do Initialize");
             Initialize();
             _initialized = true;
             return true;
@@ -216,8 +218,10 @@ public abstract class Power
             }
         }
         if (backToMenu)
+        { 
             Terminate();
-        _initialized = !backToMenu;
+            _initialized = false;
+        }
     }
 
     #endregion

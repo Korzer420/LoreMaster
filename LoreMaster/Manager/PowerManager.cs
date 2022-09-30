@@ -123,6 +123,11 @@ internal static class PowerManager
     /// </summary>
     public static bool CanPowersActivate { get; set; } = true;
 
+    /// <summary>
+    /// Gets or sets the control state of the power inventory page.
+    /// </summary>
+    public static PowerControlState ControlState { get; set; }
+
     #endregion
 
     #region Methods
@@ -225,10 +230,14 @@ internal static class PowerManager
                         _powerList[key].Tag = PowerTag.Remove;
                     break;
             }
-        else
+        else if (SettingManager.Instance.GameMode == GameMode.Normal)
             // Reset tags to default.
             foreach (string key in _powerList.Keys)
+            {
                 _powerList[key].Tag = _powerList[key].DefaultTag;
+                _powerList[key].StayTwisted = false;
+            }
+
         GloryOfTheWealthPower.GloryCost = 0;
         foreach (string key in TreasureHunterPower.Treasures.Keys.ToList())
             TreasureHunterPower.Treasures[key] = TreasureState.NotObtained;
@@ -258,9 +267,12 @@ internal static class PowerManager
     {
         ObtainedPowers.Clear();
         foreach (string key in saveData.Tags.Keys)
-            _powerList[key].Tag = saveData.Tags[key];
+        {
+            _powerList[key].Tag = saveData.Tags[key].Item1;
+            _powerList[key].StayTwisted = saveData.Tags[key].Item2;
+        }
 
-        foreach (string key in saveData.AcquiredPowersKeys)
+        foreach (string key in saveData.ObtainedPowerKeys)
         {
             // Since this method would normally activate the power instantly, we add the power later. This is because I'm unsure when local settings are loaded.
             if (string.Equals(key, "dream warrior"))
@@ -295,15 +307,15 @@ internal static class PowerManager
     {
         foreach (string key in _powerList.Keys)
         {
-            saveData.Tags.Add(key, _powerList[key].Tag);
+            saveData.Tags.Add(key, (_powerList[key].Tag, _powerList[key].StayTwisted));
             if (ObtainedPowers.Contains(_powerList[key]))
-                saveData.AcquiredPowersKeys.Add(key);
+                saveData.ObtainedPowerKeys.Add(key);
         }
 
         // Place the fake powers in the save data as well.
         if (ObtainedPowers.Any(x => x is PlaceholderPower))
             for (int i = 0; i < ObtainedPowers.Count(x => x is PlaceholderPower); i++)
-                saveData.AcquiredPowersKeys.Add("dream warrior");
+                saveData.ObtainedPowerKeys.Add("dream warrior");
     }
 
     /// <summary>
@@ -396,8 +408,9 @@ internal static class PowerManager
         // Enables the powers beforehand. This has to be done because otherwise the effects will only stay permanent once the player enters the area.
         List<Power> toActivate = new();
         List<Power> allPowers = new(ObtainedPowers);
-        toActivate.AddRange(allPowers.Where(x => x.Tag == PowerTag.Global));
-        toActivate.AddRange(_powerList.Select(x => x.Value).Where(x => x.Tag == PowerTag.Global && !allPowers.Contains(x)));
+        if (SettingManager.Instance.GameMode == GameMode.Hard || SettingManager.Instance.GameMode == GameMode.Heroic)
+            toActivate.AddRange(allPowers.Where(x => x.Tag == PowerTag.Global));
+        toActivate.AddRange(_powerList.Select(x => x.Value).Where(x => x.Tag == PowerTag.Global && allPowers.Contains(x)));
 
         foreach (Area area in (Area[])Enum.GetValues(typeof(Area)))
             if (IsAreaGlobal(area))

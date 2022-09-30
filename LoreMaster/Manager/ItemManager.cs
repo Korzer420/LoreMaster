@@ -1,4 +1,5 @@
 using ItemChanger;
+using ItemChanger.Components;
 using ItemChanger.Items;
 using ItemChanger.Locations;
 using ItemChanger.Placements;
@@ -6,38 +7,42 @@ using ItemChanger.Tags;
 using ItemChanger.UIDefs;
 using LoreMaster.CustomItem;
 using LoreMaster.CustomItem.Locations;
-using LoreMaster.Helper;
 using LoreMaster.LorePowers.CityOfTears;
 using LoreMaster.Randomizer.Items;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace LoreMaster.Manager;
 
 internal static class ItemManager
 {
-    private static List<AbstractItem> _customItems = new();
+    internal static List<AbstractPlacement> CustomPlacements { get; set; } = new();
+
+    internal static void DefineItems()
+    {
+        ItemChangerMod.CreateSettingsProfile(false);
+
+    }
 
     internal static void CreateCustomItems()
     {
         ItemChangerMod.CreateSettingsProfile(false);
+
         // Add items for the black egg temple teleporter.
-        List<MutablePlacement> teleportItems = new();
         MutablePlacement teleportPlacement = new CoordinateLocation() { x = 35.0f, y = 5.4f, elevation = 0, sceneName = "Ruins1_27", name = "City_Teleporter" }.Wrap() as MutablePlacement;
         teleportPlacement.Cost = new Paypal { ToTemple = true };
         teleportPlacement.Add(new TouristMagnetItem("City_Teleporter"));
-        teleportItems.Add(teleportPlacement);
+        CustomPlacements.Add(teleportPlacement);
 
         MutablePlacement secondPlacement = new CoordinateLocation() { x = 57f, y = 5f, elevation = 0, sceneName = "Room_temple", name = "Temple_Teleporter" }.Wrap() as MutablePlacement;
         secondPlacement.Cost = new Paypal { ToTemple = false };
         secondPlacement.Add(new TouristMagnetItem("Temple_Teleporter"));
-        teleportItems.Add(secondPlacement);
-        ItemChangerMod.AddPlacements(teleportItems);
+        CustomPlacements.Add(secondPlacement);
 
         // Treasure Hunter stuff
         try
         {
-            List<AbstractPlacement> treasurePlacements = new();
             LemmSignLocation lemmSignLocation = new()
             {
                 sceneName = "Ruins1_05b",
@@ -58,8 +63,7 @@ internal static class ItemManager
                     sprite = new CustomSprite("Lemms_Order", false)
                 }
             });
-            _customItems.AddRange(lemmPlacement.Items);
-            treasurePlacements.Add(lemmPlacement);
+            CustomPlacements.Add(lemmPlacement);
 
             // Charts
             ShopLocation iselda2 = Finder.GetLocation("Iselda_Treasure") as ShopLocation;
@@ -81,7 +85,7 @@ internal static class ItemManager
             shopPlacement.defaultShopItems = DefaultShopItems.IseldaCharms | DefaultShopItems.IseldaMaps
                   | DefaultShopItems.IseldaMapMarkers | DefaultShopItems.IseldaMapPins | DefaultShopItems.IseldaQuill;
 
-            treasurePlacements.Add(shopPlacement);
+            CustomPlacements.Add(shopPlacement);
             List<int> chartPrices = new() { 1, 30, 69, 120, 160, 200, 230, 290, 420, 500, 750, 870, 1000, 1150 };
             for (int i = 1; i < 15; i++)
             {
@@ -99,12 +103,12 @@ internal static class ItemManager
                         sprite = new CustomSprite("Treasure_Chart", false)
                     },
                     tags = new()
-                {
-                    new PDBoolShopReqTag()
                     {
-                        reqVal = true,
-                        fieldName = "lemm_allow"
-                    },
+                        new PDBoolShopReqTag()
+                        {
+                            reqVal = true,
+                            fieldName = "lemm_allow"
+                        },
                     new CostTag()
                     {
                          Cost = new GeoCost(rolledPrice)
@@ -113,10 +117,8 @@ internal static class ItemManager
                 };
                 shopPlacement.Items.Add(item);
             }
-            _customItems.AddRange(shopPlacement.Items);
 
             List<AbstractItem> availableTreasures = TreasureHunterPower.GetTreasureItems();
-            _customItems.AddRange(availableTreasures);
             // Place the treasures
             for (int i = 0; i < 14; i++)
                 if (Finder.GetLocation("Treasure_" + (i + 1)) == null)
@@ -124,10 +126,9 @@ internal static class ItemManager
                     TreasureLocation treasureLocation = TreasureLocation.GenerateLocation(i);
                     AbstractPlacement abstractPlacement = treasureLocation.Wrap();
                     abstractPlacement.Items.Add(availableTreasures[i]);
-                    treasurePlacements.Add(abstractPlacement);
+                    CustomPlacements.Add(abstractPlacement);
                     Finder.DefineCustomLocation(treasureLocation);
                 }
-            ItemChangerMod.AddPlacements(treasurePlacements);
         }
         catch (Exception exception)
         {
@@ -156,21 +157,234 @@ internal static class ItemManager
                 sprite = new CustomSprite("Stag_Egg", false)
             }
         });
-        ZoteLocation zote = new ZoteLocation()
+        ZoteLocation zote = new()
         {
             sceneName = "Deepnest_33",
-             flingType = FlingType.DirectDeposit,
-              name = "Zote_Deepnest"
+            flingType = FlingType.DirectDeposit,
+            name = "Zote_Deepnest"
         };
-        
-        ItemChangerMod.AddPlacements(new AbstractPlacement[] { stagPlacement, zote.Wrap() });
+        CustomPlacements.AddRange(new AbstractPlacement[] { stagPlacement, zote.Wrap() });
+
+        if (SettingManager.Instance.GameMode != Enums.GameMode.Normal)
+        {
+            AbstractItem[] elderbugRewards = new AbstractItem[]
+            {
+                new BoolItem()
+                {
+                    fieldName = "Read",
+                    name = "Read_Ability",
+                    setValue = true,
+                    UIDef = new BigUIDef()
+                    {
+                        name = new BoxedString("Reading"),
+                        shopDesc = new BoxedString("This will be very helpful. Trust me on this one."),
+                        sprite = (Finder.GetItem("World_Sense").UIDef.Clone() as BigUIDef).sprite,
+                        descOne = new BoxedString("You finally learnt how to read!"),
+                        descTwo = new BoxedString("You can now comprehend the knowledge written down in the kingdom."),
+                        take = new BoxedString("You learnt:"),
+                        bigSprite = (Finder.GetItem("World_Sense").UIDef.Clone() as BigUIDef).bigSprite
+                    }
+                },
+                new BoolItem()
+                {
+                    fieldName = "Listen",
+                    name = "Listen_Ability",
+                    setValue = true,
+                    UIDef = new BigUIDef()
+                    {
+                        name = new BoxedString("Listening"),
+                        shopDesc = new BoxedString("You should not be able to see this... I mean, you can't understand me."),
+                        sprite = (Finder.GetItem("World_Sense").UIDef.Clone() as BigUIDef).sprite,
+                        take = new BoxedString("You learnt:"),
+                        descOne = new BoxedString("You finally learnt how to listen!"),
+                        descTwo = new BoxedString("You can now \"communicate\" with the residents of Hallownest."),
+                        bigSprite = (Finder.GetItem("World_Sense").UIDef.Clone() as BigUIDef).bigSprite
+                    }
+                },
+                new BoolItem()
+                {
+                    name = "Lore_Page",
+                    fieldName = "LorePage",
+                    setValue = true,
+                    UIDef = new BigUIDef()
+                    {
+                        name = new BoxedString("Lore Page"),
+                        shopDesc = new BoxedString("This will be very helpful. Trust me on this one."),
+                        sprite = (Finder.GetItem("Hunter's_Journal").UIDef.Clone() as BigUIDef).sprite,
+                        descOne = new BoxedString("You can now sense which knowledge you acquired."),
+                        descTwo = new BoxedString("Open the menu and navigate to the Lore Powers page to see what you've acquired so far."),
+                        take = new BoxedString("You got:"),
+                        bigSprite = (Finder.GetItem("Hunter's_Journal").UIDef.Clone() as BigUIDef).bigSprite
+                    }
+                },
+                new IntItem()
+                {
+                    amount = 1,
+                    fieldName = "Joker_Scroll",
+                    name = "Joker_Scroll",
+                    UIDef = new MsgUIDef()
+                    {
+                        name = new BoxedString("Knowledge Scroll"),
+                        sprite = new CustomSprite("SummoningScroll", false),
+                        shopDesc = new BoxedString("This scroll was crafted by Elderbug to learn from his experience.")
+                    },
+                    tags = new()
+                    {
+                        new CostTag()
+                        {
+                            Cost = new GeoCost(350)
+                        }
+                    }
+                },
+                new BoolItem()
+                {
+                    name = "Lore_Page_Control",
+                    fieldName = "LorePageControl",
+                    setValue = true,
+                    UIDef = new BigUIDef()
+                    {
+                        name = new BoxedString("Lore Control"),
+                        shopDesc = new BoxedString("This will be very helpful. Trust me on this one."),
+                        sprite = (Finder.GetItem("Hunter's_Journal").UIDef.Clone() as BigUIDef).sprite,
+                        descOne = new BoxedString("Inserting the stone into the tablet awakens its hidden power"),
+                        descTwo = new BoxedString("You can now toggle unwanted powers on and off. Can only toggle obtained non cursed abilities. Only useable on a bench."),
+                        take = new BoxedString("Lore Tablet upgraded with:"),
+                        bigSprite = (Finder.GetItem("Hunter's_Journal").UIDef.Clone() as BigUIDef).bigSprite
+                    }
+                },
+                new CleansingScrollItem()
+                {
+                    amount = 1,
+                    fieldName = "CleansingScroll",
+                    name = "Cleansing_Scroll",
+                    UIDef = new MsgUIDef()
+                    {
+                        name = new BoxedString("Cleansing Scroll"),
+                        sprite = new CustomSprite("CurseDispell", false),
+                        shopDesc = new BoxedString("This scroll was crafted by Elderbug to cleanse yourself from cursed lore.")
+                    },
+                    tags = new()
+                    {
+                        new CostTag()
+                        {
+                            Cost = new GeoCost(700)
+                        }
+                    }
+                },
+                new IntItem()
+                {
+                    amount = 1,
+                    fieldName = "Joker_Scroll",
+                    name = "Joker_Scroll",
+                    UIDef = new MsgUIDef()
+                    {
+                        name = new BoxedString("Knowledge Scroll"),
+                        sprite = new CustomSprite("SummoningScroll", false),
+                        shopDesc = new BoxedString("This scroll was crafted by Elderbug to learn from his experience.")
+                    },
+                    tags = new()
+                    {
+                        new CostTag()
+                        {
+                            Cost = new GeoCost(350)
+                        }
+                    }
+                },
+                new CleansingScrollItem()
+                {
+                    amount = 2,
+                    fieldName = "CleansingScroll",
+                    name = "Cleansing_Scroll_Double",
+                    UIDef = new MsgUIDef()
+                    {
+                        name = new BoxedString("Cleansing Scroll Pack"),
+                        sprite = new CustomSprite("CurseDispell", false),
+                        shopDesc = new BoxedString("These scrolls were crafted by Elderbug to cleanse yourself from cursed lore.")
+                    },
+                    tags = new()
+                    {
+                        new CostTag()
+                        {
+                            Cost = new GeoCost(1400)
+                        }
+                    }
+                },
+                new IntItem()
+                {
+                    amount = 1,
+                    fieldName = "Joker_Scroll",
+                    name = "Joker_Scroll",
+                    UIDef = new MsgUIDef()
+                    {
+                        name = new BoxedString("Knowledge Scroll"),
+                        sprite = new CustomSprite("SummoningScroll", false),
+                        shopDesc = new BoxedString("This scroll was crafted by Elderbug to learn from his experience.")
+                    },
+                    tags = new()
+                    {
+                        new CostTag()
+                        {
+                            Cost = new GeoCost(350)
+                        }
+                    }
+                },
+            };
+            for (int i = 0; i < elderbugRewards.Length; i++)
+            {
+                ElderbugLocation elderbugLocation = new()
+                {
+                    sceneName = "Town",
+                    name = $"Elderbug_Reward_{i + 1}",
+                    flingType = FlingType.Everywhere
+                };
+                AbstractPlacement placement = elderbugLocation.Wrap();
+                placement.Items.Add(elderbugRewards[i]);
+                CustomPlacements.Add(placement);
+            }
+        }
+
+        PathOfPainLocation pop = new()
+        {
+            flingType = FlingType.DirectDeposit,
+            name = "Path_of_Pain-End_Scene",
+            sceneName = "White_Palace_20",
+        };
+        AbstractPlacement PoP = pop.Wrap();
+        PoP.Items.Add(new BoolItem()
+        {
+            fieldName = "PopLore",
+            name = "Lore_Tablet-Path_of_Pain_Reward",
+            setValue = true,
+            UIDef = new MsgUIDef()
+            { 
+                name = new BoxedString("Sacred Shell"),
+                shopDesc = new BoxedString("This is a secret, that the Pale King tried to hide as best as he can."),
+                sprite = new CustomSprite("Tablets/WhitePalace", false)
+            }
+        });
+        CustomPlacements.Add(PoP);
+
+        RecordBelaLocation bela = new()
+        {
+            sceneName = "Ruins1_30",
+            flingType = FlingType.DirectDeposit,
+            name = "Record_Bela",
+        };
+        AbstractPlacement currentPlacement = bela.Wrap();
+        currentPlacement.Items.Add(NpcItem.CreateItem("Lore_Tablet_Sanctum_Spell_Twister", "MAGE_COMP_02",
+            "A hidden lore tablet deep within the Soul Sanctum.", "Tablets/CityOfTears", "Lore Tablets", false));
+        CustomPlacements.Add(currentPlacement);
+        ItemChangerMod.AddPlacements(CustomPlacements);
     }
 
     /// <summary>
-    /// Reset all items, so that can be obtained again.
+    /// Reset all items, so that they can be obtained again.
     /// </summary>
     internal static void ResetItems()
     {
-        _customItems.ForEach(x => x.RefreshObtained());
+        CustomPlacements.ForEach(x => x.Items.ForEach(x => x.RefreshObtained()));
     }
+
+    internal static T GetLocationByName<T>(string name) where T : AbstractLocation =>
+        ((AutoPlacement)CustomPlacements.FirstOrDefault(x => string.Equals(x.Name, name))).Location as T;
 }
