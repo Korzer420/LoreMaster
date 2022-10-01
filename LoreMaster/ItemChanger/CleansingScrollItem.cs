@@ -2,7 +2,7 @@ using ItemChanger.Items;
 using LoreMaster.Manager;
 using System.Linq;
 
-namespace LoreMaster.CustomItem;
+namespace LoreMaster.ItemChanger;
 
 internal class CleansingScrollItem : IntItem
 {

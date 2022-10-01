@@ -7,7 +7,7 @@ using ItemChanger.Util;
 using LoreMaster.Randomizer;
 using System.Linq;
 
-namespace LoreMaster.CustomItem.Locations
+namespace LoreMaster.ItemChanger.Locations
 {
     internal class LemmSignLocation : AutoLocation
     {

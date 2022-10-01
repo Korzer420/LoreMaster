@@ -6,7 +6,7 @@ using ItemChanger.Locations;
 using ItemChanger.Util;
 using LoreMaster.Helper;
 
-namespace LoreMaster.CustomItem;
+namespace LoreMaster.ItemChanger;
 
 internal class PathOfPainLocation : AutoLocation
 {

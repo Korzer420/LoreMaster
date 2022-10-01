@@ -1,7 +1,7 @@
 using ItemChanger;
 using ItemChanger.Items;
 using ItemChanger.UIDefs;
-using LoreMaster.CustomItem;
+using LoreMaster.ItemChanger;
 
 namespace LoreMaster.Randomizer.Items;
 
@@ -13,7 +13,7 @@ internal class NpcItem : LoreItem
     {
         return new()
         {
-            name = "Lore_Tablet-" + itemName,
+            name = itemName.StartsWith("Lore_Tablet-") ? itemName : "Lore_Tablet-" + itemName,
             UIDef = new LoreUIDef()
             {
                 name = new BoxedString(itemName?.Replace('_', ' ')),

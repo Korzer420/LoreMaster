@@ -24,6 +24,8 @@ public class GraspOfLifePower : Power
 
     private List<GameObject> _grasses = new();
 
+    private float _foolEaterTimer = 2;
+
     #endregion
 
     #region Constructors
@@ -38,6 +40,7 @@ public class GraspOfLifePower : Power
     public override Action SceneAction => () =>
     {
         _grasses.Clear();
+        _foolEaterTimer = 2f;
     };
 
     public GameObject Scream 
@@ -189,8 +192,9 @@ public class GraspOfLifePower : Power
         {
             if(HeroController.instance.cState.onGround && !PlayerData.instance.GetBool("atBench"))
                 passedTime += Time.deltaTime;
-            if (passedTime >= 2f)
+            if (passedTime >= _foolEaterTimer)
             {
+                _foolEaterTimer += .5f;
                 passedTime = 0f;
                 if (_grasses.Count >= 10)
                 {

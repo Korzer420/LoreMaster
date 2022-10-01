@@ -4,11 +4,12 @@ using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
 using ItemChanger.Modules;
 using ItemChanger.UIDefs;
-using LoreMaster.CustomItem.Locations;
+using LoreMaster.ItemChanger.Locations;
 using LoreMaster.Enums;
 using LoreMaster.Extensions;
 using LoreMaster.Helper;
 using LoreMaster.LorePowers;
+using LoreMaster.LorePowers.CityOfTears;
 using LoreMaster.LorePowers.QueensGarden;
 using LoreMaster.LorePowers.WhitePalace;
 using LoreMaster.Randomizer;
@@ -119,8 +120,8 @@ public class SettingManager
     {
         try
         {
-            ItemManager.CreateCustomItems();
             orig(self, permaDeath, bossRush);
+            ItemManager.CreatePlacements();
             _fromMenu = true;
             LoreManager.Instance.JokerScrolls = -1;
             LoreManager.Instance.CleansingScrolls = -1;
@@ -132,16 +133,17 @@ public class SettingManager
                 NeededLore = 0;
             }
             PowerManager.ResetPowers();
-            ItemManager.ResetItems();
             ModHooks.SetPlayerBoolHook += PlayerData_SetBool;
-            ModHooks.SetPlayerIntHook += ModHooks_SetPlayerIntHook;
+            On.PlayerData.IntAdd += PlayerData_IntAdd;
             ModHooks.LanguageGetHook += LoreManager.Instance.GetText;
-            ModHooks.GetPlayerBoolHook += ModHooks_GetPlayerBoolHook;
+            ModHooks.GetPlayerBoolHook += CheckIfInventoryAccessible;
             On.DeactivateIfPlayerdataTrue.OnEnable += ForceMyla;
             On.DeactivateIfPlayerdataFalse.OnEnable += PreventMylaZombie;
             SendEventByName.OnEnter += EndAllPowers;
             On.PlayMakerFSM.OnEnable += FsmEdits;
             AbstractItem.BeforeGiveGlobal += GiveLoreItem;
+            if ((GameMode == GameMode.Hard || GameMode == GameMode.Heroic) && PowerManager.GetPowerByKey("POGGY", out Power power, false) && power.Tag == PowerTag.Global)
+                PlayerData.instance.SetInt(nameof(PlayerData.instance.rancidEggs), 50);
             if (ModHooks.GetMod("Randomizer 4") is Mod)
                 RandomizerManager.CheckForRandoFile();
             else
@@ -155,6 +157,7 @@ public class SettingManager
             LoreMaster.Instance.LogError(exception.Message);
         }
     }
+
     private void ContinueGame(On.UIManager.orig_ContinueGame orig, UIManager self)
     {
         _fromMenu = true;
@@ -162,9 +165,9 @@ public class SettingManager
         try
         {
             ModHooks.SetPlayerBoolHook += PlayerData_SetBool;
-            ModHooks.SetPlayerIntHook += ModHooks_SetPlayerIntHook;
+            On.PlayerData.IntAdd += PlayerData_IntAdd;
             ModHooks.LanguageGetHook += LoreManager.Instance.GetText;
-            ModHooks.GetPlayerBoolHook += ModHooks_GetPlayerBoolHook;
+            ModHooks.GetPlayerBoolHook += CheckIfInventoryAccessible;
             On.PlayMakerFSM.OnEnable += FsmEdits;
             On.DeactivateIfPlayerdataTrue.OnEnable += ForceMyla;
             On.DeactivateIfPlayerdataFalse.OnEnable += PreventMylaZombie;
@@ -179,6 +182,7 @@ public class SettingManager
             LoreMaster.Instance.LogError("An error occured in continue: " + exception.StackTrace);
         }
     }
+
     private IEnumerator ReturnToMenu(On.GameManager.orig_ReturnToMainMenu orig, GameManager self, GameManager.ReturnToMainMenuSaveModes saveMode, Action<bool> callback)
     {
         try
@@ -193,8 +197,8 @@ public class SettingManager
             ModHooks.LanguageGetHook -= LoreManager.Instance.GetText;
             AbstractItem.BeforeGiveGlobal -= GiveLoreItem;
             ModHooks.SetPlayerBoolHook -= PlayerData_SetBool;
-            ModHooks.SetPlayerIntHook -= ModHooks_SetPlayerIntHook;
-            ModHooks.GetPlayerBoolHook -= ModHooks_GetPlayerBoolHook;
+            On.PlayerData.IntAdd -= PlayerData_IntAdd;
+            ModHooks.GetPlayerBoolHook -= CheckIfInventoryAccessible;
         }
         catch (Exception exception)
         {
@@ -221,20 +225,26 @@ public class SettingManager
         return orig;
     }
 
-    private bool ModHooks_GetPlayerBoolHook(string name, bool orig)
+    private bool CheckIfInventoryAccessible(string name, bool orig)
     {
-        if (name == "LoreArtifact")
+        if (string.Equals(name, "LoreArtifact"))
             orig = PowerManager.ControlState != PowerControlState.NotObtained;
         return orig;
     }
 
-    private int ModHooks_SetPlayerIntHook(string name, int orig)
+    private void PlayerData_IntAdd(On.PlayerData.orig_IntAdd orig, PlayerData self, string intName, int amount)
     {
-        if (string.Equals(name, "Joker_Scroll"))
-            LoreManager.Instance.JokerScrolls += orig;
-        else if (string.Equals(name, "CleansingScroll"))
-            LoreManager.Instance.CleansingScrolls += orig;
-        return orig;
+        orig(self, intName, amount);
+        if (string.Equals(intName, "JokerScroll"))
+        {
+            LoreManager.Instance.JokerScrolls += LoreManager.Instance.JokerScrolls == -1 ? amount + 1 : amount;
+            LorePage.UpdateLorePage();
+        }
+        else if (string.Equals(intName, "CleansingScroll"))
+        {
+            LoreManager.Instance.CleansingScrolls += LoreManager.Instance.CleansingScrolls == -1 ? amount + 1 : amount;
+            LorePage.UpdateLorePage();
+        }
     }
 
     /// <summary>
@@ -437,11 +447,14 @@ public class SettingManager
         try
         {
             if (itemData.Placement.Name.StartsWith("Elderbug_Reward_"))
+            {
                 ElderbugState = !itemData.Placement.Name.EndsWith("1")
                     ? (itemData.Placement.Name.EndsWith("2")
                         ? 4
                         : Convert.ToInt32(itemData.Placement.Name.Substring(16)) + 3)
                     : 2;
+                ElderbugLocation.ItemThrown = false;
+            }
 
             //If focus is randomized but the lore tablet isn't, the lore tablet becomes unavailable, which is why we add the power to focus instead.
             if (itemData.Item.name.Equals("Focus") && ItemChanger.Internal.Ref.Settings.Placements.ContainsKey(LocationNames.Focus))
@@ -639,6 +652,7 @@ public class SettingManager
             PowerManager.UpdateTracker(newArea);
         }
         LorePage.UpdateLorePage();
+        TreasureHunterPower.UpdateTreasurePage();
 
         // Execute all actions that powers want to do when the scene changes.
         PowerManager.ExecuteSceneActions();
@@ -648,7 +662,7 @@ public class SettingManager
 
     private void AddElderbugExtra(PlayMakerFSM self)
     {
-
+        ElderbugLocation.ItemThrown = false;
         self.GetState("Convo Choice").Actions = new HutongGames.PlayMaker.FsmStateAction[]
         {
             self.GetState("Sly Rescued").GetFirstActionOfType<HutongGames.PlayMaker.Actions.AudioPlayerOneShot>(),
@@ -668,7 +682,7 @@ public class SettingManager
                     || PlayerData.instance.GetInt(nameof(PlayerData.instance.screamLevel)) > 0
                     || PlayerData.instance.GetInt(nameof(PlayerData.instance.fireballLevel)) > 0)
                     {
-                        if (ItemManager.GetLocationByName<ElderbugLocation>("Elderbug_Reward_1").WasItemThrown())
+                        if (ElderbugLocation.ItemThrown)
                             box.StartConversation("Elderbug_Not_Reading", "Elderbug");
                         else
                             self.SendEvent("Elderbug_Reward_1");
@@ -687,7 +701,7 @@ public class SettingManager
                         box.StartConversation("Elderbug_Not_Enough_Lore", "Elderbug");
                     else
                     {
-                        if (ItemManager.GetLocationByName<ElderbugLocation>("Elderbug_Reward_2").WasItemThrown())
+                        if (ElderbugLocation.ItemThrown)
                             box.StartConversation("Elderbug_Not_Listening", "Elderbug");
                         else
                             self.SendEvent("Elderbug_Reward_2");
@@ -702,7 +716,7 @@ public class SettingManager
                 {
                     if (PowerManager.ObtainedPowers.Count < _elderbugRewardStages[ElderbugState - 5])
                         box.StartConversation("Elderbug_Hint", "Elderbug");
-                    else if (ItemManager.GetLocationByName<ElderbugLocation>($"Elderbug_Reward_{ElderbugState - 2}").WasItemThrown())
+                    else if (ElderbugLocation.ItemThrown)
                         box.StartConversation("Elderbug_Pickup_Reminder", "Elderbug");
                     else
                         self.SendEvent($"Elderbug_Reward_{ElderbugState - 2}");

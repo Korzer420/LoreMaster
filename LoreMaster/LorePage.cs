@@ -89,16 +89,25 @@ internal class LorePage
                     {
                         _loreObjects[i].GetComponentInChildren<SpriteRenderer>().sprite = _sprites[_powers[i].Location];
                         _loreObjects[i].GetComponentInChildren<SpriteRenderer>().color = Color.white;
+                        _loreObjects[i].transform.eulerAngles = new Vector3(0f, 0f, 0f);
+                    }
+                    else if (_powers[i].State == PowerState.Twisted)
+                    {
+                        _loreObjects[i].GetComponentInChildren<SpriteRenderer>().sprite = _sprites[_powers[i].Location];
+                        _loreObjects[i].GetComponentInChildren<SpriteRenderer>().color = new(1f,0f,1f);
+                        _loreObjects[i].transform.eulerAngles = new Vector3(0f, 0f, 180f);
                     }
                     else if (PowerManager.ObtainedPowers.Contains(_powers[i]))
                     {
                         _loreObjects[i].GetComponentInChildren<SpriteRenderer>().sprite = _notActive;
                         _loreObjects[i].GetComponentInChildren<SpriteRenderer>().color = Color.red;
+                        _loreObjects[i].transform.eulerAngles = new Vector3(0f, 0f, 0f);
                     }
                     else
                     {
                         _loreObjects[i].GetComponentInChildren<SpriteRenderer>().sprite = _emptySprite;
                         _loreObjects[i].GetComponentInChildren<SpriteRenderer>().color = Color.white;
+                        _loreObjects[i].transform.eulerAngles = new Vector3(0f, 0f, 0f);
                     }
                 }
             }
@@ -240,27 +249,51 @@ internal class LorePage
                                 ? _notActive
                                 : _controlElements["Cleanse"].GetComponent<SpriteRenderer>().sprite;
                         }
+
                         if (PowerManager.ObtainedPowers.Contains(_powers[indexVariable.Value]))
                         {
                             Power power = _powers[indexVariable.Value];
-                            powerTitle.GetComponent<TextMeshPro>().text = power.Tag == PowerTag.Global || PowerManager.IsAreaGlobal(power.Location)
-                            ? "<color=#7FFF7B>"+ power.PowerName + "</color>"
-                            : power.PowerName;
-                            powerDescription.GetComponent<TextMeshPro>().text = LoreManager.Instance.UseHints
-                            ? power.Hint.Replace("<br>","\r\n")
-                            :power.Description.Replace("<br>","\r\n");
-                            if(power.State == PowerState.Active)
-                                confirmButton.SetActive(PlayerData.instance.GetBool(nameof(PlayerData.instance.atBench)) && PowerManager.ControlState == PowerControlState.ToggleAccess);
+                            if (power.StayTwisted)
+                            {
+                                powerTitle.GetComponent<TextMeshPro>().text = "<color=#c034eb>Cursed: "+ power.PowerName + "</color>";
+                                powerDescription.GetComponent<TextMeshPro>().text = LoreManager.Instance.UseHints
+                                    ? power.TwistedHint.Replace("<br>","\r\n")
+                                    :power.TwistedDescription.Replace("<br>","\r\n");
+                                confirmButton.SetActive(_selectedEffect == 2);
+                            }
                             else
-                               confirmButton.SetActive(PlayerData.instance.GetBool(nameof(PlayerData.instance.atBench))
+                            {
+                                powerTitle.GetComponent<TextMeshPro>().text = power.Tag == PowerTag.Global || PowerManager.IsAreaGlobal(power.Location)
+                                ? "<color=#7FFF7B>"+ power.PowerName + "</color>"
+                                : power.PowerName;
+                                powerDescription.GetComponent<TextMeshPro>().text = LoreManager.Instance.UseHints
+                                    ? power.Hint.Replace("<br>","\r\n")
+                                    :power.Description.Replace("<br>","\r\n");
+                                if(power.State == PowerState.Active)
+                                    confirmButton.SetActive(PlayerData.instance.GetBool(nameof(PlayerData.instance.atBench)) && PowerManager.ControlState == PowerControlState.ToggleAccess);
+                                else
+                                    confirmButton.SetActive(PlayerData.instance.GetBool(nameof(PlayerData.instance.atBench))
                                    && (PowerManager.IsAreaGlobal(power.Location) || SettingManager.Instance.CurrentArea == power.Location)
                                    && PowerManager.ControlState == PowerControlState.ToggleAccess);
+                            }
                         }
                         else
                         {
-                            powerTitle.GetComponent<TextMeshPro>().text = "???";
-                            powerDescription.GetComponent<TextMeshPro>().text = "You don't have obtained the power yet. Maybe someone can help you finding it?";
-                            confirmButton.SetActive(false);
+                            Power power = _powers[indexVariable.Value];
+                            if (power.State == PowerState.Twisted)
+                            {
+                                powerTitle.GetComponent<TextMeshPro>().text = "<color=#c034eb>Cursed: "+ power.PowerName + "</color>";
+                                powerDescription.GetComponent<TextMeshPro>().text = LoreManager.Instance.UseHints
+                                    ? power.TwistedHint.Replace("<br>","\r\n")
+                                    :power.TwistedDescription.Replace("<br>","\r\n");
+                                confirmButton.SetActive(false);
+                            }
+                            else
+                            {
+                                powerTitle.GetComponent<TextMeshPro>().text = "???";
+                                powerDescription.GetComponent<TextMeshPro>().text = "You don't have obtained the power yet. Maybe someone can help you finding it?";
+                                confirmButton.SetActive(false);
+                            }
                         }
                     })
                 }
@@ -352,7 +385,7 @@ internal class LorePage
                     _selectedEffect = 0;
                     LoreManager.Instance.JokerScrolls--;
                     _controlElements["Cursor"].transform.Find("Interact Option").GetComponent<SpriteRenderer>().sprite = null;
-                    PowerManager.GetPowerByName(_powers[indexVariable.Value].PowerName, out Power power);
+                    PowerManager.GetPowerByName(_powers[indexVariable.Value].PowerName, out Power power, false);
                     UpdateLorePage();
                 }
                 else if (_selectedEffect == 2 && _powers[indexVariable.Value].StayTwisted && PowerManager.ObtainedPowers.Contains(_powers[indexVariable.Value]))
@@ -436,7 +469,7 @@ internal class LorePage
                     new Lambda(() => fsm.gameObject.LocateMyFSM("Update Cursor").SendEvent("UPDATE CURSOR")),
                     new Lambda(() =>
                     {
-                        
+
                         if(!stagEgg.activeSelf)
                         {
                             _controlElements["confirmButton"].SetActive(false);
@@ -520,7 +553,9 @@ internal class LorePage
         GameObject interactSprite = new("Interact Option");
         interactSprite.transform.SetParent(cursor.transform);
         interactSprite.transform.localPosition = new(0f, 0f, -6f);
-        interactSprite.AddComponent<SpriteRenderer>();
+        interactSprite.layer = cursor.layer;
+        interactSprite.AddComponent<SpriteRenderer>().sortingLayerID = 62935577;
+        interactSprite.GetComponent<SpriteRenderer>().sortingLayerName = "HUD";
         interactSprite.SetActive(true);
 
         fsm.AddState(new FsmState(fsm.Fsm)
@@ -539,7 +574,7 @@ internal class LorePage
                 new Lambda(() =>
                 {
                     if (!jokerScroll.activeSelf)
-                    { 
+                    {
                         fsm.SendEvent(_lastState == "Stag Egg" ? "UI RIGHT" : "UI LEFT");
                         _lastState = "Select Joker Scroll";
                         return;
@@ -592,7 +627,7 @@ internal class LorePage
                 {
                     _lastState = "Select Cleanse Scroll";
                     if (!cleanseScroll.activeSelf)
-                    { 
+                    {
                         fsm.SendEvent("UI RIGHT");
                         return;
                     }

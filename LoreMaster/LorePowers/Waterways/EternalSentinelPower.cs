@@ -60,7 +60,8 @@ public class EternalSentinelPower : Power
         {
             self.Fsm.FsmComponent.gameObject.transform.localPosition = HeroController.instance.transform.position;
             self.Fsm.FsmComponent.gameObject.transform.localScale = State == PowerState.Active ? new(2.5f, 2.5f) : new(1f, 1f);
-            self.Fsm.FsmComponent.gameObject.GetComponent<DamageEffectTicker>().SetDamageInterval(State == PowerState.Active ? 0.15f : 0.3f);
+            if (self.Fsm.FsmComponent.gameObject.GetComponent<DamageEffectTicker>() is DamageEffectTicker dET)
+                dET.SetDamageInterval(State == PowerState.Active ? 0.15f : 0.3f);
         }
 
         orig(self);

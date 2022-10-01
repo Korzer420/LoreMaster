@@ -75,7 +75,7 @@ public class LogicManager
             Term loreAmount = builder.GetOrAddTerm("LORE");
             builder.DoLogicEdit(new("Opened_Black_Egg_Temple",
                 "Room_temple[left1] + LORE>" + (RandomizerManager.Settings.NeededLore - 1)
-                + (RandomizerManager.Settings.BlackEggTempleCondition == BlackEggTempleCondition.DreamersAndLore ? "+ DREAMER>2" : null)));
+                + (RandomizerManager.Settings.BlackEggTempleCondition == BlackEggTempleCondition.Both ? "+ DREAMER>2" : null)));
             foreach (string key in RandomizerHelper.TabletNames.Keys)
                 builder.AddItem(new SingleItem("Lore_Tablet-" + key, new(loreAmount, 1)));
         }

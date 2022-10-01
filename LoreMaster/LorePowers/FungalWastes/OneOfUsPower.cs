@@ -1,5 +1,4 @@
 using LoreMaster.Enums;
-using LoreMaster.Helper;
 using LoreMaster.UnityComponents;
 using SFCore.Utils;
 using System.Collections;
@@ -50,7 +49,7 @@ public class OneOfUsPower : Power
         while (true)
         {
             yield return new WaitForSeconds(12f);
-            if ((State == PowerState.Twisted && !PlayerData.instance.GetBool("atBench")) || (!InputHandler.Instance.inputActions.superDash.IsPressed && !GameManager.instance.isPaused))
+            if ((State == PowerState.Twisted && !PlayerData.instance.GetBool("atBench") && HeroController.instance.acceptingInput) || (!InputHandler.Instance.inputActions.superDash.IsPressed && !GameManager.instance.isPaused))
             {
                 GameObject newCloud = GameObject.Instantiate(Cloud, HeroController.instance.transform.position,
                 Quaternion.identity);

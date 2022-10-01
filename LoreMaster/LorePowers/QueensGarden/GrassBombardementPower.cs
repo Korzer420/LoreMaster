@@ -297,7 +297,7 @@ public class GrassBombardementPower : Power
         _activeBomb.name = "Grass bomb";
         _activeBomb.SetActive(true);
         _jumped = 0;
-        _neededJumps = LoreMaster.Instance.Generator.Next(7, 15);
+        _neededJumps = LoreMaster.Instance.Generator.Next(25, 100);
     }
 
     #endregion

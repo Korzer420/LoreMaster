@@ -7,11 +7,12 @@ using ItemChanger.FsmStateActions;
 using ItemChanger.Locations;
 using ItemChanger.Util;
 using LoreMaster.LorePowers.CityOfTears;
+using LoreMaster.Manager;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace LoreMaster.CustomItem.Locations
+namespace LoreMaster.ItemChanger.Locations
 {
     internal class TreasureLocation : ContainerLocation
     {
@@ -97,9 +98,9 @@ namespace LoreMaster.CustomItem.Locations
             int treasureIndex = _coordinates.Select(x => x.Item1.ToLower()).IndexOf(sceneName.ToLower());
             if (treasureIndex != _coordinates.Count)
             {
-                TreasureLocation location = Finder.GetLocation($"Treasure_{treasureIndex + 1}") as TreasureLocation;
+                TreasureLocation location = Finder.GetLocation($"{ItemManager.Treasure_Prefix}{treasureIndex + 1}") as TreasureLocation;
                 if (location == null)
-                    LoreMaster.Instance.Log("Couldn't found location Treasure_" + (treasureIndex + 1));
+                    LoreMaster.Instance.LogError("Couldn't found location Treasure_" + (treasureIndex + 1));
                 return location;
             }
             else
@@ -111,7 +112,7 @@ namespace LoreMaster.CustomItem.Locations
             flingType = FlingType.StraightUp,
             sceneName = _coordinates[index].Item1,
             TreasureIndex = index,
-            name = "Treasure_" + (index + 1)
+            name = ItemManager.Treasure_Prefix + (index + 1)
         };
     }
 }

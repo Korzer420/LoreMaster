@@ -194,6 +194,8 @@ internal static class PowerManager
             {
                 LoreMaster.Instance.LogError(exception.Message);
             }
+        else
+            LoreMaster.Instance.Log("Couldn't find power: " + name);
         power = null;
         return false;
     }
@@ -209,28 +211,29 @@ internal static class PowerManager
 
     internal static void ResetPowers()
     {
-        if (ModHooks.GetMod("Randomizer 4", true) is Mod mod)
-            switch (RandomizerManager.CheckForRandoFile())
-            {
-                case LoreSetOption.Default:
-                    foreach (string key in _powerList.Keys)
-                        _powerList[key].Tag = _powerList[key].DefaultTag;
-                    break;
-                case LoreSetOption.AllGlobalPowers:
-                    foreach (string key in _powerList.Keys)
-                        _powerList[key].Tag = PowerTag.Global;
-                    break;
-                case LoreSetOption.RemoveAllPowersExceptTracker:
-                    foreach (string key in _powerList.Keys)
-                        _powerList[key].Tag = PowerTag.Remove;
-                    _powerList["COMPLETION_RATE_UNLOCKED"].Tag = PowerTag.Global;
-                    break;
-                case LoreSetOption.RemoveAllPowers:
-                    foreach (string key in _powerList.Keys)
-                        _powerList[key].Tag = PowerTag.Remove;
-                    break;
-            }
-        else if (SettingManager.Instance.GameMode == GameMode.Normal)
+        //if (ModHooks.GetMod("Randomizer 4", true) is Mod mod)
+        //    switch (RandomizerManager.CheckForRandoFile())
+        //    {
+        //        case LoreSetOption.Default:
+        //            foreach (string key in _powerList.Keys)
+        //                _powerList[key].Tag = _powerList[key].DefaultTag;
+        //            break;
+        //        case LoreSetOption.AllGlobalPowers:
+        //            foreach (string key in _powerList.Keys)
+        //                _powerList[key].Tag = PowerTag.Global;
+        //            break;
+        //        case LoreSetOption.RemoveAllPowersExceptTracker:
+        //            foreach (string key in _powerList.Keys)
+        //                _powerList[key].Tag = PowerTag.Remove;
+        //            _powerList["COMPLETION_RATE_UNLOCKED"].Tag = PowerTag.Global;
+        //            break;
+        //        case LoreSetOption.RemoveAllPowers:
+        //            foreach (string key in _powerList.Keys)
+        //                _powerList[key].Tag = PowerTag.Remove;
+        //            break;
+        //    }
+        //else
+        if (SettingManager.Instance.GameMode == GameMode.Normal)
             // Reset tags to default.
             foreach (string key in _powerList.Keys)
             {
@@ -247,8 +250,11 @@ internal static class PowerManager
         // Unsure if this is needed, but just in case.
         ObtainedPowers.Clear();
 #if DEBUG
-        //_powerList["ABYSS_TUT_TAB_01"].Tag = PowerTag.Global;
-        //ActivePowers.Add(_powerList["ABYSS_TUT_TAB_01"]);
+        // Reset tags to default.
+        //foreach (string key in _powerList.Keys.Take(10))
+        //    _powerList[key].StayTwisted = true;
+        //LoreManager.Instance.CleansingScrolls = 3;
+        //ObtainedPowers.AddRange(_powerList.Values.Take(30));
 #endif
     }
 
@@ -407,14 +413,13 @@ internal static class PowerManager
     {
         // Enables the powers beforehand. This has to be done because otherwise the effects will only stay permanent once the player enters the area.
         List<Power> toActivate = new();
-        List<Power> allPowers = new(ObtainedPowers);
         if (SettingManager.Instance.GameMode == GameMode.Hard || SettingManager.Instance.GameMode == GameMode.Heroic)
-            toActivate.AddRange(allPowers.Where(x => x.Tag == PowerTag.Global));
-        toActivate.AddRange(_powerList.Select(x => x.Value).Where(x => x.Tag == PowerTag.Global && allPowers.Contains(x)));
+            toActivate.AddRange(_powerList.Values.Where(x => x.Tag == PowerTag.Global));
+        toActivate.AddRange(_powerList.Select(x => x.Value).Where(x => x.Tag == PowerTag.Global && ObtainedPowers.Contains(x)));
 
         foreach (Area area in (Area[])Enum.GetValues(typeof(Area)))
             if (IsAreaGlobal(area))
-                toActivate.AddRange(allPowers.Where(x => x.Tag != PowerTag.Global && x.Location == area));
+                toActivate.AddRange(ObtainedPowers.Where(x => x.Tag != PowerTag.Global && x.Location == area));
         foreach (Power power in toActivate.Distinct())
             power.EnablePower();
     }

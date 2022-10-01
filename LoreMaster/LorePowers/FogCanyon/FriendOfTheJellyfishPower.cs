@@ -91,8 +91,8 @@ public class FriendOfTheJellyfishPower : Power
         {
             // We create an area in which the jellyfish can spawn based on the transitions
             Transform[] points = GameObject.FindObjectsOfType<TransitionPoint>().Select(x => x.transform).ToArray();
-            // Less than two makes it impossible to create a field.
-            if (points.Length < 2)
+            // Less than two makes it impossible to create a field. Also having only transitions on one side.
+            if (points.Length < 2 || points.All(x => x.name.StartsWith(points[0].name.Substring(3))))
                 return;
             float[] borderPoints = new float[4];
             borderPoints[0] = points.Min(x => x.position.x);

@@ -110,7 +110,7 @@ public class ConcussiveStrikePower : Power
 
     #endregion
 
-    #region Public Methods
+    #region Control
 
     /// <inheritdoc/>
     protected override void Initialize()

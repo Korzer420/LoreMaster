@@ -9,7 +9,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace LoreMaster.CustomItem.Locations;
+namespace LoreMaster.ItemChanger.Locations;
 
 internal class RecordBelaLocation : AutoLocation
 {

@@ -31,14 +31,6 @@ public class CamouflagePower : Power
         return result;
     }
 
-    private void HeroController_Start(On.HeroController.orig_Start orig, HeroController self)
-    {
-        orig(self);
-        Color color = self.GetComponent<tk2dSprite>().color;
-        color.a = 0f;
-        self.GetComponent<tk2dSprite>().color = color;
-    }
-
     #endregion
 
     #region Control
@@ -62,22 +54,7 @@ public class CamouflagePower : Power
     }
 
     /// <inheritdoc/>
-    protected override void TwistEnable()
-    {
-        Color color = HeroController.instance.GetComponent<tk2dSprite>().color;
-        color.a = 0f;
-        HeroController.instance.GetComponent<tk2dSprite>().color = color;
-        On.HeroController.Start += HeroController_Start;
-    }
-
-    /// <inheritdoc/>
-    protected override void TwistDisable()
-    {
-        Color color = HeroController.instance.GetComponent<tk2dSprite>().color;
-        color.a = 1f;
-        HeroController.instance.GetComponent<tk2dSprite>().color = color;
-        On.HeroController.Start -= HeroController_Start;
-    }
+    protected override void TwistEnable() => StartRoutine(() => HideHero());
 
     #endregion
 
@@ -110,6 +87,19 @@ public class CamouflagePower : Power
                 HeroManager.Sprite.color = Color.white;
                 _isCamouflaged = false;
             }
+        }
+    }
+
+    private IEnumerator HideHero()
+    {
+        while (true)
+        {
+            if (HeroController.instance == null || HeroManager.Sprite == null)
+                yield return new WaitUntil(() => HeroController.instance != null && HeroManager.Sprite);
+            Color color = HeroManager.Sprite.color;
+            color.a = 1f;
+            HeroManager.Sprite.color = color;
+            yield return null;
         }
     }
 

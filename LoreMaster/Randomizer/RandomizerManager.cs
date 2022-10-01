@@ -322,7 +322,7 @@ public static class RandomizerManager
             {
                 if ((Settings.BlackEggTempleCondition == BlackEggTempleCondition.Lore
                 && PowerManager.ObtainedPowers.Count >= Settings.NeededLore)
-                || (Settings.BlackEggTempleCondition == BlackEggTempleCondition.DreamersAndLore && door.FsmVariables.FindFsmInt("Guardians Defeated").Value > 2
+                || (Settings.BlackEggTempleCondition == BlackEggTempleCondition.Both && door.FsmVariables.FindFsmInt("Guardians Defeated").Value > 2
                 && PowerManager.ObtainedPowers.Count >= Settings.NeededLore))
                     door.SendEvent("READY");
                 else

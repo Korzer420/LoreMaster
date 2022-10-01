@@ -65,7 +65,12 @@ public class HappyFatePower : Power
     private int AdjustNail(string name, int orig)
     {
         if (name.Equals("nailDamage"))
-            orig += State == PowerState.Active && _isHappy ? 3 : (State == PowerState.Twisted ? Mathf.Min(1, orig - _happyCounter) : 0);
+        {
+            if (State == PowerState.Active && _isHappy)
+                orig += 3;
+            else if (State == PowerState.Twisted)
+                orig = Mathf.Max(1, orig - _happyCounter); 
+        }
         return orig;
     }
 

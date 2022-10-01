@@ -105,15 +105,6 @@ internal class LoreManager
             PowerManager.GetPowerByKey("DREAMERS_INSPECT_RG5", out Power dreamer, false);
             text += ((DreamBlessingPower)dreamer).GetExtraText(key);
         }
-        else if (!ModifyText(key, ref text) && PowerManager.HasObtainedPower("QUEEN"))
-        {
-            if (key.Equals("CHARM_NAME_12"))
-                return "Queen's Thorns";
-            else if (key.Equals("CHARM_DESC_12"))
-                return text + "<br>Blessed by the white lady, which causes them to drain soul and sometimes energy from their victims. Leash out more agile.";
-        }
-        else if (key.Equals("ELDERBUG_INTRO_MAIN"))
-            text = Properties.AdditionalText.ELDERBUG_INTRO_MAIN;
         else if (key.Equals("TISO_TOWN_GREET"))
             text += "<page>Hm... maybe I could teach you something. But not here... if we meet again.";
         else if (key.Equals("TISO_TOWN_REPEAT"))
@@ -134,7 +125,6 @@ internal class LoreManager
             text = "Want to enter the temple?";
         else if (key.StartsWith("Elderbug_"))
         {
-            LoreMaster.Instance.Log("Look for key: " + key);
             if (key.EndsWith("Casual"))
                 text = Properties.ElderbugDialog.ResourceManager.GetString(RandomizerManager.PlayingRandomizer ? "Elderbug_Casual_Randomizer" : "Elderbug_Casual_Normal");
             else if (key == "Elderbug_Reward_2")
@@ -170,6 +160,13 @@ internal class LoreManager
                 text = Properties.ElderbugDialog.ResourceManager.GetString(key);
             
         }
+        else if (!ModifyText(key, ref text) && PowerManager.HasObtainedPower("QUEEN", false))
+        {
+            if (key.Equals("CHARM_NAME_12"))
+                return "Queen's Thorns";
+            else if (key.Equals("CHARM_DESC_12"))
+                return text + "<br>Blessed by the white lady, which causes them to drain soul and sometimes energy from their victims. Leash out more agile.";
+        }
         return text;
     }
 
@@ -198,8 +195,16 @@ internal class LoreManager
                 {
                     if (LoreManager.Instance.UseCustomText && !string.IsNullOrEmpty(power.CustomText))
                         displayText = power.CustomText;
-                    displayText += "<br>[" + power.PowerName + "]";
-                    displayText += "<br>" + (UseHints ? power.Hint : power.Description);
+                    if (power.StayTwisted)
+                    {
+                        displayText += "<br><color=#c034eb>[Cursed " + power.PowerName + "]</color>";
+                        displayText += "<br>" + (UseHints ? power.TwistedHint : power.TwistedDescription);
+                    }
+                    else
+                    {
+                        displayText += "<br>[" + power.PowerName + "]";
+                        displayText += "<br>" + (UseHints ? power.Hint : power.Description);
+                    }
                 }
                 if (string.Equals(key, "PLAQUE_WARN"))
                 {

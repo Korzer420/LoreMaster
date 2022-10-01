@@ -5,10 +5,11 @@ using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
 using ItemChanger.Items;
 using ItemChanger.UIDefs;
-using LoreMaster.CustomItem;
-using LoreMaster.CustomItem.Locations;
+using LoreMaster.ItemChanger;
+using LoreMaster.ItemChanger.Locations;
 using LoreMaster.Enums;
 using LoreMaster.Helper;
+using LoreMaster.Manager;
 using Modding;
 using MonoMod.Cil;
 using System;
@@ -533,7 +534,21 @@ internal class TreasureHunterPower : Power
         try
         {
             for (int i = 0; i < 14; i++)
-                _inventoryItems[i].GetComponent<SpriteRenderer>().sprite = HasCharts[i] ? _chartSprite : _emptySprite;
+            {
+                if (!HasCharts[i])
+                {
+                    _inventoryItems[i].GetComponent<SpriteRenderer>().sprite = _emptySprite;
+                    _inventoryItems[i].GetComponent<SpriteRenderer>().color = Color.white;
+                }
+                else
+                {
+                    _inventoryItems[i].GetComponent<SpriteRenderer>().sprite = _chartSprite;
+                    if (ItemManager.GetLocationByName<TreasureLocation>($"{ItemManager.Treasure_Prefix}{i + 1}").Placement.Items.Any(x => !x.IsObtained()))
+                        _inventoryItems[i].GetComponent<SpriteRenderer>().color = new(0.2f, 0.2f, 0.2f);
+                    else
+                        _inventoryItems[i].GetComponent<SpriteRenderer>().color = Color.white;
+                }
+            }
             _inventoryItems[14].GetComponent<SpriteRenderer>().sprite = CanPurchaseTreasureCharts ? _treasureSprites[6] : _emptySprite;
             TreasureState[] states = Treasures.Values.ToArray();
             for (int i = 15; i < 21; i++)
@@ -688,104 +703,4 @@ internal class TreasureHunterPower : Power
     }
 
     #endregion
-
-    public static List<AbstractItem> GetTreasureItems()
-    {
-        List<AbstractItem> items = new();
-        List<AbstractItem> shuffledItems = new()
-        {
-            Finder.GetItem(ItemNames.Rancid_Egg),
-            Finder.GetItem(ItemNames.Wanderers_Journal),
-            Finder.GetItem(ItemNames.Wanderers_Journal),
-            Finder.GetItem(ItemNames.Wanderers_Journal),
-            Finder.GetItem(ItemNames.Hallownest_Seal),
-            Finder.GetItem(ItemNames.Hallownest_Seal),
-            Finder.GetItem(ItemNames.Kings_Idol),
-            Finder.GetItem(ItemNames.Kings_Idol),
-            Finder.GetItem(ItemNames.Arcane_Egg),
-            new BoolItem()
-            {
-                fieldName = "magicKey",
-                name = "Magical_Key",
-                setValue = true,
-                UIDef = new MsgUIDef()
-                {
-                    name = new BoxedString("Magical Key"),
-                    shopDesc = new BoxedString("The master key of this kingdom. Opens ALMOST every locked mechanism."),
-                    sprite = new CustomSprite("MagicKey", false)
-                }
-            },
-            new BoolItem()
-            {
-                fieldName = "dreamMedallion",
-                name = "Dream_Medallion",
-                setValue = true,
-                UIDef = new MsgUIDef()
-                {
-                    name = new BoxedString("Dream Medallion"),
-                    shopDesc = new BoxedString("An old artifact from the moth tribe. They say, the wielder of this medallion attracts the essence of dreams."),
-                    sprite = new CustomSprite("Dream_Medallion", false)
-                }
-            },
-            new BoolItem()
-            {
-                fieldName = "silksongJournal",
-                name = "Silksong_Journal",
-                setValue = true,
-                UIDef = new MsgUIDef()
-                {
-                    name = new BoxedString("Silksong Journal?"),
-                    shopDesc = new BoxedString("A very special journal which was buried in this kingdom. The only thing on this, that Lemm could decifer, was the text \"Silksong Release Date\"."),
-                    sprite = new CustomSprite("Silksong_Journal", false)
-                }
-            },
-            new BoolItem()
-            {
-                fieldName = "silverSeal",
-                name = "Silver_Hallownest_Seal",
-                setValue = true,
-                UIDef = new MsgUIDef()
-                {
-                    name = new BoxedString("Silver Seal"),
-                    shopDesc = new BoxedString("A very special Hallownest seal which was buried in this kingdom. I personally like the colored design more."),
-                    sprite = new CustomSprite("Silver_Seal", false)
-                }
-            },
-            new BoolItem()
-            {
-                fieldName = "bronzeKingIdol",
-                name = "Bronze_King_Idol",
-                setValue = true,
-                UIDef = new MsgUIDef()
-                {
-                    name = new BoxedString("Bronze King's Idol"),
-                    shopDesc = new BoxedString("A very special King's Idol which was buried in this kingdom. If this color is caused by nature or artifical is beyond me."),
-                    sprite = new CustomSprite("Bronze_King_Idol",false)
-                }
-            },
-            new BoolItem()
-            {
-                fieldName = "goldenArcaneEgg",
-                name = "Golden_Arcane_Egg",
-                setValue = true,
-                UIDef = new MsgUIDef()
-                {
-                    name = new BoxedString("Golden Arcane Egg"),
-                    shopDesc = new BoxedString("A very special Arcane egg which was buried in this kingdom. Since it is one of a kind, I'm curious what kind of information it stored."),
-                    sprite = new CustomSprite("Golden_Egg", false)
-                }
-            }
-        };
-
-        // Randomize the order of items.
-        do
-        {
-            int rolledIndex = LoreMaster.Instance.Generator.Next(0, shuffledItems.Count);
-            items.Add(shuffledItems[rolledIndex]);
-            shuffledItems.RemoveAt(rolledIndex);
-        }
-        while (shuffledItems.Any());
-
-        return items;
-    }
 }

@@ -21,7 +21,7 @@ public class ImposterPower : Power
         if((self.IsCorrectContext("Spell Control", "Knight", "Focus Heal") || self.IsCorrectContext("Spell Control", "Knight", "Focus Heal 2"))
             && string.Equals(self.methodName.Value, "AddHealth"))
         {
-            if (State == PowerState.Twisted && LoreMaster.Instance.Generator.Next(0, 5) == 0)
+            if (State == PowerState.Twisted && LoreMaster.Instance.Generator.Next(0, PlayerData.instance.GetBool("equippedCharm_17") ? 10 : 5) == 0)
                 self.parameters[0].SetValue(0);
             else if (State == PowerState.Active && PlayerData.instance.GetBool("equippedCharm_17") && LoreMaster.Instance.Generator.Next(0, 5) == 0 && PlayerData.instance.healthBlue < 5)
                 EventRegister.SendEvent("ADD BLUE HEALTH");

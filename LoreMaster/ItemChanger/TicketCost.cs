@@ -3,7 +3,7 @@ using LoreMaster.LorePowers.CityOfTears;
 using System.Collections;
 using UnityEngine;
 
-namespace LoreMaster.CustomItem;
+namespace LoreMaster.ItemChanger;
 
 internal record Paypal: Cost
 {

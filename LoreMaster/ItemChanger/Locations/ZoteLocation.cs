@@ -2,7 +2,7 @@ using ItemChanger;
 using ItemChanger.Extensions;
 using ItemChanger.Locations;
 
-namespace LoreMaster.CustomItem.Locations;
+namespace LoreMaster.ItemChanger.Locations;
 
 public class ZoteLocation : AutoLocation
 {

@@ -23,7 +23,9 @@ public abstract class Power
         Location = area;
         string powerType = GetType().Name;
         Hint = Properties.PowerHints.ResourceManager.GetString(powerType.Substring(0, powerType.Length - 5));
+        TwistedHint = "<color=#c034eb>"+ Properties.TwistedPowerHints.ResourceManager.GetString(powerType.Substring(0, powerType.Length - 5)) + "</color>";
         Description = Properties.PowerDescriptions.ResourceManager.GetString(powerType.Substring(0, powerType.Length - 5));
+        TwistedDescription = "<color=#c034eb>"+Properties.TwistedPowerDescriptions.ResourceManager.GetString(powerType.Substring(0, powerType.Length - 5)) + "</color>";
     }
 
     #endregion
@@ -47,10 +49,20 @@ public abstract class Power
     public string Description { get; set; }
 
     /// <summary>
+    /// Gets or sets the clear description of the twisted version of this power.
+    /// </summary>
+    public string TwistedDescription { get; set; }
+
+    /// <summary>
     /// Gets or sets the hint of the power. It gets displayed after the lore text (or <see cref="CustomText"/> if set) ingame.
     /// <para/>Only used if <see cref="LoreMaster.UseHints"/> is <see langword="true"/>.
     /// </summary>
     public string Hint { get; protected set; }
+
+    /// <summary>
+    /// Gets or sets the twisted hint of the power.
+    /// </summary>
+    public string TwistedHint { get; set; }
 
     /// <summary>
     /// Gets or sets the custom text. If this is filled, it replaces the original text of the source.
@@ -132,10 +144,8 @@ public abstract class Power
     {
         try
         {
-            LoreMaster.Instance.Log("Called Initialize");
             if (_initialized)
                 return true;
-            LoreMaster.Instance.Log("Do Initialize");
             Initialize();
             _initialized = true;
             return true;

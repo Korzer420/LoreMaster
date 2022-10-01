@@ -16,7 +16,7 @@ public enum CursedLore
     Random,
 
     /// <summary>
-    /// The player can decide the amount. The min amount is still bounded to the difficulty.
+    /// The player can decide the amount range. The min amount is still bounded to the difficulty.
     /// </summary>
-    Fixed
+    Custom
 }

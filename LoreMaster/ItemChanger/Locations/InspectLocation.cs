@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace LoreMaster.CustomItem.Locations;
+namespace LoreMaster.ItemChanger.Locations;
 
 public class InspectLocation : AutoLocation
 {

@@ -35,7 +35,11 @@ internal class MenuManager : ModeMenuConstructor
 
     public SmallButton[] MoveButtons { get; set; }
 
-    public ExtraSettings Settings { get; set; } = new(); 
+    public ExtraSettings Settings { get; set; } = new();
+
+    public NumericEntryField<int> NeededLore { get; set; }
+
+    public GridItemPanel CursedRange { get; set; }
 
     #endregion
 
@@ -79,9 +83,10 @@ internal class MenuManager : ModeMenuConstructor
     private void ChangeEndCondition(BlackEggTempleCondition condition)
     {
         if (condition != BlackEggTempleCondition.Dreamers)
-            Elements[5].Show();
+            NeededLore.Show();
         else
-            Elements[5].Hide();
+            NeededLore.Hide();
+        Settings.EndCondition = condition;
     }
 
     private void ChangedGameMode(GameMode selectedGameMode)
@@ -91,59 +96,101 @@ internal class MenuManager : ModeMenuConstructor
         {
             Elements[2].Show();
             Elements[3].Show();
+            int minValue = selectedGameMode == GameMode.Extra
+                    ? 1
+                    : selectedGameMode == GameMode.Hard
+                        ? 5
+                        : 10;
+            int maxValue = selectedGameMode == GameMode.Extra
+                ? 15
+                : selectedGameMode == GameMode.Hard
+                    ? 20
+                    : 25;
+            if (Settings.MinCursedLore < minValue)
+                (CursedRange.Items[0] as NumericEntryField<int>).SetValue(minValue);
+            if (Settings.MaxCursedLore < maxValue)
+                (CursedRange.Items[1] as NumericEntryField<int>).SetValue(maxValue);
         }
         else
         {
             Elements[2].Hide();
             Elements[3].Hide();
+            (Elements[3] as ToggleButton).SetValue(false);
         }
     }
 
     private void MinCursedLore_Changed(int selectedValue)
     {
-        int maxValue = ((NumericEntryField<int>)Elements[10]).Value;
-        if (selectedValue > maxValue)
+        if (selectedValue < 0)
+            (CursedRange.Items[0] as NumericEntryField<int>).SetValue(0);
+        else if (selectedValue > Settings.MaxCursedLore)
+            (CursedRange.Items[0] as NumericEntryField<int>).SetValue(Settings.MaxCursedLore);
+        else
         {
-            (Elements[9] as NumericEntryField<int>).SetValue(maxValue);
-            return;
+            int minValue = Settings.GameMode == GameMode.Extra
+                    ? 1
+                    : Settings.GameMode == GameMode.Hard
+                        ? 5
+                        : 10;
+            if (selectedValue < minValue)
+            {
+                if (Settings.MaxCursedLore < minValue)
+                    (CursedRange.Items[1] as NumericEntryField<int>).SetValue(minValue);
+                (CursedRange.Items[0] as NumericEntryField<int>).SetValue(minValue);
+            }
         }
-        int minValue = 1;
-        if (Settings.GameMode == GameMode.Hard)
-            minValue = 5;
-        else if (Settings.GameMode == GameMode.Heroic)
-            minValue = 10;
-
-        if (selectedValue < minValue)
-            (Elements[9] as NumericEntryField<int>).SetValue(minValue);
     }
 
     private void MaxCursedLore_Changed(int selectedValue)
     {
-        int minValue = ((NumericEntryField<int>)Elements[9]).Value;
-        if (selectedValue < minValue)
+        if (selectedValue > 60)
+            (CursedRange.Items[1] as NumericEntryField<int>).SetValue(60);
+        else if (selectedValue < Settings.MinCursedLore)
+            (CursedRange.Items[1] as NumericEntryField<int>).SetValue(Settings.MinCursedLore);
+        else
         {
-            (Elements[10] as NumericEntryField<int>).SetValue(minValue);
-            return;
+            int maxValue = Settings.GameMode == GameMode.Extra
+                    ? 15
+                    : Settings.GameMode == GameMode.Hard
+                        ? 20
+                        : 25;
+            if (selectedValue < maxValue)
+            {
+                if (maxValue < Settings.MinCursedLore)
+                    (CursedRange.Items[1] as NumericEntryField<int>).SetValue(Settings.MinCursedLore);
+                else
+                    (CursedRange.Items[1] as NumericEntryField<int>).SetValue(maxValue);
+            }
         }
-        else if (selectedValue > 60)
-            (Elements[10] as NumericEntryField<int>).SetValue(60);
     }
 
     private void CursedLoreButton_ValueChanged(CursedLore option)
     {
-        if (option == CursedLore.Fixed)
-        {
-            Elements[9].Show();
-            Elements[10].Show();
-        }
+        if (option == CursedLore.Custom)
+            CursedRange.Show();
         else
         {
-            Elements[9].Hide();
-            Elements[10].Hide();
+            CursedRange.Hide();
             if (option == CursedLore.Random)
             {
-                (Elements[9] as NumericEntryField<int>).SetValue(Settings.GameMode == GameMode.Extra ? 1 : (Settings.GameMode == GameMode.Heroic ? 10 : 5));
-                (Elements[10] as NumericEntryField<int>).SetValue(Settings.GameMode == GameMode.Extra ? 15 : (Settings.GameMode == GameMode.Heroic ? 40 : 25));
+                int minValue = Settings.GameMode == GameMode.Extra
+                    ? 1
+                    : Settings.GameMode == GameMode.Hard
+                        ? 5
+                        : 10;
+                int maxValue = Settings.GameMode == GameMode.Extra
+                    ? 15
+                    : Settings.GameMode == GameMode.Hard
+                        ? 20
+                        : 25;
+                if (maxValue < Settings.MinCursedLore)
+                    (CursedRange.Items[1] as NumericEntryField<int>).SetValue(Settings.MinCursedLore);
+                else
+                {
+                    (CursedRange.Items[1] as NumericEntryField<int>).SetValue(maxValue);
+                    if (minValue > Settings.MinCursedLore)
+                        (CursedRange.Items[0] as NumericEntryField<int>).SetValue(minValue);
+                }
             }
         }
     }
@@ -158,9 +205,7 @@ internal class MenuManager : ModeMenuConstructor
             power.Tag = Settings.NightmareMode ? PowerTag.Global : Settings.PowerTags[power.PowerName];
         if (Settings.UseCursedLore != CursedLore.None)
         {
-            int minAmount = (Elements[9] as NumericEntryField<int>).Value;
-            int maxAmount = (Elements[10] as NumericEntryField<int>).Value;
-            int finalAmount = LoreMaster.Instance.Generator.Next(minAmount, maxAmount + 1);
+            int finalAmount = LoreMaster.Instance.Generator.Next(Settings.MinCursedLore, Settings.MaxCursedLore + 1);
             List<Power> lorePowers = PowerManager.GetAllPowers().ToList();
             for (int i = 0; i < finalAmount; i++)
             {
@@ -175,6 +220,7 @@ internal class MenuManager : ModeMenuConstructor
         else
             foreach (Power power in PowerManager.GetAllPowers())
                 power.StayTwisted = false;
+        
         LoreManager.Instance.CanRead = false;
         LoreManager.Instance.CanListen = false;
         UIManager.instance.StartNewGame(Settings.SteelSoul);
@@ -190,7 +236,7 @@ internal class MenuManager : ModeMenuConstructor
     {
         ExtraPage = new("Lore Master Extra", modeMenu);
         PowerPage = new("Power Tags", ExtraPage);
-        Elements = new IMenuElement[12];
+        Elements = new IMenuElement[6];
         Elements[0] = new MenuLabel(ExtraPage, "Lore Master Extra");
         Elements[1] = new MenuItem<GameMode>(ExtraPage, "Difficulty", new GameMode[] { GameMode.Extra, GameMode.Hard, GameMode.Heroic });
         ((MenuItem<GameMode>)Elements[1]).Bind(Settings, typeof(ExtraSettings).GetProperty("GameMode", BindingFlags.Public | BindingFlags.Instance));
@@ -204,19 +250,20 @@ internal class MenuManager : ModeMenuConstructor
         Elements[3].Hide();
 
         // End condition
-        Elements[4] = new MenuItem<BlackEggTempleCondition>(ExtraPage, "End Condition", (BlackEggTempleCondition[])Enum.GetValues(typeof(BlackEggTempleCondition)));
-        ((MenuItem<BlackEggTempleCondition>)Elements[4]).ValueChanged += ChangeEndCondition;
-        Elements[5] = new NumericEntryField<int>(ExtraPage, "Needed Lore");
-        ((NumericEntryField<int>)Elements[5]).Bind(Settings, typeof(ExtraSettings).GetProperty("NeededLore", BindingFlags.Public | BindingFlags.Instance));
-        Elements[5].MoveTo(((NumericEntryField<int>)Elements[5]).GameObject.transform.position - new Vector3(0f, -50f));
-        Elements[5].Hide();
+        MenuItem<BlackEggTempleCondition> endCondition = new(ExtraPage, "End Condition", (BlackEggTempleCondition[])Enum.GetValues(typeof(BlackEggTempleCondition)));
+        endCondition.ValueChanged += ChangeEndCondition;
+        endCondition.MoveTo(new(-500f, 0f));
+        NeededLore = new(ExtraPage, "Needed Lore");
+        NeededLore.Bind(Settings, typeof(ExtraSettings).GetProperty("NeededLore", BindingFlags.Public | BindingFlags.Instance));
+        NeededLore.MoveTo(new(-500f, -150f));
+        NeededLore.Hide();
 
         // Steel soul option
-        Elements[6] = new ToggleButton(ExtraPage, "Steel Soul");
-        ((ToggleButton)Elements[6]).Bind(Settings, typeof(ExtraSettings).GetProperty("SteelSoul", BindingFlags.Public | BindingFlags.Instance));
-        Elements[7] = new SmallButton(ExtraPage, "Power Tags");
-        ((SmallButton)Elements[7]).AddHideAndShowEvent(ExtraPage, PowerPage);
-        
+        Elements[4] = new ToggleButton(ExtraPage, "Steel Soul");
+        ((ToggleButton)Elements[4]).Bind(Settings, typeof(ExtraSettings).GetProperty("SteelSoul", BindingFlags.Public | BindingFlags.Instance));
+        Elements[5] = new SmallButton(ExtraPage, "Power Tags");
+        ((SmallButton)Elements[5]).AddHideAndShowEvent(ExtraPage, PowerPage);
+
         // Power tag control
         PowerElements = new MenuItem<PowerTag>[60];
         List<PowerTag> tags = (Enum.GetValues(typeof(PowerTag)) as PowerTag[]).ToList();
@@ -254,26 +301,27 @@ internal class MenuManager : ModeMenuConstructor
         // Cursed lore stuff
         MenuEnum<CursedLore> cursedLoreButton = new(ExtraPage, "Cursed Lore");
         cursedLoreButton.ValueChanged += CursedLoreButton_ValueChanged;
-        Elements[8] = cursedLoreButton;
         cursedLoreButton.Bind(Settings, typeof(ExtraSettings).GetProperty("UseCursedLore", BindingFlags.Public | BindingFlags.Instance));
+        cursedLoreButton.MoveTo(new(500f, 0f));
 
         NumericEntryField<int> minCursedLore = new(ExtraPage, "Min. cursed Lore");
         minCursedLore.ValueChanged += MinCursedLore_Changed;
-        Elements[9] = minCursedLore;
         minCursedLore.Bind(Settings, typeof(ExtraSettings).GetProperty("MinCursedLore", BindingFlags.Public | BindingFlags.Instance));
 
         NumericEntryField<int> maxCursedLore = new(ExtraPage, "Max. cursed Lore");
         maxCursedLore.ValueChanged += MaxCursedLore_Changed;
-        Elements[10] = maxCursedLore;
         maxCursedLore.Bind(Settings, typeof(ExtraSettings).GetProperty("MaxCursedLore", BindingFlags.Public | BindingFlags.Instance));
 
         // Start button
         BigButton startButton = new(ExtraPage, "Start Game");
         startButton.OnClick += StartGame;
-        Elements[11] = startButton;
+        startButton.MoveTo(new(0f, -300f));
+
+        CursedRange = new(ExtraPage, new(500, -150f), 2, 600, 230, false, new IMenuElement[] { minCursedLore, maxCursedLore });
+        CursedRange.Hide();
 
         // Create main page
-        new VerticalItemPanel(ExtraPage, new(0f, 400f), 60, false, Elements);
+        new VerticalItemPanel(ExtraPage, new(0f, 400f), 80, false, Elements);
     }
 
     public override void OnExitMainMenu()
@@ -293,7 +341,7 @@ internal class MenuManager : ModeMenuConstructor
         button = new BigButton(modeMenu, SpriteHelper.CreateSprite("Lore"), "Lore Master Extra");
         button.AddHideAndShowEvent(modeMenu, ExtraPage);
         return true;
-    } 
+    }
 
     #endregion
 }

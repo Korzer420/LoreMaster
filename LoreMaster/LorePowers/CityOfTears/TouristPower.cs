@@ -32,7 +32,6 @@ public class TouristPower : Power
         if (string.Equals(self.FsmName, "Door Control") && string.Equals(self.gameObject.name, "door1")
             && string.Equals(self.transform.parent?.name, "Final Boss Door"))
         {
-            LoreMaster.Instance.Log("Modify end door");
             PlayMakerFSM nailSmithCost = LoreMaster.Instance.PreloadedObjects["Nailsmith"].LocateMyFSM("Conversation Control");
             self.AddState(new FsmState(self.Fsm)
             {

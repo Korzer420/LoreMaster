@@ -5,7 +5,7 @@ using ItemChanger;
 using LoreMaster.Helper;
 using System;
 
-namespace LoreMaster.CustomItem;
+namespace LoreMaster.ItemChanger;
 
 [Serializable]
 internal class CustomSprite : ISprite

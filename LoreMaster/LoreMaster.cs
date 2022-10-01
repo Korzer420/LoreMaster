@@ -134,7 +134,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
                     }
             try
             {
-                ItemManager.CreateCustomItems();
+                ItemManager.DefineIC();
                 if (ModHooks.GetMod("Randomizer 4") is Mod mod)
                 {
                     Log("Detected Randomizer. Adding compability.");
@@ -202,7 +202,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
     }
 
     /// <summary>
-    /// Initializes all manager
+    /// Initializes all manager.
     /// </summary>
     public void InitializeManager()
     {

@@ -34,8 +34,6 @@ internal class VenomZone : MonoBehaviour
 
     private IEnumerator Poison()
     {
-        LoreMaster.Instance.Log("Activate Poison");
-        
         float passedTime = 0f;
         while(passedTime < 2.5f)
         {

@@ -137,7 +137,6 @@ public class EyeOfTheWatcherPower : Power
             if (!_adjustedDarkness)
             {
                 _adjustedDarkness = true;
-                LoreMaster.Instance.Log("Called in state: " + self.State.Name);
                 self.Fsm.Variables.FindFsmInt("Darkness Level").Value = Mathf.Min(self.Fsm.Variables.FindFsmInt("Darkness Level").Value + 1, 2);
             }
         }

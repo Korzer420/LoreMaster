@@ -98,6 +98,7 @@ public class GreaterMindPower : Power
         _loreTracker = GameObject.Instantiate(prefab, hudCanvas.transform, true);
         _loreTracker.name = "Lore Tracker";
         PositionHudElement(_loreTracker, 3);
+        _loreTracker.SetActive(false);
     }
 
     /// <inheritdoc/>
@@ -116,11 +117,9 @@ public class GreaterMindPower : Power
     /// <inheritdoc/>
     protected override void TwistEnable() => On.HutongGames.PlayMaker.Actions.PlayerDataBoolTest.OnEnter += PlayerDataBoolTest_OnEnter;
     
-
     /// <inheritdoc/>
     protected override void TwistDisable() => On.HutongGames.PlayMaker.Actions.PlayerDataBoolTest.OnEnter -= PlayerDataBoolTest_OnEnter;
     
-
     #endregion
 
     #region Private Methods

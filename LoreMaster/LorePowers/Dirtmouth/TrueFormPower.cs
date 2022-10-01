@@ -204,7 +204,7 @@ public class TrueFormPower : Power
             if (passedTime >= 120f)
             {
                 passedTime = 0f;
-                _exit = HeroController.instance.sceneEntryGate?.transform;
+                _exit = HeroController.instance?.sceneEntryGate?.transform;
                 if (_exit == null)
                     continue;
                 _playerGeo = PlayerData.instance.GetInt("geo");

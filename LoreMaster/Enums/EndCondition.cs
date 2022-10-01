@@ -18,5 +18,5 @@ public enum BlackEggTempleCondition
     /// <summary>
     /// The player needs all 3 dreamers and a certain amount of lore to enter the temple.
     /// </summary>
-    DreamersAndLore
+    Both
 }

@@ -121,7 +121,9 @@ public class ReluctantPilgrimPower : Power
         return arg;
     }
 
-    private bool HeroController_CanAttack(On.HeroController.orig_CanAttack orig, HeroController self) => self && HeroController.instance.cState.onGround;
+    private bool HeroController_CanAttack(On.HeroController.orig_CanAttack orig, HeroController self) => self && (HeroController.instance.cState.onGround 
+        || PlayerData.instance.GetInt(nameof(PlayerData.instance.health)) >= PlayerData.instance.GetInt(nameof(PlayerData.instance.maxHealth))
+        || PlayerData.instance.GetInt(nameof(PlayerData.instance.health)) == 1 );
 
     #endregion
 

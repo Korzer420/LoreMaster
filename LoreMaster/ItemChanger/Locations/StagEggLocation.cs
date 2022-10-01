@@ -14,7 +14,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace LoreMaster.CustomItem.Locations;
+namespace LoreMaster.ItemChanger.Locations;
 
 public class StagEggLocation : AutoLocation
 {

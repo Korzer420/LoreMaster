@@ -33,22 +33,6 @@
     <_CopyItems Include="Resources\Base\*.*" />
 	<_RandoItems Include="Resources\Randomizer\*.*" />
   </ItemGroup>
-  
-  <ItemGroup>
-    <EmbeddedResource Remove="Resources\Base\CurseDispell.png" />
-    <EmbeddedResource Remove="Resources\Base\SummoningScroll.png" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <_CopyItems Remove="Resources\Base\CurseDispell.png" />
-    <_CopyItems Remove="Resources\Base\SummoningScroll.png" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <Content Include="Resources\Base\CurseDispell.png" />
-    <Content Include="Resources\Base\SummoningScroll.png" />
-  </ItemGroup>
-  
     <ItemGroup>
     <Reference Include="Assembly-CSharp">
       <HintPath>..\..\..\..\..\Program Files\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\Assembly-CSharp.dll</HintPath>
@@ -166,6 +150,16 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>TreasureHunter.resx</DependentUpon>
     </Compile>
+    <Compile Update="Properties\TwistedPowerDescriptions.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>TwistedPowerDescriptions.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Properties\TwistedPowerHints.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>TwistedPowerHints.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
   
   <ItemGroup>
@@ -188,6 +182,14 @@
     <EmbeddedResource Update="Properties\TreasureHunter.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>TreasureHunter.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Properties\TwistedPowerDescriptions.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>TwistedPowerDescriptions.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Properties\TwistedPowerHints.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>TwistedPowerHints.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   

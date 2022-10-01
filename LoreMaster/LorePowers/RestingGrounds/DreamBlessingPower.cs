@@ -131,10 +131,10 @@ public class DreamBlessingPower : Power
                     return x;
                 });
             else
-                LoreMaster.Instance.Log("Couldn't find soul amount 2");
+                LoreMaster.Instance.LogError("Couldn't find soul amount 2");
         }
         else
-            LoreMaster.Instance.Log("Couldn't find soul amount");
+            LoreMaster.Instance.LogError("Couldn't find soul amount");
     }
 
     #endregion
