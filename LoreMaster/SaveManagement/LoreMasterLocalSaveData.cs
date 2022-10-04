@@ -67,4 +67,9 @@ public class LoreMasterLocalSaveData
     /// Gets or sets the state of the inventory power page.
     /// </summary>
     public PowerControlState PageState { get; set; }
+
+    /// <summary>
+    /// Gets or sets the data for the travelling npcs. The first items contains the current stage and the second the order.
+    /// </summary>
+    public Dictionary<Traveller, (int, string[])> TravellerOrder { get; set; } = new();
 }

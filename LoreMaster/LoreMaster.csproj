@@ -33,6 +33,216 @@
     <_CopyItems Include="Resources\Base\*.*" />
 	<_RandoItems Include="Resources\Randomizer\*.*" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <EmbeddedResource Remove="Resources\Randomizer\Aspid_Queen.png" />
+    <EmbeddedResource Remove="Resources\Randomizer\Cloth_Circle.png" />
+    <EmbeddedResource Remove="Resources\Randomizer\Crystal_Shaman.png" />
+    <EmbeddedResource Remove="Resources\Randomizer\Dashmaster.png" />
+    <EmbeddedResource Remove="Resources\Randomizer\Dreamer_Plaque.png" />
+    <EmbeddedResource Remove="Resources\Randomizer\Dream_Shield.png" />
+    <EmbeddedResource Remove="Resources\Randomizer\Dryya.png" />
+    <EmbeddedResource Remove="Resources\Randomizer\Garden_Golem.png" />
+    <EmbeddedResource Remove="Resources\Randomizer\Godseeker.png" />
+    <EmbeddedResource Remove="Resources\Randomizer\Great_Hopper_Dummy.png" />
+    <EmbeddedResource Remove="Resources\Randomizer\Grimm_Summoner.png" />
+    <EmbeddedResource Remove="Resources\Randomizer\Isma.png" />
+    <EmbeddedResource Remove="Resources\Randomizer\Kings_Mould_Machine.png" />
+    <EmbeddedResource Remove="Resources\Randomizer\Mine_Golem.png" />
+    <EmbeddedResource Remove="Resources\Randomizer\Nursery.png" />
+    <EmbeddedResource Remove="Resources\Randomizer\Pale_King.png" />
+    <EmbeddedResource Remove="Resources\Randomizer\Radiance_Statue.png" />
+    <EmbeddedResource Remove="Resources\Randomizer\Shade_Golem.png" />
+    <EmbeddedResource Remove="Resources\Randomizer\Shaman_Corpse.png" />
+    <EmbeddedResource Remove="Resources\Randomizer\Shaman_Tomb.png" />
+    <EmbeddedResource Remove="Resources\Randomizer\Shriek_Statue.png" />
+    <EmbeddedResource Remove="Resources\Randomizer\Shroom_King.png" />
+    <EmbeddedResource Remove="Resources\Randomizer\Spider_Shrine.png" />
+    <EmbeddedResource Remove="Resources\Randomizer\Tiso_Circle.png" />
+    <EmbeddedResource Remove="Resources\Randomizer\tiso_corpse.png" />
+    <EmbeddedResource Remove="Resources\Randomizer\Unnamed_Moth_Circle.png" />
+    <EmbeddedResource Remove="Resources\Randomizer\vitruvian_grub.png" />
+    <EmbeddedResource Remove="Resources\Randomizer\Weaver_Seal.png" />
+    <EmbeddedResource Remove="Resources\Randomizer\Zote_Circle.png" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <None Remove="Resources\Sounds\Bardoon.wav" />
+    <None Remove="Resources\Sounds\Bretta.wav" />
+    <None Remove="Resources\Sounds\Cloth.wav" />
+    <None Remove="Resources\Sounds\Dream_Enter.wav" />
+    <None Remove="Resources\Sounds\Dream_Ghost.wav" />
+    <None Remove="Resources\Sounds\Dung_Defender.wav" />
+    <None Remove="Resources\Sounds\Elderbug.wav" />
+    <None Remove="Resources\Sounds\Elder_Hu.wav" />
+    <None Remove="Resources\Sounds\Emilitia.wav" />
+    <None Remove="Resources\Sounds\Galien.wav" />
+    <None Remove="Resources\Sounds\Gorb.wav" />
+    <None Remove="Resources\Sounds\Marissa.wav" />
+    <None Remove="Resources\Sounds\Markoth.wav" />
+    <None Remove="Resources\Sounds\Marmu.wav" />
+    <None Remove="Resources\Sounds\Mask_Maker.wav" />
+    <None Remove="Resources\Sounds\Menderbug.wav" />
+    <None Remove="Resources\Sounds\Midwife.wav" />
+    <None Remove="Resources\Sounds\Moss_Cultist.wav" />
+    <None Remove="Resources\Sounds\Myla.wav" />
+    <None Remove="Resources\Sounds\No_Eyes.wav" />
+    <None Remove="Resources\Sounds\Queen.wav" />
+    <None Remove="Resources\Sounds\Quirrel.wav" />
+    <None Remove="Resources\Sounds\Secret.wav" />
+    <None Remove="Resources\Sounds\Tiso.wav" />
+    <None Remove="Resources\Sounds\Willoh.wav" />
+    <None Remove="Resources\Sounds\Xero.wav" />
+    <None Remove="Resources\Sounds\Zote.wav" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <_RandoItems Remove="Resources\Randomizer\Aspid_Queen.png" />
+    <_RandoItems Remove="Resources\Randomizer\Cloth_Circle.png" />
+    <_RandoItems Remove="Resources\Randomizer\Crystal_Shaman.png" />
+    <_RandoItems Remove="Resources\Randomizer\Dashmaster.png" />
+    <_RandoItems Remove="Resources\Randomizer\Dreamer_Plaque.png" />
+    <_RandoItems Remove="Resources\Randomizer\Dream_Shield.png" />
+    <_RandoItems Remove="Resources\Randomizer\Dryya.png" />
+    <_RandoItems Remove="Resources\Randomizer\Garden_Golem.png" />
+    <_RandoItems Remove="Resources\Randomizer\Godseeker.png" />
+    <_RandoItems Remove="Resources\Randomizer\Great_Hopper_Dummy.png" />
+    <_RandoItems Remove="Resources\Randomizer\Grimm_Summoner.png" />
+    <_RandoItems Remove="Resources\Randomizer\Isma.png" />
+    <_RandoItems Remove="Resources\Randomizer\Kings_Mould_Machine.png" />
+    <_RandoItems Remove="Resources\Randomizer\Mine_Golem.png" />
+    <_RandoItems Remove="Resources\Randomizer\Nursery.png" />
+    <_RandoItems Remove="Resources\Randomizer\Pale_King.png" />
+    <_RandoItems Remove="Resources\Randomizer\Radiance_Statue.png" />
+    <_RandoItems Remove="Resources\Randomizer\Shade_Golem.png" />
+    <_RandoItems Remove="Resources\Randomizer\Shaman_Corpse.png" />
+    <_RandoItems Remove="Resources\Randomizer\Shaman_Tomb.png" />
+    <_RandoItems Remove="Resources\Randomizer\Shriek_Statue.png" />
+    <_RandoItems Remove="Resources\Randomizer\Shroom_King.png" />
+    <_RandoItems Remove="Resources\Randomizer\Spider_Shrine.png" />
+    <_RandoItems Remove="Resources\Randomizer\Tiso_Circle.png" />
+    <_RandoItems Remove="Resources\Randomizer\tiso_corpse.png" />
+    <_RandoItems Remove="Resources\Randomizer\Unnamed_Moth_Circle.png" />
+    <_RandoItems Remove="Resources\Randomizer\vitruvian_grub.png" />
+    <_RandoItems Remove="Resources\Randomizer\Weaver_Seal.png" />
+    <_RandoItems Remove="Resources\Randomizer\Zote_Circle.png" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Content Include="Resources\Randomizer\Aspid_Queen.png" />
+    <Content Include="Resources\Randomizer\Cloth_Circle.png" />
+    <Content Include="Resources\Randomizer\Crystal_Shaman.png" />
+    <Content Include="Resources\Randomizer\Dashmaster.png" />
+    <Content Include="Resources\Randomizer\Dreamer_Plaque.png" />
+    <Content Include="Resources\Randomizer\Dream_Shield.png" />
+    <Content Include="Resources\Randomizer\Dryya.png" />
+    <Content Include="Resources\Randomizer\Garden_Golem.png" />
+    <Content Include="Resources\Randomizer\Godseeker.png" />
+    <Content Include="Resources\Randomizer\Great_Hopper_Dummy.png" />
+    <Content Include="Resources\Randomizer\Grimm_Summoner.png" />
+    <Content Include="Resources\Randomizer\Isma.png" />
+    <Content Include="Resources\Randomizer\Kings_Mould_Machine.png" />
+    <Content Include="Resources\Randomizer\Mine_Golem.png" />
+    <Content Include="Resources\Randomizer\Nursery.png" />
+    <Content Include="Resources\Randomizer\Pale_King.png" />
+    <Content Include="Resources\Randomizer\Radiance_Statue.png" />
+    <Content Include="Resources\Randomizer\Shade_Golem.png" />
+    <Content Include="Resources\Randomizer\Shaman_Corpse.png" />
+    <Content Include="Resources\Randomizer\Shaman_Tomb.png" />
+    <Content Include="Resources\Randomizer\Shriek_Statue.png" />
+    <Content Include="Resources\Randomizer\Shroom_King.png" />
+    <Content Include="Resources\Randomizer\Spider_Shrine.png" />
+    <Content Include="Resources\Randomizer\Tiso_Circle.png" />
+    <Content Include="Resources\Randomizer\tiso_corpse.png" />
+    <Content Include="Resources\Randomizer\Unnamed_Moth_Circle.png" />
+    <Content Include="Resources\Randomizer\vitruvian_grub.png" />
+    <Content Include="Resources\Randomizer\Weaver_Seal.png" />
+    <Content Include="Resources\Randomizer\Zote_Circle.png" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Sounds\Bardoon.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Sounds\Bretta.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Sounds\Cloth.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Sounds\Dream_Enter.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Sounds\Dream_Ghost.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Sounds\Dung_Defender.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Sounds\Elderbug.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Sounds\Elder_Hu.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Sounds\Emilitia.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Sounds\Galien.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Sounds\Gorb.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Sounds\Marissa.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Sounds\Markoth.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Sounds\Marmu.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Sounds\Mask_Maker.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Sounds\Menderbug.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Sounds\Midwife.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Sounds\Moss_Cultist.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Sounds\Myla.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Sounds\No_Eyes.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Sounds\Queen.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Sounds\Quirrel.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Sounds\Secret.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Sounds\Tiso.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Sounds\Willoh.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Sounds\Xero.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Sounds\Zote.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
     <ItemGroup>
     <Reference Include="Assembly-CSharp">
       <HintPath>..\..\..\..\..\Program Files\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\Assembly-CSharp.dll</HintPath>
@@ -135,6 +345,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>ElderbugDialog.resx</DependentUpon>
     </Compile>
+    <Compile Update="Properties\InspectText.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>InspectText.resx</DependentUpon>
+    </Compile>
     <Compile Update="Properties\PowerDescriptions.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -144,6 +359,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>PowerHints.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Properties\ShopDescriptions.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ShopDescriptions.resx</DependentUpon>
     </Compile>
     <Compile Update="Properties\TreasureHunter.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -171,6 +391,10 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ElderbugDialog.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Update="Properties\InspectText.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>InspectText.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Update="Properties\PowerDescriptions.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>PowerDescriptions.Designer.cs</LastGenOutput>
@@ -178,6 +402,10 @@
     <EmbeddedResource Update="Properties\PowerHints.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>PowerHints.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Properties\ShopDescriptions.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ShopDescriptions.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Properties\TreasureHunter.resx">
       <Generator>ResXFileCodeGenerator</Generator>

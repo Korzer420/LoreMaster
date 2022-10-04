@@ -1,3 +1,4 @@
+using LoreMaster.Enums;
 using LoreMaster.LorePowers.CityOfTears;
 using LoreMaster.Manager;
 using LoreMaster.Randomizer;
@@ -264,6 +265,10 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
             SettingManager.Instance.GameMode = saveData.GameMode;
             SettingManager.Instance.ElderbugState = saveData.ElderbugState;
             PowerManager.ControlState = saveData.PageState;
+            //foreach (Traveller item in saveData.TravellerOrder.Keys)
+            //{
+                
+            //}
         }
         catch (Exception exception)
         {

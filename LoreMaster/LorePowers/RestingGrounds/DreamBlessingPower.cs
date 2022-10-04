@@ -89,7 +89,9 @@ public class DreamBlessingPower : Power
         else if (key.Equals("DREAMERS_INSPECT_RG4"))
             return LoreManager.Instance.UseHints ? " Invoking her children from her victim." : " Spawn 2 weavers for the current room.";
         else if (key.Equals("DREAMERS_INSPECT_RG5"))
-            return " [" + PowerName + "] " + (LoreManager.Instance.UseHints ? "The dream artifact uses the power it absorbs from their powerful victims to use it's hidden power." : "Defeated Dreamers grant the dream nail an additional effect (doubled with awoken dreamnail).");
+            return StayTwisted 
+                ? " [Cursed: " + PowerName + "] " + (LoreManager.Instance.UseHints ? TwistedHint : TwistedDescription )
+                : " [" + PowerName + "] " + (LoreManager.Instance.UseHints ? "The dream artifact uses the power it absorbs from their powerful victims to use it's hidden power." : "Defeated Dreamers grant the dream nail an additional effect (doubled with awoken dreamnail).");
         return string.Empty;
     }
 

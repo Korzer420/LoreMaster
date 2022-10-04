@@ -16,7 +16,7 @@ internal class LoreManager
     #region Constructors
 
     public LoreManager() => Instance = this;
-    
+
     #endregion
 
     #region Properties
@@ -98,7 +98,10 @@ internal class LoreManager
         else if (key.Equals("FOUNTAIN_PLAQUE_DESC"))
         {
             PowerManager.GetPowerByKey(key, out Power fountain, false);
-            text += " [" + fountain.PowerName + "] " + (UseHints ? fountain.Hint : fountain.Description);
+            if (fountain.StayTwisted)
+                text += " [Cursed: " + fountain.PowerName + "] " + (UseHints ? fountain.TwistedHint : fountain.TwistedDescription);
+            else
+                text += " [" + fountain.PowerName + "] " + (UseHints ? fountain.Hint : fountain.Description);
         }
         else if (key.Contains("DREAMERS_INSPECT_RG"))
         {
@@ -158,7 +161,7 @@ internal class LoreManager
                 text = RollElderbugHint();
             else
                 text = Properties.ElderbugDialog.ResourceManager.GetString(key);
-            
+
         }
         else if (!ModifyText(key, ref text) && PowerManager.HasObtainedPower("QUEEN", false))
         {
@@ -281,71 +284,71 @@ internal class LoreManager
 
     private bool IsBardoon(string key)
     {
-        return string.Equals(key,"BIGCAT_INTRO") || string.Equals(key,"BIGCAT_TALK_01")
-            || string.Equals(key,"BIGCAT_TALK_02") || string.Equals(key,"BIGCAT_TALK_03")
-            || string.Equals(key,"BIGCAT_TAIL_HIT") || string.Equals(key,"BIGCAT_KING_BRAND")
-            || string.Equals(key,"BIGCAT_SHADECHARM") || string.Equals(key,"BIGCAT_REPEAT");
+        return string.Equals(key, "BIGCAT_INTRO") || string.Equals(key, "BIGCAT_TALK_01")
+            || string.Equals(key, "BIGCAT_TALK_02") || string.Equals(key, "BIGCAT_TALK_03")
+            || string.Equals(key, "BIGCAT_TAIL_HIT") || string.Equals(key, "BIGCAT_KING_BRAND")
+            || string.Equals(key, "BIGCAT_SHADECHARM") || string.Equals(key, "BIGCAT_REPEAT");
     }
 
     private bool IsMidwife(string key)
     {
-        return string.Equals(key,"SPIDER_MEET") || string.Equals(key,"SPIDER_GREET")
-            || string.Equals(key,"SPIDER_GREET2") || string.Equals(key,"SPIDER_REPEAT") || string.Equals(key,"MIDWIFE_WEAVERSONG");
+        return string.Equals(key, "SPIDER_MEET") || string.Equals(key, "SPIDER_GREET")
+            || string.Equals(key, "SPIDER_GREET2") || string.Equals(key, "SPIDER_REPEAT") || string.Equals(key, "MIDWIFE_WEAVERSONG");
     }
 
     private bool IsMaskMaker(string key)
     {
-        return string.Equals(key,"MASK_MAKER_GREET") || string.Equals(key,"MASK_MAKER_REPEAT")
-            || string.Equals(key,"MASK_MAKER_REPEAT2") || string.Equals(key,"MASK_MAKER_REPEAT3")
-            || string.Equals(key,"MASK_MAKER_UNMASK") || string.Equals(key,"MASK_MAKER_UNMASK3")
-            || string.Equals(key,"MASK_MAKER_UNMASK4") || string.Equals(key,"MASK_MAKER_UNMASK2") || string.Equals(key,"MASK_MAKER_UNMASK_REPEAT")
-            || string.Equals(key,"MASKMAKER_GREET") || string.Equals(key,"MASKMAKER_REPEAT")
-            || string.Equals(key,"MASKMAKER_REPEAT2") || string.Equals(key,"MASKMAKER_REPEAT3")
-            || string.Equals(key,"MASKMAKER_UNMASK") || string.Equals(key,"MASKMAKER_UNMASK3")
-            || string.Equals(key,"MASKMAKER_UNMASK4") || string.Equals(key,"MASKMAKER_UNMASK2") || string.Equals(key,"MASKMAKER_UNMASK_REPEAT");
+        return string.Equals(key, "MASK_MAKER_GREET") || string.Equals(key, "MASK_MAKER_REPEAT")
+            || string.Equals(key, "MASK_MAKER_REPEAT2") || string.Equals(key, "MASK_MAKER_REPEAT3")
+            || string.Equals(key, "MASK_MAKER_UNMASK") || string.Equals(key, "MASK_MAKER_UNMASK3")
+            || string.Equals(key, "MASK_MAKER_UNMASK4") || string.Equals(key, "MASK_MAKER_UNMASK2") || string.Equals(key, "MASK_MAKER_UNMASK_REPEAT")
+            || string.Equals(key, "MASKMAKER_GREET") || string.Equals(key, "MASKMAKER_REPEAT")
+            || string.Equals(key, "MASKMAKER_REPEAT2") || string.Equals(key, "MASKMAKER_REPEAT3")
+            || string.Equals(key, "MASKMAKER_UNMASK") || string.Equals(key, "MASKMAKER_UNMASK3")
+            || string.Equals(key, "MASKMAKER_UNMASK4") || string.Equals(key, "MASKMAKER_UNMASK2") || string.Equals(key, "MASKMAKER_UNMASK_REPEAT");
     }
 
     private bool IsFlukeHermit(string key)
     {
-        return string.Equals(key,"FLUKE_HERMIT_PRAY") || string.Equals(key,"FLUKE_HERMIT_PRAY_REPEAT")
-            || string.Equals(key,"FLUKE_HERMIT_IDLE_1") || string.Equals(key,"FLUKE_HERMIT_IDLE_2")
-            || string.Equals(key,"FLUKE_HERMIT_IDLE_3") || string.Equals(key,"FLUKE_HERMIT_IDLE_4")
-            || string.Equals(key,"FLUKE_HERMIT_IDLE_5") || string.Equals(key,"MASK_MAKER_UNMASK2") || string.Equals(key,"MASK_MAKER_UNMASK_REPEAT");
+        return string.Equals(key, "FLUKE_HERMIT_PRAY") || string.Equals(key, "FLUKE_HERMIT_PRAY_REPEAT")
+            || string.Equals(key, "FLUKE_HERMIT_IDLE_1") || string.Equals(key, "FLUKE_HERMIT_IDLE_2")
+            || string.Equals(key, "FLUKE_HERMIT_IDLE_3") || string.Equals(key, "FLUKE_HERMIT_IDLE_4")
+            || string.Equals(key, "FLUKE_HERMIT_IDLE_5") || string.Equals(key, "MASK_MAKER_UNMASK2") || string.Equals(key, "MASK_MAKER_UNMASK_REPEAT");
     }
 
     private bool IsQueen(string key)
     {
-        return string.Equals(key,"QUEEN_MEET") || string.Equals(key,"QUEEN_MEET_REPEAT")
-            || string.Equals(key,"QUEEN_TALK_01") || string.Equals(key,"QUEEN_TALK_02")
-            || string.Equals(key,"QUEEN_HORNET") || string.Equals(key,"QUEEN_DUNG")
-            || string.Equals(key,"QUEEN_DUNG_02") || string.Equals(key,"QUEEN_REPEAT_KINGSOUL")
-            || string.Equals(key,"QUEEN_TALK_EXTRA") || string.Equals(key,"QUEEN_REPEAT_SHADECHARM")
-            || string.Equals(key,"QUEEN_GRIMMCHILD") || string.Equals(key," QUEEN_GRIMMCHILD_FULL");
+        return string.Equals(key, "QUEEN_MEET") || string.Equals(key, "QUEEN_MEET_REPEAT")
+            || string.Equals(key, "QUEEN_TALK_01") || string.Equals(key, "QUEEN_TALK_02")
+            || string.Equals(key, "QUEEN_HORNET") || string.Equals(key, "QUEEN_DUNG")
+            || string.Equals(key, "QUEEN_DUNG_02") || string.Equals(key, "QUEEN_REPEAT_KINGSOUL")
+            || string.Equals(key, "QUEEN_TALK_EXTRA") || string.Equals(key, "QUEEN_REPEAT_SHADECHARM")
+            || string.Equals(key, "QUEEN_GRIMMCHILD") || string.Equals(key, " QUEEN_GRIMMCHILD_FULL");
     }
 
     private bool IsWilloh(string key)
     {
-        return string.Equals(key,"GIRAFFE_MEET") || string.Equals(key,"GIRAFFE_LOWER") || string.Equals(key,"GIRAFFE_LOWER_REPEAT");
+        return string.Equals(key, "GIRAFFE_MEET") || string.Equals(key, "GIRAFFE_LOWER") || string.Equals(key, "GIRAFFE_LOWER_REPEAT");
     }
 
     private bool IsMyla(string key)
     {
-        return string.Equals(key,"MINER_MEET_1_B") || string.Equals(key,"MINER_MEET_REPEAT") || string.Equals(key,"MINER_EARLY_1_B") || string.Equals(key,"MINER_EARLY_2_B") || string.Equals(key,"MINER_EARLY_3");
+        return string.Equals(key, "MINER_MEET_1_B") || string.Equals(key, "MINER_MEET_REPEAT") || string.Equals(key, "MINER_EARLY_1_B") || string.Equals(key, "MINER_EARLY_2_B") || string.Equals(key, "MINER_EARLY_3");
     }
 
     private bool IsQuirrel(string key)
     {
-        return string.Equals(key,"QUIRREL_MINES_1") || string.Equals(key,"QUIRREL_MINES_2") || string.Equals(key,"QUIRREL_MINES_3") || string.Equals(key,"QUIRREL_MINES_4");
+        return string.Equals(key, "QUIRREL_MINES_1") || string.Equals(key, "QUIRREL_MINES_2") || string.Equals(key, "QUIRREL_MINES_3") || string.Equals(key, "QUIRREL_MINES_4");
     }
 
     private bool IsEmilitia(string key)
     {
-        return string.Equals(key,"EMILITIA_MEET") || string.Equals(key,"EMILITIA_KING_BRAND") || string.Equals(key,"EMILITIA_GREET") || string.Equals(key,"EMILITIA_REPEAT");
+        return string.Equals(key, "EMILITIA_MEET") || string.Equals(key, "EMILITIA_KING_BRAND") || string.Equals(key, "EMILITIA_GREET") || string.Equals(key, "EMILITIA_REPEAT");
     }
 
     private bool IsMossProphet(string key)
     {
-        return string.Equals(key,"MOSS_CULTIST_01") || string.Equals(key,"MOSS_CULTIST_02") || string.Equals(key,"MOSS_CULTIST_03");
+        return string.Equals(key, "MOSS_CULTIST_01") || string.Equals(key, "MOSS_CULTIST_02") || string.Equals(key, "MOSS_CULTIST_03");
     }
 
     #endregion

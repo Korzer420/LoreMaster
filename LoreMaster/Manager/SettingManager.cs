@@ -4,7 +4,7 @@ using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
 using ItemChanger.Modules;
 using ItemChanger.UIDefs;
-using LoreMaster.ItemChanger.Locations;
+using LoreMaster.ItemChangerData.Locations;
 using LoreMaster.Enums;
 using LoreMaster.Extensions;
 using LoreMaster.Helper;
@@ -319,12 +319,6 @@ public class SettingManager
         // We remove all those checks.
         if (string.Equals(self.gameObject.name, "Quirrel Mines") && string.Equals(self.FsmName, "FSM"))
             self.GetState("Check").RemoveTransitionsTo("Destroy");
-        // The game asks for the language key for the fountain once you entered the room. To not give the power immediatly, we bind it on the inspect instead.
-        else if (string.Equals(self.gameObject.name, "Fountain Inspect") && string.Equals(self.FsmName, "Conversation Control"))
-            self.GetState("Anim End").ReplaceAction(new Lambda(() => PowerManager.GetPowerByKey("FOUNTAIN_PLAQUE_DESC", out Power power)) { Name = "Fountain Power" });
-        // The game asks for the language key for the dreamer tablet once you entered the room. To not give the power immediatly, we bind it on the inspect instead.
-        else if (string.Equals(self.gameObject.name, "Dreamer Plaque Inspect") && string.Equals(self.FsmName, "Conversation Control"))
-            self.GetState("Anim End").ReplaceAction(new Lambda(() => PowerManager.GetPowerByKey("DREAMERS_INSPECT_RG5", out Power power)) { Name = "Dreamer Power" });
         // Prevent Moss Prophet from dying
         else if (string.Equals(self.gameObject.name, "Moss Cultist") && string.Equals(self.FsmName, "FSM"))
         {
@@ -403,10 +397,6 @@ public class SettingManager
             self.GetState("Idle").ClearTransitions();
         else if (string.Equals(self.FsmName, "Shop Region") && !LoreManager.Instance.CanListen)
             self.GetState("Out Of Range").ClearTransitions();
-        else if (string.Equals(self.FsmName, "Control") && string.Equals(self.gameObject.name, "Final Boss Door") && ModHooks.GetMod("Randomizer 4", true) is Mod mod)
-            RandomizerManager.ModifyTempleDoor(self);
-        else if (string.Equals(self.gameObject.name, "Ghost Activator") && self.transform.childCount > 0 && string.Equals("Ghost NPC Joni", self.transform.GetChild(0)?.name) && ModHooks.GetMod("Randomizer 4", true) is Mod)
-            RandomizerManager.ModifyJoni(self);
         else if (string.Equals(self.FsmName, "Thorn Counter"))
         {
             PowerManager.GetPowerByKey("QUEEN", out power, false);
@@ -446,6 +436,7 @@ public class SettingManager
     {
         try
         {
+            LoreMaster.Instance.Log("Message type is: " + itemData.MessageType);
             if (itemData.Placement.Name.StartsWith("Elderbug_Reward_"))
             {
                 ElderbugState = !itemData.Placement.Name.EndsWith("1")
@@ -656,7 +647,6 @@ public class SettingManager
 
         // Execute all actions that powers want to do when the scene changes.
         PowerManager.ExecuteSceneActions();
-
         CurrentArea = newArea;
     }
 

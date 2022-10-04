@@ -208,7 +208,7 @@
     <value>You swim 4 times as fast.</value>
   </data>
   <data name="JonisProtection" xml:space="preserve">
-    <value>When going to another area, you will be granted 5 life blood (10 if you have Joni's equipped). Each 3 seconds a lifeblood will fade away.</value>
+    <value>When going to another area, you will be granted 5 life blood (10 if you have Joni's equipped). Each 3 seconds a lifeblood granted by this ability will fade away.</value>
   </data>
   <data name="LaughableThreat" xml:space="preserve">
     <value>Most non boss enemies will not be triggered by line of sight. This effect fades away once you hit any enemy. Refreshes on entering a new room.</value>
@@ -232,7 +232,7 @@
     <value>Every twelve seconds you cast the deep focus spore cloud. Hold the crystal dash button to prevent that (in case you want to do pogos for example).</value>
   </data>
   <data name="OverwhelmingPower" xml:space="preserve">
-    <value>When you cast a spell while your soul vessel is full (not counting additional soul vessels), they deal twice as much damage and are twice as big.</value>
+    <value>When you cast a spell while your soul vessel is full (not counting additional soul vessels), they deal twice as much damage and are twice as big. Has a 10% chance to deal 2 mask of damage and limit your soul vessel for 30 to 120 seconds, after casting an overpowered spell.</value>
   </data>
   <data name="PaleLuck" xml:space="preserve">
     <value>When you would take damage, you have a 2% chance to be healed instead. Increased by 4% for each King's Brand and Kingssoul. Also increased by 1 % for each king's idol you have.</value>

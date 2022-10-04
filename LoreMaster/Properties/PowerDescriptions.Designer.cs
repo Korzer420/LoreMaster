@@ -331,7 +331,7 @@ namespace LoreMaster.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die When going to another area, you will be granted 5 life blood (10 if you have Joni&apos;s equipped). Each 3 seconds a lifeblood will fade away. ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die When going to another area, you will be granted 5 life blood (10 if you have Joni&apos;s equipped). Each 3 seconds a lifeblood granted by this ability will fade away. ähnelt.
         /// </summary>
         internal static string JonisProtection {
             get {
@@ -403,7 +403,7 @@ namespace LoreMaster.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die When you cast a spell while your soul vessel is full (not counting additional soul vessels), they deal twice as much damage and are twice as big. ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die When you cast a spell while your soul vessel is full (not counting additional soul vessels), they deal twice as much damage and are twice as big. Has a 10% chance to deal 2 mask of damage and limit your soul vessel for 30 to 120 seconds, after casting an overpowered spell. ähnelt.
         /// </summary>
         internal static string OverwhelmingPower {
             get {

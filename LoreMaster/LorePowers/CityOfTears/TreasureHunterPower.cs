@@ -5,8 +5,8 @@ using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
 using ItemChanger.Items;
 using ItemChanger.UIDefs;
-using LoreMaster.ItemChanger;
-using LoreMaster.ItemChanger.Locations;
+using LoreMaster.ItemChangerData;
+using LoreMaster.ItemChangerData.Locations;
 using LoreMaster.Enums;
 using LoreMaster.Helper;
 using LoreMaster.Manager;
@@ -18,6 +18,8 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using LoreMaster.ItemChangerData.Other;
+using ItemChanger.Placements;
 
 namespace LoreMaster.LorePowers.CityOfTears;
 
@@ -543,7 +545,7 @@ internal class TreasureHunterPower : Power
                 else
                 {
                     _inventoryItems[i].GetComponent<SpriteRenderer>().sprite = _chartSprite;
-                    if (ItemManager.GetLocationByName<TreasureLocation>($"{ItemManager.Treasure_Prefix}{i + 1}").Placement.Items.Any(x => !x.IsObtained()))
+                    if (ItemManager.GetPlacementByName<MutablePlacement>($"{LocationList.Treasure_Prefix}{i + 1}").Items.Any(x => !x.IsObtained()))
                         _inventoryItems[i].GetComponent<SpriteRenderer>().color = new(0.2f, 0.2f, 0.2f);
                     else
                         _inventoryItems[i].GetComponent<SpriteRenderer>().color = Color.white;
