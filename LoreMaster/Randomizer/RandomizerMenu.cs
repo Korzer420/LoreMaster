@@ -6,10 +6,6 @@ using MenuChanger.MenuPanels;
 using Modding;
 using RandomizerMod.Menu;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LoreMaster.Randomizer;
 
@@ -97,7 +93,7 @@ public class RandomizerMenu
             _optionPanel = new(_mainPage, new(0, 300), 80f, true, _menuElementFactory.Elements);
 
             if (ModHooks.GetMod("ConnectionSettingsCode", true) is Mod mod)
-                ConnectionSettingManager.CreateSettingsCode(previousPage, _menuElementFactory.Elements);
+                ConnectionSettingManager.CreateSettingsCode(_mainPage, _menuElementFactory.Elements);
         }
         catch (Exception exception)
         {
