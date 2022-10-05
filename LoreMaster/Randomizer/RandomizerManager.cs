@@ -90,15 +90,7 @@ public static class RandomizerManager
         "No_Eyes"
     };
 
-    /// <summary>
-    /// Gets or sets the current stages of the travelling npc.
-    /// </summary>
-    public static Dictionary<Traveller, int> TravellerStages { get; set; } = new();
-
-    /// <summary>
-    /// Gets or sets the order in which the travelling npc should appear. Compared to <see cref="TravellerStages"/> to determine progress.
-    /// </summary>
-    public static Dictionary<Traveller, string[]> TravellerOrder { get; set; } = new();
+    
 
     /// <summary>
     /// Gets the flag, that indicates if this is a rando file.

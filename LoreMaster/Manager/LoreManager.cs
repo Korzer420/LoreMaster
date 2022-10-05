@@ -1,4 +1,5 @@
 using LoreMaster.Enums;
+using LoreMaster.ItemChangerData.Other;
 using LoreMaster.LorePowers;
 using LoreMaster.LorePowers.HowlingCliffs;
 using LoreMaster.LorePowers.RestingGrounds;
@@ -50,6 +51,11 @@ internal class LoreManager
     /// Gets or sets the amount of cleansing scrolls, that the player can use to undo a twisted obtain power of their choice.
     /// </summary>
     public int CleansingScrolls { get; set; } = 3;
+
+    /// <summary>
+    /// Gets or sets the current stages of the travelling npc.
+    /// </summary>
+    public Dictionary<Traveller, TravellerData> Traveller { get; set; } = new();
 
     public static LoreManager Instance { get; set; }
 

@@ -36,7 +36,7 @@
   
   <ItemGroup>
     <EmbeddedResource Remove="Resources\Randomizer\Aspid_Queen.png" />
-    <EmbeddedResource Remove="Resources\Randomizer\Cloth_Circle.png" />
+    <EmbeddedResource Remove="Resources\Randomizer\Cloth.png" />
     <EmbeddedResource Remove="Resources\Randomizer\Crystal_Shaman.png" />
     <EmbeddedResource Remove="Resources\Randomizer\Dashmaster.png" />
     <EmbeddedResource Remove="Resources\Randomizer\Dreamer_Plaque.png" />
@@ -98,7 +98,7 @@
   
   <ItemGroup>
     <_RandoItems Remove="Resources\Randomizer\Aspid_Queen.png" />
-    <_RandoItems Remove="Resources\Randomizer\Cloth_Circle.png" />
+    <_RandoItems Remove="Resources\Randomizer\Cloth.png" />
     <_RandoItems Remove="Resources\Randomizer\Crystal_Shaman.png" />
     <_RandoItems Remove="Resources\Randomizer\Dashmaster.png" />
     <_RandoItems Remove="Resources\Randomizer\Dreamer_Plaque.png" />
@@ -130,7 +130,7 @@
   
   <ItemGroup>
     <Content Include="Resources\Randomizer\Aspid_Queen.png" />
-    <Content Include="Resources\Randomizer\Cloth_Circle.png" />
+    <Content Include="Resources\Randomizer\Cloth.png" />
     <Content Include="Resources\Randomizer\Crystal_Shaman.png" />
     <Content Include="Resources\Randomizer\Dashmaster.png" />
     <Content Include="Resources\Randomizer\Dreamer_Plaque.png" />

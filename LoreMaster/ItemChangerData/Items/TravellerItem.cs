@@ -1,7 +1,7 @@
 using ItemChanger;
 using ItemChanger.UIDefs;
 using LoreMaster.Enums;
-using LoreMaster.Randomizer;
+using LoreMaster.Manager;
 using System.Linq;
 
 namespace LoreMaster.ItemChangerData.Items;
@@ -20,7 +20,7 @@ internal class TravellerItem : SoundItem
     {
         base.GiveImmediate(info);
         PlayerData.instance.IntAdd(Traveller.ToString(), 1);
-        (UIDef as LoreUIDef).name = new BoxedString($"{(UIDef as LoreUIDef).name} ({RandomizerManager.TravellerStages[Traveller]} / {RandomizerManager.TravellerOrder[Traveller].Length})");
+        (UIDef as LoreUIDef).name = new BoxedString($"{(UIDef as LoreUIDef).name.Value} ({LoreManager.Instance.Traveller[Traveller].CurrentStage} / {LoreManager.Instance.Traveller[Traveller].Locations.Length})");
     }
 
     public override AbstractItem Clone()

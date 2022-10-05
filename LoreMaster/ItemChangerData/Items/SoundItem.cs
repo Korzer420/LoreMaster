@@ -16,8 +16,7 @@ internal class SoundItem : AbstractItem
 
     public override void GiveImmediate(GiveInfo info)
     {
-        if ((info.MessageType & MessageType.Lore) != MessageType.Lore
-            && (info.MessageType & MessageType.Big) != MessageType.Big
+        if (info.MessageType != MessageType.Big
             && !string.IsNullOrEmpty(ClipName))
             SoundEffectManager.Manager.PlayClipAtPoint(ClipName, HeroController.instance.transform.position);
     }

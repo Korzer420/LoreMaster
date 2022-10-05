@@ -4,6 +4,8 @@ using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
 using ItemChanger.Locations;
 using ItemChanger.Util;
+using LoreMaster.Helper;
+using LoreMaster.ItemChangerData.Other;
 using System.Linq;
 
 namespace LoreMaster.ItemChangerData.Locations;
@@ -23,6 +25,7 @@ internal class DialogueLocation : AutoLocation
 
     protected override void OnLoad()
     {
+        LoreMaster.Instance.Log("The scene name is: " + sceneName + " with game object: " + ObjectName + " and fsm " + FsmName);
         Events.AddFsmEdit(sceneName, new(ObjectName, FsmName), SkipDialog);
     }
 
@@ -33,54 +36,63 @@ internal class DialogueLocation : AutoLocation
 
     private void SkipDialog(PlayMakerFSM fsm)
     {
-        FsmState startState;
-        string transitionEnd;
-        if (string.Equals(ObjectName, "Queen", System.StringComparison.CurrentCultureIgnoreCase))
-        {
-            startState = fsm.GetState("NPC Anim");
-            transitionEnd = "Summon";
-        }
-        else if (string.Equals(fsm.FsmName, "inspect_region"))
-        {
-            startState = fsm.GetState("Hero Look Up?");
-            transitionEnd = "Look Up End?";
-        }
-        else
-        {
-            startState = fsm.GetState("Hero Anim");
-            if (startState == null)
-                startState = fsm.GetState("Hero Look");
-            transitionEnd = "Talk Finish";
-
-            // If not all items are obtained ghost npc are unkillable.
-            if (fsm.gameObject.LocateMyFSM("ghost_npc_death") is PlayMakerFSM ghostDeath && !Placement.Items.All(x => x.IsObtained()))
-                ghostDeath.GetState("Idle").ClearTransitions();
-        }
-        startState.ClearTransitions();
-        startState.AddLastAction(new Lambda(() =>
-        {
-            PlayMakerFSM control = fsm.gameObject.LocateMyFSM("npc_control");
-            control.GetState("Idle").ClearTransitions();
-            control.GetState("In Range").Actions = new FsmStateAction[]
-            {
-                    new Lambda(() => fsm.SendEvent("OUT OF RANGE"))
-            };
-        }));
-        // We make sure to wait until the item give is done to prevent giving the player control to early. This is just for the case a npc actually has a lore item.
-        startState.AddLastAction(new AsyncLambda(callback => ItemUtility.GiveSequentially(Placement.Items, Placement, new GiveInfo
-        {
-            FlingType = flingType,
-            Container = Container.Tablet,
-            MessageType = MessageType.Lore,
-        }, callback), "CONVO FINISHED"));
-        startState.AddTransition("CONVO FINISHED", transitionEnd);
-
-        // Disable the talk option, if all items are obtained.
-        fsm.GetState("Init").AddLastAction(new Lambda(() =>
+        try
         {
             if (Placement.Items.All(x => x.IsObtained()))
+            {
                 fsm.gameObject.LocateMyFSM("npc_control").GetState("Idle").ClearTransitions();
-        }));
-    }
+                return;
+            }
+            FsmState startState;
+            string transitionEnd;
+            if (string.Equals(ObjectName, "Queen", System.StringComparison.CurrentCultureIgnoreCase))
+            {
+                startState = fsm.GetState("NPC Anim");
+                transitionEnd = "Summon";
+            }
+            else
+            {
+                startState = fsm.GetState("Hero Anim");
+                if (startState == null)
+                    startState = fsm.GetState("Hero Look");
+                transitionEnd = "Talk Finish";
+            }
 
+            if (fsm.GetState("Give Items") is not FsmState)
+            {
+                // If not all items are obtained ghost npc are unkillable.
+                if (fsm.gameObject.LocateMyFSM("ghost_npc_death") is PlayMakerFSM ghostDeath)
+                    ghostDeath.GetState("Idle").ClearTransitions();
+                fsm.AddState(new FsmState(fsm.Fsm)
+                {
+                    Name = "Give Items",
+                    Actions = new FsmStateAction[]
+                    {
+                        new Lambda(() =>
+                        {
+                            PlayMakerFSM control = fsm.gameObject.LocateMyFSM("npc_control");
+                            control.GetState("Idle").ClearTransitions();
+                            //control.GetState("In Range").Actions = new FsmStateAction[]
+                            //{
+                            //    new Lambda(() => fsm.SendEvent("OUT OF RANGE"))
+                            //};
+                        }),
+                        new AsyncLambda(callback => ItemUtility.GiveSequentially(Placement.Items, Placement, new GiveInfo
+                        {
+                            FlingType = flingType,
+                            Container = Container.Tablet,
+                            MessageType = name == LocationList.Dreamer_Tablet ? MessageType.Big : MessageType.Lore,
+                        }, callback), "CONVO_FINISH")
+                    }
+                });
+
+                startState.AdjustTransition("FINISHED", "Give Items");
+                fsm.GetState("Give Items").AddTransition("CONVO_FINISH", transitionEnd);
+            }
+        }
+        catch (System.Exception exception)
+        {
+            LoreMaster.Instance.LogError(exception.Message);
+        }
+    }
 }

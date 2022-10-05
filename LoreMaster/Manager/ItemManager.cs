@@ -37,9 +37,10 @@ public static class ItemManager
             //DefineExtraLore();
             //DefineElderbug();
             //DefineNPC();
-            DefineDreamNailReactions();
-            DefinePointOfInterest();
+            //DefineDreamNailReactions();
+            //DefinePointOfInterest();
             //DefineDreamWarrior();
+            DefineTraveller();
         }
         catch (Exception exception)
         {
@@ -64,7 +65,7 @@ public static class ItemManager
             //placements.AddRange(CreateElderbugRewards());
             //placements.AddRange(PlaceDreamImpact());
             //placements.AddRange(CreateNpcPlacements());
-            placements.AddRange(CreatePointOfInterestPlacements());
+            placements.AddRange(CreateTravellerPlacements());
         }
         catch (Exception exception)
         {
@@ -639,7 +640,7 @@ public static class ItemManager
         Finder.DefineCustomLocation(Creator.CreateInspectLocation(Grub_Seal, "Ruins2_11", new Vector3(53.91f, 129.41f)));
         Finder.DefineCustomLocation(Creator.CreateInspectLocation(Path_Of_Pain_Seal, "White_Palace_18", new Vector3(284.18f, 13.41f)));
         Finder.DefineCustomLocation(Creator.CreateInspectLocation(White_Palace_Nursery, "White_Palace_09", new Vector3(87.22f, 31.41f)));
-        Finder.DefineCustomLocation(Creator.CreateInspectLocation(Grimm_Summoner_Corpse, "Cliffs_06", "Sycophant Dream/Inspect_Region"));
+        Finder.DefineCustomLocation(Creator.CreateInspectLocation(Grimm_Summoner_Corpse, "Cliffs_06", "/Sycophant Dream/Inspect Region"));
 
         Finder.DefineCustomItem(Creator.CreatePowerLoreItem(Inscription_City_Fountain, "FOUNTAIN_PLAQUE_DESC", "Lore Tablets", TextType.Lore, new LoreUIDef()
         {
@@ -656,7 +657,7 @@ public static class ItemManager
             descOne = new BoxedString("To protect the Vessel, the Dreamers lay sleeping."),
             take = new BoxedString("You thought this was a dreamer, didn't you?"),
             bigSprite = (Finder.GetItem(ItemNames.Dreamer).GetResolvedUIDef() as BigUIDef).bigSprite,
-            sprite = (Finder.GetItem(ItemNames.Dreamer).GetResolvedUIDef() as BigUIDef).sprite,
+            sprite = new CustomSprite("Dreamer_Plaque"),
             descTwo = new BoxedString("You shouldn't be able to see this.")
         }));
         Finder.DefineCustomItem(Creator.CreateSoundItem(Inspect_Beast_Den_Altar, "Secret", new LoreUIDef()
@@ -717,7 +718,7 @@ public static class ItemManager
         }));
         Finder.DefineCustomItem(Creator.CreateSoundItem(Inspect_Grimm_Summoner_Corpse, "Secret", new LoreUIDef()
         {
-            name = new BoxedString("White Palace Nursery"),
+            name = new BoxedString("Grimm Summoner Corpse"),
             shopDesc = new BoxedString(Properties.ShopDescriptions.Fountain),
             sprite = new CustomSprite("Grimm_Summoner"),
             lore = new BoxedString(Language.Language.Get("GRIMMSYCOPHANT_INSPECT", "CP2")),
@@ -734,9 +735,10 @@ public static class ItemManager
         Finder.DefineCustomLocation(TravellerLocation.CreateTravellerLocation(Quirrel_Mantis_Village, 3, Traveller.Quirrel));
         Finder.DefineCustomLocation(TravellerLocation.CreateTravellerLocation(Quirrel_City, 4, Traveller.Quirrel));
         Finder.DefineCustomLocation(TravellerLocation.CreateTravellerLocation(Quirrel_Peaks, 5, Traveller.Quirrel));
-        Finder.DefineCustomLocation(TravellerLocation.CreateTravellerLocation(Quirrel_Outside_Archive, 6, Traveller.Quirrel));
-        Finder.DefineCustomLocation(TravellerLocation.CreateTravellerLocation(Quirrel_After_Monomon, 7, Traveller.Quirrel));
-        Finder.DefineCustomLocation(TravellerLocation.CreateTravellerLocation(Quirrel_Blue_Lake, 8, Traveller.Quirrel));
+        Finder.DefineCustomLocation(TravellerLocation.CreateTravellerLocation(Quirrel_Deepnest, 6, Traveller.Quirrel));
+        Finder.DefineCustomLocation(TravellerLocation.CreateTravellerLocation(Quirrel_Outside_Archive, 7, Traveller.Quirrel));
+        Finder.DefineCustomLocation(TravellerLocation.CreateTravellerLocation(Quirrel_After_Monomon, 8, Traveller.Quirrel));
+        Finder.DefineCustomLocation(TravellerLocation.CreateTravellerLocation(Quirrel_Blue_Lake, 9, Traveller.Quirrel));
 
         Finder.DefineCustomItem(Creator.CreateTravellerItem(Dialogue_Quirrel_Crossroads, "QUIRREL_TEMPLE_1", Traveller.Quirrel));
         Finder.DefineCustomItem(Creator.CreateTravellerItem(Dialogue_Quirrel_Greenpath, "QUIRREL_GREENPATH_1", Traveller.Quirrel));
@@ -757,9 +759,12 @@ public static class ItemManager
         // Cloth ghost and her town appearance is coupled, to still give the player the choice.
         Finder.DefineCustomLocation(new DualLocation()
         {
+            name = "Cloth_End",
+            flingType = FlingType.DirectDeposit,
+            sceneName = "",
             Test = new ClothTest(),
-            falseLocation = TravellerLocation.CreateTravellerLocation(Cloth_Ghost, 4, Traveller.Cloth),
-            trueLocation = TravellerLocation.CreateTravellerLocation(Cloth_Town, 5, Traveller.Cloth)
+            trueLocation = TravellerLocation.CreateTravellerLocation(Cloth_Ghost, 4, Traveller.Cloth),
+            falseLocation = TravellerLocation.CreateTravellerLocation(Cloth_Town, 5, Traveller.Cloth)
         });
 
         Finder.DefineCustomItem(Creator.CreateTravellerItem(Dialogue_Cloth_Fungal_Wastes, "CLOTH_FUNG_MEET", Traveller.Cloth));
@@ -1004,8 +1009,8 @@ public static class ItemManager
     private static List<AbstractPlacement> CreatePointOfInterestPlacements()
     {
         List<AbstractPlacement> placements = new();
-        //placements.Add(CreatePlacement(City_Fountain, Inscription_City_Fountain));
-        //placements.Add(CreatePlacement(Dreamer_Tablet, Inscription_Dreamer_Tablet));
+        placements.Add(CreatePlacement(City_Fountain, Inscription_City_Fountain));
+        placements.Add(CreatePlacement(Dreamer_Tablet, Inscription_Dreamer_Tablet));
         placements.Add(CreatePlacement(Beast_Den_Altar, Inspect_Beast_Den_Altar));
         placements.Add(CreatePlacement(Garden_Golem, Inspect_Garden_Golem));
         placements.Add(CreatePlacement(Grimm_Machine, Inspect_Grimm_Machine));
@@ -1014,6 +1019,43 @@ public static class ItemManager
         placements.Add(CreatePlacement(Path_Of_Pain_Seal, Inspect_Path_Of_Pain_Seal));
         placements.Add(CreatePlacement(Weaver_Seal, Inspect_Weaver_Seal));
         placements.Add(CreatePlacement(White_Palace_Nursery, Inspect_White_Palace_Nursery));
+
+        return placements;
+    }
+
+    private static List<AbstractPlacement> CreateTravellerPlacements()
+    {
+        List<AbstractPlacement> placements = new();
+        LoreManager.Instance.Traveller.Clear();
+        LoreManager.Instance.Traveller.Add(Traveller.Quirrel, new() 
+        { 
+            CurrentStage = 0,
+            Locations = TravellerLocation.DetermineOrder(Traveller.Quirrel, true).ToArray()
+        });
+        LoreManager.Instance.Traveller.Add(Traveller.Cloth, new()
+        {
+            CurrentStage = 0,
+            Locations = TravellerLocation.DetermineOrder(Traveller.Cloth, true).ToArray()
+        });
+        //LoreManager.Instance.Traveller.Add(Traveller.Tiso, (0, TravellerLocation.DetermineOrder(Traveller.Tiso, false).ToArray()));
+        //LoreManager.Instance.Traveller.Add(Traveller.Zote, (0, TravellerLocation.DetermineOrder(Traveller.Zote, false).ToArray()));
+
+        placements.Add(CreatePlacement(Quirrel_Crossroads, Dialogue_Quirrel_Crossroads));
+        placements.Add(CreatePlacement(Quirrel_Greenpath, Dialogue_Quirrel_Greenpath));
+        placements.Add(CreatePlacement(Quirrel_Queen_Station, Dialogue_Quirrel_Queen_Station));
+        placements.Add(CreatePlacement(Quirrel_Mantis_Village, Dialogue_Quirrel_Mantis_Village));
+        placements.Add(CreatePlacement(Quirrel_City, Dialogue_Quirrel_City));
+        placements.Add(CreatePlacement(Quirrel_Peaks, Dialogue_Quirrel_Peaks));
+        placements.Add(CreatePlacement(Quirrel_Deepnest, Dialogue_Quirrel_Deepnest));
+        placements.Add(CreatePlacement(Quirrel_Outside_Archive, Dialogue_Quirrel_Outside_Archive));
+        placements.Add(CreatePlacement(Quirrel_After_Monomon, Dialogue_Quirrel_Archive));
+        placements.Add(CreatePlacement(Quirrel_Blue_Lake, Dialogue_Quirrel_Blue_Lake));
+
+        placements.Add(CreatePlacement(Cloth_Fungal_Wastes, Dialogue_Cloth_Fungal_Wastes));
+        placements.Add(CreatePlacement(Cloth_Basin, Dialogue_Cloth_Basin));
+        placements.Add(CreatePlacement(Cloth_Deepnest, Dialogue_Cloth_Deepnest));
+        placements.Add(CreatePlacement(Cloth_Garden, Dialogue_Cloth_Garden));
+        placements.Add(CreatePlacement("Cloth_End", Dialogue_Cloth_Ghost));
 
         return placements;
     }

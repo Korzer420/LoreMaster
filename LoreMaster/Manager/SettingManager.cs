@@ -245,6 +245,8 @@ public class SettingManager
             LoreManager.Instance.CleansingScrolls += LoreManager.Instance.CleansingScrolls == -1 ? amount + 1 : amount;
             LorePage.UpdateLorePage();
         }
+        else if (Enum.TryParse(intName, out Traveller traveller))
+            LoreManager.Instance.Traveller[traveller].CurrentStage += amount;
     }
 
     /// <summary>
