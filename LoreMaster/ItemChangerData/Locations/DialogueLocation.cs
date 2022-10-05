@@ -25,7 +25,6 @@ internal class DialogueLocation : AutoLocation
 
     protected override void OnLoad()
     {
-        LoreMaster.Instance.Log("The scene name is: " + sceneName + " with game object: " + ObjectName + " and fsm " + FsmName);
         Events.AddFsmEdit(sceneName, new(ObjectName, FsmName), SkipDialog);
     }
 
@@ -55,10 +54,13 @@ internal class DialogueLocation : AutoLocation
                 startState = fsm.GetState("Hero Anim");
                 if (startState == null)
                     startState = fsm.GetState("Hero Look");
+                // Zote Greenpath/City
+                if (startState == null)
+                    startState = fsm.GetState("Talk Back");
                 transitionEnd = "Talk Finish";
             }
 
-            if (fsm.GetState("Give Items") is not FsmState)
+            if (fsm.GetState("Give Items") is null)
             {
                 // If not all items are obtained ghost npc are unkillable.
                 if (fsm.gameObject.LocateMyFSM("ghost_npc_death") is PlayMakerFSM ghostDeath)
@@ -72,10 +74,6 @@ internal class DialogueLocation : AutoLocation
                         {
                             PlayMakerFSM control = fsm.gameObject.LocateMyFSM("npc_control");
                             control.GetState("Idle").ClearTransitions();
-                            //control.GetState("In Range").Actions = new FsmStateAction[]
-                            //{
-                            //    new Lambda(() => fsm.SendEvent("OUT OF RANGE"))
-                            //};
                         }),
                         new AsyncLambda(callback => ItemUtility.GiveSequentially(Placement.Items, Placement, new GiveInfo
                         {
@@ -87,6 +85,15 @@ internal class DialogueLocation : AutoLocation
                 });
 
                 startState.AdjustTransition("FINISHED", "Give Items");
+                // As if Zote wasn't annoying enough...
+                if (fsm.GetState("Talk R") is FsmState state)
+                    state.AdjustTransition("FINISHED", "Give Items");
+                if (fsm.GetState("Check Active") is FsmState state2)
+                    state2.Actions = new FsmStateAction[1]
+                    {
+                        new Lambda(() => fsm.SendEvent("FINISHED"))
+                    };
+
                 fsm.GetState("Give Items").AddTransition("CONVO_FINISH", transitionEnd);
             }
         }

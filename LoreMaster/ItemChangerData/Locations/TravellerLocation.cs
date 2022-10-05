@@ -20,7 +20,7 @@ internal class TravellerLocation : DialogueLocation
         ("Room_Slug_Shrine", "Quirrel Slug Shrine"),
         ("Fungus2_01","Quirrel Station NPC"),
         ("Fungus2_14","Quirrel Mantis NPC"),
-        ("Ruins1_02","RestBench/Quirrel Bench"),
+        ("Ruins1_02","/RestBench/Quirrel Bench"),
         ("Mines_13","Quirrel Mines"),
         ("Deepnest_30" ,"Quirrel Spa"),
         ("Fungus3_47" ,"Quirrel Archive Ext"),
@@ -41,17 +41,17 @@ internal class TravellerLocation : DialogueLocation
     private static readonly (string, string)[] _zoteNames = new (string, string)[]
     {
         ("Fungus1_20_v02", "Zote Buzzer Convo"),
-        ("Town","_NPCs/Zote Town"),
+        ("Town","/_NPCs/Zote Town"),
         ("Ruins1_06","Zote Ruins"),
         ("Deepnest_33","Zote Deepnest"),
         ("Room_Colosseum_02","Zote Colosseum"),
-        ("Town","_NPCs/Zote Final Scene")
+        ("Town","/_NPCs/Zote Final Scene/Zote Final")
     };
 
     private static readonly (string, string)[] _tisoNames = new (string, string)[]
     {
-        ("Town","_NPCs/Tiso Town NPC"),
-        ("Crossroads_47","_NPCs/Tiso Bench NPC"),
+        ("Town","/_NPCs/Tiso Town NPC"),
+        ("Crossroads_47","/_NPCs/Tiso Bench NPC"),
         ("Crossroads_50","Tiso Lake NPC"),
         ("Room_Colosseum_02","Tiso Col NPC"),
         ("Deepnest_East_07","tiso_corpse")
@@ -78,13 +78,14 @@ internal class TravellerLocation : DialogueLocation
     /// </summary>
     protected virtual void ControlSpawn(Scene scene)
     {
-        GameObject npc = GameObject.Find(ObjectName);
+        string objectName = ObjectName.Contains("Final Scene") ? "/_NPCs/Zote Final Scene" : ObjectName;
+        GameObject npc = GameObject.Find(objectName);
         if (npc == null)
         {
             npc = CheckComponent<DeactivateIfPlayerdataTrue>() ?? CheckComponent<DeactivateIfPlayerdataFalse>();
             if (npc == null)
             {
-                LoreMaster.Instance.LogError("Couldn't find " + ObjectName + ".");
+                LoreMaster.Instance.LogError("Couldn't find " + objectName + ".");
                 return;
             }
         }
@@ -151,9 +152,6 @@ internal class TravellerLocation : DialogueLocation
             return order;
         else
         {
-            result.Add(order[4]);
-            order.RemoveAt(4);
-            order.RemoveAt(4);
             do
             {
                 int selectedValue = LoreMaster.Instance.Generator.Next(0, order.Count - 1);

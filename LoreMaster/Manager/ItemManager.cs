@@ -10,6 +10,7 @@ using LoreMaster.ItemChangerData.Items;
 using LoreMaster.ItemChangerData.Locations;
 using LoreMaster.ItemChangerData.Locations.SpecialLocations;
 using LoreMaster.ItemChangerData.Other;
+using LoreMaster.ItemChangerData.UIDefs;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -36,7 +37,7 @@ public static class ItemManager
             //DefineTreasure();
             //DefineExtraLore();
             //DefineElderbug();
-            //DefineNPC();
+            DefineNPC();
             //DefineDreamNailReactions();
             //DefinePointOfInterest();
             //DefineDreamWarrior();
@@ -65,6 +66,7 @@ public static class ItemManager
             //placements.AddRange(CreateElderbugRewards());
             //placements.AddRange(PlaceDreamImpact());
             //placements.AddRange(CreateNpcPlacements());
+            placements.AddRange(CreateNpcPlacements());
             placements.AddRange(CreateTravellerPlacements());
         }
         catch (Exception exception)
@@ -778,20 +780,40 @@ public static class ItemManager
         Finder.DefineCustomLocation(TravellerLocation.CreateTravellerLocation(Tiso_Crossroads, 1, Traveller.Tiso));
         Finder.DefineCustomLocation(TravellerLocation.CreateTravellerLocation(Tiso_Blue_Lake, 2, Traveller.Tiso));
         Finder.DefineCustomLocation(TravellerLocation.CreateTravellerLocation(Tiso_Colosseum, 3, Traveller.Tiso));
-        Finder.DefineCustomLocation(TravellerLocation.CreateTravellerLocation(Tiso_Corpse, 4, Traveller.Tiso));
+        Finder.DefineCustomLocation(Creator.CreateDreamImpactLocation(Tiso_Corpse, "Deepnest_East_07", "/tiso_corpse/Dream Dialogue"));
 
         Finder.DefineCustomItem(Creator.CreateTravellerItem(Dialogue_Tiso_Dirtmouth, "TISO_TOWN_GREET", Traveller.Tiso));
         Finder.DefineCustomItem(Creator.CreateTravellerItem(Dialogue_Tiso_Crossroads, "TISO_BENCH_GREET", Traveller.Tiso));
         Finder.DefineCustomItem(Creator.CreateTravellerItem(Dialogue_Tiso_Blue_Lake, "TISO_LAKE_GREET", Traveller.Tiso));
         Finder.DefineCustomItem(Creator.CreateTravellerItem(Dialogue_Tiso_Colosseum, "TISO_COLOSSEUM", Traveller.Tiso));
-        Finder.DefineCustomItem(Creator.CreateSoundItem(Dream_Dialogue_Tiso_Corpse, "Dream_Enter",
-            Creator.CreateDreamUIDef(Dream_Dialogue_Tiso_Corpse, "TISO_CORPSE", "Lore Tablets", new CustomSprite("Tiso_Corpse"))));
+        Finder.DefineCustomItem(Creator.CreateSoundItem(Dream_Dialogue_Tiso_Corpse, "Dream_Enter", new DreamLoreUIDef()
+        {
+            name = new BoxedString("Tiso (5 / 5)"),
+            Key = "TISO_CORPSE",
+            Sheet = "Lore Tablets",
+            shopDesc = new BoxedString("Well... his glory didn't turn out the way he expected."),
+            sprite = new CustomSprite("tiso_corpse")
+        }));
 
         // Zote
-        Finder.DefineCustomLocation(TravellerLocation.CreateTravellerLocation(Zote_Greenpath, 0, Traveller.Zote));
+        Finder.DefineCustomLocation(new ZoteGreenpathLocation()
+        {
+            name = Zote_Greenpath,
+            flingType = FlingType.DirectDeposit,
+            FsmName = "Conversation Control",
+            ObjectName = "Zote Buzzer Convo(Clone)",
+            sceneName = "Fungus1_20_v02"
+        });
         Finder.DefineCustomLocation(TravellerLocation.CreateTravellerLocation(Zote_Dirtmouth_Intro, 1, Traveller.Zote));
         Finder.DefineCustomLocation(TravellerLocation.CreateTravellerLocation(Zote_City, 2, Traveller.Zote));
-        Finder.DefineCustomLocation(TravellerLocation.CreateTravellerLocation(Zote_Deepnest, 3, Traveller.Zote));
+        Finder.DefineCustomLocation(new ZoteDeepnestLocation()
+        {
+            ObjectName = "/Zote Deepnest/Faller/NPC",
+            FsmName = "Conversation Control",
+            name = Zote_Deepnest,
+            sceneName = "Deepnest_33",
+            flingType = FlingType.DirectDeposit
+        });
         Finder.DefineCustomLocation(TravellerLocation.CreateTravellerLocation(Zote_Colosseum, 4, Traveller.Zote));
         Finder.DefineCustomLocation(TravellerLocation.CreateTravellerLocation(Zote_Dirtmouth_After_Colosseum, 5, Traveller.Zote));
 
@@ -1037,8 +1059,16 @@ public static class ItemManager
             CurrentStage = 0,
             Locations = TravellerLocation.DetermineOrder(Traveller.Cloth, true).ToArray()
         });
-        //LoreManager.Instance.Traveller.Add(Traveller.Tiso, (0, TravellerLocation.DetermineOrder(Traveller.Tiso, false).ToArray()));
-        //LoreManager.Instance.Traveller.Add(Traveller.Zote, (0, TravellerLocation.DetermineOrder(Traveller.Zote, false).ToArray()));
+        LoreManager.Instance.Traveller.Add(Traveller.Tiso, new()
+        {
+            CurrentStage = 0,
+            Locations = TravellerLocation.DetermineOrder(Traveller.Tiso, false).ToArray()
+        });
+        LoreManager.Instance.Traveller.Add(Traveller.Zote, new()
+        {
+            CurrentStage = 0,
+            Locations = TravellerLocation.DetermineOrder(Traveller.Zote, true).ToArray()
+        });
 
         placements.Add(CreatePlacement(Quirrel_Crossroads, Dialogue_Quirrel_Crossroads));
         placements.Add(CreatePlacement(Quirrel_Greenpath, Dialogue_Quirrel_Greenpath));
@@ -1056,6 +1086,19 @@ public static class ItemManager
         placements.Add(CreatePlacement(Cloth_Deepnest, Dialogue_Cloth_Deepnest));
         placements.Add(CreatePlacement(Cloth_Garden, Dialogue_Cloth_Garden));
         placements.Add(CreatePlacement("Cloth_End", Dialogue_Cloth_Ghost));
+
+        placements.Add(CreatePlacement(Tiso_Dirtmouth, Dialogue_Tiso_Dirtmouth));
+        placements.Add(CreatePlacement(Tiso_Crossroads, Dialogue_Tiso_Crossroads));
+        placements.Add(CreatePlacement(Tiso_Blue_Lake, Dialogue_Tiso_Blue_Lake));
+        placements.Add(CreatePlacement(Tiso_Colosseum, Dialogue_Tiso_Colosseum));
+        placements.Add(CreatePlacement(Tiso_Corpse, Dream_Dialogue_Tiso_Corpse));
+
+        placements.Add(CreatePlacement(Zote_Greenpath, Dialogue_Zote_Greenpath));
+        placements.Add(CreatePlacement(Zote_Dirtmouth_Intro, Dialogue_Zote_Dirtmouth_Intro));
+        placements.Add(CreatePlacement(Zote_City, Dialogue_Zote_City));
+        placements.Add(CreatePlacement(Zote_Deepnest, Dialogue_Zote_Deepnest));
+        placements.Add(CreatePlacement(Zote_Colosseum, Dialogue_Zote_Colosseum));
+        placements.Add(CreatePlacement(Zote_Dirtmouth_After_Colosseum, Dialogue_Zote_Dirtmouth_After_Colosseum));
 
         return placements;
     }

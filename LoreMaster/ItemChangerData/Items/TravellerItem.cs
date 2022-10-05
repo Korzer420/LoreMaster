@@ -20,7 +20,10 @@ internal class TravellerItem : SoundItem
     {
         base.GiveImmediate(info);
         PlayerData.instance.IntAdd(Traveller.ToString(), 1);
-        (UIDef as LoreUIDef).name = new BoxedString($"{(UIDef as LoreUIDef).name.Value} ({LoreManager.Instance.Traveller[Traveller].CurrentStage} / {LoreManager.Instance.Traveller[Traveller].Locations.Length})");
+        int currentState = LoreManager.Instance.Traveller[Traveller].CurrentStage > 10 
+            ? LoreManager.Instance.Traveller[Traveller].CurrentStage - 10 
+            : LoreManager.Instance.Traveller[Traveller].CurrentStage;
+        (UIDef as LoreUIDef).name = new BoxedString($"{(UIDef as LoreUIDef).name.Value} ({currentState} / {LoreManager.Instance.Traveller[Traveller].Locations.Length})");
     }
 
     public override AbstractItem Clone()

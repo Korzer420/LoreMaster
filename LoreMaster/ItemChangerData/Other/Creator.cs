@@ -3,6 +3,7 @@ using ItemChanger.UIDefs;
 using LoreMaster.Enums;
 using LoreMaster.ItemChangerData.Items;
 using LoreMaster.ItemChangerData.Locations;
+using LoreMaster.ItemChangerData.Locations.SpecialLocations;
 using LoreMaster.ItemChangerData.UIDefs;
 using System.Collections.Generic;
 using System.Linq;
@@ -92,13 +93,22 @@ internal static class Creator
 
     public static DreamNailLocation CreateDreamImpactLocation(string locationName, string scene, string gameObjectName = "/Dream Dialogue")
     {
-        return new()
-        {
-            name = locationName,
-            sceneName = scene,
-            flingType = FlingType.DirectDeposit,
-            GameObjectName = gameObjectName
-        };
+        if (locationName == LocationList.Tiso_Corpse)
+            return new TisoCorpseLocation()
+            {
+                name = locationName,
+                sceneName = scene,
+                flingType = FlingType.DirectDeposit,
+                GameObjectName = gameObjectName
+            };
+        else
+            return new()
+            {
+                name = locationName,
+                sceneName = scene,
+                flingType = FlingType.DirectDeposit,
+                GameObjectName = gameObjectName
+            };
     }
 
     internal static InspectLocation CreateInspectLocation(string locationName, string scene, Vector3 position)

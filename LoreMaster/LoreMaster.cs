@@ -265,10 +265,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
             SettingManager.Instance.GameMode = saveData.GameMode;
             SettingManager.Instance.ElderbugState = saveData.ElderbugState;
             PowerManager.ControlState = saveData.PageState;
-            //foreach (Traveller item in saveData.TravellerOrder.Keys)
-            //{
-                
-            //}
+            LoreManager.Instance.Traveller = saveData.TravellerOrder;
         }
         catch (Exception exception)
         {
@@ -294,6 +291,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         saveData.PageState = PowerManager.ControlState;
         saveData.CleansingScrolls = LoreManager.Instance.CleansingScrolls;
         saveData.JokerScrolls = LoreManager.Instance.JokerScrolls;
+        saveData.TravellerOrder = LoreManager.Instance.Traveller;
         return saveData;
     }
 

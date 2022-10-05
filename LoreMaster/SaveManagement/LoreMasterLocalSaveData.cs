@@ -1,4 +1,5 @@
 using LoreMaster.Enums;
+using LoreMaster.ItemChangerData.Other;
 using System.Collections.Generic;
 
 namespace LoreMaster.SaveManagement;
@@ -71,5 +72,5 @@ public class LoreMasterLocalSaveData
     /// <summary>
     /// Gets or sets the data for the travelling npcs. The first items contains the current stage and the second the order.
     /// </summary>
-    public Dictionary<Traveller, (int, string[])> TravellerOrder { get; set; } = new();
+    public Dictionary<Traveller, TravellerData> TravellerOrder { get; set; } = new();
 }
