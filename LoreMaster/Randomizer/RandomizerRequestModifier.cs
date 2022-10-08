@@ -295,7 +295,6 @@ internal static class RandomizerRequestModifier
                 // We can't use the index in the item request, which is why we have to temp save the name.
                 string itemName = NpcItems[i];
                 requestBuilder.AddItemByName(itemName);
-                requestBuilder.AddLocationByName(NpcLocations[i]);
                 requestBuilder.EditItemRequest(itemName, info =>
                 {
                     info.getItemDef = () =>
@@ -309,6 +308,9 @@ internal static class RandomizerRequestModifier
                         };
                     };
                 });
+
+                string locationName = NpcLocations[i];
+                requestBuilder.AddLocationByName(locationName);
             }
         }
         else if (RandomizerManager.Settings.DefineRefs)
@@ -413,7 +415,7 @@ internal static class RandomizerRequestModifier
         else if (RandomizerManager.Settings.DefineRefs)
             for (int i = 0; i < TravellerLocations.Length; i++)
                 requestBuilder.AddToVanilla(TravellerItems[i], TravellerLocations[i]);
-            
+
 
         if (RandomizerManager.Settings.RandomizeElderbugRewards)
         {
@@ -500,6 +502,19 @@ internal static class RandomizerRequestModifier
             requestBuilder.AddLocationByName(Lemm_Door);
             requestBuilder.AddItemByName(Lemm_Sign);
             requestBuilder.AddItemByName(Lemm_Order);
+            requestBuilder.EditLocationRequest(Iselda_Treasure, info =>
+            {
+                info.getLocationDef = () =>
+                {
+                    return new()
+                    {
+                        AdditionalProgressionPenalty = true,
+                        FlexibleCount = true,
+                        Name = Iselda_Treasure,
+                        SceneName = "Room_mapper"
+                    };
+                };
+            });
         }
         else
         {
@@ -545,9 +560,39 @@ internal static class RandomizerRequestModifier
         }
 
         if (RandomizerManager.Settings.CursedReading)
+        {
             requestBuilder.AddItemByName(Read_Ability);
+            requestBuilder.EditItemRequest(Read_Ability, info =>
+            {
+                info.getItemDef = () =>
+                {
+                    return new()
+                    {
+                        MajorItem = false,
+                        Name = Read_Ability,
+                        Pool = "Skill",
+                        PriceCap = 1250
+                    };
+                };
+            });
+        }
 
         if (RandomizerManager.Settings.CursedListening)
+        {
             requestBuilder.AddItemByName(Listen_Ability);
+            requestBuilder.EditItemRequest(Listen_Ability, info =>
+            {
+                info.getItemDef = () =>
+                {
+                    return new()
+                    {
+                        MajorItem = false,
+                        Name = Listen_Ability,
+                        Pool = "Skill",
+                        PriceCap = 1250
+                    };
+                };
+            });
+        }
     }
 }

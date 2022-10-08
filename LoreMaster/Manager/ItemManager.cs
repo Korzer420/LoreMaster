@@ -181,11 +181,11 @@ public static class ItemManager
                 },
                 tags = new()
                 {
-                    //new PDBoolShopReqTag()
-                    //{
-                    //    reqVal = true,
-                    //    fieldName = "lemm_allow"
-                    //},
+                    new PDBoolShopReqTag()
+                    {
+                        reqVal = true,
+                        fieldName = "lemm_allow"
+                    },
                     new CostTag() { Cost = new GeoCost(rolledPrice) }
                 }
             });

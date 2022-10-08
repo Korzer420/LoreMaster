@@ -1,4 +1,3 @@
-using LoreMaster.Enums;
 using LoreMaster.LorePowers;
 using LoreMaster.LorePowers.CityOfTears;
 using LoreMaster.Manager;
@@ -67,7 +66,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
     /// Get the version of the mod.
     /// </summary>
     /// <returns></returns>
-    public override string GetVersion() => Assembly.GetExecutingAssembly().GetName().Version.ToString() +"-beta1";
+    public override string GetVersion() => Assembly.GetExecutingAssembly().GetName().Version.ToString() +"-beta2";
 
     /// <summary>
     /// Gets the names (objects) that need to be preloaded.
