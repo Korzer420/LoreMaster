@@ -4,14 +4,14 @@ using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
 using ItemChanger.Modules;
 using ItemChanger.UIDefs;
-using LoreMaster.ItemChangerData.Locations;
 using LoreMaster.Enums;
 using LoreMaster.Extensions;
 using LoreMaster.Helper;
+using LoreMaster.ItemChangerData;
+using LoreMaster.ItemChangerData.Locations;
 using LoreMaster.LorePowers;
 using LoreMaster.LorePowers.CityOfTears;
 using LoreMaster.LorePowers.QueensGarden;
-using LoreMaster.LorePowers.WhitePalace;
 using LoreMaster.Randomizer;
 using LoreMaster.UnityComponents;
 using MenuChanger.Attributes;
@@ -42,7 +42,7 @@ public class SettingManager
         {Area.FogCanyon, new(){MapZone.FOG_CANYON, MapZone.OVERGROWN_MOUND, MapZone.MONOMON_ARCHIVE} },
         {Area.KingdomsEdge, new(){MapZone.COLOSSEUM, MapZone.OUTSKIRTS, MapZone.HIVE, MapZone.TRAM_LOWER, MapZone.WYRMSKIN} },
         {Area.Deepnest, new(){MapZone.DEEPNEST, MapZone.TRAM_LOWER, MapZone.BEASTS_DEN, MapZone.RUINED_TRAMWAY} },
-        {Area.Waterways, new(){MapZone.WATERWAYS, MapZone.GODS_GLORY, MapZone.GODSEEKER_WASTE, MapZone.ISMAS_GROVE} },
+        {Area.WaterWays, new(){MapZone.WATERWAYS, MapZone.GODS_GLORY, MapZone.GODSEEKER_WASTE, MapZone.ISMAS_GROVE} },
         {Area.Cliffs, new(){MapZone.CLIFFS, MapZone.JONI_GRAVE } },
         {Area.AncientBasin, new(){MapZone.BONE_FOREST, MapZone.PALACE_GROUNDS, MapZone.TRAM_LOWER, MapZone.ABYSS, MapZone.ABYSS_DEEP} },
         {Area.CityOfTears, new(){MapZone.CITY, MapZone.SOUL_SOCIETY, MapZone.LURIENS_TOWER, MapZone.LOVE_TOWER, MapZone.MAGE_TOWER } },
@@ -144,8 +144,8 @@ public class SettingManager
             AbstractItem.BeforeGiveGlobal += GiveLoreItem;
             if ((GameMode == GameMode.Hard || GameMode == GameMode.Heroic) && PowerManager.GetPowerByKey("POGGY", out Power power, false) && power.Tag == PowerTag.Global)
                 PlayerData.instance.SetInt(nameof(PlayerData.instance.rancidEggs), 50);
-            if (ModHooks.GetMod("Randomizer 4") is Mod)
-                RandomizerManager.CheckForRandoFile();
+            if (RandomizerManager.PlayingRandomizer)
+                RandomizerManager.ApplyRando();
             else
             {
                 LoreManager.Instance.CanRead = GameMode == GameMode.Normal;
@@ -173,8 +173,8 @@ public class SettingManager
             On.DeactivateIfPlayerdataFalse.OnEnable += PreventMylaZombie;
             SendEventByName.OnEnter += EndAllPowers;
             AbstractItem.BeforeGiveGlobal += GiveLoreItem;
-            if (ModHooks.GetMod("Randomizer 4") is Mod)
-                RandomizerManager.CheckForRandoFile();
+            //if (ModHooks.GetMod("Randomizer 4") is Mod)
+            //    RandomizerManager.CheckForRandoFile();
         }
         catch (Exception exception)
         {
@@ -438,7 +438,6 @@ public class SettingManager
     {
         try
         {
-            LoreMaster.Instance.Log("Message type is: " + itemData.MessageType);
             if (itemData.Placement.Name.StartsWith("Elderbug_Reward_"))
             {
                 ElderbugState = !itemData.Placement.Name.EndsWith("1")
@@ -465,9 +464,9 @@ public class SettingManager
                 if (itemData.Item.UIDef is BigUIDef big && !string.IsNullOrEmpty(text))
                     big.descTwo = new BoxedString(text.Replace("<br>", " "));
             }
-            else if (itemData.Item.name.Contains("Lore_Tablet-"))
+            else if (itemData.Item.name.Contains("Lore_Tablet-") || itemData.Item.name.Contains("Inspect-") || itemData.Item.name.Contains("Dialogue"))
             {
-                string tabletName = RandomizerHelper.TranslateRandoName(itemData.Item.name.Substring("Lore_Tablet-".Length));
+                string tabletName = RandomizerHelper.TranslateRandoName(itemData.Item.name);
                 // If the tablet name is empty, a "fake lore tablet" has been obtained.
                 if (string.IsNullOrEmpty(tabletName))
                 {
@@ -478,8 +477,13 @@ public class SettingManager
                 string placeHolder = string.Empty;
                 LoreManager.Instance.ModifyText(tabletName, ref placeHolder);
                 PowerManager.GetPowerByKey(tabletName, out Power power, false);
-                if (itemData.Item.UIDef is MsgUIDef msg)
+                if (itemData.Item.UIDef is MsgUIDef msg && itemData.Item.name.Contains("Lore_Tablet-"))
+                { 
                     msg.name = new BoxedString(power.PowerName);
+                    Area area = RandomizerRequestModifier.LoreItem.FirstOrDefault(x => x.Value.Contains(itemData.Item.name)).Key;
+                    if (area != Area.None)
+                        msg.sprite = new CustomSprite($@"Tablets\{area}", false);
+                }
             }
         }
         catch (Exception exception)
@@ -661,8 +665,8 @@ public class SettingManager
             new Lambda(() =>
             {
                 try
-    {
-        DialogueBox box = self.GetState("Sly Rescued").GetFirstActionOfType<HutongGames.PlayMaker.Actions.CallMethodProper>().gameObject.GameObject.Value.GetComponent<DialogueBox>();
+                {
+                    DialogueBox box = self.GetState("Sly Rescued").GetFirstActionOfType<HutongGames.PlayMaker.Actions.CallMethodProper>().gameObject.GameObject.Value.GetComponent<DialogueBox>();
                 if (ElderbugState == 0)
                     box.StartConversation("Elderbug_Met", "Elderbug");
                 else if (PlayerData.instance.GetBool(nameof(PlayerData.instance.hasXunFlower)) && !PlayerData.instance.GetBool(nameof(PlayerData.instance.xunFlowerBroken))

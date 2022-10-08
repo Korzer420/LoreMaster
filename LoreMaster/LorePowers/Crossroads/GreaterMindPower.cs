@@ -33,7 +33,7 @@ public class GreaterMindPower : Power
         {Area.QueensGarden, "Queen's Gardens"},
         {Area.Peaks, "Crystal Peaks"},
         {Area.RestingGrounds, "Resting Grounds"},
-        {Area.Waterways, "Waterways"},
+        {Area.WaterWays, "Waterways"},
         {Area.KingdomsEdge, "Kingdom's Edge"},
         {Area.FogCanyon, "Fog Canyon"},
         {Area.Cliffs, "Howling Cliffs"},

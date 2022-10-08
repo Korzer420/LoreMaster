@@ -1,9 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace LoreMaster.Enums;
 
 /// <summary>
@@ -17,7 +11,12 @@ public enum TravelOrder
     Vanilla,
 
     /// <summary>
-    /// 
+    /// Appear in a randomized order. The last location remains the same.
     /// </summary>
-    Shuffled
+    Shuffled,
+
+    /// <summary>
+    /// The npc are always present at any location where the would appear. At least as they have items left.
+    /// </summary>
+    Everywhere
 }

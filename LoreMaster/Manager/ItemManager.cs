@@ -11,6 +11,8 @@ using LoreMaster.ItemChangerData.Locations;
 using LoreMaster.ItemChangerData.Locations.SpecialLocations;
 using LoreMaster.ItemChangerData.Other;
 using LoreMaster.ItemChangerData.UIDefs;
+using LoreMaster.Randomizer;
+using Modding;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -30,18 +32,21 @@ public static class ItemManager
     internal static void DefineIC()
     {
         ItemChangerMod.CreateSettingsProfile(false);
-        
+
         try
         {
-            //DefineTeleporter();
-            //DefineTreasure();
-            //DefineExtraLore();
-            //DefineElderbug();
-            DefineNPC();
-            //DefineDreamNailReactions();
-            //DefinePointOfInterest();
-            //DefineDreamWarrior();
-            DefineTraveller();
+            DefineTeleporter();
+            DefineTreasure();
+            DefineExtraLore();
+            DefineElderbug();
+            if (ModHooks.GetMod("Randomizer 4") is Mod)
+            {
+                DefineNPC();
+                DefineDreamNailReactions();
+                DefinePointOfInterest();
+                DefineDreamWarrior();
+                DefineTraveller();
+            }
         }
         catch (Exception exception)
         {
@@ -60,14 +65,13 @@ public static class ItemManager
 
         try
         {
-            //placements.AddRange(CreateTeleporter());
-            //placements.AddRange(CreateTreasure());
-            //placements.AddRange(CreateExtraLore());
-            //placements.AddRange(CreateElderbugRewards());
-            //placements.AddRange(PlaceDreamImpact());
-            //placements.AddRange(CreateNpcPlacements());
-            placements.AddRange(CreateNpcPlacements());
-            placements.AddRange(CreateTravellerPlacements());
+            placements.AddRange(CreateTeleporter());
+            placements.AddRange(CreateExtraLore());
+            if (!RandomizerManager.PlayingRandomizer)
+            {
+                placements.AddRange(CreateElderbugRewards());
+                placements.AddRange(CreateTreasure());
+            }
         }
         catch (Exception exception)
         {
@@ -131,7 +135,8 @@ public static class ItemManager
             name = new BoxedString("Lemms Sign"),
             sprite = new CustomSprite("Tablets/CityOfTears", false),
             shopDesc = new BoxedString("I didn't took this from the door... it fell to the ground and I decided I'd return it to him... later."),
-            textType = TextType.Lore
+            textType = TextType.Lore,
+            lore = new LanguageString("Relic Dealer", "RELICDEALER_DOOR")
         }));
         Finder.DefineCustomItem(new BoolItem()
         {
@@ -146,16 +151,18 @@ public static class ItemManager
             }
         });
 
-        // Iseldas charts
         Finder.DefineCustomLocation(new ShopLocation()
         {
             name = Iselda_Treasure,
-            sceneName = "Room_mapper",
+            defaultShopItems = DefaultShopItems.IseldaCharms | DefaultShopItems.IseldaMaps 
+            | DefaultShopItems.IseldaMapPins | DefaultShopItems.IseldaMapMarkers | DefaultShopItems.IseldaQuill,
             requiredPlayerDataBool = "lemm_allow",
-            fsmName = "Conversation Control",
+            sceneName = "Room_mapper",
+            flingType = FlingType.DirectDeposit,
             objectName = "Iselda",
-            flingType = FlingType.DirectDeposit
+            fsmName = "Conversation Control"
         });
+        // Iseldas charts
         List<int> chartPrices = new() { 1, 30, 69, 120, 160, 200, 230, 290, 420, 500, 750, 870, 1000, 1150 };
         for (int i = 1; i < 15; i++)
         {
@@ -174,11 +181,11 @@ public static class ItemManager
                 },
                 tags = new()
                 {
-                    new PDBoolShopReqTag()
-                    {
-                        reqVal = true,
-                        fieldName = "lemm_allow"
-                    },
+                    //new PDBoolShopReqTag()
+                    //{
+                    //    reqVal = true,
+                    //    fieldName = "lemm_allow"
+                    //},
                     new CostTag() { Cost = new GeoCost(rolledPrice) }
                 }
             });
@@ -208,7 +215,7 @@ public static class ItemManager
             setValue = true,
             UIDef = new MsgUIDef()
             {
-                name = new BoxedString("Dialogue Medallion"),
+                name = new BoxedString("Dream Medallion"),
                 shopDesc = new BoxedString("An old artifact from the moth tribe. They say, the wielder of this medallion attracts the essence of dreams."),
                 sprite = new CustomSprite("Dream_Medallion", false)
             }
@@ -293,7 +300,8 @@ public static class ItemManager
                 name = new BoxedString("Overwhelming Power"),
                 shopDesc = new BoxedString("A special lore tablet, which was hidden deep in Soul Sanctum."),
                 textType = TextType.Lore,
-                sprite = new CustomSprite("Tablets/CityOfTears", false)
+                sprite = new CustomSprite("Tablets/CityOfTears", false),
+                lore = new LanguageString("Lore Tablets","MAGE_COMP_02")
             }));
 
         // Stag egg
@@ -308,7 +316,8 @@ public static class ItemManager
             name = new BoxedString("Stag Adoption"),
             shopDesc = new BoxedString("My thought on a stag egg I found."),
             textType = TextType.Lore,
-            sprite = new CustomSprite("Tablets/Cliffs", false)
+            sprite = new CustomSprite("Tablets/Cliffs", false),
+            lore = new LanguageString("Stag","STAG_EGG_INSPECT")
         }));
         Finder.DefineCustomItem(new BoolItem()
         {
@@ -476,7 +485,6 @@ public static class ItemManager
         Finder.DefineCustomLocation(Creator.CreateDialogueLocation(Marissa, "Ruins_Bathhouse", "Ghost NPC"));
         Finder.DefineCustomLocation(Creator.CreateDialogueLocation(Grasshopper, "Fungus1_24", "Ghost NPC"));
         Finder.DefineCustomLocation(Creator.CreateDialogueLocation(Dung_Defender, "Waterways_05", "Dung Defender NPC"));
-        Finder.DefineCustomLocation(Creator.CreateDialogueLocation(Godseeker, "Fungus1_24", "Godseeker Awake"));
         Finder.DefineCustomLocation(Creator.CreateDialogueLocation(Menderbug_Diary, "Room_Mender_House", "Diary"));
 
         Finder.DefineCustomItem(Creator.CreateNpcItem(Dialogue_Bretta_Diary, "BRETTA_DIARY_1"));
@@ -496,7 +504,6 @@ public static class ItemManager
         Finder.DefineCustomItem(Creator.CreateNpcItem(Dialogue_Marissa, "MARISSA_TALK", "Ghosts"));
         Finder.DefineCustomItem(Creator.CreateNpcItem(Dialogue_Grasshopper, "GRASSHOPPER_TALK", "Ghosts"));
         Finder.DefineCustomItem(Creator.CreateNpcItem(Dialogue_Dung_Defender, "DUNG_DEFENDER_1"));
-        Finder.DefineCustomItem(Creator.CreateNpcItem(Dialogue_Godseeker, "GODSEEKER_WATERWAYS_AWAKE_1", "CP3"));
         Finder.DefineCustomItem(Creator.CreateNpcItem(Dialogue_Menderbug_Diary, "MENDER_DIARY", "Prompts"));
     }
 
@@ -650,7 +657,7 @@ public static class ItemManager
             shopDesc = new BoxedString(Properties.ShopDescriptions.Fountain),
             sprite = new CustomSprite("Fountain"),
             textType = TextType.Lore,
-            lore = new BoxedString("You shouldn't be able to see this.")
+            lore = new LanguageString("Lore Tablets", "FOUNTAIN_PLAQUE_DESC")
         }));
         Finder.DefineCustomItem(Creator.CreatePowerLoreItem(Inscription_Dreamer_Tablet, "DREAMERS_INSPECT_RG5", "Lore Tablets", TextType.Lore, new BigUIDef()
         {
@@ -660,7 +667,7 @@ public static class ItemManager
             take = new BoxedString("You thought this was a dreamer, didn't you?"),
             bigSprite = (Finder.GetItem(ItemNames.Dreamer).GetResolvedUIDef() as BigUIDef).bigSprite,
             sprite = new CustomSprite("Dreamer_Plaque"),
-            descTwo = new BoxedString("You shouldn't be able to see this.")
+            descTwo = new LanguageString("Lore Tablets", "DREAMERS_INSPECT_RG5")
         }));
         Finder.DefineCustomItem(Creator.CreateSoundItem(Inspect_Beast_Den_Altar, "Secret", new LoreUIDef()
         {
@@ -723,7 +730,7 @@ public static class ItemManager
             name = new BoxedString("Grimm Summoner Corpse"),
             shopDesc = new BoxedString(Properties.ShopDescriptions.Fountain),
             sprite = new CustomSprite("Grimm_Summoner"),
-            lore = new BoxedString(Language.Language.Get("GRIMMSYCOPHANT_INSPECT", "CP2")),
+            lore = new BoxedString(Language.Language.Get("CP2", "GRIMMSYCOPHANT_INSPECT")),
             textType = TextType.Lore,
         }));
     }
@@ -890,9 +897,27 @@ public static class ItemManager
             Finder.GetItem(Dream_Medallion)
         };
 
+        string[] treasureLocation = new string[]
+        {
+            Treasure_Ancient_Basin,
+            Treasure_City_Of_Tears,
+            Treasure_Crossroads,
+            Treasure_Crystal_Peaks,
+            Treasure_Deepnest,
+            Treasure_Fog_Canyon,
+            Treasure_Fungal_Wastes,
+            Treasure_Greenpath,
+            Treasure_Howling_Cliffs,
+            Treasure_Kingdoms_Edge,
+            Treasure_Queens_Garden,
+            Treasure_Resting_Grounds,
+            Treasure_Waterways,
+            Treasure_White_Palace
+        };
+
         for (int i = 1; i < 15; i++)
         {
-            currentPlacement = Finder.GetLocation($"{Treasure_Prefix}{i}").Wrap();
+            currentPlacement = Finder.GetLocation($"{treasureLocation[i]}").Wrap();
             int rolledIndex = LoreMaster.Instance.Generator.Next(0, treasureItems.Count);
             currentPlacement.Add(treasureItems[rolledIndex]);
             treasureItems.RemoveAt(rolledIndex);
@@ -908,13 +933,21 @@ public static class ItemManager
         currentPlacement.Add(Finder.GetItem(Path_of_Pain_Reward));
         extraLore.Add(currentPlacement);
 
-        currentPlacement = Finder.GetLocation(LocationList.Lore_Tablet_Record_Bela).Wrap();
-        currentPlacement.Add(Finder.GetItem(ItemList.Lore_Tablet_Record_Bela));
-        extraLore.Add(currentPlacement);
+        if (RandomizerManager.PlayingRandomizer && RandomizerManager.Settings.RandomizePointsOfInterest)
+        {
+            AbstractPlacement placement = ItemChanger.Internal.Ref.Settings.Placements[Stag_Nest];
+            placement.Items.Add(Finder.GetItem(Stag_Egg));
+        }
+        else
+        {
+            currentPlacement = Finder.GetLocation(LocationList.Lore_Tablet_Record_Bela).Wrap();
+            currentPlacement.Add(Finder.GetItem(ItemList.Lore_Tablet_Record_Bela));
+            extraLore.Add(currentPlacement);
 
-        currentPlacement = Finder.GetLocation(Stag_Nest).Wrap();
-        currentPlacement.Add(Finder.GetItem(Stag_Egg_Inspect));
-        currentPlacement.Add(Finder.GetItem(Stag_Egg));
+            currentPlacement = Finder.GetLocation(Stag_Nest).Wrap();
+            currentPlacement.Add(Finder.GetItem(Stag_Egg_Inspect));
+            currentPlacement.Add(Finder.GetItem(Stag_Egg));
+        }
 
         return extraLore;
     }
@@ -957,148 +990,6 @@ public static class ItemManager
         currentPlacement = Finder.GetLocation($"{Elderbug_Reward_Prefix}9").Wrap();
         currentPlacement.Add(Finder.GetItem(Cleansing_Scroll_Double));
         placements.Add(currentPlacement);
-
-        return placements;
-    }
-
-    private static List<AbstractPlacement> CreateNpcPlacements()
-    {
-        List<AbstractPlacement> placements = new();
-        placements.Add(CreatePlacement(Bretta_Diary, Dialogue_Bretta_Diary));
-        placements.Add(CreatePlacement(Bardoon, Dialogue_Bardoon));
-        placements.Add(CreatePlacement(Vespa, Dialogue_Vespa));
-        placements.Add(CreatePlacement(Mask_Maker, Dialogue_Mask_Maker));
-        placements.Add(CreatePlacement(Midwife, Dialogue_Midwife));
-        placements.Add(CreatePlacement(Gravedigger, Dialogue_Gravedigger));
-        placements.Add(CreatePlacement(Poggy, Dialogue_Poggy));
-        placements.Add(CreatePlacement(Joni, Dialogue_Joni));
-        placements.Add(CreatePlacement(Myla, Dialogue_Myla));
-        placements.Add(CreatePlacement(Emilitia, Dialogue_Emilitia));
-        placements.Add(CreatePlacement(Willoh, Dialogue_Willoh));
-        placements.Add(CreatePlacement(Moss_Prophet, Dialogue_Moss_Prophet));
-        placements.Add(CreatePlacement(Fluke_Hermit, Dialogue_Fluke_Hermit));
-        placements.Add(CreatePlacement(Queen, Dialogue_Queen));
-        placements.Add(CreatePlacement(Marissa, Dialogue_Marissa));
-        placements.Add(CreatePlacement(Grasshopper, Dialogue_Grasshopper));
-        placements.Add(CreatePlacement(Dung_Defender, Dialogue_Dung_Defender));
-        placements.Add(CreatePlacement(Godseeker, Dialogue_Godseeker));
-        placements.Add(CreatePlacement(Menderbug_Diary, Dialogue_Menderbug_Diary));
-
-        return placements;
-    }
-
-    private static List<AbstractPlacement> CreateDreamWarriorPlacements()
-    {
-        List<AbstractPlacement> placements = new();
-        placements.Add(CreatePlacement(Xero_Grave, Inspect_Xero));
-        placements.Add(CreatePlacement(Gorb_Grave, Inspect_Gorb));
-        placements.Add(CreatePlacement(Elder_Hu_Grave, Inspect_Elder_Hu));
-        placements.Add(CreatePlacement(Marmu_Grave, Inspect_Marmu));
-        placements.Add(CreatePlacement(No_Eyes_Statue, Inspect_No_Eyes));
-        placements.Add(CreatePlacement(Markoth_Corpse, Inspect_Markoth));
-        placements.Add(CreatePlacement(Galien_Corpse, Inspect_Galien));
-
-        return placements;
-    }
-
-    private static List<AbstractPlacement> PlaceDreamImpact()
-    {
-        List<AbstractPlacement> placements = new();
-
-        placements.Add(CreatePlacement(Aspid_Queen_Dream, Dream_Dialogue_Aspid_Queen));
-        placements.Add(CreatePlacement(Ancient_Nailsmith_Golem_Dream, Dream_Dialogue_Ancient_Nailsmith_Golem));
-        placements.Add(CreatePlacement(Crystalized_Shaman_Dream, Dream_Dialogue_Crystalized_Shaman));
-        placements.Add(CreatePlacement(Dashmaster_Statue_Dream, Dream_Dialogue_Dashmaster_Statue));
-        placements.Add(CreatePlacement(Dream_Shield_Statue_Dream, Dream_Dialogue_Dream_Shield_Statue));
-        placements.Add(CreatePlacement(Dryya_Dream, Dream_Dialogue_Dryya));
-        placements.Add(CreatePlacement(Grimm_Summoner_Dream, Dream_Dialogue_Grimm_Summoner));
-        placements.Add(CreatePlacement(Hopper_Dummy_Dream, Dream_Dialogue_Hopper_Dummy));
-        placements.Add(CreatePlacement(Isma_Dream, Dream_Dialogue_Isma));
-        placements.Add(CreatePlacement(Kings_Mould_Machine_Dream, Dream_Dialogue_Kings_Mould_Machine));
-        placements.Add(CreatePlacement(Mine_Golem_Dream, Dream_Dialogue_Mine_Golem));
-        placements.Add(CreatePlacement(Overgrown_Shaman_Dream, Dream_Dialogue_Overgrown_Shaman));
-        placements.Add(CreatePlacement(Pale_King_Dream, Dream_Dialogue_Pale_King));
-        placements.Add(CreatePlacement(Radiance_Statue_Dream, Dream_Dialogue_Radiance_Statue));
-        placements.Add(CreatePlacement(Shade_Golem_Dream_Normal, Dream_Dialogue_Shade_Golem_Normal));
-        placements.Add(CreatePlacement(Shade_Golem_Dream_Void, Dream_Dialogue_Shade_Golem_Void));
-        placements.Add(CreatePlacement(Shriek_Statue_Dream, Dream_Dialogue_Shriek_Statue));
-        placements.Add(CreatePlacement(Shroom_King_Dream, Dream_Dialogue_Shroom_King));
-        placements.Add(CreatePlacement(Snail_Shaman_Tomb_Dream, Dream_Dialogue_Snail_Shaman_Tomb));
-
-        return placements;
-    }
-
-    private static List<AbstractPlacement> CreatePointOfInterestPlacements()
-    {
-        List<AbstractPlacement> placements = new();
-        placements.Add(CreatePlacement(City_Fountain, Inscription_City_Fountain));
-        placements.Add(CreatePlacement(Dreamer_Tablet, Inscription_Dreamer_Tablet));
-        placements.Add(CreatePlacement(Beast_Den_Altar, Inspect_Beast_Den_Altar));
-        placements.Add(CreatePlacement(Garden_Golem, Inspect_Garden_Golem));
-        placements.Add(CreatePlacement(Grimm_Machine, Inspect_Grimm_Machine));
-        placements.Add(CreatePlacement(Grimm_Summoner_Corpse, Inspect_Grimm_Summoner_Corpse));
-        placements.Add(CreatePlacement(Grub_Seal, Inspect_Grub_Seal));
-        placements.Add(CreatePlacement(Path_Of_Pain_Seal, Inspect_Path_Of_Pain_Seal));
-        placements.Add(CreatePlacement(Weaver_Seal, Inspect_Weaver_Seal));
-        placements.Add(CreatePlacement(White_Palace_Nursery, Inspect_White_Palace_Nursery));
-
-        return placements;
-    }
-
-    private static List<AbstractPlacement> CreateTravellerPlacements()
-    {
-        List<AbstractPlacement> placements = new();
-        LoreManager.Instance.Traveller.Clear();
-        LoreManager.Instance.Traveller.Add(Traveller.Quirrel, new() 
-        { 
-            CurrentStage = 0,
-            Locations = TravellerLocation.DetermineOrder(Traveller.Quirrel, true).ToArray()
-        });
-        LoreManager.Instance.Traveller.Add(Traveller.Cloth, new()
-        {
-            CurrentStage = 0,
-            Locations = TravellerLocation.DetermineOrder(Traveller.Cloth, true).ToArray()
-        });
-        LoreManager.Instance.Traveller.Add(Traveller.Tiso, new()
-        {
-            CurrentStage = 0,
-            Locations = TravellerLocation.DetermineOrder(Traveller.Tiso, false).ToArray()
-        });
-        LoreManager.Instance.Traveller.Add(Traveller.Zote, new()
-        {
-            CurrentStage = 0,
-            Locations = TravellerLocation.DetermineOrder(Traveller.Zote, true).ToArray()
-        });
-
-        placements.Add(CreatePlacement(Quirrel_Crossroads, Dialogue_Quirrel_Crossroads));
-        placements.Add(CreatePlacement(Quirrel_Greenpath, Dialogue_Quirrel_Greenpath));
-        placements.Add(CreatePlacement(Quirrel_Queen_Station, Dialogue_Quirrel_Queen_Station));
-        placements.Add(CreatePlacement(Quirrel_Mantis_Village, Dialogue_Quirrel_Mantis_Village));
-        placements.Add(CreatePlacement(Quirrel_City, Dialogue_Quirrel_City));
-        placements.Add(CreatePlacement(Quirrel_Peaks, Dialogue_Quirrel_Peaks));
-        placements.Add(CreatePlacement(Quirrel_Deepnest, Dialogue_Quirrel_Deepnest));
-        placements.Add(CreatePlacement(Quirrel_Outside_Archive, Dialogue_Quirrel_Outside_Archive));
-        placements.Add(CreatePlacement(Quirrel_After_Monomon, Dialogue_Quirrel_Archive));
-        placements.Add(CreatePlacement(Quirrel_Blue_Lake, Dialogue_Quirrel_Blue_Lake));
-
-        placements.Add(CreatePlacement(Cloth_Fungal_Wastes, Dialogue_Cloth_Fungal_Wastes));
-        placements.Add(CreatePlacement(Cloth_Basin, Dialogue_Cloth_Basin));
-        placements.Add(CreatePlacement(Cloth_Deepnest, Dialogue_Cloth_Deepnest));
-        placements.Add(CreatePlacement(Cloth_Garden, Dialogue_Cloth_Garden));
-        placements.Add(CreatePlacement("Cloth_End", Dialogue_Cloth_Ghost));
-
-        placements.Add(CreatePlacement(Tiso_Dirtmouth, Dialogue_Tiso_Dirtmouth));
-        placements.Add(CreatePlacement(Tiso_Crossroads, Dialogue_Tiso_Crossroads));
-        placements.Add(CreatePlacement(Tiso_Blue_Lake, Dialogue_Tiso_Blue_Lake));
-        placements.Add(CreatePlacement(Tiso_Colosseum, Dialogue_Tiso_Colosseum));
-        placements.Add(CreatePlacement(Tiso_Corpse, Dream_Dialogue_Tiso_Corpse));
-
-        placements.Add(CreatePlacement(Zote_Greenpath, Dialogue_Zote_Greenpath));
-        placements.Add(CreatePlacement(Zote_Dirtmouth_Intro, Dialogue_Zote_Dirtmouth_Intro));
-        placements.Add(CreatePlacement(Zote_City, Dialogue_Zote_City));
-        placements.Add(CreatePlacement(Zote_Deepnest, Dialogue_Zote_Deepnest));
-        placements.Add(CreatePlacement(Zote_Colosseum, Dialogue_Zote_Colosseum));
-        placements.Add(CreatePlacement(Zote_Dirtmouth_After_Colosseum, Dialogue_Zote_Dirtmouth_After_Colosseum));
 
         return placements;
     }

@@ -1,6 +1,9 @@
 using ItemChanger;
+using ItemChanger.Extensions;
 using LoreMaster.Enums;
-using LoreMaster.Helper;
+using LoreMaster.ItemChangerData.Locations;
+using LoreMaster.ItemChangerData.Other;
+using LoreMaster.Manager;
 using RandomizerCore.Logic;
 using RandomizerCore.LogicItems;
 using RandomizerMod.RC;
@@ -13,39 +16,6 @@ namespace LoreMaster.Randomizer;
 
 public class LogicManager
 {
-    private static Dictionary<string, string> _npcLocationLogic = new()
-    {
-        {"Bretta", "Room_Bretta[right1] + Rescued_Bretta"},
-        {"Elderbug", "Town"},
-        {"Bardoon", "Deepnest_East_04[left1] + (WINGS | (LEFTCLAW | RIGHTCLAW) + ENEMYPOGOS) | Deepnest_East_04[right1] + (WINGS | (LEFTCLAW | RIGHTCLAW) + (FIREBALLSKIPS + FIREBALL | LEFTDASH)) | Deepnest_East_04[left2] + (WINGS + RIGHTSUPERDASH + (LEFTCLAW + LEFTDASH | RIGHTDASH) + ACIDSKIPS | ACID) + (WINGS | (LEFTCLAW | RIGHTCLAW) + ENEMYPOGOS)"},
-        {"Vespa", "Hive_05[left1] + Defeated_Hive_Knight + DREAMNAIL"},
-        {"Mask_Maker", "Room_Mask_Maker[right1]"},
-        {"Midwife", "Deepnest_41[left2] + (LANTERN | DARKROOMS)"},
-        {"Gravedigger", "Town + DREAMNAIL"},
-        {"Poggy", "(Ruins_Elevator[left1] | Ruins_Elevator[left2]) + DREAMNAIL"},
-        {"Joni", "Cliffs_05[left1] + DREAMNAIL"},
-        {"Myla", "Crossroads_45[left1] | Crossroads_45[right1]"},
-        {"Emilitia", "Ruins_House_03[left1] | (Ruins_House_03[left2] + (LEFTCLAW | RIGHTCLAW))"},
-        {"Willoh", "Fungus2_34[right1]"},
-        {"Moss_Prophet", "Fungus3_39[left1] | Fungus3_39[right1]"},
-        {"Fluke_Hermit", "(Room_GG_Shortcut[top1] | (Room_GG_Shortcut[left1] + (LEFTCLAW | RIGHTCLAW))) + SWIM"},
-        {"Quirrel", "(Mines_13[bot1] + (LEFTCLAW | RIGHTCLAW)) | Mines_13[top1] | Mines_13[right1]"},
-        {"Grasshopper", "Fungus1_24[left1] + (LEFTCLAW | RIGHTCLAW | WINGS) + DREAMNAIL" },
-        {"Marissa", "(Ruins_Bathhouse[door1] | Ruins_Bathhouse[right1]) + DREAMNAIL" },
-        {"Queen", "Room_Queen[left1]"}
-    };
-
-    private static Dictionary<string, string> _warriorStatueLocationLogic = new()
-    {
-        {"Xero", "((RestingGrounds_02[left1] | RestingGrounds_02[right1] | RestingGrounds_02[bot1]) + (ENEMYPOGOS | RIGHTCLAW | LEFTCLAW | WINGS | RIGHTSUPERDASH)) | RestingGrounds_02[top1]" },
-        {"Elder_Hu", "Fungus2_32[left1]" },
-        {"Galien", "Deepnest_40[right1]" },
-        {"Marmu", "Fungus3_40[top1] | ((Can_Stag + Queen's_Gardens_Stag) | Fungus3_40[right1]) + (LEFTDASH | LEFTCLAW | WINGS)" },
-        {"Gorb", "((Cliffs_02[left2] | Cliffs_02[door1]) + (RIGHTCLAW | ENEMYPOGOS | WINGS | RIGHTDASH)) | Cliffs_02[left1] | Cliffs_02[bot1] + RIGHTCLAW" },
-        {"Markoth", "Deepnest_East_10[left1]" },
-        {"No_Eyes", "(Fungus1_35[left1] | Fungus1_35[right1]) + (DARKROOMS | LANTERN)" }
-    };
-
     private static List<string> _randoPlusLocation = new()
     {
         "Mr_Mushroom-Fungal_Wastes",
@@ -69,58 +39,299 @@ public class LogicManager
 
     private static void ModifyLogic(GenerationSettings settings, LogicManagerBuilder builder)
     {
-        // If the condition is changed, we need to add that first in order for the npc items to be considered.
-        if (RandomizerManager.Settings.BlackEggTempleCondition != BlackEggTempleCondition.Dreamers)
+        Term loreTerm = null;
+        if (RandomizerManager.Settings.BlackEggTempleCondition != BlackEggTempleCondition.Dreamers
+            || RandomizerManager.Settings.RandomizeElderbugRewards
+            || RandomizerManager.Settings.DefineRefs)
         {
-            Term loreAmount = builder.GetOrAddTerm("LORE");
-            builder.DoLogicEdit(new("Opened_Black_Egg_Temple",
-                "Room_temple[left1] + LORE>" + (RandomizerManager.Settings.NeededLore - 1)
-                + (RandomizerManager.Settings.BlackEggTempleCondition == BlackEggTempleCondition.Both ? "+ DREAMER>2" : null)));
-            foreach (string key in RandomizerHelper.TabletNames.Keys)
-                builder.AddItem(new SingleItem("Lore_Tablet-" + key, new(loreAmount, 1)));
-        }
-
-        if (RandomizerManager.Settings.RandomizeNpc)
-        {
-            foreach (string key in _npcLocationLogic.Keys)
-            {
-                builder.AddLogicDef(new(key + "_Dialogue", RandomizerManager.Settings.CursedListening ? $"({_npcLocationLogic[key]}) + LISTEN" : _npcLocationLogic[key]));
-                if (RandomizerManager.Settings.BlackEggTempleCondition == BlackEggTempleCondition.Dreamers)
-                    builder.AddItem(new EmptyItem("Lore_Tablet-" + key));
-                else
-                    builder.AddItem(new SingleItem("Lore_Tablet-" + key, new(builder.GetTerm("LORE"), 1)));
-            }
-            builder.AddLogicDef(new("Town_Lore_Page", "Town"));
-            builder.AddItem(new EmptyItem("Lore_Page"));
-        }
-
-        if (RandomizerManager.Settings.RandomizeWarriorStatues)
-            foreach (string key in _warriorStatueLocationLogic.Keys)
-            {
-                builder.AddLogicDef(new(key + "_Inspect", RandomizerManager.Settings.CursedReading ? $"({_warriorStatueLocationLogic[key]}) + READ" : _warriorStatueLocationLogic[key]));
-
-                if (RandomizerManager.Settings.BlackEggTempleCondition == BlackEggTempleCondition.Dreamers)
-                    builder.AddItem(new EmptyItem("Lore_Tablet-" + key));
-                else
-                    builder.AddItem(new SingleItem("Lore_Tablet-" + key, new(builder.GetTerm("LORE"), 1)));
-            }
-
-        if (RandomizerManager.Settings.CursedReading)
-        {
-            Term readAbility = builder.GetOrAddTerm("READ");
-            builder.AddLogicDef(new("Town_Read", "Town"));
-            builder.AddItem(new BoolItem("Reading", readAbility));
-            using Stream stream = typeof(LogicManager).Assembly.GetManifestResourceStream("LoreMaster.Resources.Randomizer.ReadLogicModifier.json");
-            builder.DeserializeJson(LogicManagerBuilder.JsonType.LogicEdit, stream);
+            loreTerm = builder.GetOrAddTerm("LORE");
+            IEnumerable<string> allLoreTablets = Finder.GetFullLocationList().Where(x => x.Key.StartsWith("Lore_Tablet-") && x.Key != ItemList.Lore_Tablet_Record_Bela).Select(x => x.Key);
+            foreach (string item in allLoreTablets)
+                builder.AddItem(new SingleItem(item, new(loreTerm, 1)));
+            if (RandomizerManager.Settings.BlackEggTempleCondition != BlackEggTempleCondition.Dreamers)
+                builder.DoLogicEdit(new("Opened_Black_Egg_Temple", "Room_temple[left1] + "
+                    + (RandomizerManager.Settings.BlackEggTempleCondition == BlackEggTempleCondition.Lore
+                    ? "LORE>" + RandomizerManager.Settings.NeededLore
+                    : "DREAMER>2 + " + "LORE>" + RandomizerManager.Settings.NeededLore)));
         }
 
         if (RandomizerManager.Settings.CursedListening)
         {
-            Term listenAbility = builder.GetOrAddTerm("LISTEN");
-            builder.AddLogicDef(new("Town_Listen", "Town"));
-            builder.AddItem(new BoolItem("Listening", listenAbility));
-            using Stream stream = typeof(LogicManager).Assembly.GetManifestResourceStream("LoreMaster.Resources.Randomizer.ListenLogicModifier.json");
-            builder.DeserializeJson(LogicManagerBuilder.JsonType.LogicEdit, stream);
+            Term listenTerm = builder.GetOrAddTerm("LISTEN");
+            builder.AddItem(new BoolItem(ItemList.Listen_Ability, listenTerm));
+        }
+
+        if (RandomizerManager.Settings.CursedReading)
+        {
+            Term readTerm = builder.GetOrAddTerm("READ");
+            builder.AddItem(new BoolItem(ItemList.Read_Ability, readTerm));
+        }
+
+        if (RandomizerManager.Settings.RandomizeNpc || RandomizerManager.Settings.DefineRefs)
+        {
+            using Stream stream = typeof(LogicManager).Assembly.GetManifestResourceStream("LoreMaster.Resources.Randomizer.Logic.NpcLogic.json");
+            builder.DeserializeJson(LogicManagerBuilder.JsonType.Locations, stream);
+            if (RandomizerManager.Settings.CursedListening)
+                foreach (string npc in RandomizerRequestModifier.NpcLocations)
+                    builder.DoLogicEdit(new(npc, "(ORIG) + LISTEN"));
+
+            // Let npc dialogue count towards lore conditions.
+            if (loreTerm != null)
+                foreach (string item in RandomizerRequestModifier.NpcItems)
+                    builder.AddItem(new SingleItem(item, new(loreTerm, 1)));
+            else
+                foreach (string item in RandomizerRequestModifier.NpcItems)
+                    builder.AddItem(new EmptyItem(item));
+        }
+
+        if (RandomizerManager.Settings.RandomizeDreamWarriorStatues || RandomizerManager.Settings.DefineRefs)
+        {
+            using Stream stream = typeof(LogicManager).Assembly.GetManifestResourceStream("LoreMaster.Resources.Randomizer.Logic.DreamWarriorLogic.json");
+            builder.DeserializeJson(LogicManagerBuilder.JsonType.Locations, stream);
+            if (RandomizerManager.Settings.CursedReading)
+                foreach (string warrior in RandomizerRequestModifier.DreamWarriorLocations)
+                    builder.DoLogicEdit(new(warrior, "(ORIG) + READ"));
+
+            // Let dream warrior inspects count towards lore conditions.
+            if (loreTerm != null)
+                foreach (string item in RandomizerRequestModifier.DreamWarriorItems)
+                    builder.AddItem(new SingleItem(item, new(loreTerm, 1)));
+            else
+                foreach (string item in RandomizerRequestModifier.DreamWarriorItems)
+                    builder.AddItem(new EmptyItem(item));
+        }
+
+        if (RandomizerManager.Settings.RandomizeDreamDialogue || RandomizerManager.Settings.DefineRefs)
+        {
+            using Stream stream = typeof(LogicManager).Assembly.GetManifestResourceStream("LoreMaster.Resources.Randomizer.Logic.DreamLogic.json");
+            builder.DeserializeJson(LogicManagerBuilder.JsonType.Locations, stream);
+
+            // Let dream dialogue count towards lore conditions.
+            if (loreTerm != null)
+                foreach (string item in RandomizerRequestModifier.DreamItems)
+                    builder.AddItem(new SingleItem(item, new(loreTerm, 1)));
+            else
+                foreach (string item in RandomizerRequestModifier.DreamItems)
+                    builder.AddItem(new EmptyItem(item));
+        }
+
+        if (RandomizerManager.Settings.RandomizePointsOfInterest || RandomizerManager.Settings.DefineRefs)
+        {
+            using Stream stream = typeof(LogicManager).Assembly.GetManifestResourceStream("LoreMaster.Resources.Randomizer.Logic.PointOfInterestLogic.json");
+            builder.DeserializeJson(LogicManagerBuilder.JsonType.Locations, stream);
+
+            // Let point of interest count towards lore conditions.
+            if (loreTerm != null)
+                foreach (string item in RandomizerRequestModifier.PointOfInterestItems)
+                    builder.AddItem(new SingleItem(item, new(loreTerm, 1)));
+            else
+                foreach (string item in RandomizerRequestModifier.PointOfInterestItems)
+                    builder.AddItem(new EmptyItem(item));
+        }
+        else
+            builder.AddLogicDef(new("Stag_Nest", "(Cliffs_03[right1] | Stag_Nest_Stag | STAGS > 8) + ((LEFTCLAW | WINGS) + LEFTDASH | LEFTSUPERDASH)"));
+        builder.AddItem(new EmptyItem(ItemList.Stag_Egg));
+
+        if (RandomizerManager.Settings.RandomizeTravellers || RandomizerManager.Settings.DefineRefs)
+        {
+            try
+            {
+                // Define terms
+                builder.GetOrAddTerm("QUIRREL");
+                builder.GetOrAddTerm("CLOTH");
+                builder.GetOrAddTerm("TISO");
+                builder.GetOrAddTerm("ZOTE");
+                using Stream stream = typeof(LogicManager).Assembly.GetManifestResourceStream("LoreMaster.Resources.Randomizer.Logic.TravellerLogic.json");
+                builder.DeserializeJson(LogicManagerBuilder.JsonType.Locations, stream);
+
+                // Determine the spawn order.
+                LoreManager.Instance.Traveller.Clear();
+                LoreManager.Instance.Traveller.Add(Traveller.Quirrel, new()
+                {
+                    CurrentStage = RandomizerManager.Settings.TravellerOrder == TravelOrder.Everywhere ? 10 : 0,
+                    Locations = TravellerLocation.DetermineOrder(Traveller.Quirrel, RandomizerManager.Settings.TravellerOrder == TravelOrder.Shuffled 
+                    && RandomizerManager.Settings.RandomizeTravellers).ToArray()
+                });
+                LoreManager.Instance.Traveller.Add(Traveller.Cloth, new()
+                {
+                    CurrentStage = RandomizerManager.Settings.TravellerOrder == TravelOrder.Everywhere ? 10 : 0,
+                    Locations = TravellerLocation.DetermineOrder(Traveller.Cloth, RandomizerManager.Settings.TravellerOrder == TravelOrder.Shuffled
+                    && RandomizerManager.Settings.RandomizeTravellers).ToArray()
+                });
+                LoreManager.Instance.Traveller.Add(Traveller.Zote, new()
+                {
+                    CurrentStage = RandomizerManager.Settings.TravellerOrder == TravelOrder.Everywhere ? 10 : 0,
+                    Locations = TravellerLocation.DetermineOrder(Traveller.Zote, RandomizerManager.Settings.TravellerOrder == TravelOrder.Shuffled
+                    && RandomizerManager.Settings.RandomizeTravellers).ToArray()
+                });
+                LoreManager.Instance.Traveller.Add(Traveller.Tiso, new()
+                {
+                    CurrentStage = RandomizerManager.Settings.TravellerOrder == TravelOrder.Everywhere ? 10 : 0,
+                    Locations = TravellerLocation.DetermineOrder(Traveller.Tiso, RandomizerManager.Settings.TravellerOrder == TravelOrder.Shuffled
+                    && RandomizerManager.Settings.RandomizeTravellers).ToArray()
+                });
+
+                // Modify the logic for the order in which the traveller stages appear.
+                Term currentTerm = builder.GetOrAddTerm("QUIRREL");
+                Traveller currentTraveller = Traveller.Quirrel;
+                for (int i = 0; i < RandomizerRequestModifier.TravellerItems.Length - 1; i++)
+                {
+                    if (i == 9 || i == 14 || i == 19)
+                    {
+                        currentTraveller++;
+                        currentTerm = builder.GetOrAddTerm(currentTraveller.ToString().ToUpper());
+                        continue;
+                    }
+                    if (Finder.GetLocation(RandomizerRequestModifier.TravellerLocations[i]) is not TravellerLocation travellerLocation)
+                        continue;
+                    
+                    int stage = LoreManager.Instance.Traveller[currentTraveller].Locations.IndexOf(travellerLocation.ObjectName);
+                    if (stage != 0)
+                        builder.DoLogicEdit(new(RandomizerRequestModifier.TravellerLocations[i], RandomizerManager.Settings.CursedListening
+                        ? $"(ORIG) + LISTEN + {currentTerm.ToString().ToUpper()}>" + stage
+                        : $"(ORIG) + {currentTraveller.ToString().ToUpper()}>" + stage));
+                    else if (RandomizerManager.Settings.CursedListening)
+                        builder.DoLogicEdit(new(RandomizerRequestModifier.TravellerLocations[i], "(ORIG) + LISTEN"));
+
+                    if (loreTerm != null)
+                        builder.AddItem(new MultiItem(RandomizerRequestModifier.TravellerItems[i], new RandomizerCore.TermValue[] { new(currentTerm, 1), new(loreTerm, 1) }));
+                    else
+                        builder.AddItem(new SingleItem(RandomizerRequestModifier.TravellerItems[i], new(currentTerm, 1)));
+                }
+
+                // Modify special locations.
+                if (RandomizerManager.Settings.CursedListening)
+                {
+                    builder.DoLogicEdit(new(LocationList.Quirrel_Blue_Lake, "(ORIG) + LISTEN"));
+                    builder.DoLogicEdit(new(LocationList.Cloth_End, "(ORIG) + LISTEN"));
+                    builder.DoLogicEdit(new(LocationList.Zote_Dirtmouth_After_Colosseum, "(ORIG) + LISTEN"));
+
+                    // Because Zote sucks...
+                    int stage = LoreManager.Instance.Traveller[Traveller.Zote].Locations.IndexOf("Zote Buzzer Convo(Clone)");
+                    if (stage == 0)
+                        builder.DoLogicEdit(new(LocationList.Zote_Greenpath, "(ORIG) + LISTEN"));
+                    else
+                        builder.DoLogicEdit(new(LocationList.Zote_Greenpath, "(ORIG) + LISTEN + ZOTE>"+stage));
+                    stage = LoreManager.Instance.Traveller[Traveller.Zote].Locations.IndexOf("/Zote Deepnest/Faller/NPC");
+                    if (stage == 0)
+                        builder.DoLogicEdit(new(LocationList.Zote_Greenpath, "(ORIG) + LISTEN"));
+                    else
+                        builder.DoLogicEdit(new(LocationList.Zote_Greenpath, "(ORIG) + LISTEN + ZOTE>" + stage));
+                }
+                else
+                {
+                    // Because Zote sucks...
+                    int stage = LoreManager.Instance.Traveller[Traveller.Zote].Locations.IndexOf("Zote Buzzer Convo(Clone)");
+                    if (stage != 0)
+                        builder.DoLogicEdit(new(LocationList.Zote_Greenpath, "(ORIG) + ZOTE>" + stage));
+                    stage = LoreManager.Instance.Traveller[Traveller.Zote].Locations.IndexOf("/Zote Deepnest/Faller/NPC");
+                    if (stage != 0)
+                        builder.DoLogicEdit(new(LocationList.Zote_Greenpath, "(ORIG) + ZOTE>" + stage));
+                }
+
+                // Add "special" items.
+                if (loreTerm != null)
+                {
+                    builder.AddItem(new MultiItem(ItemList.Dialogue_Quirrel_Blue_Lake, new RandomizerCore.TermValue[]
+                    {
+                        new(builder.GetOrAddTerm("QUIRREL"), 1),
+                        new(loreTerm, 1)
+                    }));
+                    builder.AddItem(new MultiItem(ItemList.Dialogue_Cloth_Ghost, new RandomizerCore.TermValue[]
+                    {
+                        new(builder.GetOrAddTerm("CLOTH"), 1),
+                        new(loreTerm, 1)
+                    }));
+                    builder.AddItem(new MultiItem(ItemList.Dream_Dialogue_Tiso_Corpse, new RandomizerCore.TermValue[]
+                    {
+                        new(builder.GetOrAddTerm("TISO"), 1),
+                        new(loreTerm, 1)
+                    }));
+                    builder.AddItem(new MultiItem(ItemList.Dialogue_Zote_Dirtmouth_After_Colosseum, new RandomizerCore.TermValue[]
+                    {
+                        new(builder.GetOrAddTerm("ZOTE"), 1),
+                        new(loreTerm, 1)
+                    }));
+                    builder.AddItem(new MultiItem(ItemList.Dialogue_Zote_Greenpath, new RandomizerCore.TermValue[]
+                    {
+                        new(builder.GetOrAddTerm("ZOTE"), 1),
+                        new(loreTerm, 1)
+                    }));
+                    builder.AddItem(new MultiItem(ItemList.Dialogue_Zote_Deepnest, new RandomizerCore.TermValue[]
+                    {
+                        new(builder.GetOrAddTerm("ZOTE"), 1),
+                        new(loreTerm, 1)
+                    }));
+                }
+                else
+                {
+                    builder.AddItem(new SingleItem(ItemList.Dialogue_Quirrel_Blue_Lake, new(builder.GetOrAddTerm("QUIRREL"), 1)));
+                    builder.AddItem(new SingleItem(ItemList.Dialogue_Cloth_Ghost, new(builder.GetOrAddTerm("CLOTH"), 1)));
+                    builder.AddItem(new SingleItem(ItemList.Dream_Dialogue_Tiso_Corpse, new(builder.GetOrAddTerm("TISO"), 1)));
+                    builder.AddItem(new SingleItem(ItemList.Dialogue_Zote_Dirtmouth_After_Colosseum, new(builder.GetOrAddTerm("ZOTE"), 1)));
+                    builder.AddItem(new SingleItem(ItemList.Dialogue_Zote_Greenpath, new(builder.GetOrAddTerm("ZOTE"), 1)));
+                    builder.AddItem(new SingleItem(ItemList.Dialogue_Zote_Deepnest, new(builder.GetOrAddTerm("ZOTE"), 1)));
+                }
+            }
+            catch (System.Exception exception)
+            {
+                LoreMaster.Instance.LogError(exception.Message);
+                LoreMaster.Instance.LogError(exception.StackTrace);
+            }
+        }
+
+        // Treasure stuff.
+        for (int i = 1; i < 15; i++)
+        {
+            Term term = builder.GetOrAddTerm($"MAP{i}");
+            builder.AddItem(new BoolItem($"Treasure_Chart_{i}", term));
+        }
+        Term iselda = builder.GetOrAddTerm("CHARTSAVAILABLE");
+        builder.AddItem(new BoolItem(ItemList.Lemm_Order, iselda));
+        builder.AddItem(new EmptyItem(ItemList.Lemm_Sign));
+
+        using Stream treasureStream = typeof(LogicManager).Assembly.GetManifestResourceStream("LoreMaster.Resources.Randomizer.Logic.TreasureLogic.json");
+        builder.DeserializeJson(LogicManagerBuilder.JsonType.Locations, treasureStream);
+        if (RandomizerManager.Settings.RandomizeTreasures || RandomizerManager.Settings.DefineRefs)
+            builder.AddItem(new MultiItem(ItemList.Magical_Key, new RandomizerCore.TermValue[]
+            {
+                new(builder.GetTerm("SIMPLE"), 4),
+                new(builder.GetTerm("ELEGANT"), 1),
+                new(builder.GetTerm("Love_Key"), 1)
+            }));
+        else
+            builder.AddItem(new EmptyItem(ItemList.Magical_Key));
+        foreach (string item in RandomizerRequestModifier.TreasureItems.Skip(1))
+            builder.AddItem(new EmptyItem(item));
+        if (RandomizerManager.Settings.CursedListening)
+        {
+            using Stream listenStream = typeof(LogicManager).Assembly.GetManifestResourceStream("LoreMaster.Resources.Randomizer.Logic.ListenLogicModifier.json");
+            builder.DeserializeJson(LogicManagerBuilder.JsonType.LogicEdit, listenStream);
+            builder.DoLogicEdit(new(LocationList.Iselda_Treasure, "(ORIG) + LISTEN"));
+        }
+        if (RandomizerManager.Settings.CursedReading)
+        {
+            using Stream readStream = typeof(LogicManager).Assembly.GetManifestResourceStream("LoreMaster.Resources.Randomizer.Logic.ReadLogicModifier.json");
+            builder.DeserializeJson(LogicManagerBuilder.JsonType.LogicEdit, readStream);
+            builder.DoLogicEdit(new(LocationList.Lemm_Door, "(ORIG) + READ"));
+        }
+        if (RandomizerManager.Settings.ForceCompassForTreasure)
+        {
+            Term compass = builder.GetOrAddTerm("COMPASS");
+            builder.AddItem(new BoolItem(ItemNames.Wayward_Compass, compass));
+            foreach (string location in RandomizerRequestModifier.TreasureLocation)
+                builder.DoLogicEdit(new(location, "(ORIG) + COMPASS"));
+        }
+
+        if (RandomizerManager.Settings.RandomizeElderbugRewards || RandomizerManager.Settings.DefineRefs)
+        {
+            using Stream stream = typeof(LogicManager).Assembly.GetManifestResourceStream("LoreMaster.Resources.Randomizer.Logic.ElderbugLogic.json");
+            builder.DeserializeJson(LogicManagerBuilder.JsonType.Locations, stream);
+            builder.AddItem(new EmptyItem(ItemList.Lore_Page));
+            builder.AddItem(new EmptyItem(ItemList.Lore_Page_Control));
+            builder.AddItem(new EmptyItem(ItemList.Joker_Scroll));
+            builder.AddItem(new EmptyItem(ItemList.Cleansing_Scroll));
+            builder.AddItem(new EmptyItem(ItemList.Cleansing_Scroll_Double));
         }
     }
 

@@ -42,26 +42,28 @@ internal class DialogueLocation : AutoLocation
                 fsm.gameObject.LocateMyFSM("npc_control").GetState("Idle").ClearTransitions();
                 return;
             }
-            FsmState startState;
-            string transitionEnd;
-            if (string.Equals(ObjectName, "Queen", System.StringComparison.CurrentCultureIgnoreCase))
-            {
-                startState = fsm.GetState("NPC Anim");
-                transitionEnd = "Summon";
-            }
-            else
-            {
-                startState = fsm.GetState("Hero Anim");
-                if (startState == null)
-                    startState = fsm.GetState("Hero Look");
-                // Zote Greenpath/City
-                if (startState == null)
-                    startState = fsm.GetState("Talk Back");
-                transitionEnd = "Talk Finish";
-            }
+            
 
             if (fsm.GetState("Give Items") is null)
             {
+                FsmState startState;
+                string transitionEnd;
+                if (string.Equals(ObjectName, "Queen", System.StringComparison.CurrentCultureIgnoreCase))
+                {
+                    startState = fsm.GetState("NPC Anim");
+                    transitionEnd = "Summon";
+                }
+                else
+                {
+                    startState = fsm.GetState("Hero Anim");
+                    if (startState == null)
+                        startState = fsm.GetState("Hero Look");
+                    // Zote Greenpath/City
+                    if (startState == null)
+                        startState = fsm.GetState("Talk Back");
+                    transitionEnd = "Talk Finish";
+                }
+
                 // If not all items are obtained ghost npc are unkillable.
                 if (fsm.gameObject.LocateMyFSM("ghost_npc_death") is PlayMakerFSM ghostDeath)
                     ghostDeath.GetState("Idle").ClearTransitions();
@@ -84,7 +86,14 @@ internal class DialogueLocation : AutoLocation
                     }
                 });
 
-                startState.AdjustTransition("FINISHED", "Give Items");
+                // Zote Dirtmouth 2....
+                if (startState == null)
+                {
+                    startState = fsm.GetState("Idle");
+                    startState.AdjustTransition(startState.Transitions[0].EventName, "Give Items");
+                }
+                else
+                    startState.AdjustTransition(startState.Transitions[0].EventName, "Give Items");
                 // As if Zote wasn't annoying enough...
                 if (fsm.GetState("Talk R") is FsmState state)
                     state.AdjustTransition("FINISHED", "Give Items");
@@ -100,6 +109,7 @@ internal class DialogueLocation : AutoLocation
         catch (System.Exception exception)
         {
             LoreMaster.Instance.LogError(exception.Message);
+            LoreMaster.Instance.LogError(exception.StackTrace);
         }
     }
 }

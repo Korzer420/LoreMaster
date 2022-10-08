@@ -40,10 +40,10 @@ internal class TravellerLocation : DialogueLocation
 
     private static readonly (string, string)[] _zoteNames = new (string, string)[]
     {
-        ("Fungus1_20_v02", "Zote Buzzer Convo"),
+        ("Fungus1_20_v02", "Zote Buzzer Convo(Clone)"),
         ("Town","/_NPCs/Zote Town"),
         ("Ruins1_06","Zote Ruins"),
-        ("Deepnest_33","Zote Deepnest"),
+        ("Deepnest_33","/Zote Deepnest/Faller/NPC"),
         ("Room_Colosseum_02","Zote Colosseum"),
         ("Town","/_NPCs/Zote Final Scene/Zote Final")
     };
@@ -78,11 +78,13 @@ internal class TravellerLocation : DialogueLocation
     /// </summary>
     protected virtual void ControlSpawn(Scene scene)
     {
-        string objectName = ObjectName.Contains("Final Scene") ? "/_NPCs/Zote Final Scene" : ObjectName;
+        string objectName = ObjectName.Contains("Final Scene") ? "_NPCs/Zote Final Scene" : ObjectName;
         GameObject npc = GameObject.Find(objectName);
         if (npc == null)
         {
-            npc = CheckComponent<DeactivateIfPlayerdataTrue>() ?? CheckComponent<DeactivateIfPlayerdataFalse>();
+            npc = CheckComponent<DeactivateIfPlayerdataTrue>(objectName);
+            if (npc == null)
+                npc = CheckComponent<DeactivateIfPlayerdataFalse>(objectName);
             if (npc == null)
             {
                 LoreMaster.Instance.LogError("Couldn't find " + objectName + ".");
@@ -125,10 +127,10 @@ internal class TravellerLocation : DialogueLocation
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    private GameObject CheckComponent<T>() where T : Component
+    private GameObject CheckComponent<T>(string name) where T : Component
     {
         // Since some traveller objects are child objects, we extract their simple name.
-        string normalName = ObjectName.Split('/').Last();
+        string normalName = name.Split('/').Last();
         return Object.FindObjectsOfType<T>(true).FirstOrDefault(x => x.gameObject.name == normalName)?.gameObject;
     }
 
@@ -152,6 +154,8 @@ internal class TravellerLocation : DialogueLocation
             return order;
         else
         {
+            if (npc == Traveller.Cloth)
+                order.RemoveAt(5);
             do
             {
                 int selectedValue = LoreMaster.Instance.Generator.Next(0, order.Count - 1);

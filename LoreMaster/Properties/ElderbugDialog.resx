@@ -126,6 +126,9 @@
   <data name="Elderbug_Casual_Rando" xml:space="preserve">
     <value>What an amusing twisted version of this land has been created. May you find your movement items early this run. Hehe...</value>
   </data>
+  <data name="Elderbug_CustomKnight" xml:space="preserve">
+    <value>You're a fan of changing your appearance it seems. Or maybe even changing the look of other things?</value>
+  </data>
   <data name="Elderbug_Done_Task_1" xml:space="preserve">
     <value>Oh, I can sense the power that coursing through your shell. You managed to obtain a spell, congratulations. As an reward I'll teach you how to comprehent the knowledge written on the tablets.</value>
   </data>

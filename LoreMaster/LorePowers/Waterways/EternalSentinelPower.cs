@@ -21,7 +21,7 @@ public class EternalSentinelPower : Power
 
     #region Constructors
 
-    public EternalSentinelPower() : base("Eternal Sentinel", Area.Waterways) { }
+    public EternalSentinelPower() : base("Eternal Sentinel", Area.WaterWays) { }
 
     #endregion
 

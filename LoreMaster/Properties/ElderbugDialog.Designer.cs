@@ -88,6 +88,15 @@ namespace LoreMaster.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die You&apos;re a fan of changing your appearance it seems. Or maybe even changing the look of other things? ähnelt.
+        /// </summary>
+        internal static string Elderbug_CustomKnight {
+            get {
+                return ResourceManager.GetString("Elderbug_CustomKnight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Oh, I can sense the power that coursing through your shell. You managed to obtain a spell, congratulations. As an reward I&apos;ll teach you how to comprehent the knowledge written on the tablets. ähnelt.
         /// </summary>
         internal static string Elderbug_Done_Task_1 {

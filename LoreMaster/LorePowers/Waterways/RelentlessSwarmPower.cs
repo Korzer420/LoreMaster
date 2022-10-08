@@ -9,7 +9,7 @@ public class RelentlessSwarmPower : Power
 {
     #region Constructors
 
-    public RelentlessSwarmPower() : base("Relentless Swarm", Area.Waterways) { }
+    public RelentlessSwarmPower() : base("Relentless Swarm", Area.WaterWays) { }
 
     #endregion
 

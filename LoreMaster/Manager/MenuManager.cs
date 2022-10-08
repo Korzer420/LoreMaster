@@ -6,9 +6,7 @@ using MenuChanger;
 using MenuChanger.Extensions;
 using MenuChanger.MenuElements;
 using MenuChanger.MenuPanels;
-using Modding;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -48,7 +46,7 @@ internal class MenuManager : ModeMenuConstructor
     private void FixVerticalAlign_AlignText(On.FixVerticalAlign.orig_AlignText orig, FixVerticalAlign self)
     {
         orig(self);
-        if (!string.IsNullOrEmpty(self.transform.parent?.name) && Settings.PowerTags.ContainsKey(self.transform.parent.name.Substring(0, self.transform.parent.name.Length - 7)))
+        if (!string.IsNullOrEmpty(self.transform.parent?.name) && PowerManager.GlobalPowerStates.ContainsKey(self.transform.parent.name.Substring(0, self.transform.parent.name.Length - 7)))
         {
             Text text = self.GetComponent<Text>();
             text.verticalOverflow = VerticalWrapMode.Overflow;
@@ -78,7 +76,7 @@ internal class MenuManager : ModeMenuConstructor
             item.SetValue(chosenTag);
     }
 
-    private void ChangePowerTag(IValueElement element) => Settings.PowerTags[(element as MenuItem<PowerTag>).Name] = (element as MenuItem<PowerTag>).Value;
+    private void ChangePowerTag(IValueElement element) => PowerManager.GlobalPowerStates[(element as MenuItem<PowerTag>).Name] = (element as MenuItem<PowerTag>).Value;
 
     private void ChangeEndCondition(BlackEggTempleCondition condition)
     {
@@ -202,7 +200,7 @@ internal class MenuManager : ModeMenuConstructor
         SettingManager.Instance.NeededLore = Settings.NeededLore;
         SettingManager.Instance.GameMode = Settings.GameMode;
         foreach (Power power in PowerManager.GetAllPowers())
-            power.Tag = Settings.NightmareMode ? PowerTag.Global : Settings.PowerTags[power.PowerName];
+            power.Tag = Settings.NightmareMode ? PowerTag.Global : PowerManager.GlobalPowerStates[power.PowerName];
         if (Settings.UseCursedLore != CursedLore.None)
         {
             int finalAmount = LoreMaster.Instance.Generator.Next(Settings.MinCursedLore, Settings.MaxCursedLore + 1);
@@ -268,7 +266,7 @@ internal class MenuManager : ModeMenuConstructor
         PowerElements = new MenuItem<PowerTag>[60];
         List<PowerTag> tags = (Enum.GetValues(typeof(PowerTag)) as PowerTag[]).ToList();
         int index = 0;
-        foreach (string key in Settings.PowerTags.Keys)
+        foreach (string key in PowerManager.GlobalPowerStates.Keys)
         {
             MenuItem<PowerTag> item = new(PowerPage, key, tags, new MultiLineFormatter());
             // This is a wacky workaround, since I can't bind on a dictionary that easily and have no clue how I'd implement that.
@@ -296,7 +294,7 @@ internal class MenuManager : ModeMenuConstructor
         leftButton.Hide();
         On.FixVerticalAlign.AlignText += FixVerticalAlign_AlignText;
         foreach (MenuItem<PowerTag> item in PowerElements)
-            item.SetValue(Settings.PowerTags[item.Name]);
+            item.SetValue(PowerManager.GlobalPowerStates[item.Name]);
 
         // Cursed lore stuff
         MenuEnum<CursedLore> cursedLoreButton = new(ExtraPage, "Cursed Lore");

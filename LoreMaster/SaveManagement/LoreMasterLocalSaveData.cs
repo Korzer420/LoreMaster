@@ -70,7 +70,7 @@ public class LoreMasterLocalSaveData
     public PowerControlState PageState { get; set; }
 
     /// <summary>
-    /// Gets or sets the data for the travelling npcs. The first items contains the current stage and the second the order.
+    /// Gets or sets the data for the travelling npcs.
     /// </summary>
     public Dictionary<Traveller, TravellerData> TravellerOrder { get; set; } = new();
 }

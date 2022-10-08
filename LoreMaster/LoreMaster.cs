@@ -1,4 +1,5 @@
 using LoreMaster.Enums;
+using LoreMaster.LorePowers;
 using LoreMaster.LorePowers.CityOfTears;
 using LoreMaster.Manager;
 using LoreMaster.Randomizer;
@@ -152,6 +153,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         {
             LogError("Error while preloading: " + exception.Message);
         }
+
     }
 
     /// <summary>
@@ -232,6 +234,14 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         SettingManager.Instance.DisableYellowMushroom = globalSaveData.DisableNausea;
         SettingManager.Instance.BombQuickCast = globalSaveData.BombQuickCast;
         RandomizerManager.LoadSettings(globalSaveData);
+        if (globalSaveData.MenuPowerTags == null)
+        {
+            PowerManager.GlobalPowerStates = new();
+            foreach (Power power in PowerManager.GetAllPowers())
+                PowerManager.GlobalPowerStates.Add(power.PowerName, power.Tag);
+        }
+        else
+            PowerManager.GlobalPowerStates = globalSaveData.MenuPowerTags;
     }
 
     /// <summary>
@@ -244,7 +254,8 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
             EnableCustomText = LoreManager.Instance.UseCustomText,
             DisableNausea = SettingManager.Instance.DisableYellowMushroom,
             BombQuickCast = SettingManager.Instance.BombQuickCast,
-            RandoSettings = RandomizerManager.Settings
+            RandoSettings = RandomizerManager.Settings,
+            MenuPowerTags = PowerManager.GlobalPowerStates
         };
 
     /// <summary>

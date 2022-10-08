@@ -2,6 +2,8 @@ namespace LoreMaster.ItemChangerData.Other;
 
 public static class ItemList
 {
+    #region Vanilla
+
     public const string City_Ticket = "City_Ticket";
 
     public const string Temple_Ticket = "Temple_Ticket";
@@ -44,7 +46,9 @@ public static class ItemList
 
     public const string Cleansing_Scroll = "Cleansing_Scroll";
 
-    public const string Cleansing_Scroll_Double = "Cleansing_Scroll_Double";
+    public const string Cleansing_Scroll_Double = "Cleansing_Scroll_Double"; 
+
+    #endregion
 
     #region Rando Items
 
@@ -90,7 +94,7 @@ public static class ItemList
 
     #endregion
 
-    #region Dream warrior
+    #region Dream Warrior
 
     public const string Inspect_Elder_Hu = "Inspect-Elder_Hu";
 

@@ -11,7 +11,33 @@ public static class LocationList
 
     public const string Iselda_Treasure = "Iselda_Treasure";
 
-    public const string Treasure_Prefix = "Treasure_";
+    public const string Treasure_Howling_Cliffs = "Treasure-Howling_Cliffs";
+
+    public const string Treasure_Crossroads = "Treasure-Crossroads";
+
+    public const string Treasure_Greenpath = "Treasure-Greenpath";
+
+    public const string Treasure_Fungal_Wastes = "Treasure-Fungal_Wastes";
+
+    public const string Treasure_Fog_Canyon = "Treasure-Fog_Canyon";
+
+    public const string Treasure_Crystal_Peaks = "Treasure-Crystal_Peaks";
+
+    public const string Treasure_Resting_Grounds = "Treasure-Resting_Grounds";
+
+    public const string Treasure_City_Of_Tears = "Treasure-City_Of_Tears";
+
+    public const string Treasure_Waterways = "Treasure-Waterways";
+
+    public const string Treasure_Ancient_Basin = "Treasure-Ancient_Basin";
+
+    public const string Treasure_Deepnest = "Treasure-Deepnest";
+
+    public const string Treasure_Kingdoms_Edge = "Treasure-Kingdoms_Edge";
+
+    public const string Treasure_Queens_Garden = "Treasure-Queens_Garden";
+
+    public const string Treasure_White_Palace = "Treasure-White_Palace";
 
     public const string Stag_Nest = "Stag_Nest";
 
@@ -20,11 +46,11 @@ public static class LocationList
     public const string Lore_Tablet_Record_Bela = "Lore_Tablet-Record_Bela";
 
     public const string Elderbug_Reward_Prefix = "Elderbug_Reward_";
-    // 42
+    
     #region Rando locations
 
     #region NPC
-    // 19
+    
     public const string Bretta_Diary = "Bretta_Diary";
 
     public const string Bardoon = "Bardoon";
@@ -58,8 +84,6 @@ public static class LocationList
     public const string Grasshopper = "Grasshopper";
 
     public const string Dung_Defender = "Dung_Defender";
-
-    public const string Godseeker = "Godseeker";
 
     public const string Menderbug_Diary = "Menderbug_Diary";
 
@@ -171,7 +195,7 @@ public static class LocationList
 
     public const string Cloth_Garden = "Cloth_Garden";
 
-    public const string Cloth_Dirtmouth = "Cloth_Dirtmouth";
+    public const string Cloth_End = "Cloth_End";
 
     public const string Cloth_Ghost = "Cloth_Ghost";
 

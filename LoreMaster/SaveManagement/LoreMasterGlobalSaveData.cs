@@ -1,4 +1,6 @@
-using LoreMaster.Randomizer;
+using LoreMaster.Enums;
+using LoreMaster.Settings;
+using System.Collections.Generic;
 
 namespace LoreMaster.SaveManagement;
 
@@ -28,4 +30,6 @@ public class LoreMasterGlobalSaveData
     /// Gets or sets the setting for rando.
     /// </summary>
     public RandomizerSettings RandoSettings { get; set; }
+
+    public Dictionary<string, PowerTag> MenuPowerTags { get; set; }
 }

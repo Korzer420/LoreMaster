@@ -41,9 +41,24 @@ internal class TreasureHunterPower : Power
 
     private readonly int[] _treasureBonus = new int[] { 100, 225, 400, 600 };
 
-    // Key scenes: Ruins1_31, Ruins2_11b, Crossroads_46
-    //Lemm: Ruins1_05b
-    // Simple Key: Town (PlayerDataIntAdd), Ruins1_05b (Int Operation + SetPlayerDataInt), Ruins2_04, GG_Waterways
+    private static string[] _locationNames = new string[]
+    {
+        LocationList.Treasure_Howling_Cliffs,
+        LocationList.Treasure_Crossroads,
+        LocationList.Treasure_Greenpath,
+        LocationList.Treasure_Fog_Canyon,
+        LocationList.Treasure_Fungal_Wastes,
+        LocationList.Treasure_City_Of_Tears,
+        LocationList.Treasure_Waterways,
+        LocationList.Treasure_Deepnest,
+        LocationList.Treasure_Ancient_Basin,
+        LocationList.Treasure_Kingdoms_Edge,
+        LocationList.Treasure_Crystal_Peaks,
+        LocationList.Treasure_Resting_Grounds,
+        LocationList.Treasure_Queens_Garden,
+        LocationList.Treasure_White_Palace,
+    };
+
     #endregion
 
     #region Constructors
@@ -509,7 +524,7 @@ internal class TreasureHunterPower : Power
                             descriptionObject.SetActive(false);
                             chartImage.SetActive(true);
                             image.sprite = HasCharts[indexVariable.Value] ? _chartImages[indexVariable.Value] : null;
-                            image.color = Finder.GetLocation("Treasure_"+(indexVariable.Value + 1)).Placement.Items.All(x => x.IsObtained()) ? Color.grey : Color.white;
+                            image.color = Finder.GetLocation(_locationNames[indexVariable.Value]).Placement.Items.All(x => x.IsObtained()) ? Color.grey : Color.white;
                         }
                         else
                         {
@@ -529,7 +544,18 @@ internal class TreasureHunterPower : Power
         AddInventoryMovement(inventoryFsm, indexVariable);
         _chartSprite = SpriteHelper.CreateSprite("Treasure_Chart");
         treasureChartPage.SetActive(false);
+        //if (ModHooks.GetMod("More Doors") is Mod mod)
+        //    On.HutongGames.PlayMaker.Actions.BoolTest.OnEnter += BoolTest_OnEnter;
     }
+
+    //private static void BoolTest_OnEnter(On.HutongGames.PlayMaker.Actions.BoolTest.orig_OnEnter orig, BoolTest self)
+    //{
+    //    orig(self);
+    //    if (self.IsCorrectContext("npc_control", null, "Can Talk Bool?") && self.Fsm.FsmComponent.gameObject.GetComponent<DoorNameMarker>() is DoorNameMarker door)
+    //    {
+
+    //    }
+    //}
 
     public static void UpdateTreasurePage()
     {
@@ -545,7 +571,7 @@ internal class TreasureHunterPower : Power
                 else
                 {
                     _inventoryItems[i].GetComponent<SpriteRenderer>().sprite = _chartSprite;
-                    if (ItemManager.GetPlacementByName<MutablePlacement>($"{LocationList.Treasure_Prefix}{i + 1}").Items.Any(x => !x.IsObtained()))
+                    if (ItemManager.GetPlacementByName<MutablePlacement>(_locationNames[i]).Items.Any(x => !x.IsObtained()))
                         _inventoryItems[i].GetComponent<SpriteRenderer>().color = new(0.2f, 0.2f, 0.2f);
                     else
                         _inventoryItems[i].GetComponent<SpriteRenderer>().color = Color.white;

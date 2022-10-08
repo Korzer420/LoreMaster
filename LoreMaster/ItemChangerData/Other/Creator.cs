@@ -1,4 +1,5 @@
 using ItemChanger;
+using ItemChanger.Tags;
 using ItemChanger.UIDefs;
 using LoreMaster.Enums;
 using LoreMaster.ItemChangerData.Items;
@@ -144,7 +145,10 @@ internal static class Creator
             name = locationName,
             sceneName = scene,
             ObjectName = objectName,
-            FsmName = fsmName
+            FsmName = fsmName,
+            tags = new()
+            {
+            }
         };
 
     #endregion

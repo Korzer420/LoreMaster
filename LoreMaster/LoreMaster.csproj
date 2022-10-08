@@ -35,10 +35,7 @@
 	<_TabletItems Include="Resources\Base\Tablets\*.*" />
 	<_RandoItems Include="Resources\Randomizer\*.*" />
 	<_SoundItems Include="Resources\Sounds\*.*" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <_RandoItems Remove="Resources\Randomizer\Tiso.png" />
+	<_LogicItems Include="Resources\Randomizer\Logic\*.*" />
   </ItemGroup>
   
   <ItemGroup>
@@ -80,6 +77,9 @@
     </Reference>
     <Reference Include="QoL">
       <HintPath>..\..\..\..\..\Program Files\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\Mods\QoL\QoL.dll</HintPath>
+    </Reference>
+    <Reference Include="RandoMapMod">
+      <HintPath>..\..\..\..\Lore\Map\RandoMapMod.dll</HintPath>
     </Reference>
     <Reference Include="RandomizerCore">
       <HintPath>..\..\..\Mod Dll\RandomizerCore.dll</HintPath>
@@ -225,6 +225,7 @@
 	<Copy SourceFiles="@(_RandoItems)" DestinationFolder="$(HollowKnightRefs)\Mods\$(TargetName)\Resources\Randomizer" SkipUnchangedFiles="true" />
 	<Copy SourceFiles="@(_SoundItems)" DestinationFolder="$(HollowKnightRefs)\Mods\$(TargetName)\Resources\Sounds" SkipUnchangedFiles="true" />
 	<Copy SourceFiles="@(_TabletItems)" DestinationFolder="$(HollowKnightRefs)\Mods\$(TargetName)\Resources\Base\Tablets" SkipUnchangedFiles="true" />
+	<Copy SourceFiles="@(_LogicItems)" DestinationFolder="$(HollowKnightRefs)\Mods\$(TargetName)\Resources\Randomizer\Logic" SkipUnchangedFiles="true" />
   </Target>
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">

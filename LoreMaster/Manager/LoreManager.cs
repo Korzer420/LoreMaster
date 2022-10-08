@@ -145,7 +145,7 @@ internal class LoreManager
                 if (RandomizerManager.PlayingRandomizer)
                     text += "<page>" + Properties.ElderbugDialog.ResourceManager.GetString("Elderbug_Randomizer");
 
-                if (SettingManager.Instance.GameMode != GameMode.Normal || (RandomizerManager.PlayingRandomizer && RandomizerManager.Settings.RandomizeNpc))
+                if (SettingManager.Instance.GameMode != GameMode.Normal || (RandomizerManager.PlayingRandomizer && RandomizerManager.Settings.RandomizeElderbugRewards))
                 {
                     SettingManager.Instance.ElderbugState++;
                     text += "<page>" + Properties.ElderbugDialog.ResourceManager.GetString("Elderbug_Extra_Intro") + "<page>" + Properties.ElderbugDialog.ResourceManager.GetString("Elderbug_Task_1");

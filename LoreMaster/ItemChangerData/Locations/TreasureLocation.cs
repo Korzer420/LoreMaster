@@ -6,6 +6,7 @@ using ItemChanger.Locations;
 using ItemChanger.Util;
 using LoreMaster.ItemChangerData.Other;
 using LoreMaster.LorePowers.CityOfTears;
+using LoreMaster.Randomizer;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -96,7 +97,7 @@ namespace LoreMaster.ItemChangerData.Locations
             int treasureIndex = _coordinates.Select(x => x.Item1.ToLower()).IndexOf(sceneName.ToLower());
             if (treasureIndex != _coordinates.Count)
             {
-                TreasureLocation location = Finder.GetLocation($"{LocationList.Treasure_Prefix}{treasureIndex + 1}") as TreasureLocation;
+                TreasureLocation location = Finder.GetLocation($"{RandomizerRequestModifier.TreasureLocation[treasureIndex]}") as TreasureLocation;
                 if (location == null)
                     LoreMaster.Instance.LogError("Couldn't found location Treasure_" + (treasureIndex + 1));
                 return location;
@@ -110,7 +111,7 @@ namespace LoreMaster.ItemChangerData.Locations
             flingType = FlingType.StraightUp,
             sceneName = _coordinates[index].Item1,
             TreasureIndex = index,
-            name = LocationList.Treasure_Prefix + (index + 1)
+            name = RandomizerRequestModifier.TreasureLocation[index]
         };
     }
 }

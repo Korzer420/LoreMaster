@@ -16,12 +16,23 @@ public enum LoreSetOption
     AllGlobalPowers,
 
     /// <summary>
+    /// Only recommended powers are active.
+    /// <para/> Recommended powers are: Tourist, Requiem, Treasure Hunter, Stag adoption and Grass Bombardement.
+    /// </summary>
+    OnlyRecommended,
+
+    /// <summary>
     /// None power is active besides the tracker.
     /// </summary>
-    RemoveAllPowersExceptTracker,
+    OnlyTracker,
 
     /// <summary>
     /// None power is active.
     /// </summary>
-    RemoveAllPowers
+    RemoveAllPowers,
+
+    /// <summary>
+    /// The player can decide how powers should behave.
+    /// </summary>
+    Custom
 }
