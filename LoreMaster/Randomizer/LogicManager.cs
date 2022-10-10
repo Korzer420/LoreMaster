@@ -120,6 +120,12 @@ public class LogicManager
             using Stream stream = typeof(LogicManager).Assembly.GetManifestResourceStream("LoreMaster.Resources.Randomizer.Logic.PointOfInterestLogic.json");
             builder.DeserializeJson(LogicManagerBuilder.JsonType.Locations, stream);
 
+            if (RandomizerManager.Settings.CursedReading)
+            {
+                builder.DoLogicEdit(new(LocationList.Dreamer_Tablet, "(ORIG) + READ"));
+                builder.DoLogicEdit(new(LocationList.City_Fountain, "(ORIG) + READ"));
+            }
+
             // Let point of interest count towards lore conditions.
             if (loreTerm != null)
                 foreach (string item in RandomizerRequestModifier.PointOfInterestItems)

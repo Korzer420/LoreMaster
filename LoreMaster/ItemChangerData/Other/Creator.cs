@@ -42,12 +42,12 @@ internal static class Creator
                 name = new BoxedString(traveller.ToString()),
                 sprite = new CustomSprite(traveller.ToString()),
                 shopDesc = new BoxedString(Properties.ShopDescriptions.ResourceManager.GetString(traveller.ToString())),
-                lore = new BoxedString(Language.Language.Get(key, traveller switch
+                lore = new LanguageString(traveller switch
                 {
                     Traveller.Cloth => "Minor NPC",
                     Traveller.Tiso => "Minor NPC",
                     _ => traveller.ToString()
-                })),
+                }, key),
                 textType = TextType.Lore
             },
             tags = tagList
@@ -82,7 +82,7 @@ internal static class Creator
                 shopDesc = new BoxedString(Properties.ShopDescriptions.ResourceManager.GetString(npcName)),
                 sprite = new CustomSprite(npcName.EndsWith("_Diary") ? npcName.Substring(0,npcName.Length - 6) : npcName),
                 textType = TextType.LeftLore,
-                lore = new BoxedString("You shouldn't see this")
+                lore = new LanguageString(sheet,key)
             },
             tags = tagList
         };

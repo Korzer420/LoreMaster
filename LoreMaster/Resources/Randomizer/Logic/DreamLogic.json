@@ -69,7 +69,7 @@
 	},
 	{
 		"name": "Kings_Mould_Machine_Dream",
-		"logic": "White_Palace_08[right1] | White_Palace_08[left1] + (LEFTCLAW | RIGHTCLAW) + WINGS + DREAMNAIL"
+		"logic": "(White_Palace_08[right1] | White_Palace_08[left1] + (LEFTCLAW | RIGHTCLAW) + WINGS) + DREAMNAIL"
 	},
 	{
 		"name": "Dream_Shield_Statue_Dream",

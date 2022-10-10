@@ -189,7 +189,7 @@ internal class PureSpiritPower : Power
         foreach (Transform child in _orbContainer.transform)
             child.transform.localPosition = CalculatePosition(child.transform.GetSiblingIndex());
 
-        GameObject hitbox = GameObject.Instantiate(_hitbox, orb.transform);
+        GameObject hitbox = GameObject.Instantiate(Hitbox, orb.transform);
         Component.Destroy(hitbox.GetComponent<PolygonCollider2D>());
         hitbox.AddComponent<CircleCollider2D>().isTrigger = true;
         hitbox.name = "Orb Hitbox";

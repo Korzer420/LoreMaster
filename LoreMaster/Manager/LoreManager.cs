@@ -1,3 +1,4 @@
+using ItemChanger;
 using LoreMaster.Enums;
 using LoreMaster.ItemChangerData.Other;
 using LoreMaster.LorePowers;
@@ -169,6 +170,13 @@ internal class LoreManager
                 text = Properties.ElderbugDialog.ResourceManager.GetString(key);
 
         }
+        else if (key.Length > 2 && RandomizerRequestModifier.TreasureLocation.Contains(key.Substring(key.Length - 2)))
+        {
+            if (ItemChanger.Internal.Ref.Settings.Placements.ContainsKey(key) && ItemChanger.Internal.Ref.Settings.Placements[key].Items.Any())
+                text = "Hidden Treasure: " + ItemChanger.Internal.Ref.Settings.Placements[key].Items[0]?.name;
+            else
+                text = "The compass can't determine the hidden treasure.";
+        }
         else if (!ModifyText(key, ref text) && PowerManager.HasObtainedPower("QUEEN", false))
         {
             if (key.Equals("CHARM_NAME_12"))
@@ -202,7 +210,7 @@ internal class LoreManager
             {
                 if (power.Tag != PowerTag.Remove)
                 {
-                    if (LoreManager.Instance.UseCustomText && !string.IsNullOrEmpty(power.CustomText))
+                    if (UseCustomText && !string.IsNullOrEmpty(power.CustomText))
                         displayText = power.CustomText;
                     if (power.StayTwisted)
                     {

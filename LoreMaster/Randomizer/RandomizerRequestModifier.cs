@@ -292,130 +292,81 @@ internal static class RandomizerRequestModifier
         {
             for (int i = 0; i < NpcItems.Length; i++)
             {
-                // We can't use the index in the item request, which is why we have to temp save the name.
-                string itemName = NpcItems[i];
-                requestBuilder.AddItemByName(itemName);
-                requestBuilder.EditItemRequest(itemName, info =>
-                {
-                    info.getItemDef = () =>
-                    {
-                        return new()
-                        {
-                            MajorItem = false,
-                            Name = itemName,
-                            Pool = "Lore",
-                            PriceCap = 1
-                        };
-                    };
-                });
-
-                string locationName = NpcLocations[i];
-                requestBuilder.AddLocationByName(locationName);
+                requestBuilder.AddItemByName(NpcItems[i]);
+                requestBuilder.AddLocationByName(NpcLocations[i]);
             }
+            EditRequests(NpcItems, NpcLocations, requestBuilder);
         }
         else if (RandomizerManager.Settings.DefineRefs)
+        {
             for (int i = 0; i < NpcLocations.Length; i++)
                 requestBuilder.AddToVanilla(NpcItems[i], NpcLocations[i]);
+            EditRequests(NpcItems, NpcLocations, requestBuilder);
+        }
 
         if (RandomizerManager.Settings.RandomizeDreamWarriorStatues)
         {
             for (int i = 0; i < DreamWarriorLocations.Length; i++)
             {
-                string itemName = DreamWarriorItems[i];
                 requestBuilder.AddItemByName(DreamWarriorItems[i]);
                 requestBuilder.AddLocationByName(DreamWarriorLocations[i]);
-                requestBuilder.EditItemRequest(itemName, info =>
-                {
-                    info.getItemDef = () =>
-                    {
-                        return new()
-                        {
-                            MajorItem = false,
-                            Name = itemName,
-                            Pool = "Lore",
-                            PriceCap = 1
-                        };
-                    };
-                });
             }
+            EditRequests(DreamWarriorItems, DreamWarriorLocations, requestBuilder);
         }
         else if (RandomizerManager.Settings.DefineRefs)
+        {
             for (int i = 0; i < DreamWarriorLocations.Length; i++)
                 requestBuilder.AddToVanilla(DreamWarriorItems[i], DreamWarriorLocations[i]);
+            EditRequests(DreamWarriorItems, DreamWarriorLocations, requestBuilder);
+        }
 
         if (RandomizerManager.Settings.RandomizeDreamDialogue)
+        {
             for (int i = 0; i < DreamLocations.Length; i++)
             {
-                string itemName = DreamItems[i];
                 requestBuilder.AddItemByName(DreamItems[i]);
                 requestBuilder.AddLocationByName(DreamLocations[i]);
-                requestBuilder.EditItemRequest(itemName, info =>
-                {
-                    info.getItemDef = () =>
-                    {
-                        return new()
-                        {
-                            MajorItem = false,
-                            Name = itemName,
-                            Pool = "Lore",
-                            PriceCap = 1
-                        };
-                    };
-                });
             }
+            EditRequests(DreamItems, DreamLocations, requestBuilder);
+        }
         else if (RandomizerManager.Settings.DefineRefs)
+        {
             for (int i = 0; i < DreamLocations.Length; i++)
                 requestBuilder.AddToVanilla(DreamItems[i], DreamLocations[i]);
+            EditRequests(DreamItems, DreamLocations, requestBuilder);
+        }
 
         if (RandomizerManager.Settings.RandomizePointsOfInterest)
+        {
             for (int i = 0; i < PointOfInterestLocations.Length; i++)
             {
-                string itemName = PointOfInterestItems[i];
                 requestBuilder.AddItemByName(PointOfInterestItems[i]);
                 requestBuilder.AddLocationByName(PointOfInterestLocations[i]);
-                requestBuilder.EditItemRequest(itemName, info =>
-                {
-                    info.getItemDef = () =>
-                    {
-                        return new()
-                        {
-                            MajorItem = false,
-                            Name = itemName,
-                            Pool = "Lore",
-                            PriceCap = 1
-                        };
-                    };
-                });
             }
+            EditRequests(PointOfInterestItems, PointOfInterestLocations, requestBuilder);
+        }
         else if (RandomizerManager.Settings.DefineRefs)
+        {
             for (int i = 0; i < PointOfInterestLocations.Length; i++)
                 requestBuilder.AddToVanilla(PointOfInterestItems[i], PointOfInterestLocations[i]);
-        requestBuilder.AddToVanilla(Stag_Egg, Stag_Nest);
+            EditRequests(PointOfInterestItems, PointOfInterestLocations, requestBuilder);
+        }
 
         if (RandomizerManager.Settings.RandomizeTravellers)
+        {
             for (int i = 0; i < TravellerLocations.Length; i++)
             {
-                string itemName = TravellerItems[i];
                 requestBuilder.AddItemByName(TravellerItems[i]);
                 requestBuilder.AddLocationByName(TravellerLocations[i]);
-                requestBuilder.EditItemRequest(itemName, info =>
-                {
-                    info.getItemDef = () =>
-                    {
-                        return new()
-                        {
-                            MajorItem = false,
-                            Name = itemName,
-                            Pool = "Lore",
-                            PriceCap = 1
-                        };
-                    };
-                });
             }
+            EditRequests(TravellerItems, TravellerLocations, requestBuilder);
+        }
         else if (RandomizerManager.Settings.DefineRefs)
+        {
             for (int i = 0; i < TravellerLocations.Length; i++)
                 requestBuilder.AddToVanilla(TravellerItems[i], TravellerLocations[i]);
-
+            EditRequests(TravellerItems, TravellerLocations, requestBuilder);
+        }
 
         if (RandomizerManager.Settings.RandomizeElderbugRewards)
         {
@@ -493,6 +444,18 @@ internal static class RandomizerRequestModifier
                 };
             });
         }
+        else if (RandomizerManager.Settings.DefineRefs)
+        {
+            requestBuilder.AddToVanilla(new(Wanderers_Journal, $"{Elderbug_Reward_Prefix}{1}"));
+            requestBuilder.AddToVanilla(new(Hallownest_Seal, $"{Elderbug_Reward_Prefix}{2}"));
+            requestBuilder.AddToVanilla(new(Lore_Page, $"{Elderbug_Reward_Prefix}{3}"));
+            requestBuilder.AddToVanilla(new(Joker_Scroll, $"{Elderbug_Reward_Prefix}{4}"));
+            requestBuilder.AddToVanilla(new(Lore_Page_Control, $"{Elderbug_Reward_Prefix}{5}"));
+            requestBuilder.AddToVanilla(new(Joker_Scroll, $"{Elderbug_Reward_Prefix}{6}"));
+            requestBuilder.AddToVanilla(new(Cleansing_Scroll, $"{Elderbug_Reward_Prefix}{7}"));
+            requestBuilder.AddToVanilla(new(Joker_Scroll, $"{Elderbug_Reward_Prefix}{8}"));
+            requestBuilder.AddToVanilla(new(Cleansing_Scroll_Double, $"{Elderbug_Reward_Prefix}{9}"));
+        }
 
         if (RandomizerManager.Settings.RandomizeTreasureCharts)
         {
@@ -516,7 +479,7 @@ internal static class RandomizerRequestModifier
                 };
             });
         }
-        else
+        else if (RandomizerManager.Settings.DefineRefs || RandomizerManager.Settings.RandomizeTreasures)
         {
             for (int i = 1; i < 15; i++)
                 requestBuilder.AddToVanilla($"{Treasure_Chart_Prefix}{i}", Iselda_Treasure);
@@ -530,8 +493,9 @@ internal static class RandomizerRequestModifier
                 requestBuilder.AddLocationByName(location);
             foreach (string item in TreasureItems)
                 requestBuilder.AddItemByName(item);
+            EditRequests(TreasureItems, TreasureLocation, requestBuilder, true);
         }
-        else
+        else if (RandomizerManager.Settings.DefineRefs)
         {
             List<AbstractItem> treasureItems = new()
             {
@@ -590,6 +554,43 @@ internal static class RandomizerRequestModifier
                         Name = Listen_Ability,
                         Pool = "Skill",
                         PriceCap = 1250
+                    };
+                };
+            });
+        }
+    }
+
+    private static void EditRequests(string[] items, string[] locations, RequestBuilder builder, bool treasure = false)
+    {
+        foreach (string item in items)
+        {
+            builder.EditItemRequest(item, info => 
+            {
+                info.getItemDef = () =>
+                {
+                    return new()
+                    {
+                        Name = item,
+                        MajorItem = false,
+                        Pool = treasure ? "Relics" : "Lore",
+                        PriceCap = treasure ? 1000 : 1
+                    };
+                };
+            });
+        }
+
+        foreach (string location in locations)
+        {
+            builder.EditLocationRequest(location, info =>
+            {
+                info.getLocationDef = () =>
+                {
+                    return new()
+                    {
+                        Name = location,
+                        AdditionalProgressionPenalty = false,
+                        FlexibleCount = false,
+                        SceneName = treasure ? null : Finder.GetLocation(location).sceneName
                     };
                 };
             });

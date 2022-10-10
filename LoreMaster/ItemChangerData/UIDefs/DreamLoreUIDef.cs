@@ -49,7 +49,6 @@ internal class DreamLoreUIDef : MsgUIDef
 
     public override void SendMessage(MessageType type, Action callback)
     {
-        LoreMaster.Instance.Log("Message type is: " + type);
         if ((type & MessageType.Lore) == MessageType.Lore)
             LoreMaster.Instance.Handler.StartCoroutine(DisplayDreamText(callback));
         else

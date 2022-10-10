@@ -26,11 +26,15 @@ internal class DialogueLocation : AutoLocation
     protected override void OnLoad()
     {
         Events.AddFsmEdit(sceneName, new(ObjectName, FsmName), SkipDialog);
+        if (name == LocationList.Dung_Defender)
+            Events.AddFsmEdit(sceneName, new(ObjectName, "FSM"), x => x.GetState("Check").ClearTransitions());
     }
 
     protected override void OnUnload()
     {
         Events.RemoveFsmEdit(sceneName, new(ObjectName, FsmName), SkipDialog);
+        if (name == LocationList.Dung_Defender)
+            Events.RemoveFsmEdit(sceneName, new(ObjectName, "FSM"), x => x.GetState("Check").ClearTransitions());
     }
 
     private void SkipDialog(PlayMakerFSM fsm)

@@ -6,7 +6,6 @@ using ItemChanger.Tags;
 using ItemChanger.UIDefs;
 using LoreMaster.Enums;
 using LoreMaster.ItemChangerData;
-using LoreMaster.ItemChangerData.Items;
 using LoreMaster.ItemChangerData.Locations;
 using LoreMaster.ItemChangerData.Locations.SpecialLocations;
 using LoreMaster.ItemChangerData.Other;
@@ -67,11 +66,10 @@ public static class ItemManager
         {
             placements.AddRange(CreateTeleporter());
             placements.AddRange(CreateExtraLore());
-            if (!RandomizerManager.PlayingRandomizer)
-            {
-                placements.AddRange(CreateElderbugRewards());
+            placements.AddRange(CreateElderbugRewards());
+            if ((RandomizerManager.PlayingRandomizer && !RandomizerManager.Settings.DefineRefs
+                && !RandomizerManager.Settings.RandomizeTreasures) || !RandomizerManager.PlayingRandomizer)
                 placements.AddRange(CreateTreasure());
-            }
         }
         catch (Exception exception)
         {
@@ -154,9 +152,9 @@ public static class ItemManager
         Finder.DefineCustomLocation(new ShopLocation()
         {
             name = Iselda_Treasure,
-            defaultShopItems = DefaultShopItems.IseldaCharms | DefaultShopItems.IseldaMaps 
+            defaultShopItems = DefaultShopItems.IseldaCharms | DefaultShopItems.IseldaMaps
             | DefaultShopItems.IseldaMapPins | DefaultShopItems.IseldaMapMarkers | DefaultShopItems.IseldaQuill,
-            requiredPlayerDataBool = "lemm_allow",
+            requiredPlayerDataBool = "lemm_Allow",
             sceneName = "Room_mapper",
             flingType = FlingType.DirectDeposit,
             objectName = "Iselda",
@@ -301,7 +299,7 @@ public static class ItemManager
                 shopDesc = new BoxedString("A special lore tablet, which was hidden deep in Soul Sanctum."),
                 textType = TextType.Lore,
                 sprite = new CustomSprite("Tablets/CityOfTears", false),
-                lore = new LanguageString("Lore Tablets","MAGE_COMP_02")
+                lore = new LanguageString("Lore Tablets", "MAGE_COMP_02")
             }));
 
         // Stag egg
@@ -317,7 +315,7 @@ public static class ItemManager
             shopDesc = new BoxedString("My thought on a stag egg I found."),
             textType = TextType.Lore,
             sprite = new CustomSprite("Tablets/Cliffs", false),
-            lore = new LanguageString("Stag","STAG_EGG_INSPECT")
+            lore = new LanguageString("Stag", "STAG_EGG_INSPECT")
         }));
         Finder.DefineCustomItem(new BoolItem()
         {
@@ -864,18 +862,21 @@ public static class ItemManager
     private static List<AbstractPlacement> CreateTreasure()
     {
         List<AbstractPlacement> result = new();
-
+        AbstractPlacement currentPlacement;
         // Lemms door
-        AbstractPlacement currentPlacement = Finder.GetLocation(Lemm_Door).Wrap();
-        currentPlacement.Add(Finder.GetItem(Lemm_Sign));
-        currentPlacement.Add(Finder.GetItem(Lemm_Order));
-        result.Add(currentPlacement);
+        if (!RandomizerManager.PlayingRandomizer || (!RandomizerManager.Settings.RandomizeTreasureCharts && !RandomizerManager.Settings.RandomizeTreasures && !RandomizerManager.Settings.DefineRefs))
+        {
+            currentPlacement = Finder.GetLocation(Lemm_Door).Wrap();
+            currentPlacement.Add(Finder.GetItem(Lemm_Sign));
+            currentPlacement.Add(Finder.GetItem(Lemm_Order));
+            result.Add(currentPlacement);
 
-        // Iseldas charts
-        currentPlacement = Finder.GetLocation(Iselda_Treasure).Wrap();
-        for (int i = 1; i < 15; i++)
-            currentPlacement.Add(Finder.GetItem($"{Treasure_Chart_Prefix}{i}"));
-        result.Add(currentPlacement);
+            // Iseldas charts
+            currentPlacement = Finder.GetLocation(Iselda_Treasure).Wrap();
+            for (int i = 1; i < 15; i++)
+                currentPlacement.Add(Finder.GetItem($"{Treasure_Chart_Prefix}{i}"));
+            result.Add(currentPlacement);
+        }
 
         // Place treasures.
         List<AbstractItem> treasureItems = new()
@@ -915,7 +916,7 @@ public static class ItemManager
             Treasure_White_Palace
         };
 
-        for (int i = 1; i < 15; i++)
+        for (int i = 0; i < 14; i++)
         {
             currentPlacement = Finder.GetLocation($"{treasureLocation[i]}").Wrap();
             int rolledIndex = LoreMaster.Instance.Generator.Next(0, treasureItems.Count);
@@ -933,7 +934,7 @@ public static class ItemManager
         currentPlacement.Add(Finder.GetItem(Path_of_Pain_Reward));
         extraLore.Add(currentPlacement);
 
-        if (RandomizerManager.PlayingRandomizer && RandomizerManager.Settings.RandomizePointsOfInterest)
+        if (RandomizerManager.PlayingRandomizer && (RandomizerManager.Settings.RandomizePointsOfInterest || RandomizerManager.Settings.DefineRefs))
         {
             AbstractPlacement placement = ItemChanger.Internal.Ref.Settings.Placements[Stag_Nest];
             placement.Items.Add(Finder.GetItem(Stag_Egg));

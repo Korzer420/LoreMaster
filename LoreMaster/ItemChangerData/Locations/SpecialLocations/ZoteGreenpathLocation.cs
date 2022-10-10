@@ -60,15 +60,11 @@ internal class ZoteGreenpathLocation : DialogueLocation
                     if (LoreManager.Instance.Traveller[Enums.Traveller.Zote].CurrentStage >= LoreManager.Instance.Traveller[Enums.Traveller.Zote].Locations.IndexOf("Zote Buzzer Convo")
                     && !Placement.Items.All(x => x.IsObtained()))
                     {
-                        LoreMaster.Instance.Log("Spawn Zote");
                         GameObject zote = GameObject.Instantiate(fsm.gameObject.LocateMyFSM("Big Buzzer").GetState("Unfurl").GetFirstActionOfType<CreateObject>().gameObject.Value);
                         zote.SetActive(true);
                         zote.transform.position = new Vector3(47.5214f, 13.4081f, 0.004f);
                         zote.LocateMyFSM("Zote Buzzer Control").GetState("Land").AddLastAction(new Lambda(() => PlayMakerFSM.BroadcastEvent("SAVE ZOTE")));
                     }
-                    else
-                        LoreMaster.Instance.Log("Couldn't spawn zote");
-                    LoreMaster.Instance.Log("Action end.");
                 })
             }
         });

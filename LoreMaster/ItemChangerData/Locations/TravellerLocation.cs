@@ -165,8 +165,6 @@ internal class TravellerLocation : DialogueLocation
             while (order.Count > 1);
             // The last location stays always the last, even if randomized.
             result.Add(order[0]);
-            foreach (string item in result)
-                LoreMaster.Instance.Log("Location: " + item);
         }
         return result;
     }

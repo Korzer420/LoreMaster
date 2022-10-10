@@ -3,12 +3,10 @@ using HutongGames.PlayMaker.Actions;
 using ItemChanger;
 using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
-using ItemChanger.Items;
-using ItemChanger.UIDefs;
-using LoreMaster.ItemChangerData;
-using LoreMaster.ItemChangerData.Locations;
+using ItemChanger.Placements;
 using LoreMaster.Enums;
 using LoreMaster.Helper;
+using LoreMaster.ItemChangerData.Other;
 using LoreMaster.Manager;
 using Modding;
 using MonoMod.Cil;
@@ -18,11 +16,16 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
-using LoreMaster.ItemChangerData.Other;
-using ItemChanger.Placements;
 
 namespace LoreMaster.LorePowers.CityOfTears;
 
+/*
+    Crossroads_46
+    Crossroads_46b
+    Abyss_03
+    Abyss_03c
+    Abyss_03b
+ */
 internal class TreasureHunterPower : Power
 {
     #region Members
@@ -104,19 +107,6 @@ internal class TreasureHunterPower : Power
         {"goldenArcaneEgg", TreasureState.NotObtained},
         {"magicKey", TreasureState.NotObtained },
         {"dreamMedallion", TreasureState.NotObtained }
-    };
-
-    public override Action SceneAction => () =>
-    {
-        if (PlayerData.instance.GetBool("equippedCharm_2")
-        && TreasureLocation.GetLocation(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name) is TreasureLocation location
-        && location.Placement.Items.Any(x => !x.IsObtained()))
-        {
-            PlayMakerFSM playMakerFSM = PlayMakerFSM.FindFsmOnGameObject(FsmVariables.GlobalVariables.GetFsmGameObject("Enemy Dream Msg").Value, "Display");
-            playMakerFSM.FsmVariables.GetFsmInt("Convo Amount").Value = 1;
-            playMakerFSM.FsmVariables.GetFsmString("Convo Title").Value = location.name;
-            playMakerFSM.SendEvent("DISPLAY ENEMY DREAM");
-        }
     };
 
     #endregion
@@ -210,43 +200,62 @@ internal class TreasureHunterPower : Power
 
     private void PlayMakerFSM_OnEnable(On.PlayMakerFSM.orig_OnEnable orig, PlayMakerFSM self)
     {
-        if (string.Equals(self.FsmName, "Conversation Control") && (string.Equals(self.gameObject.name, "Love Door") || string.Equals(self.gameObject.name, "Mage Door")))
+        try
         {
-            FsmState extraState = new(self.Fsm)
+            if (string.Equals(self.FsmName, "Conversation Control") && (string.Equals(self.gameObject.name, "Love Door") || string.Equals(self.gameObject.name, "Mage Door")))
             {
-                Name = "Check Magic Key",
-                Actions = new FsmStateAction[]
+                FsmState extraState = new(self.Fsm)
                 {
+                    Name = "Check Magic Key",
+                    Actions = new FsmStateAction[]
+                    {
                     new Lambda(() => self.SendEvent(Treasures["magicKey"] != TreasureState.NotObtained ? "KEY" : "NO KEY"))
-                }
-            };
-            extraState.AddTransition("KEY", "Box Up YN");
-            extraState.AddTransition("NO KEY", "Box Up");
-            self.GetState("Check Key").RemoveTransitionsTo("Box Up");
-            self.GetState("Check Key").AddTransition("NO KEY", extraState);
-        }
-        else if (string.Equals(self.FsmName, "Control") && string.Equals(self.gameObject.name, "abyss_door"))
-            self.GetState("Check").AddLastAction(new Lambda(() =>
-            {
-                if (Treasures["magicKey"] != TreasureState.NotObtained)
-                    self.SendEvent("READY");
-            }));
-        else if ((string.Equals(self.FsmName, "Conversation Control") && string.Equals(self.gameObject.name, "Tram Call Box"))
-            || (string.Equals(self.FsmName, "Tram Door") && string.Equals(self.gameObject.name, "Door Inspect")))
-        {
-            FsmState extraState = new(self.Fsm)
-            {
-                Name = "Check Magic Key",
-                Actions = new FsmStateAction[]
+                    }
+                };
+                extraState.AddTransition("KEY", "Box Up YN");
+                extraState.AddTransition("NO KEY", "Box Up");
+                self.GetState("Check Key").RemoveTransitionsTo("Box Up");
+                self.GetState("Check Key").AddTransition("NO KEY", extraState);
+            }
+            else if (string.Equals(self.FsmName, "Control") && string.Equals(self.gameObject.name, "abyss_door"))
+                self.GetState("Check").AddLastAction(new Lambda(() =>
                 {
-                    new Lambda(() => self.SendEvent(Treasures["magicKey"] != TreasureState.NotObtained ? "YES" : "NO"))
-                }
-            };
-            extraState.AddTransition("YES", "Box Up YN");
-            extraState.AddTransition("NO", "Box Up");
-            self.GetState("Got Pass?").ClearTransitions();
-            self.GetState("Got Pass?").AddTransition("KEY", self.GetState("Box Up YN"));
-            self.GetState("Got Pass?").AddTransition("NO KEY", extraState);
+                    if (Treasures["magicKey"] != TreasureState.NotObtained)
+                        self.SendEvent("READY");
+                }));
+            else if ((string.Equals(self.FsmName, "Conversation Control") && string.Equals(self.gameObject.name, "Tram Call Box")))
+            {
+                FsmState extraState = new(self.Fsm)
+                {
+                    Name = "Check Magic Key",
+                    Actions = new FsmStateAction[]
+                    {
+                        new Lambda(() => self.SendEvent(Treasures["magicKey"] != TreasureState.NotObtained ? "YES" : "NO"))
+                    }
+                };
+                extraState.AddTransition("YES", "Box Up YN");
+                extraState.AddTransition("NO", "Box Up");
+                self.GetState("Got Pass?").AdjustTransition("NO KEY", extraState.Name);
+            }
+            else if (string.Equals(self.FsmName, "Tram Door") && string.Equals(self.gameObject.name, "Door Inspect"))
+            {
+                FsmState extraState = new(self.Fsm)
+                {
+                    Name = "Check Magic Key",
+                    Actions = new FsmStateAction[]
+                    {
+                        new Lambda(() => self.SendEvent(Treasures["magicKey"] != TreasureState.NotObtained ? "PASS" : "NO PASS"))
+                    }
+                };
+                extraState.AddTransition("PASS", "Box Up YN");
+                extraState.AddTransition("NO PASS", "Box Up");
+                self.GetState("Check Pass").AdjustTransition("NO PASS", extraState.Name);
+            }
+        }
+        catch (Exception exception)
+        {
+            LoreMaster.Instance.LogError("Error occured while modifying Master key doors: " + exception.Message);
+            LoreMaster.Instance.LogError(exception.StackTrace);
         }
         orig(self);
     }
@@ -254,7 +263,7 @@ internal class TreasureHunterPower : Power
     private void PlayerDataIntAdd_OnEnter(On.HutongGames.PlayMaker.Actions.PlayerDataIntAdd.orig_OnEnter orig, PlayerDataIntAdd self)
     {
         if (string.Equals(self.State.Name, "Activate") && string.Equals(self.Fsm.Name, "Conversation Control")
-            && string.Equals(self.intName.Value, "simpleKeys") && self.amount.Value < 0)
+            && string.Equals(self.intName?.Value, "simpleKeys") && self.amount.Value < 0)
             PlayerData.instance.IncrementInt("simpleKeys");
         orig(self);
     }
@@ -288,7 +297,7 @@ internal class TreasureHunterPower : Power
     }
 
     /// <inheritdoc/>
-    protected override void TwistEnable() 
+    protected override void TwistEnable()
     {
         On.HutongGames.PlayMaker.Actions.ActivateGameObject.OnEnter += ActivateGameObject_OnEnter;
         On.HutongGames.PlayMaker.Actions.CallMethodProper.OnEnter += CallMethodProper_OnEnter;
@@ -580,7 +589,7 @@ internal class TreasureHunterPower : Power
             _inventoryItems[14].GetComponent<SpriteRenderer>().sprite = CanPurchaseTreasureCharts ? _treasureSprites[6] : _emptySprite;
             TreasureState[] states = Treasures.Values.ToArray();
             for (int i = 15; i < 21; i++)
-                _inventoryItems[i].GetComponent<SpriteRenderer>().sprite = states[i -15] != TreasureState.NotObtained ? _treasureSprites[i - 15] : _emptySprite;
+                _inventoryItems[i].GetComponent<SpriteRenderer>().sprite = states[i - 15] != TreasureState.NotObtained ? _treasureSprites[i - 15] : _emptySprite;
         }
         catch (Exception exception)
         {
