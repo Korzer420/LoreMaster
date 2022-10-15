@@ -1,6 +1,10 @@
 # Lore Master Randomizer
 
 This mod offers a lot of settings as a connection for Randomizer 4. This file will explain everything detailed.
+In Rando, the lore page control is granted at the start.
+
+## Define Refs
+Places all not randomized items which the mod offers anyway. Doesn't affect treasures, since they are added anyway for vanilla purposes!
 
 ## Pools
 
