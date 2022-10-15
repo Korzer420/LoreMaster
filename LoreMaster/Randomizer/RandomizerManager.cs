@@ -90,8 +90,10 @@ public static class RandomizerManager
 
     private static int RandoController_OnCalculateHash(RandomizerMod.RC.RandoController controller, int original)
     {
-        //if (Settings.PowerBehaviour != LoreSetOption.Default || Settings.BlackEggTempleCondition != BlackEggTempleCondition.Dreamers)
-        //    return 72767 + PowerManager.GetAllPowers().Count() + ((int)Settings.PowerBehaviour * 120 + (int)Settings.BlackEggTempleCondition * Settings.NeededLore);
+        if (Settings.PowerBehaviour != LoreSetOption.Default || Settings.BlackEggTempleCondition != BlackEggTempleCondition.Dreamers
+            || Settings.ForceCompassForTreasure || Settings.TravellerOrder != TravelOrder.Vanilla)
+            return 72767 + PowerManager.GetAllPowers().Count() + ((int)Settings.PowerBehaviour * 120 + 
+                (int)Settings.BlackEggTempleCondition * Settings.NeededLore + (int)Settings.TravellerOrder * 520);
         return original;
     }
 

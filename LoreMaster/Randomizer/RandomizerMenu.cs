@@ -88,6 +88,8 @@ public class RandomizerMenu
         {
             _pageButton = new(previousPage, "Lore Master");
             _pageButton.AddHideAndShowEvent(previousPage, _mainPage);
+            _mainPage.BeforeGoBack += () => _pageButton.Text.color = Disabled() ? Colors.FALSE_COLOR : Colors.TRUE_COLOR;
+            _pageButton.Text.color = Disabled() ? Colors.FALSE_COLOR : Colors.TRUE_COLOR;
             button = _pageButton;
             return true;
         }
@@ -97,6 +99,17 @@ public class RandomizerMenu
         }
         button = null;
         return true;
+    }
+
+    private bool Disabled()
+    {
+        return !RandomizerManager.Settings.DefineRefs && !RandomizerManager.Settings.RandomizeDreamDialogue
+            && !RandomizerManager.Settings.RandomizeTravellers && !RandomizerManager.Settings.RandomizeDreamWarriorStatues
+            && !RandomizerManager.Settings.RandomizeElderbugRewards && !RandomizerManager.Settings.RandomizeNpc
+            && !RandomizerManager.Settings.RandomizePointsOfInterest && !RandomizerManager.Settings.RandomizeTreasures
+            && !RandomizerManager.Settings.CursedReading && !RandomizerManager.Settings.CursedListening
+            && RandomizerManager.Settings.BlackEggTempleCondition == BlackEggTempleCondition.Dreamers
+            && RandomizerManager.Settings.PowerBehaviour == LoreSetOption.RemoveAllPowers;
     }
 
     private void ConstructMenu(MenuPage previousPage)
