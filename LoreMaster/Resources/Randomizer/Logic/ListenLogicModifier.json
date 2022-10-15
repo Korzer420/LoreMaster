@@ -174,5 +174,9 @@
     {
         "Name": "Grimmkin_Flame-Brumm",
         "Logic": "(ORIG) + LISTEN"
+    },
+    {
+        "Name": "Monomon",
+        "Logic": "(ORIG) + LISTEN"
     }
 ]

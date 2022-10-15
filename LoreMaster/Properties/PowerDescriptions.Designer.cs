@@ -259,7 +259,7 @@ namespace LoreMaster.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Pressing left while casting. spawns a bomb which explodes after 3 seconds, that deals 40 damage (60 with shaman stone) and breaks damaged walls/ground. Pressing right, will consum a lifeblood mask to spawn a more powerful bomb, with a bigger radius, 50 % more damage and the ability to break ALL damaged floors/walls in the room, even heavy floors and one way walls. ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Pressing left while casting. spawns a bomb which explodes after 3 seconds, that deals 40 damage (60 with shaman stone) and breaks damaged walls/ground. Pressing right, will consume a lifeblood mask to spawn a more powerful bomb, with a bigger radius, 50 % more damage and the ability to break ALL damaged floors/walls in the room, even heavy floors and one way walls. ähnelt.
         /// </summary>
         internal static string GrassBombardement {
             get {

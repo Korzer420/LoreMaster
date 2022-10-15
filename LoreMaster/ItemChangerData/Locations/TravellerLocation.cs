@@ -186,7 +186,11 @@ internal class TravellerLocation : DialogueLocation
                 sceneName = data.Item1,
                 TravellerName = traveller,
                 FsmName = fsmName,
-                ObjectName = data.Item2
+                ObjectName = data.Item2,
+                tags = new()
+                {
+                    ItemManager.CreateInteropTag(data.Item1)
+                }
             };
         else
             return new()
@@ -195,7 +199,11 @@ internal class TravellerLocation : DialogueLocation
                 sceneName = data.Item1,
                 TravellerName = traveller,
                 FsmName = fsmName,
-                ObjectName = data.Item2
+                ObjectName = data.Item2,
+                tags = new()
+                {
+                    ItemManager.CreateInteropTag(data.Item1)
+                }
             };
     }
 }

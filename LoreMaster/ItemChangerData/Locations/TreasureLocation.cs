@@ -5,6 +5,7 @@ using ItemChanger.FsmStateActions;
 using ItemChanger.Locations;
 using ItemChanger.Util;
 using LoreMaster.LorePowers.CityOfTears;
+using LoreMaster.Manager;
 using LoreMaster.Randomizer;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,8 +20,8 @@ internal class TreasureLocation : ContainerLocation
         ("Cliffs_01", new(106.41f, 127.41f)), //127.41 -> 125.71f  1.7f
         ("Crossroads_42", new (7.052f, 13.41f)),
         ("Fungus1_Slug", new (44.78f, 14.41f)),
+        ("Fungus3_archive_02",new (96f, 92.41f)),
         ("Fungus2_10",new (5.8f, 14.41f)),
-        ("Fungus3_archive_02",new (96f, 92.41f)) ,
         ("Ruins2_05",new(27.42f,68.41f)) ,
         ("Waterways_13",new(43.625f, 47.41f)) ,
         ("Deepnest_30",new(40.1f, 138.41f)) ,
@@ -118,6 +119,10 @@ internal class TreasureLocation : ContainerLocation
         flingType = FlingType.StraightUp,
         sceneName = _coordinates[index].Item1,
         TreasureIndex = index,
-        name = RandomizerRequestModifier.TreasureLocation[index]
+        name = RandomizerRequestModifier.TreasureLocation[index],
+        tags = new()
+        {
+            ItemManager.CreateInteropTag(null)
+        }
     };
 }

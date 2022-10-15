@@ -8,10 +8,6 @@
         "logic": "(Cliffs_03[right1] | Stag_Nest_Stag | STAGS > 8) + ((LEFTCLAW | WINGS) + LEFTDASH | LEFTSUPERDASH)"
     },
     {
-        "name": "Path_Of_Pain_Seal",
-        "logic": "White_Palace_18[right1] | White_Palace_18[top1] + LEFTDASH + RIGHTDASH + LEFTCLAW + RIGHTCLAW + WINGS + LEFTSUPERDASH + RIGHTSUPERDASH"
-    },
-    {
         "name": "Grub_Seal",
         "logic": "WINGS + Defeated_Collector + (LEFTCLAW | RIGHTCLAW) + Ruins2_11[right1]"
     },

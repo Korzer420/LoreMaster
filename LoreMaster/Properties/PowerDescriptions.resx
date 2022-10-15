@@ -184,7 +184,7 @@
     <value>While running on the ground spawn a grass patch each second. Every 10th one is "pale grass" which, upon destroying, causes all other spawned grass by you to cast wraith that deal 10 damage (20 if shape of unn is equipped). Grass despawns after 10 seconds.</value>
   </data>
   <data name="GrassBombardement" xml:space="preserve">
-    <value>Pressing left while casting. spawns a bomb which explodes after 3 seconds, that deals 40 damage (60 with shaman stone) and breaks damaged walls/ground. Pressing right, will consum a lifeblood mask to spawn a more powerful bomb, with a bigger radius, 50 % more damage and the ability to break ALL damaged floors/walls in the room, even heavy floors and one way walls.</value>
+    <value>Pressing left while casting. spawns a bomb which explodes after 3 seconds, that deals 40 damage (60 with shaman stone) and breaks damaged walls/ground. Pressing right, will consume a lifeblood mask to spawn a more powerful bomb, with a bigger radius, 50 % more damage and the ability to break ALL damaged floors/walls in the room, even heavy floors and one way walls.</value>
   </data>
   <data name="GreaterMind" xml:space="preserve">
     <value>Activates the tracker, to show you how many powers you are missing. If the counter is green, you have global access to the power in the area.</value>

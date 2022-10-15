@@ -1,0 +1,79 @@
+[
+	{
+		"name": "Mine_Golem_Dream",
+		"logic": "Mines_31[left1] + (RIGHTSUPERDASH | LEFTCLAW + (RIGHTDASH | WINGS | FIREBALLSKIPS + (FIREBALL | SCREAM)) | WINGS + SHADESKIPS + (MASKSHARDS>15 | MASKSHARDS>7 + Fragile_Heart>1 + Can_Bench)) + DREAMNAIL"
+	},
+	{
+		"name": "Aspid_Queen_Dream",
+		"logic": "Crossroads_22[bot1] + (LEFTCLAW | RIGHTCLAW | WINGS | BACKGROUNDPOGOS | ENEMYPOGOS) + DREAMNAIL"
+	},
+	{
+		"name": "Overgrown_Shaman_Dream",
+		"logic": "Room_Fungus_Shaman[left1] + DREAMNAIL"
+	},
+	{
+		"name": "Crystalized_Shaman_Dream",
+		"logic": "Mines_35[left1] + QUAKE + (LEFTCLAW | RIGHTCLAW + PRECISEMOVEMENT + (RIGHTDASH | DIFFICULTSKIPS + FIREBALLSKIPS + (FIREBALL | SCREAM)) | WINGS) + DREAMNAIL"
+	},
+	{
+		"name": "Ancient_Nailsmith_Golem_Dream",
+		"logic": "Deepnest_East_14b[top1] | Deepnest_East_14b[right1] + (LEFTCLAW + RIGHTCLAW | WINGS | ENEMYPOGOS + DANGEROUSSKIPS) + DREAMNAIL"
+	},
+	{
+		"name": "Shade_Golem_Dream_Normal",
+		"logic": "(Abyss_10[left2] + (LEFTDASH>1 | RIGHTDASH>1) + RIGHTDASH | Abyss_10[left1] + (RIGHTCLAW | WINGS + SHADESKIPS + (MASKSHARDS>15 | MASKSHARDS>7 + Fragile_Heart>1 + Can_Bench))) + (WINGS | RIGHTSUPERDASH | RIGHTDASH + (LEFTCLAW | PRECISEMOVEMENT | BACKGROUNDPOGOS)) | (Abyss_10[left2] + (LEFTDASH>1 | RIGHTDASH>1) + RIGHTDASH | Abyss_10[left1]) + ((LEFTDASH>1 | RIGHTDASH>1) + RIGHTDASH | WHITEFRAGMENT>2 + (RIGHTDASH | RIGHTSUPERDASH | SWIM | WINGS | LEFTCLAW + RIGHTCLAW)) + (WINGS | LEFTCLAW + RIGHTSUPERDASH | LEFTCLAW + RIGHTDASH | BACKGROUNDPOGOS + RIGHTDASH) + DREAMNAIL>1"
+	},
+	{
+		"name": "Shade_Golem_Dream_Void",
+		"logic": "(Abyss_10[left2] + (LEFTDASH>1 | RIGHTDASH>1) + RIGHTDASH | Abyss_10[left1] + (RIGHTCLAW | WINGS + SHADESKIPS + (MASKSHARDS>15 | MASKSHARDS>7 + Fragile_Heart>1 + Can_Bench))) + (WINGS | RIGHTSUPERDASH | RIGHTDASH + (LEFTCLAW | PRECISEMOVEMENT | BACKGROUNDPOGOS)) | (Abyss_10[left2] + (LEFTDASH>1 | RIGHTDASH>1) + RIGHTDASH | Abyss_10[left1]) + ((LEFTDASH>1 | RIGHTDASH>1) + RIGHTDASH | WHITEFRAGMENT>2 + (RIGHTDASH | RIGHTSUPERDASH | SWIM | WINGS | LEFTCLAW + RIGHTCLAW)) + (WINGS | LEFTCLAW + RIGHTSUPERDASH | LEFTCLAW + RIGHTDASH | BACKGROUNDPOGOS + RIGHTDASH) + DREAMNAIL>1 + WHITEFRAGMENT>2"
+	},
+	{
+		"name": "Shroom_King_Dream",
+		"logic": "(Fungus2_30[bot1] | Fungus2_30[top1]) + (LEFTCLAW | RIGHTCLAW| WINGS) + DREAMNAIL"
+	},
+	{
+		"name": "Hopper_Dummy_Dream",
+		"logic": "Deepnest_East_16[left1] + DREAMNAIL"
+	},
+	{
+		"name": "Dryya_Dream",
+		"logic": "Fungus3_48[right1] + DREAMNAIL"
+	},
+	{
+		"name": "Isma_Dream",
+		"logic": "Waterways_13[left1] + (LEFTCLAW + RIGHTCLAW | (LEFTCLAW | RIGHTCLAW) + (WINGS | ENEMYPOGOS) | LEFTCLAW + (RIGHTDASH | RIGHTSUPERDASH)) | Waterways_13[left2] + (ACID + (RIGHTCLAW | WINGS | ENEMYPOGOS) | ACIDSKIPS + LEFTCLAW + RIGHTSUPERDASH + (WINGS | RIGHTCLAW)) + DREAMNAIL"
+	},
+	{
+		"name": "Shriek_Statue_Dream",
+		"logic": "Abyss_12[right1] + DREAMNAIL"
+	},
+	{
+		"name": "Radiance_Statue_Dream",
+		"logic": "Mines_34[bot1] + (LEFTCLAW + (WINGS | RIGHTDASH | RIGHTSUPERDASH | SPIKETUNNELS) | RIGHTCLAW + (WINGS | ENEMYPOGOS + (RIGHTDASH | SPIKETUNNELS))) + DREAMNAIL"
+	},
+	{
+		"name": "Dashmaster_Statue_Dream",
+		"logic": "Fungus2_23 + DREAMNAIL"
+	},
+	{
+		"name": "Snail_Shaman_Tomb_Dream",
+		"logic": "RestingGrounds_10 + (LEFTCLAW | RIGHTCLAW | WINGS) + (LEFTSLASH | RIGHTSLASH | UPSLASH | FIREBALL | SCREAM | QUAKE | Cyclone_Slash | Great_Slash | Dash_Slash + LEFTDASH + RIGHTDASH) + DREAMNAIL"
+	},
+	{
+		"name": "Pale_King_Dream",
+		"logic": "White_Palace_09[right1] + LEFTSUPERDASH + QUAKE + (LEFTCLAW | WINGS) + DREAMNAIL"
+	},
+	{
+		"name": "Grimm_Summoner_Dream",
+		"logic": "Cliffs_06[left1] + DREAMNAIL"
+	},
+	{
+		"name": "Kings_Mould_Machine_Dream",
+		"logic": "(White_Palace_08[right1] | White_Palace_08[left1] + (LEFTCLAW | RIGHTCLAW) + WINGS) + DREAMNAIL"
+	},
+	{
+		"name": "Dream_Shield_Statue_Dream",
+		"logic": "RestingGrounds_17[right1] + DREAMNAIL"
+	},
+	
+]

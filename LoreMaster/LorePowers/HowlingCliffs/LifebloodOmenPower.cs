@@ -65,7 +65,14 @@ public class LifebloodOmenPower : Power
     {
         while (true)
         {
-            yield return new WaitForSeconds(180f);
+            float passedTime = 0f;
+            do
+            {
+                yield return null;
+                if (PlayerData.instance.GetInt("health") == PlayerData.instance.GetInt("maxHealth"))
+                    passedTime += Time.deltaTime;
+            } 
+            while (passedTime < 180f);
             // If a player sits a bench herocontroller doesn't accept input, which makes the first part redundant... I think. I still keep it, just in case.
             if (PlayerData.instance.GetBool(nameof(PlayerData.instance.atBench)) || !HeroController.instance.acceptingInput)
                 yield return new WaitUntil(() => !PlayerData.instance.GetBool(nameof(PlayerData.instance.atBench)) && HeroController.instance.acceptingInput);

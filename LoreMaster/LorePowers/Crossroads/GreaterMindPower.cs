@@ -5,6 +5,7 @@ using LoreMaster.Manager;
 using LoreMaster.Randomizer;
 using Modding;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
@@ -66,6 +67,11 @@ public class GreaterMindPower : Power
         catch (Exception)
         { }
     };
+
+    /// <summary>
+    /// Gets the cost of the glory effect.
+    /// </summary>
+    public static bool PermanentTracker { get; set; }
 
     #endregion
 
@@ -153,6 +159,7 @@ public class GreaterMindPower : Power
         }
         try
         {
+            _loreTracker.SetActive(true);
             TextMeshPro currentCounter = _loreTracker.GetComponent<DisplayItemAmount>().textObject;
             if (ModHooks.GetMod("Randomizer 4") is Mod && RandomizerManager.RandoTracker(currentArea, out string areaLore))
             {
@@ -167,17 +174,21 @@ public class GreaterMindPower : Power
                 if (globalActive)
                     currentCounter.text = "<color=#7FFF7B>" + currentCounter.text + "</color>";
             }
-
-            string globalPart = "All: " + activePowers.Count() + "/" + allPowers.Count();
-            if (activePowers.Count() >= allPowers.Count())
-                globalPart = "<color=#7FFF7B>" + globalPart + "</color>";
-            currentCounter.text += Environment.NewLine + globalPart;
+            if (!PermanentTracker)
+                LoreMaster.Instance.Handler.StartCoroutine(HideTracker());
         }
         catch (Exception exception)
         {
             LoreMaster.Instance.LogError("Error while loading counter: " + exception.Message);
             LoreMaster.Instance.LogError("Error while loading counter: " + exception.StackTrace);
         }
+    }
+
+    private IEnumerator HideTracker()
+    {
+        yield return new WaitForSeconds(5f);
+        if (_loreTracker.activeSelf)
+            _loreTracker.SetActive(false);
     }
 
     #endregion

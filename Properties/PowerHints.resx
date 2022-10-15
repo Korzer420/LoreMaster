@@ -1,0 +1,303 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="BagOfMushrooms" xml:space="preserve">
+    <value>Allows you to consume a yummy mushroom snack occasionly. The saturation may power you up. Caution: Can cause throw up if you eat too much of the same ones. Press quick map to select another and cdash + dash to consume the mushroom.</value>
+  </data>
+  <data name="BestMenderInTheWorld" xml:space="preserve">
+    <value>The best day of Menderbug lifes occured! He asked Mender Berri out and she said yes! Together, they made the signs of this kingdom even better. They even hide some reward for the good souls that let them have work to do.</value>
+  </data>
+  <data name="BlessingOfTheButterfly" xml:space="preserve">
+    <value>Your Wings have received the blessing of the butterfly, which allows them to crush enemies beneath them and repel even higher. While the wings rest on you, your enemies shall be shattered by your feet. From your best girl (besides Myla) c:</value>
+  </data>
+  <data name="Camouflage" xml:space="preserve">
+    <value>While doing nothing, your mind slowly ascent to Unn's dream, while your shell is shielded by Unn's power.</value>
+  </data>
+  <data name="CaringShell" xml:space="preserve">
+    <value>No hazard shall cast harm onto you... UwU</value>
+  </data>
+  <data name="ConcussiveStrike" xml:space="preserve">
+    <value>Your huge nail swings cause Concussion on their target, which will cause the target to suffer more from your nail and extend the concussion.</value>
+  </data>
+  <data name="DeliciousMeal" xml:space="preserve">
+    <value>You can now consume the "delicious" eggs to provide you a temporarily saturation effect to make your nail stronger and regenerate your wounds. Press jump on the egg in the inventory to consume the egg.</value>
+  </data>
+  <data name="DiamondCore" xml:space="preserve">
+    <value>The crystal heart's core absorbed the power of diamond and got even stronger. If you hit a wall, all foes may be stunned shortly. The power of the diamond increases over time, makes you unstoppable once you got enough power.</value>
+  </data>
+  <data name="DiamondDash" xml:space="preserve">
+    <value>The shell of crystal heart is powered with the might of diamonds, which causes a quicker energie cast and allows you to stop you mid air. Hold up to remain at your position. Drains souls rapidly.</value>
+  </data>
+  <data name="DiminishingCurse" xml:space="preserve">
+    <value>If you suffer from the curse of greed, it will vanish once you experienced enough pain after resting.</value>
+  </data>
+  <data name="DramaticEntrance" xml:space="preserve">
+    <value>Staying up against a powerful foe will restore all your power for a glorious fight.</value>
+  </data>
+  <data name="DreamBlessing" xml:space="preserve">
+    <value>The dream artifact uses the power it absorbs from their powerful victims to use it's hidden power.&lt;br&gt;Monomon: Through her knowledge she exposes the foes biggest weakness.&lt;br&gt;Lurien: His gaze may freeze the enemy in place.&lt;br&gt;Herrah: Invoking her children from the victim.</value>
+  </data>
+  <data name="ElderbugHitList" xml:space="preserve">
+    <value>When entering a new room with enemies the list marks enemies. If you succeed the \"talk\" with them, you are granted a reward. Be careful, elderbug demands a clean execution.</value>
+  </data>
+  <data name="EternalSentinel" xml:space="preserve">
+    <value>Increases your scent while wearing the sign of the protector. The shield of the ancient ones is more resistent and gather soul with the blessing of the protector.</value>
+  </data>
+  <data name="EternalValor" xml:space="preserve">
+    <value>The heat of the battle shall allow you to endure more pain.</value>
+  </data>
+  <data name="EyeOfTheWatcher" xml:space="preserve">
+    <value>The eye of the watcher will protect you and share it's sight, allowing you to see in the dark. If the eye can fully see you, it gaze may once prevent a fatal blow on you. To call the eye again, look through the tool of the watcher.</value>
+  </data>
+  <data name="FlowerRing" xml:space="preserve">
+    <value>The power of all existing flower are gathered if you channel powerful strikes.</value>
+  </data>
+  <data name="FollowTheLight" xml:space="preserve">
+    <value>Allows you to weave with the pure essence of light to form a portal which you can travel to. Moving to far away will destroy the unstable portal. Hold left while swinging the artifact of the light to weave the portal and hold right to travel through it. As long as the artifact has not its full potential, travelling will consume the energy of the dreams and destroy the portal once entered. If not, the portal will remain at your entry point. (Requires dream gate to work)</value>
+  </data>
+  <data name="FriendOfTheJellyfish" xml:space="preserve">
+    <value>Jellyfishs and explosions may no longer harm you.</value>
+  </data>
+  <data name="GiftOfUnn" xml:space="preserve">
+    <value>Grants you the power of Unn.</value>
+  </data>
+  <data name="GloryOfTheWealth" xml:space="preserve">
+    <value>Your enemies may "share" more of their wealth with you. Your wealth may protect you from the hits of those peasants... for a fee of course. Press Quick Map + Up to activate the effect and Quick Map + Down to cancel the effect. (In case you forget this input combination, the effect also deactivates itself once the leave the room). The cost increase fast over time while the effect is active and slowly decrease once inactive. If you are really greedy, the cost decrease faster. The great civilians of Hallownest call this power "Pay 2 Win".</value>
+  </data>
+  <data name="GraspOfLife" xml:space="preserve">
+    <value>While running on the ground, the breath of life shall grow grass below your feet. Sometimes, a pale blessed one may appear instead. Killing it, shall let your hear the cheers of the normal one.</value>
+  </data>
+  <data name="GrassBombardement" xml:space="preserve">
+    <value>Forms the grass in Hallownest with the power of the soul to a "special delivery" which explodes shortly after creation, dealing huge damage. The disruption may break loose walls and floors. Requires soul to construct the bomb. Press (Quick)cast and left to drop the bomb. They say, that you also can channel the blue plague, to create an even stronger bomb which can even break the heaviest stones and emits a destruction shockwave through the room. Press (Quick)cast and right to consume the blue blood and spawn the powerful nuke.</value>
+  </data>
+  <data name="GreaterMind" xml:space="preserve">
+    <value>You can now sense, which knowledge of the world you're missing.</value>
+  </data>
+  <data name="HappyFate" xml:space="preserve">
+    <value>Your "happiness" increases all your abilities slightly. Getting hit makes you sad. :c A good rest may restore your hapiness.</value>
+  </data>
+  <data name="HotStreak" xml:space="preserve">
+    <value>Successfully striking enemies shall increase your power. The power will fade away from your weapon if it doesn't hit a foe.</value>
+  </data>
+  <data name="Imposter" xml:space="preserve">
+    <value>While being part of the shrooms, sometime you focus treacherous energys... AMOGUS</value>
+  </data>
+  <data name="Infested" xml:space="preserve">
+    <value>Plant spider eggs in the wounds of your victims, that burst open on death.</value>
+  </data>
+  <data name="JellyBelly" xml:space="preserve">
+    <value>You are feeling light, like a feather.</value>
+  </data>
+  <data name="JellyfishFlow" xml:space="preserve">
+    <value>You've gained the swimming agility of the jellyfishs... And you are now a part of the jellyspotters!</value>
+  </data>
+  <data name="JonisProtection" xml:space="preserve">
+    <value>When going to a new area, you will receive the gift of Joni, which will quickly fade away.</value>
+  </data>
+  <data name="LaughableThreat" xml:space="preserve">
+    <value>Can you hear it? Those pesky peasant laugh about you behind your back. They don't even consider you a real threat to them. Oh they will learn to respect you, once you swung your nail at one of them.</value>
+  </data>
+  <data name="LifebloodOmen" xml:space="preserve">
+    <value>Sometimes you will be haunted by a ghost from a distant land. Killing it will grant you the essence of it's soul. A more powerful weapon may attract more powerful foes.</value>
+  </data>
+  <data name="MantisStyle" xml:space="preserve">
+    <value>Your weapon may reach further away foes.</value>
+  </data>
+  <data name="MarissasAudience" xml:space="preserve">
+    <value>While Marissa sings on stage, occasionally spawns a crowd that helps you. If you killed her however... you will be haunted by her biggest fan.</value>
+  </data>
+  <data name="MaskOvercharge" xml:space="preserve">
+    <value>Let one your mask occasionly overcharge. If it is the one that protects you, it emits a searing circle, that also absorbs the loose soul around you.</value>
+  </data>
+  <data name="MindblastOfUnn" xml:space="preserve">
+    <value>Your dream nail emits the power of Unn to the target's mind, which causes their bodies to be more vulnerable.</value>
+  </data>
+  <data name="OneOfUs" xml:space="preserve">
+    <value>Occasionally you emit a spore cloud. (Hold the super dash button to prevent the cloud.)</value>
+  </data>
+  <data name="OverwhelmingPower" xml:space="preserve">
+    <value>Casting spells with full capacity will grant your spell much more power. Be careful though, these spells are  so powerful that you can easily loose control of them, searing your vessel and shatter your soul. It will take some time to recover your soul.</value>
+  </data>
+  <data name="PaleLuck" xml:space="preserve">
+    <value>When someone casts harm on you, sometimes you are blessed by the higher being instead. Especially if you have some artefacts related to him.</value>
+  </data>
+  <data name="PureSpirit" xml:space="preserve">
+    <value>Using the last resort of your soul will purify it's vessel and spawn an orb out of pure light. If you channeled three orbs, they will follow your powerful spell and detonate upon contact, returning their gathered soul to you.</value>
+  </data>
+  <data name="QueenThorns" xml:space="preserve">
+    <value>The thorns of agony have received the blessing of the queen.</value>
+  </data>
+  <data name="RelentlessSwarm" xml:space="preserve">
+    <value>Flukes rip the soul out of there victims.</value>
+  </data>
+  <data name="ReluctantPilgrim" xml:space="preserve">
+    <value>While you stay on the path, your nail shall receive the gift of the grubfather.</value>
+  </data>
+  <data name="Requiem" xml:space="preserve">
+    <value>When your shell breaks, holding a pure focus may arise you at the home of death. Holding the light's artifact will instead catch you in the protecting wings of the last one, if she opened her secret. Holding the shiny stone vessel, will drop your soul onto the now abandoned place, where the light started its revenge.</value>
+  </data>
+  <data name="ReturnToUnn" xml:space="preserve">
+    <value>Reject Bugness, return to Slug. You move faster to Unn.</value>
+  </data>
+  <data name="SacredShell" xml:space="preserve">
+    <value>Infuse your shell with the pale power of the monarch which grants you tenacity against strong strikes.</value>
+  </data>
+  <data name="ScrewTheRules" xml:space="preserve">
+    <value>Your rage is weaker but grows quicker.</value>
+  </data>
+  <data name="ShadowForged" xml:space="preserve">
+    <value>The void energy return quicker to you.</value>
+  </data>
+  <data name="ShiningBound" xml:space="preserve">
+    <value>Every magic relic you currently wearing  shall gather more soul for you.</value>
+  </data>
+  <data name="SoulExtractEfficiency" xml:space="preserve">
+    <value>Allows you to drain soul more efficient from your foes and draw you reserve more quickly.</value>
+  </data>
+  <data name="StagAdoption" xml:space="preserve">
+    <value>Small scared stags want a good home. Take this egg with you and care for it. Touching it a bit tougher, may hatch it instantly and allow you to help the stag fulfill their purpose. After setting it free and waiting a bit a new one may appear here.</value>
+  </data>
+  <data name="TouchGrass" xml:space="preserve">
+    <value>The flora may nourish your shell, if you stand long enough near it.</value>
+  </data>
+  <data name="Tourist" xml:space="preserve">
+    <value>Want to see the incredible black egg temple? Talk to the firefly to the right. Drinks are not included in the price. Also offers back travel.</value>
+  </data>
+  <data name="TreasureHunter" xml:space="preserve">
+    <value>Revealing the buried treasures of the kingdom, may give you their effect and the favor of the relic seeker.</value>
+  </data>
+  <data name="TrueForm" xml:space="preserve">
+    <value>While the true form is revealed, its vessels nail gets more powerful. Especially near your true self.</value>
+  </data>
+  <data name="UnitedWeStand" xml:space="preserve">
+    <value>Your companions inspire each other.</value>
+  </data>
+  <data name="WeDontTalkAboutShade" xml:space="preserve">
+    <value>Shade? What should that be? Can you prove, that the "Shade" exist? Your soul vessel and geo? What are you talking about?</value>
+  </data>
+  <data name="WellFocused" xml:space="preserve">
+    <value>You gain pure focus faster.</value>
+  </data>
+  <data name="WisdomOfTheSage" xml:space="preserve">
+    <value>Guide the Sage through his journey to learn how to use your spells more efficient.</value>
+  </data>
+  <data name="YouLikeJazz" xml:space="preserve">
+    <value>Your hatchlings hatch way more aggressive and don't need that much soul to grow.</value>
+  </data>
+</root>

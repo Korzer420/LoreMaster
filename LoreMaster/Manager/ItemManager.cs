@@ -5,6 +5,7 @@ using ItemChanger.Placements;
 using ItemChanger.Tags;
 using ItemChanger.UIDefs;
 using LoreMaster.Enums;
+using LoreMaster.Helper;
 using LoreMaster.ItemChangerData;
 using LoreMaster.ItemChangerData.Locations;
 using LoreMaster.ItemChangerData.Locations.SpecialLocations;
@@ -546,35 +547,55 @@ public static class ItemManager
             name = Shade_Golem_Dream_Normal,
             flingType = FlingType.DirectDeposit,
             GameObjectName = "Dream Dialogue_01_pre_shade_charm",
-            sceneName = "Abyss_10"
+            sceneName = "Abyss_10",
+            tags = new()
+            {
+                CreateInteropTag("Abyss_10")
+            }
         });
         Finder.DefineCustomLocation(new ShadeGolemDreamLocation()
         {
             name = Shade_Golem_Dream_Void,
             flingType = FlingType.DirectDeposit,
             GameObjectName = "Dream Dialogue_02_after_shade_charm",
-            sceneName = "Abyss_10"
+            sceneName = "Abyss_10",
+            tags = new()
+            {
+                CreateInteropTag("Abyss_10")
+            }
         });
         Finder.DefineCustomLocation(new PaleKingDreamLocation()
         {
             name = Pale_King_Dream,
             flingType = FlingType.DirectDeposit,
             GameObjectName = "/White King Corpse/Dream Dialogue",
-            sceneName = "White_Palace_09"
+            sceneName = "White_Palace_09",
+            tags = new()
+            {
+                CreateInteropTag("White_Palace_09")
+            }
         });
         Finder.DefineCustomLocation(new CrystalShamanLocation()
         {
             name = Crystalized_Shaman_Dream,
             flingType = FlingType.DirectDeposit,
             GameObjectName = "/Crystal Shaman/Dream Dialogue",
-            sceneName = "Mines_35"
+            sceneName = "Mines_35",
+            tags = new()
+            {
+                CreateInteropTag("Mines_35")
+            }
         });
         Finder.DefineCustomLocation(new GrimmSummonerDreamLocation()
         {
             name = Grimm_Summoner_Dream,
             flingType = FlingType.DirectDeposit,
             GameObjectName = "/Dream Dialogue Grimm Defeated",
-            sceneName = "Cliffs_06"
+            sceneName = "Cliffs_06",
+            tags = new()
+            {
+                CreateInteropTag("Cliffs_06")
+            }
         });
 
         string dreamSound = "Dream_Enter";
@@ -631,7 +652,7 @@ public static class ItemManager
 
         Finder.DefineCustomItem(Creator.CreateSoundItem(Dream_Dialogue_Kings_Mould_Machine, dreamSound,
             Creator.CreateDreamUIDef(Dream_Dialogue_Kings_Mould_Machine, "KING_WORKSHOP_MOULD", "Lore Tablets", new("Kings_Mould_Machine"))));
-
+        InteropTag interopTag = new();
         Finder.DefineCustomItem(Creator.CreateSoundItem(Dream_Dialogue_Dream_Shield_Statue, dreamSound,
             Creator.CreateDreamUIDef(Dream_Dialogue_Dream_Shield_Statue, "MOTHSTONE_DREAM", "CP2", new("Dream_Shield"))));
     }
@@ -645,7 +666,6 @@ public static class ItemManager
         Finder.DefineCustomLocation(Creator.CreateInspectLocation(Grimm_Machine, "Grimm_Main_Tent", new Vector3(83f, 45.41f)));
         Finder.DefineCustomLocation(Creator.CreateInspectLocation(Garden_Golem, "Fungus1_23", new Vector3(20.18f, 7.41f)));
         Finder.DefineCustomLocation(Creator.CreateInspectLocation(Grub_Seal, "Ruins2_11", new Vector3(53.91f, 129.41f)));
-        Finder.DefineCustomLocation(Creator.CreateInspectLocation(Path_Of_Pain_Seal, "White_Palace_18", new Vector3(284.18f, 13.41f)));
         Finder.DefineCustomLocation(Creator.CreateInspectLocation(White_Palace_Nursery, "White_Palace_09", new Vector3(87.22f, 31.41f)));
         Finder.DefineCustomLocation(Creator.CreateInspectLocation(Grimm_Summoner_Corpse, "Cliffs_06", "/Sycophant Dream/Inspect Region"));
 
@@ -705,14 +725,6 @@ public static class ItemManager
             shopDesc = new BoxedString(Properties.ShopDescriptions.Fountain),
             sprite = new CustomSprite("vitruvian_grub"),
             lore = new BoxedString(Properties.InspectText.Grub_Seal),
-            textType = TextType.Lore,
-        }));
-        Finder.DefineCustomItem(Creator.CreateSoundItem(Inspect_Path_Of_Pain_Seal, "Secret", new LoreUIDef()
-        {
-            name = new BoxedString("Path of Pain Entrance Seal"),
-            shopDesc = new BoxedString(Properties.ShopDescriptions.Fountain),
-            sprite = new CustomSprite("Weaver_Seal"),
-            lore = new BoxedString(Properties.InspectText.Pain_Seal),
             textType = TextType.Lore,
         }));
         Finder.DefineCustomItem(Creator.CreateSoundItem(Inspect_White_Palace_Nursery, "Secret", new LoreUIDef()
@@ -807,7 +819,11 @@ public static class ItemManager
             flingType = FlingType.DirectDeposit,
             FsmName = "Conversation Control",
             ObjectName = "Zote Buzzer Convo(Clone)",
-            sceneName = "Fungus1_20_v02"
+            sceneName = "Fungus1_20_v02",
+            tags = new()
+            {
+                CreateInteropTag("Fungus1_20_v02")
+            }
         });
         Finder.DefineCustomLocation(TravellerLocation.CreateTravellerLocation(Zote_Dirtmouth_Intro, 1, Traveller.Zote));
         Finder.DefineCustomLocation(TravellerLocation.CreateTravellerLocation(Zote_City, 2, Traveller.Zote));
@@ -817,7 +833,11 @@ public static class ItemManager
             FsmName = "Conversation Control",
             name = Zote_Deepnest,
             sceneName = "Deepnest_33",
-            flingType = FlingType.DirectDeposit
+            flingType = FlingType.DirectDeposit,
+            tags = new()
+            {
+                CreateInteropTag("Deepnest_33")
+            }
         });
         Finder.DefineCustomLocation(TravellerLocation.CreateTravellerLocation(Zote_Colosseum, 4, Traveller.Zote));
         Finder.DefineCustomLocation(TravellerLocation.CreateTravellerLocation(Zote_Dirtmouth_After_Colosseum, 5, Traveller.Zote));
@@ -864,7 +884,7 @@ public static class ItemManager
         List<AbstractPlacement> result = new();
         AbstractPlacement currentPlacement;
         // Lemms door
-        if (!RandomizerManager.PlayingRandomizer || (!RandomizerManager.Settings.RandomizeTreasureCharts && !RandomizerManager.Settings.RandomizeTreasures && !RandomizerManager.Settings.DefineRefs))
+        if (!RandomizerManager.PlayingRandomizer || (!RandomizerManager.Settings.RandomizeTreasures && !RandomizerManager.Settings.DefineRefs))
         {
             currentPlacement = Finder.GetLocation(Lemm_Door).Wrap();
             currentPlacement.Add(Finder.GetItem(Lemm_Sign));
@@ -873,9 +893,18 @@ public static class ItemManager
 
             // Iseldas charts
             currentPlacement = Finder.GetLocation(Iselda_Treasure).Wrap();
-            for (int i = 1; i < 15; i++)
-                currentPlacement.Add(Finder.GetItem($"{Treasure_Chart_Prefix}{i}"));
-            result.Add(currentPlacement);
+            if (ItemChanger.Internal.Ref.Settings.Placements.ContainsKey(LocationNames.Iselda))
+            {
+                currentPlacement = ItemChanger.Internal.Ref.Settings.Placements[LocationNames.Iselda];
+                for (int i = 1; i < 15; i++)
+                    currentPlacement.Add(Finder.GetItem($"{Treasure_Chart_Prefix}{i}"));
+            }
+            else
+            {
+                for (int i = 1; i < 15; i++)
+                    currentPlacement.Add(Finder.GetItem($"{Treasure_Chart_Prefix}{i}"));
+                result.Add(currentPlacement);
+            }
         }
 
         // Place treasures.
@@ -934,7 +963,8 @@ public static class ItemManager
         currentPlacement.Add(Finder.GetItem(Path_of_Pain_Reward));
         extraLore.Add(currentPlacement);
 
-        if (RandomizerManager.PlayingRandomizer && (RandomizerManager.Settings.RandomizePointsOfInterest || RandomizerManager.Settings.DefineRefs))
+        if (RandomizerManager.PlayingRandomizer && ItemChanger.Internal.Ref.Settings.Placements.ContainsKey(Stag_Nest) 
+            && (RandomizerManager.Settings.RandomizePointsOfInterest || RandomizerManager.Settings.DefineRefs))
         {
             AbstractPlacement placement = ItemChanger.Internal.Ref.Settings.Placements[Stag_Nest];
             placement.Items.Add(Finder.GetItem(Stag_Egg));
@@ -993,6 +1023,21 @@ public static class ItemManager
         placements.Add(currentPlacement);
 
         return placements;
+    }
+
+    internal static InteropTag CreateInteropTag(string sceneName)
+    {
+        return new()
+        {
+            Message = "RandoSupplementalMetadata",
+            Properties = new()
+            {
+                {"ModSource", nameof(LoreMaster)},
+                {"PinSprite", new CustomSprite("Lore", false)},
+                {"SceneName", sceneName },
+                {"MapLocations", (sceneName, 0f, 0f) }
+            }
+        };
     }
 
     #endregion

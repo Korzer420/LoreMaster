@@ -10,6 +10,8 @@ using LoreMaster.ItemChangerData.Other;
 using LoreMaster.Manager;
 using Modding;
 using MonoMod.Cil;
+using MoreDoors.Data;
+using MoreDoors.IC;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -268,6 +270,13 @@ internal class TreasureHunterPower : Power
         orig(self);
     }
 
+    private void DoorPreview(On.ShowPromptMarker.orig_OnEnter orig, ShowPromptMarker self)
+    {
+        orig(self);
+        if (Treasures["magicKey"] != TreasureState.NotObtained && self.IsCorrectContext("npc_control", null, "In Range") && self.Fsm.FsmComponent.GetComponent<DoorNameMarker>() is DoorNameMarker door)
+            MoreDoorsPreview(door.DoorName);
+    }
+
     #endregion
 
     #region Control
@@ -282,6 +291,8 @@ internal class TreasureHunterPower : Power
         On.HutongGames.PlayMaker.Actions.PlayerDataIntAdd.OnEnter += PlayerDataIntAdd_OnEnter;
         On.PlayMakerFSM.OnEnable += PlayMakerFSM_OnEnable;
         IL.EnemyDeathEffects.EmitEssence += EnemyDeathEffects_EmitEssence;
+        if (ModHooks.GetMod("MoreDoors", true) is Mod)
+            On.ShowPromptMarker.OnEnter += DoorPreview;
     }
 
     /// <inheritdoc/>
@@ -294,6 +305,8 @@ internal class TreasureHunterPower : Power
         On.HutongGames.PlayMaker.Actions.PlayerDataIntAdd.OnEnter -= PlayerDataIntAdd_OnEnter;
         On.PlayMakerFSM.OnEnable -= PlayMakerFSM_OnEnable;
         IL.EnemyDeathEffects.EmitEssence -= EnemyDeathEffects_EmitEssence;
+        if (ModHooks.GetMod("MoreDoors", true) is Mod)
+            On.ShowPromptMarker.OnEnter -= DoorPreview;
     }
 
     /// <inheritdoc/>
@@ -387,6 +400,19 @@ internal class TreasureHunterPower : Power
         }
         if (finalGeo != 0)
             HeroController.instance.AddGeo(finalGeo);
+    }
+
+    private void MoreDoorsPreview(string doorName)
+    {
+        string keyName = DoorData.Get(doorName).Key.ItemName;
+        AbstractPlacement placement = ItemChanger.Internal.Ref.Settings.GetPlacements().FirstOrDefault(x => x.Items.Any(x => x.name == keyName));
+        if (placement == null || placement.Items.First(x => x.name == keyName).IsObtained())
+            return;
+
+        PlayMakerFSM playMakerFSM = PlayMakerFSM.FindFsmOnGameObject(FsmVariables.GlobalVariables.GetFsmGameObject("Enemy Dream Msg").Value, "Display");
+        playMakerFSM.FsmVariables.GetFsmInt("Convo Amount").Value = 1;
+        playMakerFSM.FsmVariables.GetFsmString("Convo Title").Value = "Master_Key_Preview-"+ placement.Name.Replace('_', ' ').Replace('-', ' ');
+        playMakerFSM.SendEvent("DISPLAY ENEMY DREAM");
     }
 
     #endregion
@@ -553,18 +579,7 @@ internal class TreasureHunterPower : Power
         AddInventoryMovement(inventoryFsm, indexVariable);
         _chartSprite = SpriteHelper.CreateSprite("Treasure_Chart");
         treasureChartPage.SetActive(false);
-        //if (ModHooks.GetMod("More Doors") is Mod mod)
-        //    On.HutongGames.PlayMaker.Actions.BoolTest.OnEnter += BoolTest_OnEnter;
     }
-
-    //private static void BoolTest_OnEnter(On.HutongGames.PlayMaker.Actions.BoolTest.orig_OnEnter orig, BoolTest self)
-    //{
-    //    orig(self);
-    //    if (self.IsCorrectContext("npc_control", null, "Can Talk Bool?") && self.Fsm.FsmComponent.gameObject.GetComponent<DoorNameMarker>() is DoorNameMarker door)
-    //    {
-
-    //    }
-    //}
 
     public static void UpdateTreasurePage()
     {
@@ -581,9 +596,9 @@ internal class TreasureHunterPower : Power
                 {
                     _inventoryItems[i].GetComponent<SpriteRenderer>().sprite = _chartSprite;
                     if (ItemManager.GetPlacementByName<MutablePlacement>(_locationNames[i]).Items.Any(x => !x.IsObtained()))
-                        _inventoryItems[i].GetComponent<SpriteRenderer>().color = new(0.2f, 0.2f, 0.2f);
-                    else
                         _inventoryItems[i].GetComponent<SpriteRenderer>().color = Color.white;
+                    else
+                        _inventoryItems[i].GetComponent<SpriteRenderer>().color = new(0.2f, 0.2f, 0.2f);
                 }
             }
             _inventoryItems[14].GetComponent<SpriteRenderer>().sprite = CanPurchaseTreasureCharts ? _treasureSprites[6] : _emptySprite;

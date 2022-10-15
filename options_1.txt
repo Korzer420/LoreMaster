@@ -1,0 +1,46 @@
+%override%
+%WeDontTalkAboutShade%global|add
+%Hot Streak%global|add
+%Tourist%global|add
+%MarissasAudience%global|add
+%Overwhelming%global|add
+%Soul Extract Efficiency%global|add
+%Eye Of The Watcher%global|add
+%Well Focused%global|add
+%Screw the Rules%global|add
+%True Form%global|add
+%Caring shell%global|add
+%Friend of the Jellyfish%global|add
+%JellyBelly%global|add
+%JellyfishFlow%global|add
+%Reluctant Pilger%global|add
+%Greater Mind%global|add
+%One of Us%global|add
+%Pale Luck%global|add
+%Imposter%global|add
+%United we Stand%global|add
+%Mantis Style%global|add
+%Eternal Valor%global|add
+%Glory of the Wealth%global|add
+%Touch Grass%global|add
+%Gift Of Unn%global|add
+%MindblastOfUnn%global|add
+%Camouflage%global|add
+%Return to Unn%global|add
+%Rooted%global|add
+%Lifeblood Wings%global|add
+%Jonis Protection%global|add
+%Ring of Flowers%global|add
+%Queen Thorns%global|add
+%Dream blessing%global|add
+%Eternal Sentinel%global|add
+%Relentless Swarm%global|add
+%Wisdom of the Sage%global|add
+%Concussive Strikes%global|add
+%You like Jazz?%global|add
+%Mask Overcharge%global|add
+%Infested%global|add
+%Shadow Forged%global|add
+%Shining Bound%global|add
+%Diminishing Curse%global|add
+%Sacred Shell%global|add

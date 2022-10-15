@@ -1,0 +1,158 @@
+[
+    {
+        "name": "Lore_Tablet-City_Entrance",
+        "logic": "(ORIG) + READ"
+    },
+    {
+        "name": "Lore_Tablet-Pleasure_House",
+        "logic": "(ORIG) + READ"
+    },
+    {
+        "name": "Lore_Tablet-Sanctum_Entrance",
+        "logic": "(ORIG) + READ"
+    },
+    {
+        "name": "Lore_Tablet-Sanctum_Past_Soul_Master",
+        "logic": "(ORIG) + READ"
+    },
+    {
+        "name": "Lore_Tablet-Watcher's_Spire",
+        "logic": "(ORIG) + READ"
+    },
+    {
+        "name": "Lore_Tablet-Archives_Upper",
+        "logic": "(ORIG) + READ"
+    },
+    {
+        "name": "Lore_Tablet-Archives_Left",
+        "logic": "(ORIG) + READ"
+    },
+    {
+        "name": "Lore_Tablet-Archives_Right",
+        "logic": "(ORIG) + READ"
+    },
+    {
+        "name": "Lore_Tablet-Pilgrim's_Way_1",
+        "logic": "(ORIG) + READ"
+    },
+    {
+        "name": "Lore_Tablet-Pilgrim's_Way_2",
+        "logic": "(ORIG) + READ"
+    },
+    {
+        "name": "Lore_Tablet-Mantis_Outskirts",
+        "logic": "(ORIG) + READ"
+    },
+    {
+        "name": "Lore_Tablet-Mantis_Village",
+        "logic": "(ORIG) + READ"
+    },
+    {
+        "name": "Lore_Tablet-Greenpath_Upper_Hidden",
+        "logic": "(ORIG) + READ"
+    },
+    {
+        "name": "Lore_Tablet-Greenpath_Below_Toll",
+        "logic": "(ORIG) + READ"
+    },
+    {
+        "name": "Lore_Tablet-Greenpath_Lifeblood",
+        "logic": "(ORIG) + READ"
+    },
+    {
+        "name": "Lore_Tablet-Greenpath_Stag",
+        "logic": "(ORIG) + READ"
+    },
+    {
+        "name": "Lore_Tablet-Greenpath_QG",
+        "logic": "(ORIG) + READ"
+    },
+    {
+        "name": "Lore_Tablet-Greenpath_Lower_Hidden",
+        "logic": "(ORIG) + READ"
+    },
+    {
+        "name": "Lore_Tablet-Dung_Defender",
+        "logic": "(ORIG) + READ"
+    },
+    {
+        "name": "Lore_Tablet-Spore_Shroom",
+        "logic": "(ORIG) + READ"
+    },
+    {
+        "name": "Lore_Tablet-Fungal_Wastes_Hidden",
+        "logic": "(ORIG) + READ"
+    },
+    {
+        "name": "Lore_Tablet-Fungal_Wastes_Below_Shrumal_Ogres",
+        "logic": "(ORIG) + READ"
+    },
+    {
+        "name": "Lore_Tablet-Fungal_Core",
+        "logic": "(ORIG) + READ"
+    },
+    {
+        "name": "Lore_Tablet-Ancient_Basin",
+        "logic": "(ORIG) + READ"
+    },
+    {
+        "name": "Lore_Tablet-King's_Pass_Focus",
+        "logic": "(ORIG) + READ"
+    },
+    {
+        "name": "Lore_Tablet-King's_Pass_Fury",
+        "logic": "(ORIG) + READ"
+    },
+    {
+        "name": "Lore_Tablet-King's_Pass_Exit",
+        "logic": "(ORIG) + READ"
+    },
+    {
+        "name": "Lore_Tablet-World_Sense",
+        "logic": "(ORIG) + READ"
+    },
+    {
+        "name": "Lore_Tablet-Howling_Cliffs",
+        "logic": "(ORIG) + READ"
+    },
+    {
+        "name": "Lore_Tablet-Kingdom's_Edge",
+        "logic": "(ORIG) + READ"
+    },
+    {
+        "name": "Lore_Tablet-Palace_Workshop",
+        "logic": "(ORIG) + READ"
+    },
+    {
+        "name": "Lore_Tablet-Palace_Throne",
+        "logic": "(ORIG) + READ"
+    },
+    {
+        "name": "Lore_Tablet-Path_of_Pain_Entrance",
+        "logic": "(ORIG) + READ"
+    },
+    {
+        "name": "Dream_Nail",
+        "logic": "(ORIG) + READ"
+    },
+    {
+        "Name": "Focus",
+        "Logic": "(ORIG) + READ"
+    },
+    {
+        "Name": "World_Sense",
+        "Logic": "(ORIG) + READ"
+    },
+    {
+        "Name": "Defeated_Colosseum_1",
+        "Logic": "(ORIG) + READ"
+    },
+    {
+        "Name": "Defeated_Colosseum_2",
+        "Logic": "(ORIG) + READ"
+    },
+    {
+        "Name": "Vessel_Fragment-Basin",
+        "Logic": "(ORIG) + READ"
+    }
+]

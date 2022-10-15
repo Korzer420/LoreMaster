@@ -1,0 +1,303 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="BagOfMushrooms" xml:space="preserve">
+    <value>Allows you to pick a mushroom to consume each 180 seconds. White shroom: Increases the speed of the game by 40%. Yellow shroom: Generates 20 soul each second, but causes nausea. Red shroom: Gives you 4 extra health, heals you fully and increases your nail damage by 20%, but you can't dash. Green shroom: Makes you small, decrease the gravity by 50% and doubles all damage taken. Taking the same mushroom twice in a row nerfs it's positive effect by 50%. Taking the same mushroom three times in a row, deals 2 damage to you instead. Press quick map to select another and cdash + dash to consume the mushroom.</value>
+  </data>
+  <data name="BestMenderInTheWorld" xml:space="preserve">
+    <value>Menderbug asked Mender Berri out and she said yes ^-^ Most signs of this kingdom are now unbreakable and grant small amount of geo once it. Also causes Menderbug to always appear at the sign. &lt;3</value>
+  </data>
+  <data name="BlessingOfTheButterfly" xml:space="preserve">
+    <value>Wings now deal 12 damage upon contact with enemy, apply massive knockback downwards and give you slightly more height. While your double jump is on cooldown, instead of taking damage from enemies below you, you deal 4 damage to them, regain soul and jump automatically again. (This does not restore wings)</value>
+  </data>
+  <data name="Camouflage" xml:space="preserve">
+    <value>After standing still for 5 seconds, you gain invincibility until you do something. If you are wearing Shape of Unn, you keep the invincibility while focusing and moving as a slug.</value>
+  </data>
+  <data name="CaringShell" xml:space="preserve">
+    <value>Enviroment hazards (like spikes) don't deal damage to you anymore.</value>
+  </data>
+  <data name="ConcussiveStrike" xml:space="preserve">
+    <value>Great Slash and Dash Slash cause Concussion on their target for 3 seconds. Concussed enemies take 10% more damage from nail attacks and increase their knockback by 50% (66% of Heavy Blow). Nail hits on the target extend the duration by 0.5 seconds each. Cyclone Slash is not counted as a nail slash in this case. Also cause enemies to glance 50% of their hits, decreasing their damage by 1.</value>
+  </data>
+  <data name="DeliciousMeal" xml:space="preserve">
+    <value>You can consume a rancid egg to heal you for 1 mask every 8 seconds and gain a +20% damage buff for 3 minutes. Press jump to consume the egg.</value>
+  </data>
+  <data name="DiamondCore" xml:space="preserve">
+    <value>Crystal Heart snares all enemies in the room if you hit a wall. The duration of the stun and cdash damage increases with the c dash duration. (Stun duration is capped at 10 seconds, gain 5 damage and 10% speed per second, gain invincibility after 3 seconds.)</value>
+  </data>
+  <data name="DiamondDash" xml:space="preserve">
+    <value>Crystal Heart is cast 0.3 seconds faster and can be hold midair while pressing up. Doubled, if you have Diamond Core unlocked. Drains 20 Soul per second (or 10 if you have Diamond Core).</value>
+  </data>
+  <data name="DiminishingCurse" xml:space="preserve">
+    <value>If you take 10 hits, you will no longer count as overcharmed, resets if you sit on a bench. The UI only updates if you open the charm screen.</value>
+  </data>
+  <data name="DramaticEntrance" xml:space="preserve">
+    <value>Heals you to full health and soul once entering a boss fight. If you have joni's equipped you will be granted up to 8 lifeblood masks instead. In godhome these effects are weakend heavily.</value>
+  </data>
+  <data name="DreamBlessing" xml:space="preserve">
+    <value>Defeated Dreamers grant the dream nail an additional effect (doubled with awoken dreamnail).&lt;br&gt;Lurien: Roots the target for 3 seconds (15 seconds cooldown)&lt;br&gt;Herrah: Spawn 2 weavers. &lt;br&gt;Monomon: Per 100 Essence you have a 1% chance to instant kill the enemy (capped at 125 damage). Capped at 2400 Essence for 24%.</value>
+  </data>
+  <data name="ElderbugHitList" xml:space="preserve">
+    <value>When entering a new room marks a random enemy with a red outline. If you kill that enemy FIRST another one gets marked. If all enemies are killed in the right order you receive a soul vessel fragment, mask shard, charm notch, 200 geo, or a small damage buff.</value>
+  </data>
+  <data name="EternalSentinel" xml:space="preserve">
+    <value>Defender's Crest clouds are 150% bigger and tick twice as fast. Baldur shell now takes seven hits instead of four (ten with defender's Crest. When getting hit, while baldur shell is up, you gain 15 soul if you are also wearing Defender's Crest.</value>
+  </data>
+  <data name="EternalValor" xml:space="preserve">
+    <value>Each 12 hits on enemies, heal you for 1 mask. Not hitting an enemy for 3 seconds will take away a stack each half of a second.</value>
+  </data>
+  <data name="EyeOfTheWatcher" xml:space="preserve">
+    <value>Grants the lantern effect. If you already have the lantern effect and would take lethal damage, you will be healed to full hp instead (with Joni's you gaining 5 lifeblood instead). Once triggered, has to be restored by looking through the telescope by lurien.</value>
+  </data>
+  <data name="FlowerRing" xml:space="preserve">
+    <value>Increase the damage of your nail arts by 10% for each recipient for the flower.</value>
+  </data>
+  <data name="FollowTheLight" xml:space="preserve">
+    <value>When you hold left while casting dreamnail, it will spawn an orange portal by your side, which you can travel to from anywhere in the room (Requires dream gate to work). Hold right while casting dreamnail to warp to the portal. Warping will consume 1 essence and the portal. Neither get's consumed if you have awoken Dreamnail (the portal will swap position with you instead).</value>
+  </data>
+  <data name="FriendOfTheJellyfish" xml:space="preserve">
+    <value>You're immune to jellyfishs enemies and explosions. Note: Non Jellyfish explosion enemies, "could" still deal 2 damage on contact. You're just immune to the explosion itself.</value>
+  </data>
+  <data name="GiftOfUnn" xml:space="preserve">
+    <value>Gain the shape of Unn effect for focusing. If you're wearing Shape of Unn, focus restores 15 soul on a successful cast.</value>
+  </data>
+  <data name="GloryOfTheWealth" xml:space="preserve">
+    <value>Enemies drop double geo. Press Quick Map + Up to become invincible. For each second this is active it drains 1 more geo. Press Quick Map + Down to cancel the effect (or leave the room). While the effect is inactive the cost decrease by 1 each 5 second (or each 2.5 seconds if you have Fragile/Unbreakable Greed equipped).</value>
+  </data>
+  <data name="GraspOfLife" xml:space="preserve">
+    <value>While running on the ground spawn a grass patch each second. Every 10th one is "pale grass" which, upon destroying, causes all other spawned grass by you to cast wraith that deal 10 damage (20 if shape of unn is equipped). Grass despawns after 10 seconds.</value>
+  </data>
+  <data name="GrassBombardement" xml:space="preserve">
+    <value>Pressing left while casting. spawns a bomb which explodes after 3 seconds, that deals 40 damage (60 with shaman stone) and breaks damaged walls/ground. Pressing right, will consum a lifeblood mask to spawn a more powerful bomb, with a bigger radius, 50 % more damage and the ability to break ALL damaged floors/walls in the room, even heavy floors and one way walls.</value>
+  </data>
+  <data name="GreaterMind" xml:space="preserve">
+    <value>Activates the tracker, to show you how many powers you are missing. If the counter is green, you have global access to the power in the area.</value>
+  </data>
+  <data name="HappyFate" xml:space="preserve">
+    <value>After sitting on a bench, your nail damage, nail range, running speed, dash speed and cdash charge up speed is increased. You also gain 1 soul per second.</value>
+  </data>
+  <data name="HotStreak" xml:space="preserve">
+    <value>When hitting an enemy with the nail, increases it's damage by 1 (max. 3 stacks per nail upgrade (15 total)). Resets if you don't hit an enemy.</value>
+  </data>
+  <data name="Imposter" xml:space="preserve">
+    <value>While wearing spore shrooms, focus has a 20% chance to add a lifeblood (doesn't work if you have 3 or more lifeblood).</value>
+  </data>
+  <data name="Infested" xml:space="preserve">
+    <value>Hitting an enemy with the nail plants an egg to the enemy (Capped at 5), which spawns a weaver once the enemy died. Weavers also apply eggs (Capped at 25). Weavers despawn after 20 seconds or upon leaving the room.</value>
+  </data>
+  <data name="JellyBelly" xml:space="preserve">
+    <value>Decrease your falling speed by about 20% and triples the time needed in air, for a hard fall.</value>
+  </data>
+  <data name="JellyfishFlow" xml:space="preserve">
+    <value>You swim 4 times as fast.</value>
+  </data>
+  <data name="JonisProtection" xml:space="preserve">
+    <value>When going to another area, you will be granted 5 life blood (10 if you have Joni's equipped). Each 3 seconds a lifeblood granted by this ability will fade away.</value>
+  </data>
+  <data name="LaughableThreat" xml:space="preserve">
+    <value>Most non boss enemies will not be triggered by line of sight. This effect fades away once you hit any enemy. Refreshes on entering a new room.</value>
+  </data>
+  <data name="LifebloodOmen" xml:space="preserve">
+    <value>Spawns a grimmkin every 180 seconds. Killing the ghost grants 3/6/9 lifeblood (based on ghost level). The ghost disappears if you leave the room or if 90 seconds passed. The chances for the ghost adjust based on your current nail level. I'll will not list the chances here. Look at the repository, if you want to know.</value>
+  </data>
+  <data name="MantisStyle" xml:space="preserve">
+    <value>Increase your nail range by 50% (from base).</value>
+  </data>
+  <data name="MarissasAudience" xml:space="preserve">
+    <value>After 45 to 120 seconds spawn multiple companions (Weavers, Hatchlings, Grimmchilds) that persist in the current room or for 30 to 90 seconds. If Marissa is dead, spawns Revek each 45 to 120 seconds, that persist in the current room or 20 to 90 seconds.</value>
+  </data>
+  <data name="MaskOvercharge" xml:space="preserve">
+    <value>Overcharge one of your mask (it glows in different colors), while you have exactly that much health, a circle gathers around you that deal damage and restore 8 soul each second. The overcharged mask changes every 30 seconds and may never select the full hp mask. Inactive while you have Joni's Blessing equipped.</value>
+  </data>
+  <data name="MindblastOfUnn" xml:space="preserve">
+    <value>Hitting an enemy with the dream nail permanently increases the taken damage by 2. Bonus for wearing charm: +1 Dreamwielder, +2 Dreamshield and +3 Shape of Unn. The effect is doubled with awoken dream nail.</value>
+  </data>
+  <data name="OneOfUs" xml:space="preserve">
+    <value>Every twelve seconds you cast the deep focus spore cloud. Hold the crystal dash button to prevent that (in case you want to do pogos for example).</value>
+  </data>
+  <data name="OverwhelmingPower" xml:space="preserve">
+    <value>When you cast a spell while your soul vessel is full (not counting additional soul vessels), they deal twice as much damage and are twice as big. Has a 10% chance to deal 2 mask of damage and limit your soul vessel for 30 to 120 seconds, after casting an overpowered spell.</value>
+  </data>
+  <data name="PaleLuck" xml:space="preserve">
+    <value>When you would take damage, you have a 2% chance to be healed instead. Increased by 4% for each King's Brand and Kingssoul. Also increased by 1 % for each king's idol you have.</value>
+  </data>
+  <data name="PureSpirit" xml:space="preserve">
+    <value>If you have 0 soul after casting a spell you will gain an rotating orb around you that deals 2 contact damage (4 with shamans), up to 3 at a time. If you have 3 orbs active, the next fireball will attach the orbs to it, let them explode upon contact with enemies for 20 damage and restore 10 soul. Soul Snatcher and Soul Eater will increase the soul gained by the orb. Shaman Stone will increase the orb explosion damage.</value>
+  </data>
+  <data name="QueenThorns" xml:space="preserve">
+    <value>Thorns of Agony are now "Queen Thorns", which removes the freeze on hit. restore soul if it hits an enemy and has a 33% chance to restore 1 hp if it kills an enemy.</value>
+  </data>
+  <data name="RelentlessSwarm" xml:space="preserve">
+    <value>Hits with flukes restore 2 soul, or 5 if the enemy died.</value>
+  </data>
+  <data name="ReluctantPilgrim" xml:space="preserve">
+    <value>While standing of the ground, the grubberfly elegy effect is active regardless of your hp (Joni conditions are still normal). If you have grubberfly equipped, the damage on ground is doubled instead. Also mutes the beams after a few casts.</value>
+  </data>
+  <data name="Requiem" xml:space="preserve">
+    <value>Holding focus, while you dying will spawn you in dirtmouth instead of your bench. Holding dream nail will spawn you at spirit's glade instead (when the glade is open). Holding Crystal Dash will spawn you at Hallownests Crown (?), requires Crystal Heart to work.</value>
+  </data>
+  <data name="ReturnToUnn" xml:space="preserve">
+    <value>Your Movement speed is increased by 3 and your dash cooldown is reduces by 0.5 seconds, while you facing left.</value>
+  </data>
+  <data name="SacredShell" xml:space="preserve">
+    <value>You can longer take more than one damage per hit (excluding overcharmed).</value>
+  </data>
+  <data name="ScrewTheRules" xml:space="preserve">
+    <value>Fury of the Fallen is now also active with 2 hp, but the damage buff is decreased to 50%. Grubberfly Beams are only nerfed by 40%.</value>
+  </data>
+  <data name="ShadowForged" xml:space="preserve">
+    <value>Decrease the cooldown of shade cloak by 0.2 seconds and increases sharp shadow damage by 100%.</value>
+  </data>
+  <data name="ShiningBound" xml:space="preserve">
+    <value>For each charm you're wearing, you gain 1 soul per 2 seconds.</value>
+  </data>
+  <data name="SoulExtractEfficiency" xml:space="preserve">
+    <value>You gain 5 more soul per hit on enemies and your extra soul vessel soul will be added instantly to be used for spells after casting spell. This does NOT affect focus, unless you do the wind up again.</value>
+  </data>
+  <data name="StagAdoption" xml:space="preserve">
+    <value>Using the stag egg on the lore power page spawns a small stag that can bring you to any opened stag station. After using it, the egg respawns after 5 minutes in the stag nest.</value>
+  </data>
+  <data name="TouchGrass" xml:space="preserve">
+    <value>Every 8 seconds standing on grass, you heal 1 mask. Decreased to 4 seconds if wearing Shape of Unn.</value>
+  </data>
+  <data name="Tourist" xml:space="preserve">
+    <value>You can talk to the firefly to the right to teleport to black egg temple for 50 geo, or back to this room from the temple.</value>
+  </data>
+  <data name="TreasureHunter" xml:space="preserve">
+    <value>Obtained treasure (via the treasure charts that you can purchase at iselda with Lemm's Order) grant you their effect. Special Relics: Increase the amount of geo that Lemm gives you with each relic by 50%. Magic  Key: Opens all locked doors and other mechanisms besides Toll and the Lifeblood Door. Medallion: Increase the chance for an essence drop upon an enemys death to 10% (20% with Dreamwielder)</value>
+  </data>
+  <data name="TrueForm" xml:space="preserve">
+    <value>While your shade is active, you deal 30% more damage and increase your nail length by 25%. The effects are doubled, if you are in the same room as your shade.</value>
+  </data>
+  <data name="UnitedWeStand" xml:space="preserve">
+    <value>Weavers are bigger, Grimmchild shoots faster and Hatchling deal more damage for each companion (of those three) you have.</value>
+  </data>
+  <data name="WeDontTalkAboutShade" xml:space="preserve">
+    <value>You don't get the soul limit punishment, when dying. Your geo will still be on the shade. When dying while the shade is active, your shade only loose 50% of your geo.</value>
+  </data>
+  <data name="WellFocused" xml:space="preserve">
+    <value>Focus is cast 30% faster.</value>
+  </data>
+  <data name="WisdomOfTheSage" xml:space="preserve">
+    <value>For each Mr. Mushroom stage that you completed, spells cost 1 soul less.</value>
+  </data>
+  <data name="YouLikeJazz" xml:space="preserve">
+    <value>You can now have 10 hatchlings at a time, they spawn twice at fast and cost only 25% of their normal soul.</value>
+  </data>
+</root>

@@ -1,4 +1,5 @@
 using GlobalEnums;
+using HutongGames.PlayMaker;
 using ItemChanger;
 using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
@@ -125,7 +126,7 @@ public class SettingManager
             _fromMenu = true;
             LoreManager.Instance.JokerScrolls = -1;
             LoreManager.Instance.CleansingScrolls = -1;
-            PowerManager.ControlState = PowerControlState.NotObtained;
+            PowerManager.ControlState = RandomizerManager.PlayingRandomizer ? PowerControlState.ToggleAccess : PowerControlState.NotObtained;
             ElderbugState = 0;
             if (GameMode == GameMode.Normal && !RandomizerManager.PlayingRandomizer)
             {
@@ -369,31 +370,19 @@ public class SettingManager
                 LoreMaster.Instance.LogError("Error while modifying ghost: " + ghostName + ": " + exception.Message);
             }
         }
-        // Prevent the player from reading lore tablets without the item (rando only)
-        else if (string.Equals(self.FsmName, "Inspection") && !LoreManager.Instance.CanRead && PowerManager.GetPowerByKey(self.FsmVariables.FindFsmString("Convo Name")?.Value, out Power power, false))
-            self.GetState("Init").ClearTransitions();
-        // Prevent the player from reading lore tablets without the item (rando only)
-        else if (string.Equals(self.FsmName, "inspect_region") && !LoreManager.Instance.CanRead && (PowerManager.GetPowerByKey(self.FsmVariables.FindFsmString("Game Text Convo")?.Value, out power, false)
+        else if (!LoreManager.Instance.CanRead && ((string.Equals(self.FsmName, "Inspection") && PowerManager.GetPowerByKey(self.FsmVariables.FindFsmString("Convo Name")?.Value, out Power power, false))
+            || (string.Equals(self.FsmName, "inspect_region") && (!RandomizerManager.PlayingRandomizer 
+            || !RandomizerRequestModifier.PointOfInterestLocations.Contains(self.gameObject.name)) 
+            && (PowerManager.GetPowerByKey(self.FsmVariables.FindFsmString("Game Text Convo")?.Value, out power, false)
             || string.Equals(self.gameObject.name, "Inspect Region Ghost")))
-            self.GetState("Init").ClearTransitions();
-        else if (string.Equals(self.FsmName, "npc_control")
-            && ((!LoreManager.Instance.CanListen && (!string.Equals(self.gameObject.name, "Dreamer Plaque Inspect")
-            && !string.Equals(self.gameObject.name, "Fountain Inspect") && !string.Equals(self.gameObject.name, "Fountain Donation")))
-            || (!LoreManager.Instance.CanRead && (string.Equals(self.gameObject.name, "Dreamer Plaque Inspect")
-            || string.Equals(self.gameObject.name, "Fountain Inspect") || string.Equals(self.gameObject.name, "Fountain Donation")))))
+            || ((self.gameObject.name.EndsWith("Trial Board") || self.gameObject.name == "Dreamer Plaque Inspect" 
+            || self.gameObject.name == "Fountain Inspect") && self.FsmName == "npc_control")))
+                self.GetState("Init").ClearTransitions();
+        else if (!LoreManager.Instance.CanListen && ((string.Equals(self.FsmName, "npc_control")
+            && self.FsmVariables.FindFsmString("Prompt Name")?.Value == "Listen") || self.gameObject.name == "Stag" && self.FsmName == "Stag Control"))
         {
             // There are a few exceptions with npc which we want to ignore.
-            if (self.gameObject.LocateMyFSM("Conversation Control") is PlayMakerFSM fsm && !(string.Equals(self.gameObject.name, "Moth NPC")
-                || string.Equals(self.gameObject.name, "Corpse Inspect")
-                || string.Equals(self.gameObject.name, "Dream Nail Get") || string.Equals(self.gameObject.name, "Centipede Inspect")
-                || string.Equals(self.gameObject.name, "Goam Inspect") || string.Equals(self.gameObject.name, "Zap Bug Inspect")
-                || string.Equals(self.gameObject.name, "AbyssTendril Inspect") || string.Equals(self.gameObject.name, "End Scene")
-                || string.Equals(self.transform.parent?.name, "Dreamer Monomon") || string.Equals(self.gameObject.name, "Mage Door")
-                || string.Equals(self.gameObject.name, "Love Door") || string.Equals(self.gameObject.name, "Jiji Door")
-                || string.Equals(self.gameObject.name, "Waterways Machine") || string.Equals(self.transform.parent?.name, "Bathhouse Door")
-                || string.Equals(self.gameObject.name, "Coffin") || string.Equals(self.gameObject.name, "Tram Call Box")
-                || string.Equals(self.gameObject.name, "Mossman Inspect")
-                || self.gameObject.name.Contains("Shaman") || fsm.GetState("Check Key") != null))
+            if (self.gameObject.name != "Moth NPC" && !self.gameObject.name.Contains("Shaman"))
                 self.GetState("Idle").ClearTransitions();
         }
         else if (string.Equals(self.FsmName, "Stag Control") && !LoreManager.Instance.CanListen)
@@ -402,8 +391,8 @@ public class SettingManager
             self.GetState("Out Of Range").ClearTransitions();
         else if (string.Equals(self.FsmName, "Thorn Counter"))
         {
-            PowerManager.GetPowerByKey("QUEEN", out power, false);
-            ((QueenThornsPower)power).ModifyThorns(self);
+            PowerManager.GetPowerByKey("QUEEN", out Power power2, false);
+            ((QueenThornsPower)power2).ModifyThorns(self);
         }
         else if (string.Equals(self.gameObject.name, "Ghost Activator") && self.transform.childCount > 0 && string.Equals("Ghost NPC Joni", self.transform.GetChild(0)?.name)
             && RandomizerManager.PlayingRandomizer)

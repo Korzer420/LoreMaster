@@ -1,4 +1,5 @@
 using ItemChanger;
+using ItemChanger.Extensions;
 using LoreMaster.Enums;
 using LoreMaster.ItemChangerData.Other;
 using LoreMaster.LorePowers;
@@ -77,6 +78,9 @@ internal class LoreManager
             return "Lore Powers";
         else if (key.Equals("TreasureCharts"))
             return "Treasure Charts";
+        // Shows the location of the key for the more doors door (removes the preview part and the _1 at the and.
+        else if (key.StartsWith("Master_Key_Preview-"))
+            return "The Master Key whispers " + (key.Substring(19, key.Length - 21));
         key = ModifyKey(key);
         if (key.Equals("INV_NAME_SUPERDASH"))
         {
@@ -247,8 +251,6 @@ internal class LoreManager
     /// <summary>
     /// Modifies the language key, to keep consistancy between the lore keys (mostly for NPC).
     /// </summary>
-    /// <param name="key"></param>
-    /// <returns></returns>
     private string ModifyKey(string key)
     {
         if (key.Contains("BRETTA_DIARY"))
@@ -291,6 +293,8 @@ internal class LoreManager
             key = "TISO";
         else if (string.Equals(key, "ZOTE_DEEPNEST_1") || string.Equals(key, "ZOTE_DEEPNEST_2"))
             key = "ZOTE";
+        else if (string.Equals(key, "XUN_GRAVE_INSPECT2"))
+            key = "XUN_GRAVE_INSPECT";
         return key;
     }
 

@@ -165,19 +165,16 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         {
             Name = "Custom Text",
             Description = "Replaces the text of tablets or conversations (if available).",
-            Values = new string[] {
-                    "On",
-                    "Off",
-                },
+            Values = new string[] { "On", "Off"},
             Saver = option => LoreManager.Instance.UseCustomText = option == 0,
             Loader = () => LoreManager.Instance.UseCustomText ? 0 : 1
         });
 
         menu.Add(new()
         {
-            Name = "Power Descriptions",
+            Name = "Power Explanations",
             Description = "Determines how powers show be descripted",
-            Values = new string[] { "Vague Hints", "Clear Descriptions" },
+            Values = new string[] { "Vague Hints", "Descriptions" },
             Saver = option => LoreManager.Instance.UseHints = option == 0,
             Loader = () => LoreManager.Instance.UseHints ? 0 : 1
         });
@@ -198,6 +195,15 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
             Values = new string[] { "On", "Off" },
             Saver = option => SettingManager.Instance.BombQuickCast = option == 0,
             Loader = () => SettingManager.Instance.BombQuickCast ? 0 : 1
+        });
+
+        menu.Add(new()
+        { 
+            Name = "Tracker Permanent",
+            Description = "If off, the tracker will disappear after 5 seconds.",
+            Values = new string[] {"On", "Off"},
+            Saver = option => LorePowers.Crossroads.GreaterMindPower.PermanentTracker = option == 0,
+            Loader = () => LorePowers.Crossroads.GreaterMindPower.PermanentTracker ? 0 : 1
         });
 
         return menu;
@@ -232,6 +238,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         LoreManager.Instance.UseCustomText = globalSaveData.EnableCustomText;
         SettingManager.Instance.DisableYellowMushroom = globalSaveData.DisableNausea;
         SettingManager.Instance.BombQuickCast = globalSaveData.BombQuickCast;
+        LorePowers.Crossroads.GreaterMindPower.PermanentTracker = globalSaveData.TrackerPermanently;
         RandomizerManager.LoadSettings(globalSaveData);
         if (globalSaveData.MenuPowerTags == null)
         {
@@ -254,7 +261,8 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
             DisableNausea = SettingManager.Instance.DisableYellowMushroom,
             BombQuickCast = SettingManager.Instance.BombQuickCast,
             RandoSettings = RandomizerManager.Settings,
-            MenuPowerTags = PowerManager.GlobalPowerStates
+            MenuPowerTags = PowerManager.GlobalPowerStates,
+            TrackerPermanently = LorePowers.Crossroads.GreaterMindPower.PermanentTracker
         };
 
     /// <summary>

@@ -133,7 +133,6 @@ internal static class RandomizerRequestModifier
         Beast_Den_Altar,
         Garden_Golem,
         Grub_Seal,
-        Path_Of_Pain_Seal,
         White_Palace_Nursery,
         Grimm_Summoner_Corpse,
         Stag_Nest
@@ -148,7 +147,6 @@ internal static class RandomizerRequestModifier
         Inspect_Beast_Den_Altar,
         Inspect_Garden_Golem,
         Inspect_Grub_Seal,
-        Inspect_Path_Of_Pain_Seal,
         Inspect_White_Palace_Nursery,
         Inspect_Grimm_Summoner_Corpse,
         Stag_Egg_Inspect
@@ -457,42 +455,14 @@ internal static class RandomizerRequestModifier
             requestBuilder.AddToVanilla(new(Cleansing_Scroll_Double, $"{Elderbug_Reward_Prefix}{9}"));
         }
 
-        if (RandomizerManager.Settings.RandomizeTreasureCharts)
-        {
-            for (int i = 1; i < 15; i++)
-                requestBuilder.AddItemByName($"{Treasure_Chart_Prefix}{i}");
-            requestBuilder.AddLocationByName(Iselda_Treasure);
-            requestBuilder.AddLocationByName(Lemm_Door);
-            requestBuilder.AddItemByName(Lemm_Sign);
-            requestBuilder.AddItemByName(Lemm_Order);
-            requestBuilder.EditLocationRequest(Iselda_Treasure, info =>
-            {
-                info.getLocationDef = () =>
-                {
-                    return new()
-                    {
-                        AdditionalProgressionPenalty = true,
-                        FlexibleCount = true,
-                        Name = Iselda_Treasure,
-                        SceneName = "Room_mapper"
-                    };
-                };
-            });
-        }
-        else if (RandomizerManager.Settings.DefineRefs || RandomizerManager.Settings.RandomizeTreasures)
-        {
-            for (int i = 1; i < 15; i++)
-                requestBuilder.AddToVanilla($"{Treasure_Chart_Prefix}{i}", Iselda_Treasure);
-            requestBuilder.AddToVanilla(Lemm_Sign, Lemm_Door);
-            requestBuilder.AddToVanilla(Lemm_Order, Lemm_Door);
-        }
-
         if (RandomizerManager.Settings.RandomizeTreasures)
         {
             foreach (string location in TreasureLocation)
                 requestBuilder.AddLocationByName(location);
             foreach (string item in TreasureItems)
                 requestBuilder.AddItemByName(item);
+            requestBuilder.AddLocationByName(Lemm_Door);
+            requestBuilder.AddItemByName(Lemm_Order);
             EditRequests(TreasureItems, TreasureLocation, requestBuilder, true);
         }
         else if (RandomizerManager.Settings.DefineRefs)
@@ -515,12 +485,14 @@ internal static class RandomizerRequestModifier
                 Finder.GetItem(Magical_Key),
                 Finder.GetItem(Dream_Medallion)
             };
+            
             for (int i = 0; i < 14; i++)
             {
-                AbstractItem rolledItem = treasureItems[LoreMaster.Instance.Generator.Next(0, treasureItems.Count)];
+                AbstractItem rolledItem = treasureItems[requestBuilder.rng.Next(0, treasureItems.Count)];
                 treasureItems.Remove(rolledItem);
                 requestBuilder.AddToVanilla(rolledItem.name, TreasureLocation[i]);
             }
+            requestBuilder.AddToVanilla(Lemm_Order, Lemm_Door);
         }
 
         if (RandomizerManager.Settings.CursedReading)

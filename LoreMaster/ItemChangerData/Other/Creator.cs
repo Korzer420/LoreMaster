@@ -6,6 +6,7 @@ using LoreMaster.ItemChangerData.Items;
 using LoreMaster.ItemChangerData.Locations;
 using LoreMaster.ItemChangerData.Locations.SpecialLocations;
 using LoreMaster.ItemChangerData.UIDefs;
+using LoreMaster.Manager;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -80,9 +81,9 @@ internal static class Creator
             {
                 name = new BoxedString(npcName.Replace("_", " ")),
                 shopDesc = new BoxedString(Properties.ShopDescriptions.ResourceManager.GetString(npcName)),
-                sprite = new CustomSprite(npcName.EndsWith("_Diary") ? npcName.Substring(0,npcName.Length - 6) : npcName),
+                sprite = new CustomSprite(npcName.EndsWith("_Diary") ? npcName.Substring(0, npcName.Length - 6) : npcName),
                 textType = TextType.LeftLore,
-                lore = new LanguageString(sheet,key)
+                lore = new LanguageString(sheet, key)
             },
             tags = tagList
         };
@@ -100,7 +101,11 @@ internal static class Creator
                 name = locationName,
                 sceneName = scene,
                 flingType = FlingType.DirectDeposit,
-                GameObjectName = gameObjectName
+                GameObjectName = gameObjectName,
+                tags = new()
+                {
+                    ItemManager.CreateInteropTag(scene)
+                }
             };
         else
             return new()
@@ -108,7 +113,11 @@ internal static class Creator
                 name = locationName,
                 sceneName = scene,
                 flingType = FlingType.DirectDeposit,
-                GameObjectName = gameObjectName
+                GameObjectName = gameObjectName,
+                tags = new()
+                {
+                    ItemManager.CreateInteropTag(scene)
+                }
             };
     }
 
@@ -120,7 +129,11 @@ internal static class Creator
             flingType = FlingType.DirectDeposit,
             forceShiny = false,
             Position = position,
-            sceneName = scene
+            sceneName = scene,
+            tags = new()
+                {
+                    ItemManager.CreateInteropTag(scene)
+                }
         };
     }
 
@@ -132,7 +145,11 @@ internal static class Creator
             flingType = FlingType.DirectDeposit,
             forceShiny = false,
             GameObjectName = gameObjectName,
-            sceneName = scene
+            sceneName = scene,
+            tags = new()
+                {
+                    ItemManager.CreateInteropTag(scene)
+                }
         };
     }
 
@@ -147,8 +164,9 @@ internal static class Creator
             ObjectName = objectName,
             FsmName = fsmName,
             tags = new()
-            {
-            }
+                {
+                    ItemManager.CreateInteropTag(scene)
+                }
         };
 
     #endregion
