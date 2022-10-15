@@ -66,7 +66,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
     /// Get the version of the mod.
     /// </summary>
     /// <returns></returns>
-    public override string GetVersion() => Assembly.GetExecutingAssembly().GetName().Version.ToString() +"-beta2";
+    public override string GetVersion() => Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
     /// <summary>
     /// Gets the names (objects) that need to be preloaded.
