@@ -32,7 +32,7 @@ This mod does prevent killing ghost npc until their item has been obtained.
 
 #### Interaction
 - If Cursed listening is active, you'll be prevented from talking to them until you find the ability.
-- If you randomized Elderbug Rewards, Defined Refs or set the Black egg temple condition to not dreamer, NPC dialogue will count towards the lore amount.
+- If you randomized Elderbug Rewards, Defined Refs or set the Black egg temple condition to not dreamer, these will count towards the lore amount.
 
 ### Randomize Dream Warrior Statues
 
@@ -47,6 +47,7 @@ Randomizes all 7 dream warrior statues/corpses:
 
 ### Interaction
 - If Cursed Reading is active, you'll be prevented from inspecting the graves, until you find the ability.
+- If you randomized Elderbug Rewards, Defined Refs or set the Black egg temple condition to not dreamer, these will count towards the lore amount.
 
 ### Randomize Dream Dialogue
 Randomizes major dream nail dialogue. As major count most npc/objects which trigger the big dream dialogue box.
@@ -70,6 +71,12 @@ Randomizes major dream nail dialogue. As major count most npc/objects which trig
 - The crystalized Shaman
 - The corpse of the Grimm Summoner by the lantern (requires to first activate the lantern)
 
+### Interaction
+- If you randomized Elderbug Rewards, Defined Refs or set the Black egg temple condition to not dreamer, these will count towards the lore amount.
+- The descending dark and white (king) fragement locations will not be available until your acquired their dream dialogue checks.
+- The golem in the abyss may require a room reload, to give the second location items. This only occurs if you enter the room with void heart will the first location
+still does have items.
+
 ### Randomize Point of Interest
 Randomizes interesting location scattered around HK. Since a few of them are hidden well, it is advices that you only use this setting, 
 if you know the game fairly good.
@@ -80,30 +87,28 @@ if you know the game fairly good.
 - The hidden machine in Grimm's Tent
 - The corpse of the giant golem in QG.
 - The Grub "seal" in the hidden room inside Tower of Love.
-- The seal at the entrance of path of pain.
 - The nursery in White Palace.
 - The corpse of the grimm summoner by the lantern.
 - The egg in Stag Nest
+
+### Interaction
+- If you randomized Elderbug Rewards, Defined Refs or set the Black egg temple condition to not dreamer, these will count towards the lore amount.
 
 ### Randomize Elderbug Rewards
 In Lore Master Extra, the player can follow a questline with Elderbug, which gives various rewards for certain milestones. These will be randomized.
 - First reward for any spell -> Normally Reading (if Cursed Reading is turned off, this will just add an extra location)
 - Second reward for 5 acquired lore pieces -> Normally Listening (if Cursed Listening is turned off, this will just add an extra location)
 - Third reward for 10 lore.
-- Fourth reward for 15 lore.
+- Fourth reward for 15 lore -> Normally the Lore Page Access, will just add an extra location.
 - Fifth reward for 20 lore.
-- Sixth reward for 30 lore.
+- Sixth reward for 30 lore. -> Normally the Lore Page Toggle Control, will just add an extra location.
 - Seventh reward for 40 lore.
 - Second to last reward for 50 lore.
 - Last reward for 55 lore.
 
 Adds special items to the pool:
-- Lore Power Page
-- Lore Power Page Toggle ability (to turn on/off unwanted powers)
 - 3 scrolls to automatically gain a missing lore tablet.
 - 3 scrolls to undo curses (unused in randomizer, will turn to geo)
-
-If this setting is not randomized, Elderbug will grant the Lore page with control automatically once you talked to him.
 
 #### Interaction
 - Elderbug is NOT affected by Cursed Listening (as well as the snail shaman for Vengeful Spirit, due to the original questline)
@@ -147,6 +152,7 @@ if you actually have dash or not (as long as the stage is high enough).
 
 #### Interaction
 - If Cursed Listening is active, you'll be prevent from talking to them, until you find the ability.
+- If you randomized Elderbug Rewards, Defined Refs or set the Black egg temple condition to not dreamer, these will count towards the lore amount.
 
 ### Randomize Treasure
 Randomizes the 14 buried treasures across Hallownest. If not randomized, you can buy the maps from Iselda after obtaining "Lemm's Order".
@@ -159,7 +165,7 @@ Also add a medallion which increases the chance of obtaining essence from enemie
 If on, every treasure ground is only considered in logic, once you got Wayward Compass. Entering a room with a treasure location while having Compass equipped,
 will notify you that there's a treasure in this room and display what the item there is. This setting is recommended for the first time, you play with treasures.
 
-### Randomize Treasure Charts
+### Randomize Treasure Charts (Currently unused due to an IC bug)
 Randomizes the 14 treasure charts, Lemms Door and Iselda's second shop. With "Lemm's Order" (an item) you have access to more items in Iselda's shop 
 (like with Sly's Key).
 
@@ -211,4 +217,4 @@ Determines how the abilities of the mod should behave.
   player from killing them. You will be granted the items, once you hit them with your nail.
   
 ### More Doors
-- The "Master Key" isn't able to open the doors placed by this mod. Instead it will show you where the key is (currently unimplemented)
+- The "Master Key" isn't able to open the doors placed by this mod. Instead it will show you at which location the key is.
