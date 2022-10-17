@@ -214,6 +214,7 @@ internal class TreasureHunterPower : Power
                     new Lambda(() => self.SendEvent(Treasures["magicKey"] != TreasureState.NotObtained ? "KEY" : "NO KEY"))
                     }
                 };
+                self.AddState(extraState);
                 extraState.AddTransition("KEY", "Box Up YN");
                 extraState.AddTransition("NO KEY", "Box Up");
                 self.GetState("Check Key").RemoveTransitionsTo("Box Up");
@@ -235,9 +236,10 @@ internal class TreasureHunterPower : Power
                         new Lambda(() => self.SendEvent(Treasures["magicKey"] != TreasureState.NotObtained ? "YES" : "NO"))
                     }
                 };
+                self.AddState(extraState);
                 extraState.AddTransition("YES", "Box Up YN");
                 extraState.AddTransition("NO", "Box Up");
-                self.GetState("Got Pass?").AdjustTransition("NO KEY", extraState.Name);
+                self.GetState("Got Pass?").AdjustTransition("NO", extraState.Name);
             }
             else if (string.Equals(self.FsmName, "Tram Door") && string.Equals(self.gameObject.name, "Door Inspect"))
             {
@@ -249,6 +251,7 @@ internal class TreasureHunterPower : Power
                         new Lambda(() => self.SendEvent(Treasures["magicKey"] != TreasureState.NotObtained ? "PASS" : "NO PASS"))
                     }
                 };
+                self.AddState(extraState);
                 extraState.AddTransition("PASS", "Box Up YN");
                 extraState.AddTransition("NO PASS", "Box Up");
                 self.GetState("Check Pass").AdjustTransition("NO PASS", extraState.Name);
@@ -293,6 +296,9 @@ internal class TreasureHunterPower : Power
         IL.EnemyDeathEffects.EmitEssence += EnemyDeathEffects_EmitEssence;
         if (ModHooks.GetMod("MoreDoors", true) is Mod)
             On.ShowPromptMarker.OnEnter += DoorPreview;
+#if DEBUG
+        Treasures["magicKey"] = TreasureState.Obtained;
+#endif
     }
 
     /// <inheritdoc/>
@@ -325,9 +331,9 @@ internal class TreasureHunterPower : Power
         On.HutongGames.PlayMaker.Actions.SetPlayerDataBool.OnEnter -= SetPlayerDataBool_OnEnter;
     }
 
-    #endregion
+#endregion
 
-    #region Methods
+#region Methods
 
     private IEnumerator WaitForItemList(ActivateGameObject self)
     {
@@ -415,9 +421,9 @@ internal class TreasureHunterPower : Power
         playMakerFSM.SendEvent("DISPLAY ENEMY DREAM");
     }
 
-    #endregion
+#endregion
 
-    #region Inventory Screen
+#region Inventory Screen
 
     public static void BuildInventory(GameObject treasureChartPage)
     {
@@ -754,5 +760,5 @@ internal class TreasureHunterPower : Power
         return orig;
     }
 
-    #endregion
+#endregion
 }

@@ -170,8 +170,6 @@ public static class ItemList
 
     public const string Inspect_Grub_Seal = "Inspect-Grub_Seal";
 
-    public const string Inspect_Path_Of_Pain_Seal = "Inspect-Path_Of_Pain_Seal";
-
     public const string Inspect_White_Palace_Nursery = "Inspect-White_Palace_Nursery";
 
     public const string Inspect_Grimm_Summoner_Corpse = "Inspect-Grimm_Summoner_Corpse";

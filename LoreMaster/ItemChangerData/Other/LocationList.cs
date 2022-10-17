@@ -165,8 +165,6 @@ public static class LocationList
 
     public const string Grub_Seal = "Grub_Seal";
 
-    public const string Path_Of_Pain_Seal = "Path_Of_Pain_Seal";
-
     public const string White_Palace_Nursery = "White_Palace_Nursery";
 
     public const string Grimm_Summoner_Corpse = "Grimm_Summoner_Corpse";
