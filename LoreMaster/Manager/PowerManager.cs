@@ -126,7 +126,6 @@ internal static class PowerManager
     /// </summary>
     public static PowerControlState ControlState { get; set; }
 
-
     public static Dictionary<string, PowerTag> GlobalPowerStates { get; set; }
 
     #endregion

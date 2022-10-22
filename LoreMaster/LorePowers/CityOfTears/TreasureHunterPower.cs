@@ -77,10 +77,10 @@ internal class TreasureHunterPower : Power
         _treasureSprites[4] = SpriteHelper.CreateSprite("MagicKey", false);
         _treasureSprites[5] = SpriteHelper.CreateSprite("Dream_Medallion", false);
         _treasureSprites[6] = SpriteHelper.CreateSprite("Lemms_Order", false);
-        _treasureSprites[7] = Finder.GetItem(ItemNames.Wanderers_Journal).UIDef.GetSprite();
-        _treasureSprites[8] = Finder.GetItem(ItemNames.Hallownest_Seal).UIDef.GetSprite();
-        _treasureSprites[9] = Finder.GetItem(ItemNames.Kings_Idol).UIDef.GetSprite();
-        _treasureSprites[10] = Finder.GetItem(ItemNames.Arcane_Egg).UIDef.GetSprite();
+        //_treasureSprites[7] = Finder.GetItem(ItemNames.Wanderers_Journal).UIDef.GetSprite();
+        //_treasureSprites[8] = Finder.GetItem(ItemNames.Hallownest_Seal).UIDef.GetSprite();
+        //_treasureSprites[9] = Finder.GetItem(ItemNames.Kings_Idol).UIDef.GetSprite();
+        //_treasureSprites[10] = Finder.GetItem(ItemNames.Arcane_Egg).UIDef.GetSprite();
         _emptySprite = GameObject.Find("_GameCameras").transform.Find("HudCamera/Inventory/Charms/Backboards/BB 3").GetComponent<SpriteRenderer>().sprite;
     }
 
@@ -283,6 +283,14 @@ internal class TreasureHunterPower : Power
     #endregion
 
     #region Control
+
+    protected override void Initialize()
+    {
+        _treasureSprites[7] = Finder.GetItem(ItemNames.Wanderers_Journal).UIDef.GetSprite();
+        _treasureSprites[8] = Finder.GetItem(ItemNames.Hallownest_Seal).UIDef.GetSprite();
+        _treasureSprites[9] = Finder.GetItem(ItemNames.Kings_Idol).UIDef.GetSprite();
+        _treasureSprites[10] = Finder.GetItem(ItemNames.Arcane_Egg).UIDef.GetSprite();
+    }
 
     /// <inheritdoc/>
     protected override void Enable()

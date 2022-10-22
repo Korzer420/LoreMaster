@@ -46,11 +46,19 @@ internal class MenuManager : ModeMenuConstructor
     private void FixVerticalAlign_AlignText(On.FixVerticalAlign.orig_AlignText orig, FixVerticalAlign self)
     {
         orig(self);
-        if (!string.IsNullOrEmpty(self.transform.parent?.name) && PowerManager.GlobalPowerStates.ContainsKey(self.transform.parent.name.Substring(0, self.transform.parent.name.Length - 7)))
+
+        try
         {
-            Text text = self.GetComponent<Text>();
-            text.verticalOverflow = VerticalWrapMode.Overflow;
-            text.lineSpacing = 1f;
+            if (!string.IsNullOrEmpty(self.transform.parent?.name) && PowerManager.GlobalPowerStates.ContainsKey(self.transform.parent.name.Substring(0, self.transform.parent.name.Length - 7)))
+            {
+                Text text = self.GetComponent<Text>();
+                text.verticalOverflow = VerticalWrapMode.Overflow;
+                text.lineSpacing = 1f;
+            }
+        }
+        catch (Exception exception)
+        {
+            LoreMaster.Instance.LogWarn("An exception occured while modifying text alignment: " + exception.Message);
         }
     }
 

@@ -31,8 +31,6 @@ public static class ItemManager
     /// </summary>
     internal static void DefineIC()
     {
-        ItemChangerMod.CreateSettingsProfile(false);
-
         try
         {
             DefineTeleporter();
@@ -40,9 +38,9 @@ public static class ItemManager
             DefineExtraLore();
             DefineElderbug();
             ModifyNormalLore();
+            DefineNPC();
             if (ModHooks.GetMod("Randomizer 4") is Mod)
             {
-                DefineNPC();
                 DefineDreamNailReactions();
                 DefinePointOfInterest();
                 DefineDreamWarrior();
@@ -936,6 +934,8 @@ public static class ItemManager
             extraLore.Add(currentPlacement);
             extraLore.Add(CreatePlacement(LocationList.Lore_Tablet_Record_Bela, ItemList.Lore_Tablet_Record_Bela));
             extraLore.Add(CreatePlacement(LocationList.Traitor_Grave, ItemList.Traitor_Grave));
+            extraLore.Add(CreatePlacement(Dreamer_Tablet, Inscription_Dreamer_Tablet));
+            extraLore.Add(CreatePlacement(City_Fountain, Inscription_City_Fountain));
         }
         
         // If lore is randomized, the request will handle the replacement, otherwise we just add our own ones.

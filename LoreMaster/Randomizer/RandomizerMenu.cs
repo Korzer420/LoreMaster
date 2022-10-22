@@ -1,4 +1,5 @@
 using LoreMaster.Enums;
+using LoreMaster.LorePowers;
 using LoreMaster.Manager;
 using LoreMaster.Settings;
 using MenuChanger;
@@ -78,7 +79,6 @@ public class RandomizerMenu
     /// </summary>
     public static void OnExitMenu()
     {
-        On.FixVerticalAlign.AlignText -= _instance.FixVerticalAlign_AlignText;
         _instance = null;
     }
 
@@ -151,6 +151,7 @@ public class RandomizerMenu
         catch (Exception exception)
         {
             LoreMaster.Instance.LogError("Error in construct menu: " + exception.Message);
+            LoreMaster.Instance.LogError("Error in construct menu: " + exception.StackTrace);
         }
     }
 
@@ -235,6 +236,12 @@ public class RandomizerMenu
     private void FixVerticalAlign_AlignText(On.FixVerticalAlign.orig_AlignText orig, FixVerticalAlign self)
     {
         orig(self);
+        if (PowerManager.GlobalPowerStates == null || !PowerManager.GlobalPowerStates.Any())
+        {
+            PowerManager.GlobalPowerStates = new();
+            foreach (Power power in PowerManager.GetAllPowers())
+                PowerManager.GlobalPowerStates.Add(power.PowerName, power.DefaultTag);
+        }
         if (!string.IsNullOrEmpty(self.transform.parent?.name) && PowerManager.GlobalPowerStates.ContainsKey(self.transform.parent.name.Substring(0, self.transform.parent.name.Length - 7)))
         {
             Text text = self.GetComponent<Text>();

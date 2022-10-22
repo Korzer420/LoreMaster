@@ -173,8 +173,6 @@ public class SettingManager
             On.DeactivateIfPlayerdataFalse.OnEnable += PreventMylaZombie;
             SendEventByName.OnEnter += EndAllPowers;
             AbstractItem.BeforeGiveGlobal += GiveLoreItem;
-            //if (ModHooks.GetMod("Randomizer 4") is Mod)
-            //    RandomizerManager.CheckForRandoFile();
         }
         catch (Exception exception)
         {
@@ -370,13 +368,13 @@ public class SettingManager
             }
         }
         else if (!LoreManager.Instance.CanRead && ((string.Equals(self.FsmName, "Inspection") && PowerManager.GetPowerByKey(self.FsmVariables.FindFsmString("Convo Name")?.Value, out Power power, false))
-            || (string.Equals(self.FsmName, "inspect_region") && (!RandomizerManager.PlayingRandomizer 
-            || !RandomizerRequestModifier.PointOfInterestLocations.Contains(self.gameObject.name)) 
+            || (string.Equals(self.FsmName, "inspect_region") && (!RandomizerManager.PlayingRandomizer
+            || !RandomizerRequestModifier.PointOfInterestLocations.Contains(self.gameObject.name))
             && (PowerManager.GetPowerByKey(self.FsmVariables.FindFsmString("Game Text Convo")?.Value, out power, false)
             || string.Equals(self.gameObject.name, "Inspect Region Ghost")))
-            || ((self.gameObject.name.EndsWith("Trial Board") || self.gameObject.name == "Dreamer Plaque Inspect" 
+            || ((self.gameObject.name.EndsWith("Trial Board") || self.gameObject.name == "Dreamer Plaque Inspect"
             || self.gameObject.name == "Fountain Inspect") && self.FsmName == "npc_control")))
-                self.GetState("Init").ClearTransitions();
+            self.GetState("Init").ClearTransitions();
         else if (!LoreManager.Instance.CanListen && ((string.Equals(self.FsmName, "npc_control")
             && self.FsmVariables.FindFsmString("Prompt Name")?.Value == "Listen") || self.gameObject.name == "Stag" && self.FsmName == "Stag Control"))
         {
@@ -400,7 +398,7 @@ public class SettingManager
                 if (PlayerData.instance.GetBool(nameof(PlayerData.instance.hasDreamNail)))
                     self.SendEvent("SHINY PICKED UP");
             }), 0);
-        
+
 
         orig(self);
     }

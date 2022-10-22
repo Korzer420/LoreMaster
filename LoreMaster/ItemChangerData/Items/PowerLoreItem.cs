@@ -1,4 +1,5 @@
 using ItemChanger;
+using ItemChanger.Internal;
 using ItemChanger.Items;
 using ItemChanger.UIDefs;
 using LoreMaster.Helper;
@@ -32,9 +33,8 @@ internal class PowerLoreItem : LoreItem
 
         // Plays the given sound file.
         if (SoundClipName == "Lore")
-            base.GiveImmediate(info);
+            SoundManager.Instance.PlayClipAtPoint("LoreSound", HeroController.instance.transform.localPosition);
         else
             SoundEffectManager.Manager.PlayClipAtPoint(SoundClipName, HeroController.instance.transform.position);
-        LoreMaster.Instance.Log("Gifted item is: " + name);
     }
 }

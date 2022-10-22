@@ -166,7 +166,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         {
             Name = "Custom Text",
             Description = "Replaces the text of tablets or conversations (if available).",
-            Values = new string[] { "On", "Off"},
+            Values = new string[] { "On", "Off" },
             Saver = option => LoreManager.Instance.UseCustomText = option == 0,
             Loader = () => LoreManager.Instance.UseCustomText ? 0 : 1
         });
@@ -199,10 +199,10 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         });
 
         menu.Add(new()
-        { 
+        {
             Name = "Tracker Permanent",
             Description = "If off, the tracker will disappear after 5 seconds.",
-            Values = new string[] {"On", "Off"},
+            Values = new string[] { "On", "Off" },
             Saver = option => LorePowers.Crossroads.GreaterMindPower.PermanentTracker = option == 0,
             Loader = () => LorePowers.Crossroads.GreaterMindPower.PermanentTracker ? 0 : 1
         });
@@ -299,18 +299,25 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
     LoreMasterLocalSaveData ILocalSettings<LoreMasterLocalSaveData>.OnSaveLocal()
     {
         LoreMasterLocalSaveData saveData = new();
-        PowerManager.SavePowers(ref saveData);
-        saveData.PowerData = PowerManager.PreparePowerData();
-        saveData.HasReadAbility = LoreManager.Instance.CanRead;
-        saveData.HasListenAbility = LoreManager.Instance.CanListen;
-        saveData.EndCondition = SettingManager.Instance.EndCondition;
-        saveData.NeededLore = SettingManager.Instance.NeededLore;
-        saveData.GameMode = SettingManager.Instance.GameMode;
-        saveData.ElderbugState = SettingManager.Instance.ElderbugState;
-        saveData.PageState = PowerManager.ControlState;
-        saveData.CleansingScrolls = LoreManager.Instance.CleansingScrolls;
-        saveData.JokerScrolls = LoreManager.Instance.JokerScrolls;
-        saveData.TravellerOrder = LoreManager.Instance.Traveller;
+        try
+        {
+            PowerManager.SavePowers(ref saveData);
+            saveData.PowerData = PowerManager.PreparePowerData();
+            saveData.HasReadAbility = LoreManager.Instance.CanRead;
+            saveData.HasListenAbility = LoreManager.Instance.CanListen;
+            saveData.EndCondition = SettingManager.Instance.EndCondition;
+            saveData.NeededLore = SettingManager.Instance.NeededLore;
+            saveData.GameMode = SettingManager.Instance.GameMode;
+            saveData.ElderbugState = SettingManager.Instance.ElderbugState;
+            saveData.PageState = PowerManager.ControlState;
+            saveData.CleansingScrolls = LoreManager.Instance.CleansingScrolls;
+            saveData.JokerScrolls = LoreManager.Instance.JokerScrolls;
+            saveData.TravellerOrder = LoreManager.Instance.Traveller;
+        }
+        catch (Exception ex)
+        {
+            LoreMaster.Instance.LogError("An error occured while saving local: " + ex.StackTrace);
+        }
         return saveData;
     }
 
