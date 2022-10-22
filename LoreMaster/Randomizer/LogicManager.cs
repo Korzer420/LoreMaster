@@ -45,15 +45,20 @@ public class LogicManager
             || RandomizerManager.Settings.DefineRefs)
         {
             loreTerm = builder.GetOrAddTerm("LORE");
-            IEnumerable<string> allLoreTablets = Finder.GetFullLocationList().Where(x => x.Key.StartsWith("Lore_Tablet-") && x.Key != ItemList.Lore_Tablet_Record_Bela).Select(x => x.Key);
-            foreach (string item in allLoreTablets)
-                builder.AddItem(new SingleItem(item, new(loreTerm, 1)));
+            foreach (Area area in RandomizerRequestModifier.LoreItems.Keys)
+                foreach (string item in RandomizerRequestModifier.LoreItems[area])
+                    builder.AddItem(new SingleItem(item + "_Empowered", new(loreTerm, 1)));
+
             if (RandomizerManager.Settings.BlackEggTempleCondition != BlackEggTempleCondition.Dreamers)
                 builder.DoLogicEdit(new("Opened_Black_Egg_Temple", "Room_temple[left1] + "
                     + (RandomizerManager.Settings.BlackEggTempleCondition == BlackEggTempleCondition.Lore
                     ? "LORE>" + RandomizerManager.Settings.NeededLore
                     : "DREAMER>2 + " + "LORE>" + RandomizerManager.Settings.NeededLore)));
         }
+        else
+            foreach (Area area in RandomizerRequestModifier.LoreItems.Keys)
+                foreach (string item in RandomizerRequestModifier.LoreItems[area])
+                    builder.AddItem(new EmptyItem(item + "_Empowered"));
 
         if (RandomizerManager.Settings.CursedListening)
         {
@@ -128,6 +133,8 @@ public class LogicManager
             {
                 builder.DoLogicEdit(new(LocationList.Dreamer_Tablet, "(ORIG) + READ"));
                 builder.DoLogicEdit(new(LocationList.City_Fountain, "(ORIG) + READ"));
+                builder.DoLogicEdit(new(LocationList.Lore_Tablet_Record_Bela, "(ORIG) + READ"));
+                builder.DoLogicEdit(new(LocationList.Traitor_Grave, "(ORIG) + READ"));
             }
 
             // Let point of interest count towards lore conditions.
@@ -157,7 +164,7 @@ public class LogicManager
                 // Determine the spawn order.
                 LoreManager.Instance.Traveller.Clear();
                 // Force the same generation for the same seed.
-                LoreMaster.Instance.Generator = new System.Random(RandomizerMod.RandomizerMod.GS.DefaultMenuSettings.Seed);
+                LoreMaster.Instance.Generator = new System.Random(settings.Seed);
                 LoreManager.Instance.Traveller.Add(Traveller.Quirrel, new()
                 {
                     CurrentStage = RandomizerManager.Settings.TravellerOrder == TravelOrder.Everywhere ? 10 : 0,
@@ -339,8 +346,6 @@ public class LogicManager
         {
             using Stream stream = typeof(LogicManager).Assembly.GetManifestResourceStream("LoreMaster.Resources.Randomizer.Logic.ElderbugLogic.json");
             builder.DeserializeJson(LogicManagerBuilder.JsonType.Locations, stream);
-            builder.AddItem(new EmptyItem(ItemList.Lore_Page));
-            builder.AddItem(new EmptyItem(ItemList.Lore_Page_Control));
             builder.AddItem(new EmptyItem(ItemList.Joker_Scroll));
             builder.AddItem(new EmptyItem(ItemList.Cleansing_Scroll));
             builder.AddItem(new EmptyItem(ItemList.Cleansing_Scroll_Double));

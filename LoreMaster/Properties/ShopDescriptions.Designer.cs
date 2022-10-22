@@ -197,6 +197,15 @@ namespace LoreMaster.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die I didn&apos;t took this from the door... it fell to the ground and I decided I&apos;d return it to him... later. ähnelt.
+        /// </summary>
+        internal static string Lemm_Sign {
+            get {
+                return ResourceManager.GetString("Lemm_Sign", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die From the most beautiful voice of the world besides me. ähnelt.
         /// </summary>
         internal static string Marissa {
@@ -305,11 +314,38 @@ namespace LoreMaster.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die A special lore tablet, which was hidden deep in Soul Sanctum. ähnelt.
+        /// </summary>
+        internal static string Record_Bela {
+            get {
+                return ResourceManager.GetString("Record_Bela", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die My thoughts on a stag egg I found. ähnelt.
+        /// </summary>
+        internal static string Stag_Egg {
+            get {
+                return ResourceManager.GetString("Stag_Egg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Brooding Mawlek offered me this. I&apos;m not sure what this could mean... ähnelt.
         /// </summary>
         internal static string Tiso {
             get {
                 return ResourceManager.GetString("Tiso", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Why are gravestones so damn expensive? Well the inscription isn&apos;t at least. ähnelt.
+        /// </summary>
+        internal static string Traitor_Grave {
+            get {
+                return ResourceManager.GetString("Traitor_Grave", resourceCulture);
             }
         }
         

@@ -96,7 +96,8 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         ("Ruins_Elevator", "Ghost NPC"),
         ("Room_nailsmith", "Nailsmith"),
         ("Deepnest_41", "Spider Flyer"),
-        ("Deepnest_East_10", "Dream Gate")
+        ("Deepnest_East_10", "Dream Gate"),
+        ("Crossroads_46", "Tram Call Box")
     };
 
     /// <summary>

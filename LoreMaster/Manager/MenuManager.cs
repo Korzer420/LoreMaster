@@ -253,6 +253,7 @@ internal class MenuManager : ModeMenuConstructor
         endCondition.MoveTo(new(-500f, 0f));
         NeededLore = new(ExtraPage, "Needed Lore");
         NeededLore.Bind(Settings, typeof(ExtraSettings).GetProperty("NeededLore", BindingFlags.Public | BindingFlags.Instance));
+        NeededLore.ValueChanged += NeededLore_ValueChanged;
         NeededLore.MoveTo(new(-500f, -150f));
         NeededLore.Hide();
 
@@ -320,6 +321,14 @@ internal class MenuManager : ModeMenuConstructor
 
         // Create main page
         new VerticalItemPanel(ExtraPage, new(0f, 400f), 80, false, Elements);
+    }
+
+    private void NeededLore_ValueChanged(int obj)
+    {
+        if (obj < 0)
+            NeededLore.SetValue(0);
+        else if (obj > 60)
+            NeededLore.SetValue(60);
     }
 
     public override void OnExitMainMenu()

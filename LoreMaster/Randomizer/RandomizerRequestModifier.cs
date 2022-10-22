@@ -1,5 +1,6 @@
 using ItemChanger;
 using LoreMaster.Enums;
+using LoreMaster.ItemChangerData.Other;
 using RandomizerMod.RC;
 using System.Collections.Generic;
 using static ItemChanger.ItemNames;
@@ -135,7 +136,9 @@ internal static class RandomizerRequestModifier
         Grub_Seal,
         White_Palace_Nursery,
         Grimm_Summoner_Corpse,
-        Stag_Nest
+        Stag_Nest,
+        LocationList.Lore_Tablet_Record_Bela,
+        LocationList.Traitor_Grave
     };
 
     internal static string[] PointOfInterestItems = new string[]
@@ -149,7 +152,9 @@ internal static class RandomizerRequestModifier
         Inspect_Grub_Seal,
         Inspect_White_Palace_Nursery,
         Inspect_Grimm_Summoner_Corpse,
-        Stag_Egg_Inspect
+        Stag_Egg_Inspect,
+        ItemList.Lore_Tablet_Record_Bela,
+        ItemList.Traitor_Grave
     };
 
     internal static string[] TravellerLocations = new string[]
@@ -240,7 +245,7 @@ internal static class RandomizerRequestModifier
         Golden_Arcane_Egg
     };
 
-    internal static Dictionary<Area, string[]> LoreItem = new()
+    internal static Dictionary<Area, string[]> LoreItems = new()
     {
        { Area.AncientBasin, new string[] {Lore_Tablet_Ancient_Basin } },
        { Area.FogCanyon, new string[]{ Lore_Tablet_Archives_Left,
@@ -286,6 +291,15 @@ internal static class RandomizerRequestModifier
 
     private static void AddLoreMasterExtra(RequestBuilder requestBuilder)
     {
+        if (requestBuilder.gs.PoolSettings.LoreTablets)
+            // Replace the normal lore item with the special ones.
+            foreach (Area area in LoreItems.Keys)
+                foreach (string item in LoreItems[area])
+                {
+                    requestBuilder.RemoveItemByName(item);
+                    requestBuilder.AddItemByName(item + "_Empowered");
+                }
+
         if (RandomizerManager.Settings.RandomizeNpc)
         {
             for (int i = 0; i < NpcItems.Length; i++)
@@ -373,8 +387,6 @@ internal static class RandomizerRequestModifier
             requestBuilder.AddItemByName(Joker_Scroll, 3);
             requestBuilder.AddItemByName(Cleansing_Scroll);
             requestBuilder.AddItemByName(Cleansing_Scroll_Double);
-            requestBuilder.AddItemByName(Lore_Page);
-            requestBuilder.AddItemByName(Lore_Page_Control);
 
             requestBuilder.EditItemRequest(Joker_Scroll, info =>
             {
@@ -415,40 +427,12 @@ internal static class RandomizerRequestModifier
                     };
                 };
             });
-            requestBuilder.EditItemRequest(Lore_Page, info =>
-            {
-                info.getItemDef = () =>
-                {
-                    return new()
-                    {
-                        MajorItem = false,
-                        Name = Lore_Page,
-                        Pool = "Lore",
-                        PriceCap = 300
-                    };
-                };
-            });
-            requestBuilder.EditItemRequest(Lore_Page_Control, info =>
-            {
-                info.getItemDef = () =>
-                {
-                    return new()
-                    {
-                        MajorItem = false,
-                        Name = Lore_Page_Control,
-                        Pool = "Lore",
-                        PriceCap = 600
-                    };
-                };
-            });
         }
         else if (RandomizerManager.Settings.DefineRefs)
         {
             requestBuilder.AddToVanilla(new(Wanderers_Journal, $"{Elderbug_Reward_Prefix}{1}"));
             requestBuilder.AddToVanilla(new(Hallownest_Seal, $"{Elderbug_Reward_Prefix}{2}"));
-            requestBuilder.AddToVanilla(new(Lore_Page, $"{Elderbug_Reward_Prefix}{3}"));
             requestBuilder.AddToVanilla(new(Joker_Scroll, $"{Elderbug_Reward_Prefix}{4}"));
-            requestBuilder.AddToVanilla(new(Lore_Page_Control, $"{Elderbug_Reward_Prefix}{5}"));
             requestBuilder.AddToVanilla(new(Joker_Scroll, $"{Elderbug_Reward_Prefix}{6}"));
             requestBuilder.AddToVanilla(new(Cleansing_Scroll, $"{Elderbug_Reward_Prefix}{7}"));
             requestBuilder.AddToVanilla(new(Joker_Scroll, $"{Elderbug_Reward_Prefix}{8}"));
@@ -485,7 +469,7 @@ internal static class RandomizerRequestModifier
                 Finder.GetItem(Magical_Key),
                 Finder.GetItem(Dream_Medallion)
             };
-            
+
             for (int i = 0; i < 14; i++)
             {
                 AbstractItem rolledItem = treasureItems[requestBuilder.rng.Next(0, treasureItems.Count)];
@@ -530,13 +514,24 @@ internal static class RandomizerRequestModifier
                 };
             });
         }
+
+
+        if (!requestBuilder.gs.PoolSettings.LoreTablets)
+        {
+            // If dreamers are randomized but lore isn't, the world sense lore tablet becomes unreadable, this is why we add Greater Mind instantly
+            if (requestBuilder.gs.PoolSettings.Dreamers)
+                requestBuilder.AddToStart(Lore_Tablet_World_Sense + "_Empowered");
+            // If focus is randomized but lore isn't, the focus lore tablet becomes unreadable, this is why we add Well Focused instantly.
+            if (requestBuilder.gs.NoveltySettings.RandomizeFocus)
+                requestBuilder.AddToStart(Lore_Tablet_Kings_Pass_Focus + "_Empowered");
+        }
     }
 
     private static void EditRequests(string[] items, string[] locations, RequestBuilder builder, bool treasure = false)
     {
         foreach (string item in items)
         {
-            builder.EditItemRequest(item, info => 
+            builder.EditItemRequest(item, info =>
             {
                 info.getItemDef = () =>
                 {

@@ -163,6 +163,9 @@
   <data name="Joni" xml:space="preserve">
     <value>The last words spoken by the heretic. Should probably cost more than 1000. Buy it now, before I change my mind.</value>
   </data>
+  <data name="Lemm_Sign" xml:space="preserve">
+    <value>I didn't took this from the door... it fell to the ground and I decided I'd return it to him... later.</value>
+  </data>
   <data name="Marissa" xml:space="preserve">
     <value>From the most beautiful voice of the world besides me.</value>
   </data>
@@ -199,8 +202,17 @@
   <data name="Quirrel" xml:space="preserve">
     <value>The wisdom of a real adventurer, which can swim fairly good. :)</value>
   </data>
+  <data name="Record_Bela" xml:space="preserve">
+    <value>A special lore tablet, which was hidden deep in Soul Sanctum.</value>
+  </data>
+  <data name="Stag_Egg" xml:space="preserve">
+    <value>My thoughts on a stag egg I found.</value>
+  </data>
   <data name="Tiso" xml:space="preserve">
     <value>Brooding Mawlek offered me this. I'm not sure what this could mean...</value>
+  </data>
+  <data name="Traitor_Grave" xml:space="preserve">
+    <value>Why are gravestones so damn expensive? Well the inscription isn't at least.</value>
   </data>
   <data name="Vespa" xml:space="preserve">
     <value>A queen from a distant land tortured me with this. Let me share my pain with you.</value>

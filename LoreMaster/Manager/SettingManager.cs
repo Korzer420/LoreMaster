@@ -93,7 +93,6 @@ public class SettingManager
     /// <summary>
     /// Gets or sets the lore needed to open the black egg temple door.
     /// </summary>
-    [MenuRange(0, 60)]
     public int NeededLore { get; set; } = 0;
 
     /// <summary>
@@ -430,7 +429,7 @@ public class SettingManager
     }
 
     /// <summary>
-    /// Event handler to adjust the message and give the power of randomizer items.
+    /// Event handler to adjust the Elderbug questline.
     /// </summary>
     private void GiveLoreItem(ReadOnlyGiveEventArgs itemData)
     {
@@ -445,50 +444,10 @@ public class SettingManager
                     : 2;
                 ElderbugLocation.ItemThrown = false;
             }
-
-            //If focus is randomized but the lore tablet isn't, the lore tablet becomes unavailable, which is why we add the power to focus instead.
-            if (itemData.Item.name.Equals("Focus") && ItemChanger.Internal.Ref.Settings.Placements.ContainsKey(LocationNames.Focus))
-            {
-                string text = string.Empty;
-                LoreManager.Instance.ModifyText("TUT_TAB_01", ref text);
-                if (itemData.Item.UIDef is BigUIDef big && !string.IsNullOrEmpty(text))
-                    big.descTwo = new BoxedString(text.Replace("<br>", " "));
-            }
-            // If world sense is randomized but the lore tablet isn't, the lore tablet becomes unavailable, which is why we add the power to world sense instead.
-            else if (itemData.Item.name.Equals("World_Sense") && ItemChanger.Internal.Ref.Settings.Placements.ContainsKey(LocationNames.World_Sense))
-            {
-                string text = string.Empty;
-                LoreManager.Instance.ModifyText("COMPLETION_RATE_UNLOCKED", ref text);
-                if (itemData.Item.UIDef is BigUIDef big && !string.IsNullOrEmpty(text))
-                    big.descTwo = new BoxedString(text.Replace("<br>", " "));
-            }
-            else if (itemData.Item.name.Contains("Lore_Tablet-") || itemData.Item.name.Contains("Inspect-") || itemData.Item.name.Contains("Dialogue"))
-            {
-                string tabletName = RandomizerHelper.TranslateRandoName(itemData.Item.name);
-                // If the tablet name is empty, a "fake lore tablet" has been obtained.
-                if (string.IsNullOrEmpty(tabletName))
-                {
-                    // We add a fake power
-                    PowerManager.ObtainedPowers.Add(new PlaceholderPower());
-                    return;
-                }
-                string placeHolder = string.Empty;
-                LoreManager.Instance.ModifyText(tabletName, ref placeHolder);
-                PowerManager.GetPowerByKey(tabletName, out Power power, false);
-                if (power == null)
-                    LoreMaster.Instance.Log("Couldn't modify tablet item: " + tabletName);
-                else if (itemData.Item.UIDef is MsgUIDef msg && itemData.Item.name.Contains("Lore_Tablet-"))
-                { 
-                    msg.name = new BoxedString(power.PowerName);
-                    Area area = RandomizerRequestModifier.LoreItem.FirstOrDefault(x => x.Value.Contains(itemData.Item.name)).Key;
-                    if (area != Area.None)
-                        msg.sprite = new CustomSprite($@"Tablets\{area}", false);
-                }
-            }
         }
         catch (Exception exception)
         {
-            LoreMaster.Instance.LogError("An error occured while modifying a lore item drop: " + exception.Message);
+            LoreMaster.Instance.LogError("An error occured while modifying a Elderbug " + exception.Message);
             LoreMaster.Instance.LogError(exception.StackTrace);
         }
     }

@@ -1,11 +1,13 @@
 using ItemChanger;
-using ItemChanger.Tags;
+using ItemChanger.Items;
 using ItemChanger.UIDefs;
 using LoreMaster.Enums;
+using LoreMaster.Helper;
 using LoreMaster.ItemChangerData.Items;
 using LoreMaster.ItemChangerData.Locations;
 using LoreMaster.ItemChangerData.Locations.SpecialLocations;
 using LoreMaster.ItemChangerData.UIDefs;
+using LoreMaster.LorePowers;
 using LoreMaster.Manager;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,23 +22,12 @@ internal static class Creator
 {
     #region Items
 
-    internal static SoundItem CreateSoundItem(string itemName, string clipName, UIDef uIDef, List<Tag> tagList = null)
-    {
-        return new()
-        {
-            name = itemName,
-            ClipName = clipName,
-            UIDef = uIDef,
-            tags = tagList
-        };
-    }
-
     internal static TravellerItem CreateTravellerItem(string itemName, string key, Traveller traveller, List<Tag> tagList = null)
     {
         return new()
         {
             name = itemName,
-            ClipName = traveller.ToString(),
+            SoundClipName = traveller.ToString(),
             Traveller = traveller,
             UIDef = new LoreUIDef()
             {
@@ -49,44 +40,127 @@ internal static class Creator
                     Traveller.Tiso => "Minor NPC",
                     _ => traveller.ToString()
                 }, key),
-                textType = TextType.Lore
+                textType = TextType.LeftLore
             },
             tags = tagList
         };
     }
 
-    internal static PowerLoreItem CreatePowerLoreItem(string itemName, string key, string sheet, TextType type, UIDef uIDef, List<Tag> tagList = null)
+    internal static PowerLoreItem CreatePowerLoreItem(string itemName,
+        string key,
+        string sheet = "Minor NPC",
+        TextType type = TextType.LeftLore,
+        string soundClipName = "Lore",
+        string shopDesc = null,
+        List<Tag> tagList = null)
     {
+        CustomSprite sprite;
+        string realName = new string(itemName.SkipWhile(x => !x.Equals('-')).Skip(1).ToArray());
+        shopDesc ??= Properties.ShopDescriptions.ResourceManager.GetString(realName);
+        if (!string.IsNullOrEmpty(RandomizerHelper.TranslateRandoName(itemName)))
+        {
+            PowerManager.GetPowerByKey(RandomizerHelper.TranslateRandoName(itemName), out Power power, false);
+
+            // Npc use their own sprites.
+            if (itemName.StartsWith("Dialogue-"))
+            {
+                sprite = new(realName, true);
+                if (!System.IO.File.Exists(System.IO.Path.GetDirectoryName(typeof(LoreMaster).Assembly.Location) + "\\Resources\\Sounds\\" + realName + ".wav"))
+                    soundClipName = "Dream_Ghost";
+                else
+                    soundClipName = realName;
+            }
+            else
+                sprite = new("Tablets/" + power.Location.ToString(), false);
+            realName = power.PowerName;
+        }
+        else
+        {
+            // There are a few special sprites.
+            if (realName.StartsWith("Shade_Golem"))
+                realName = "Shade_Golem";
+            else if (realName == "Grimm_Summoner_Corpse")
+                realName = "Grimm_Summoner";
+
+            if (realName == "Grimm_Machine")
+                sprite = new("Lore", false);
+            else
+            {
+                sprite = new(realName, true);
+                if (soundClipName == "Lore")
+                    soundClipName = realName;
+            }
+            realName = realName.Replace("_", " ");
+        }
+
         return new()
         {
             name = itemName,
             loreKey = key,
             loreSheet = sheet,
             textType = type,
-            UIDef = uIDef,
-            tags = tagList
+            UIDef = new LoreUIDef()
+            {
+                name = new BoxedString(realName),
+                lore = new LanguageString(sheet, key),
+                textType = type,
+                shopDesc = new BoxedString(shopDesc),
+                sprite = sprite
+            },
+            tags = tagList,
+            SoundClipName = soundClipName
         };
     }
 
-    internal static NpcItem CreateNpcItem(string itemName, string key, string sheet = "Minor NPC", List<Tag> tagList = null)
+    internal static PowerLoreItem CreateCustomPowerLoreItem(string itemName,
+        string text,
+        List<Tag> tagList = null)
     {
-        string npcName = new string(itemName.SkipWhile(x => x != '-').Skip(1).ToArray());
-        return new()
+        PowerLoreItem item = CreatePowerLoreItem(itemName, null, null, TextType.Lore, "Secret", Properties.ShopDescriptions.Fountain, tagList);
+        (item.UIDef as LoreUIDef).lore = new BoxedString(text);
+        return item;
+    }
+
+    internal static PowerLoreItem CreatePowerLoreItemWithDream(string itemName,
+        string key,
+        string sheet = "Minor NPC",
+        TextType type = TextType.LeftLore,
+        string soundClipName = "Lore",
+        string shopDesc = null,
+        List<Tag> tagList = null)
+    {
+        PowerLoreItem item = CreatePowerLoreItem(itemName, key, sheet, type, soundClipName, shopDesc, tagList);
+        item.SoundClipName = "Dream_Enter";
+        item.UIDef = CreateDreamUIDef(itemName, key, sheet, (CustomSprite)(item.UIDef as LoreUIDef).sprite);
+        return item;
+    }
+
+    internal static PowerLoreItem ParseNormalLoreItem(LoreItem baseItem)
+    {
+        try
         {
-            name = itemName,
-            textType = TextType.LeftLore,
-            loreKey = key,
-            loreSheet = sheet,
-            UIDef = new LoreUIDef()
+            PowerLoreItem item = new()
             {
-                name = new BoxedString(npcName.Replace("_", " ")),
-                shopDesc = new BoxedString(Properties.ShopDescriptions.ResourceManager.GetString(npcName)),
-                sprite = new CustomSprite(npcName.EndsWith("_Diary") ? npcName.Substring(0, npcName.Length - 6) : npcName),
-                textType = TextType.LeftLore,
-                lore = new LanguageString(sheet, key)
-            },
-            tags = tagList
-        };
+                name = baseItem.name + "_Empowered",
+                loreKey = baseItem.loreKey,
+                loreSheet = baseItem.loreSheet,
+                textType = baseItem.textType,
+                SoundClipName = "Lore",
+                tags = baseItem.tags
+            };
+
+            PowerManager.GetPowerByKey(RandomizerHelper.TranslateRandoName(item.name), out Power power, false);
+            LoreUIDef uIDef = (LoreUIDef)baseItem.UIDef;
+            uIDef.sprite = new CustomSprite("Tablets/" + power.Location.ToString(), false);
+            uIDef.name = new BoxedString(power.PowerName);
+            item.UIDef = uIDef;
+            return item;
+        }
+        catch (System.Exception exception)
+        {
+            LoreMaster.Instance.LogError(exception.Message + "\n" + exception.StackTrace);
+            return null;
+        }
     }
 
     #endregion
@@ -104,7 +178,7 @@ internal static class Creator
                 GameObjectName = gameObjectName,
                 tags = new()
                 {
-                    ItemManager.CreateInteropTag(scene)
+                    ItemManager.CreateInteropTag(scene, locationName)
                 }
             };
         else
@@ -116,7 +190,7 @@ internal static class Creator
                 GameObjectName = gameObjectName,
                 tags = new()
                 {
-                    ItemManager.CreateInteropTag(scene)
+                    ItemManager.CreateInteropTag(scene, locationName)
                 }
             };
     }
@@ -132,7 +206,7 @@ internal static class Creator
             sceneName = scene,
             tags = new()
                 {
-                    ItemManager.CreateInteropTag(scene)
+                    ItemManager.CreateInteropTag(scene, locationName)
                 }
         };
     }
@@ -148,7 +222,7 @@ internal static class Creator
             sceneName = scene,
             tags = new()
                 {
-                    ItemManager.CreateInteropTag(scene)
+                    ItemManager.CreateInteropTag(scene, locationName)
                 }
         };
     }
@@ -165,7 +239,7 @@ internal static class Creator
             FsmName = fsmName,
             tags = new()
                 {
-                    ItemManager.CreateInteropTag(scene)
+                    ItemManager.CreateInteropTag(scene, locationName)
                 }
         };
 

@@ -43,4 +43,12 @@
         "name": "Grimm_Summoner_Corpse",
         "logic": "Cliffs_06[left1]"
     },
+    {
+        "name": "Traitor_Grave",
+        "logic": "Fungus3_49[right1] + LEFTDASH"
+    },
+    {
+        "name": "Lore_Tablet-Record_Bela",
+        "logic": "Ruins1_30[right1] | Ruins1_30[left1] | (Ruins1_30[left2] + (LEFTCLAW | WINGS) + QUAKE)"
+    }
 ]

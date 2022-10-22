@@ -122,7 +122,7 @@ internal class TreasureLocation : ContainerLocation
         name = RandomizerRequestModifier.TreasureLocation[index],
         tags = new()
         {
-            ItemManager.CreateInteropTag(null)
+            ItemManager.CreateInteropTag(null, RandomizerRequestModifier.TreasureLocation[index])
         }
     };
 }

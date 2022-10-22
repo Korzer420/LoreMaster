@@ -1,6 +1,4 @@
 using LoreMaster.Enums;
-using MenuChanger.Attributes;
-using System.Collections.Generic;
 
 namespace LoreMaster.Settings;
 

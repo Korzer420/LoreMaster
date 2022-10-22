@@ -212,7 +212,13 @@ public static class RandomizerManager
     {
         LoreManager.Instance.CanRead = !Settings.CursedReading;
         LoreManager.Instance.CanListen = !Settings.CursedListening;
+        SettingManager.Instance.NeededLore = Settings.NeededLore;
+        SettingManager.Instance.EndCondition = Settings.BlackEggTempleCondition;
     }
+
+    internal static (bool,bool) CheckSpecialLore() 
+        => (RandomizerMod.RandomizerMod.RS.GenerationSettings.NoveltySettings.RandomizeFocus, RandomizerMod.RandomizerMod.RS.GenerationSettings.PoolSettings.Dreamers);
+    
 
     #endregion
 }

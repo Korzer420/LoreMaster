@@ -1,5 +1,3 @@
-using ItemChanger;
-using ItemChanger.Extensions;
 using LoreMaster.Enums;
 using LoreMaster.ItemChangerData.Other;
 using LoreMaster.LorePowers;
@@ -181,7 +179,7 @@ internal class LoreManager
             else
                 text = "The compass can't determine the hidden treasure.";
         }
-        else if (!ModifyText(key, ref text) && PowerManager.HasObtainedPower("QUEEN", false))
+        else if (PowerManager.HasObtainedPower("QUEEN", false))
         {
             if (key.Equals("CHARM_NAME_12"))
                 return "Queen's Thorns";
@@ -204,48 +202,6 @@ internal class LoreManager
         if (!viablePowerNames.Any())
             return Properties.ElderbugDialog.Elderbug_Tip_WellFocused;
         return Properties.ElderbugDialog.ResourceManager.GetString("Elderbug_Tip_" + viablePowerNames[LoreMaster.Instance.Generator.Next(0, viablePowerNames.Count)]);
-    }
-
-    public bool ModifyText(string key, ref string displayText)
-    {
-        try
-        {
-            if (PowerManager.GetPowerByKey(key, out Power power))
-            {
-                if (power.Tag != PowerTag.Remove)
-                {
-                    if (UseCustomText && !string.IsNullOrEmpty(power.CustomText))
-                        displayText = power.CustomText;
-                    if (power.StayTwisted)
-                    {
-                        displayText += "<br><color=#c034eb>[Cursed " + power.PowerName + "]</color>";
-                        displayText += "<br>" + (UseHints ? power.TwistedHint : power.TwistedDescription);
-                    }
-                    else
-                    {
-                        displayText += "<br>[" + power.PowerName + "]";
-                        displayText += "<br>" + (UseHints ? power.Hint : power.Description);
-                    }
-                }
-                if (string.Equals(key, "PLAQUE_WARN"))
-                {
-                    PowerManager.GetPowerByKey("POP", out Power popPower, false);
-                    if (popPower.Tag != PowerTag.Remove)
-                    {
-                        displayText += "<page>For those, that reveals the secret, awaits the power:";
-                        displayText += "<br>[" + popPower.PowerName + "] ";
-                        displayText += "<br>" + (UseHints ? popPower.Hint : popPower.Description);
-                    }
-                }
-                return true;
-            }
-        }
-        catch (System.Exception exception)
-        {
-            LoreMaster.Instance.LogError("An error occured while modifying the text: " + exception.Message);
-            LoreMaster.Instance.LogError(exception.StackTrace);
-        }
-        return false;
     }
 
     /// <summary>
@@ -296,6 +252,36 @@ internal class LoreManager
         else if (string.Equals(key, "XUN_GRAVE_INSPECT2"))
             key = "XUN_GRAVE_INSPECT";
         return key;
+    }
+
+    internal string AddPowerData(Power power, string displayText, bool IsWarning = false)
+    {
+        if (power.Tag != PowerTag.Remove)
+        {
+            if (UseCustomText && !string.IsNullOrEmpty(power.CustomText))
+                displayText = power.CustomText;
+            if (power.StayTwisted)
+            {
+                displayText += "<br><color=#c034eb>[Cursed " + power.PowerName + "]</color>";
+                displayText += "<br>" + (UseHints ? power.TwistedHint : power.TwistedDescription);
+            }
+            else
+            {
+                displayText += "<br>[" + power.PowerName + "]";
+                displayText += "<br>" + (UseHints ? power.Hint : power.Description);
+            }
+        }
+        if (IsWarning)
+        {
+            PowerManager.GetPowerByKey("POP", out Power popPower, false);
+            if (popPower.Tag != PowerTag.Remove)
+            {
+                displayText += "<page>For those, that reveals the secret, awaits the power:";
+                displayText += "<br>[" + popPower.PowerName + "] ";
+                displayText += "<br>" + (UseHints ? popPower.Hint : popPower.Description);
+            }
+        }
+        return displayText;
     }
 
     #region NPC Dialogues

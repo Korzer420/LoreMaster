@@ -41,12 +41,12 @@ internal class DialogueLocation : AutoLocation
     {
         try
         {
-            if (Placement.Items.All(x => x.IsObtained()))
+            if (Placement.Items.All(x => x.IsObtained()) && name != LocationList.Queen && name != LocationList.Traitor_Grave)
             {
                 fsm.gameObject.LocateMyFSM("npc_control").GetState("Idle").ClearTransitions();
                 return;
             }
-            
+
 
             if (fsm.GetState("Give Items") is null)
             {
@@ -65,7 +65,16 @@ internal class DialogueLocation : AutoLocation
                     // Zote Greenpath/City
                     if (startState == null)
                         startState = fsm.GetState("Talk Back");
-                    transitionEnd = "Talk Finish";
+
+                    // Dung defender and the grave function differently
+                    if (fsm.gameObject.name == "Dung Defender NPC")
+                        transitionEnd = "Box Down Event";
+                    else if (fsm.transform.parent?.name == "Mantis Grave"
+                        && PlayerData.instance.GetBool(nameof(PlayerData.instance.hasXunFlower))
+                        && !PlayerData.instance.GetBool(nameof(PlayerData.instance.xunFlowerBroken)))
+                        transitionEnd = "Kneel";
+                    else
+                        transitionEnd = "Talk Finish";
                 }
 
                 // If not all items are obtained ghost npc are unkillable.
@@ -98,15 +107,19 @@ internal class DialogueLocation : AutoLocation
                 }
                 else
                     startState.AdjustTransition(startState.Transitions[0].EventName, "Give Items");
-                // As if Zote wasn't annoying enough...
+                // As if Zote wasn't annoying enough... (Dung Defender as well)
                 if (fsm.GetState("Talk R") is FsmState state)
                     state.AdjustTransition("FINISHED", "Give Items");
                 if (fsm.GetState("Check Active") is FsmState state2)
                     state2.Actions = new FsmStateAction[1]
                     {
-                        new Lambda(() => fsm.SendEvent("FINISHED"))
+                        new Lambda(() =>
+                        {
+                            fsm.SendEvent(fsm.gameObject.name != "Dung Defender NPC" || PlayerData.instance.GetBool(nameof(PlayerData.instance.killedDungDefender))
+                             ? "FINISHED"
+                             : "DESTROY");
+                        })
                     };
-
                 fsm.GetState("Give Items").AddTransition("CONVO_FINISH", transitionEnd);
             }
         }

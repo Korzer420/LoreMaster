@@ -36,6 +36,6 @@ internal class CrystalShamanLocation : DreamNailLocation
         });
         fsm.GetState("Idle").AdjustTransition("NAIL HIT", "Check Dream");
         fsm.GetState("Check Dream").AddTransition("FINISHED", "Idle");
-        fsm.GetState("Check Dream").AddTransition("NAIL HIT", "Hit Recover");
+        fsm.GetState("Check Dream").AddTransition("NAIL HIT", "Hit");
     }
 }

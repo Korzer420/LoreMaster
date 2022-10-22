@@ -45,6 +45,8 @@ public static class LocationList
 
     public const string Lore_Tablet_Record_Bela = "Lore_Tablet-Record_Bela";
 
+    public const string Traitor_Grave = "Traitor_Grave";
+
     public const string Elderbug_Reward_Prefix = "Elderbug_Reward_";
     
     #region Rando locations

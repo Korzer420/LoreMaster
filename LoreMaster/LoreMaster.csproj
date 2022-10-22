@@ -4,7 +4,7 @@
 		<TargetFramework>net472</TargetFramework>
 		<RootNamespace>LoreMaster</RootNamespace>
 		<AssemblyTitle>LoreMaster</AssemblyTitle>
-		<AssemblyVersion>2.0.1</AssemblyVersion>
+		<AssemblyVersion>2.0.2</AssemblyVersion>
 		<Deterministic>true</Deterministic>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<LangVersion>latest</LangVersion>
@@ -39,11 +39,6 @@
   </ItemGroup>
   
   <ItemGroup>
-    <_SoundItems Remove="Resources\Sounds\Bretta_Diary.wav" />
-    <_SoundItems Remove="Resources\Sounds\Menderbug_Diary.wav" />
-  </ItemGroup>
-  
-  <ItemGroup>
     <Reference Include="Assembly-CSharp">
       <HintPath>..\..\..\..\..\Program Files\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
@@ -51,7 +46,7 @@
       <HintPath>..\..\..\Mod Dll\ConnectionSettingsCode.dll</HintPath>
     </Reference>
     <Reference Include="ItemChanger">
-      <HintPath>..\..\..\Mod Dll\ItemChanger.dll</HintPath>
+      <HintPath>..\..\..\..\..\Program Files\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\Mods\ItemChanger\ItemChanger.dll</HintPath>
     </Reference>
     <Reference Include="MenuChanger">
       <HintPath>..\..\..\Mod Dll\MenuChanger.dll</HintPath>
@@ -90,10 +85,10 @@
       <HintPath>..\..\..\..\Lore\Map\RandoMapMod.dll</HintPath>
     </Reference>
     <Reference Include="RandomizerCore">
-      <HintPath>..\..\..\Mod Dll\RandomizerCore.dll</HintPath>
+      <HintPath>..\..\..\..\..\Program Files\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\Mods\RandomizerCore\RandomizerCore.dll</HintPath>
     </Reference>
     <Reference Include="RandomizerMod">
-      <HintPath>..\..\..\Mod Dll\RandomizerMod.dll</HintPath>
+      <HintPath>..\..\..\..\..\Program Files\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\Mods\Randomizer 4\RandomizerMod.dll</HintPath>
     </Reference>
     <Reference Include="SFCore">
       <HintPath>..\..\..\Mod Dll\SFCore.dll</HintPath>

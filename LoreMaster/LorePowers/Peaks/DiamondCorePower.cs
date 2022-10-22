@@ -7,6 +7,7 @@ using LoreMaster.Helper;
 using LoreMaster.Manager;
 using System;
 using System.Collections;
+using System.Linq;
 using UnityEngine;
 
 namespace LoreMaster.LorePowers.Peaks;
@@ -96,8 +97,8 @@ public class DiamondCorePower : Power
                 LoreMaster.Instance.Handler.StartCoroutine(ChargeUp());
             }
             else
-                foreach (HealthManager enemy in _enemies)
-                    _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(StunEnemy(enemy.gameObject));
+                foreach (HealthManager enemy in _enemies.Where(x=> x != null))
+                    _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(StunEnemy(enemy?.gameObject));
         }
     }
 
@@ -190,6 +191,8 @@ public class DiamondCorePower : Power
 
     private IEnumerator StunEnemy(GameObject enemy)
     {
+        if (enemy == null)
+            yield break;
         float passedTime = 0f;
         // Max speed is 60 so stun time can be 10 seconds.
         float stunTime = 1f + (((_speed < 0 ? _speed * -1 : _speed) - 30) / 3);

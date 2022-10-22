@@ -10,7 +10,7 @@ public static class ItemList
 
     public const string Lemm_Order = "Lemm_Order";
 
-    public const string Lemm_Sign = "Lore_Tablet-Lemm_Sign";
+    public const string Lemm_Sign = "Lemm_Sign";
 
     public const string Treasure_Chart_Prefix = "Treasure_Chart_";
 
@@ -46,7 +46,9 @@ public static class ItemList
 
     public const string Cleansing_Scroll = "Cleansing_Scroll";
 
-    public const string Cleansing_Scroll_Double = "Cleansing_Scroll_Double"; 
+    public const string Cleansing_Scroll_Double = "Cleansing_Scroll_Double";
+
+    public const string Traitor_Grave = "Traitor_Grave";
 
     #endregion
 

@@ -189,7 +189,7 @@ internal class TravellerLocation : DialogueLocation
                 ObjectName = data.Item2,
                 tags = new()
                 {
-                    ItemManager.CreateInteropTag(data.Item1)
+                    ItemManager.CreateInteropTag(data.Item1, locationName)
                 }
             };
         else
@@ -202,7 +202,7 @@ internal class TravellerLocation : DialogueLocation
                 ObjectName = data.Item2,
                 tags = new()
                 {
-                    ItemManager.CreateInteropTag(data.Item1)
+                    ItemManager.CreateInteropTag(data.Item1, locationName)
                 }
             };
     }
