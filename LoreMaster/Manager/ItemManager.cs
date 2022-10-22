@@ -1028,7 +1028,17 @@ public static class ItemManager
         if (PinLocations.Locations.ContainsKey(locationName))
             pin = PinLocations.Locations[locationName];
         else
-            LoreMaster.Instance.LogWarn("Couldn't find location " + locationName);
+        {
+            return new()
+            {
+                Message = "RandoSupplementalMetadata",
+                Properties = new()
+                {
+                    {"ModSource", nameof(LoreMaster) },
+                    {"DoNotMakePin", true }
+                }
+            };
+        }
         if (pin.Item4 == null)
             pin.Item4 = sceneName;
         return new()

@@ -33,7 +33,7 @@ internal class ShadeGolemDreamLocation : DreamNailLocation
             state.Actions = new FsmStateAction[0];
         // Despawn the second location if the first one still has items left. Normally void heart would enable this.
         else if (GameObjectName.Contains("02") && fsm.FsmVariables.FindFsmString("playerData bool")?.Value == "gotShadeCharm"
-            && !ItemManager.GetPlacementByName<MutablePlacement>(LocationList.Shade_Golem_Dream_Normal).Items.All(x => x.IsObtained()))
+            && !ItemManager.GetPlacementByName<AutoPlacement>(LocationList.Shade_Golem_Dream_Normal).Items.All(x => x.IsObtained()))
             fsm.GetState("Check").AddLastAction(new Lambda(() => fsm.SendEvent("DEACTIVATE")));
         
     }
