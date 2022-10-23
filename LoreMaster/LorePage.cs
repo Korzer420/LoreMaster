@@ -8,6 +8,7 @@ using LoreMaster.LorePowers;
 using LoreMaster.LorePowers.CityOfTears;
 using LoreMaster.LorePowers.HowlingCliffs;
 using LoreMaster.Manager;
+using LoreMaster.Randomizer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -275,6 +276,9 @@ internal class LorePage
                                     confirmButton.SetActive(PlayerData.instance.GetBool(nameof(PlayerData.instance.atBench))
                                    && (PowerManager.IsAreaGlobal(power.Location) || SettingManager.Instance.CurrentArea == power.Location)
                                    && PowerManager.ControlState == PowerControlState.ToggleAccess);
+
+                                if (power is DeliciousMealPower && RandomizerManager.PlayingRandomizer && !RandomizerManager.CanConsumeEgg())
+                                    powerDescription.GetComponent<TextMeshPro>().text += "\r\n<color=#fc0b03>This isn't the right time, to consume an egg. Someone else seems to want these even more than you.</color>";
                             }
                         }
                         else

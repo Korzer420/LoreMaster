@@ -219,6 +219,22 @@ public static class RandomizerManager
     internal static (bool,bool) CheckSpecialLore() 
         => (RandomizerMod.RandomizerMod.RS.GenerationSettings.NoveltySettings.RandomizeFocus, RandomizerMod.RandomizerMod.RS.GenerationSettings.PoolSettings.Dreamers);
     
+    /// <summary>
+    /// Check if the player can consume a rancid egg (for rando logic purposes)
+    /// </summary>
+    internal static bool CanConsumeEgg()
+    {
+        if (!RandomizerMod.RandomizerMod.RS.GenerationSettings.NoveltySettings.EggShop)
+            return true;
+        if (Ref.Settings.Placements.ContainsKey(LocationNames.Egg_Shop))
+        {
+            AbstractPlacement eggShop = Ref.Settings.Placements[LocationNames.Egg_Shop];
+            return eggShop.Items.All(x => x.IsObtained());
+        }
+        else
+            LoreMaster.Instance.LogWarn("Couldn't find egg shop.");
+        return false;
+    }
 
     #endregion
 }

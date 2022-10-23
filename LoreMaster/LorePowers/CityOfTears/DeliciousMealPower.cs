@@ -1,4 +1,5 @@
 using LoreMaster.Enums;
+using LoreMaster.Randomizer;
 using Modding;
 using System;
 using System.Collections;
@@ -37,7 +38,15 @@ public class DeliciousMealPower : Power
     private string CheckForEgg(string key, string sheetTitle, string orig)
     {
         // This assumes, that the game only asks for this key, when the cursor moves to the rancid egg in the inventory.
-        _selectedEgg = key.Equals("INV_DESC_RANCIDEGG");
+        if (key == "INV_DESC_RANCIDEGG")
+        {
+            if (RandomizerManager.PlayingRandomizer)
+                _selectedEgg = RandomizerManager.CanConsumeEgg();
+            else
+                _selectedEgg = true;
+        }
+        else
+            _selectedEgg = false;
         return orig;
     }
 
