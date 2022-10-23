@@ -79,6 +79,7 @@ public class RandomizerMenu
     /// </summary>
     public static void OnExitMenu()
     {
+        On.FixVerticalAlign.AlignText -= FixVerticalAlign_AlignText;
         _instance = null;
     }
 
@@ -233,7 +234,7 @@ public class RandomizerMenu
             item.SetValue(chosenTag);
     }
 
-    private void FixVerticalAlign_AlignText(On.FixVerticalAlign.orig_AlignText orig, FixVerticalAlign self)
+    private static void FixVerticalAlign_AlignText(On.FixVerticalAlign.orig_AlignText orig, FixVerticalAlign self)
     {
         orig(self);
         if (PowerManager.GlobalPowerStates == null || !PowerManager.GlobalPowerStates.Any())
@@ -242,7 +243,9 @@ public class RandomizerMenu
             foreach (Power power in PowerManager.GetAllPowers())
                 PowerManager.GlobalPowerStates.Add(power.PowerName, power.DefaultTag);
         }
-        if (!string.IsNullOrEmpty(self.transform.parent?.name) && PowerManager.GlobalPowerStates.ContainsKey(self.transform.parent.name.Substring(0, self.transform.parent.name.Length - 7)))
+        if (!string.IsNullOrEmpty(self.transform.parent?.name) && 
+            self.transform.parent.name.Length > 7
+            && PowerManager.GlobalPowerStates.ContainsKey(self.transform.parent.name.Substring(0, self.transform.parent.name.Length - 7)))
         {
             Text text = self.GetComponent<Text>();
             text.verticalOverflow = VerticalWrapMode.Overflow;

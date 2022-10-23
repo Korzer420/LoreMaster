@@ -45,6 +45,7 @@ internal static class RandomizerHelper
          {Path_of_Pain_Reward, "POP" },
          {Lemm_Sign, "RELICDEALER_DOOR" },
          { Dialogue_Menderbug_Diary, "MENDERBUG" },
+         { Traitor_Grave, "XUN_GRAVE_INSPECT" },
          {Dialogue_Gravedigger, "GRAVEDIGGER" },
          {Dialogue_Poggy, "POGGY" },
          {Dialogue_Emilitia, "EMILITIA" },
