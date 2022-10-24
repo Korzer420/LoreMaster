@@ -94,7 +94,7 @@ internal class DialogueLocation : AutoLocation
                         {
                             FlingType = flingType,
                             Container = Container.Tablet,
-                            MessageType = name == LocationList.Dreamer_Tablet ? MessageType.Big : MessageType.Lore,
+                            MessageType = name == LocationList.Dreamer_Tablet ? MessageType.Big : MessageType.Any,
                         }, callback), "CONVO_FINISH")
                     }
                 });

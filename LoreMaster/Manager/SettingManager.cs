@@ -1,21 +1,17 @@
 using GlobalEnums;
-using HutongGames.PlayMaker;
 using ItemChanger;
 using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
 using ItemChanger.Modules;
-using ItemChanger.UIDefs;
 using LoreMaster.Enums;
 using LoreMaster.Extensions;
 using LoreMaster.Helper;
-using LoreMaster.ItemChangerData;
 using LoreMaster.ItemChangerData.Locations;
 using LoreMaster.LorePowers;
 using LoreMaster.LorePowers.CityOfTears;
 using LoreMaster.LorePowers.QueensGarden;
 using LoreMaster.Randomizer;
 using LoreMaster.UnityComponents;
-using MenuChanger.Attributes;
 using Modding;
 using On.HutongGames.PlayMaker.Actions;
 using System;
@@ -373,7 +369,8 @@ public class SettingManager
             && (PowerManager.GetPowerByKey(self.FsmVariables.FindFsmString("Game Text Convo")?.Value, out power, false)
             || string.Equals(self.gameObject.name, "Inspect Region Ghost")))
             || ((self.gameObject.name.EndsWith("Trial Board") || self.gameObject.name == "Dreamer Plaque Inspect"
-            || self.gameObject.name == "Fountain Inspect") && self.FsmName == "npc_control")))
+            || self.gameObject.name == "Fountain Inspect" || self.transform.parent?.name == "Mantis Grave"
+            || self.gameObject.name == "Antique Dealer Door") && self.FsmName == "npc_control")))
             self.GetState("Init").ClearTransitions();
         else if (!LoreManager.Instance.CanListen && ((string.Equals(self.FsmName, "npc_control")
             && self.FsmVariables.FindFsmString("Prompt Name")?.Value == "Listen") || self.gameObject.name == "Stag" && self.FsmName == "Stag Control"))

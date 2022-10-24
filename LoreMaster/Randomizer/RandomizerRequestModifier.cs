@@ -437,6 +437,16 @@ internal static class RandomizerRequestModifier
             requestBuilder.AddToVanilla(new(Cleansing_Scroll, $"{Elderbug_Reward_Prefix}{7}"));
             requestBuilder.AddToVanilla(new(Joker_Scroll, $"{Elderbug_Reward_Prefix}{8}"));
             requestBuilder.AddToVanilla(new(Cleansing_Scroll_Double, $"{Elderbug_Reward_Prefix}{9}"));
+            EditRequests(new string[] { Joker_Scroll, Cleansing_Scroll, Cleansing_Scroll_Double }, new string[] 
+            {
+                $"{Elderbug_Reward_Prefix}{1}",
+                $"{Elderbug_Reward_Prefix}{2}",
+                $"{Elderbug_Reward_Prefix}{4}",
+                $"{Elderbug_Reward_Prefix}{6}",
+                $"{Elderbug_Reward_Prefix}{7}",
+                $"{Elderbug_Reward_Prefix}{8}",
+                $"{Elderbug_Reward_Prefix}{9}"
+            }, requestBuilder);
         }
 
         if (RandomizerManager.Settings.RandomizeTreasures)
@@ -446,8 +456,29 @@ internal static class RandomizerRequestModifier
             foreach (string item in TreasureItems)
                 requestBuilder.AddItemByName(item);
             requestBuilder.AddLocationByName(Lemm_Door);
+            requestBuilder.EditLocationRequest(Lemm_Door, info => info.getLocationDef = () =>
+            {
+                return new()
+                {
+                    Name = Lemm_Door,
+                    SceneName = "Ruins1_05b",
+                    FlexibleCount = false,
+                    AdditionalProgressionPenalty = false,
+                };
+            });
             requestBuilder.AddItemByName(Lemm_Order);
             EditRequests(TreasureItems, TreasureLocation, requestBuilder, true);
+            requestBuilder.AddToStart(Lemm_Sign);
+            requestBuilder.EditItemRequest(Lemm_Sign, info => info.getItemDef = () =>
+            {
+                return new()
+                {
+                    MajorItem = false,
+                    Name = Lemm_Sign,
+                    Pool = "Lore",
+                    PriceCap = 1
+                };
+            });
         }
         else if (RandomizerManager.Settings.DefineRefs)
         {
@@ -477,6 +508,7 @@ internal static class RandomizerRequestModifier
                 requestBuilder.AddToVanilla(rolledItem.name, TreasureLocation[i]);
             }
             requestBuilder.AddToVanilla(Lemm_Order, Lemm_Door);
+            EditRequests(TreasureItems, TreasureLocation, requestBuilder, true);
         }
 
         if (RandomizerManager.Settings.CursedReading)

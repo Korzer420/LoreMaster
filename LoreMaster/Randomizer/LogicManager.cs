@@ -319,8 +319,17 @@ public class LogicManager
                 builder.AddItem(new EmptyItem(item));
             if (RandomizerManager.Settings.CursedReading)
                 builder.DoLogicEdit(new(LocationList.Lemm_Door, "(ORIG) + READ"));
-        }
 
+            if (RandomizerManager.Settings.ForceCompassForTreasure)
+            {
+                Term compass = builder.GetOrAddTerm("COMPASS");
+                builder.AddItem(new BoolItem(ItemNames.Wayward_Compass, compass));
+                foreach (string location in RandomizerRequestModifier.TreasureLocation)
+                    builder.DoLogicEdit(new(location, "(ORIG) + COMPASS"));
+            }
+            if (RandomizerManager.Settings.RandomizeTreasures)
+                builder.AddItem(new EmptyItem(ItemList.Lemm_Sign));
+        }
 
         if (RandomizerManager.Settings.CursedListening)
         {
@@ -332,14 +341,6 @@ public class LogicManager
         {
             using Stream readStream = typeof(LogicManager).Assembly.GetManifestResourceStream("LoreMaster.Resources.Randomizer.Logic.ReadLogicModifier.json");
             builder.DeserializeJson(LogicManagerBuilder.JsonType.LogicEdit, readStream);
-        }
-
-        if (RandomizerManager.Settings.ForceCompassForTreasure)
-        {
-            Term compass = builder.GetOrAddTerm("COMPASS");
-            builder.AddItem(new BoolItem(ItemNames.Wayward_Compass, compass));
-            foreach (string location in RandomizerRequestModifier.TreasureLocation)
-                builder.DoLogicEdit(new(location, "(ORIG) + COMPASS"));
         }
 
         if (RandomizerManager.Settings.RandomizeElderbugRewards || RandomizerManager.Settings.DefineRefs)

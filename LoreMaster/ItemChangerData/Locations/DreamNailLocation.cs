@@ -42,7 +42,7 @@ internal class DreamNailLocation : AutoLocation
                     {
                         FlingType = flingType,
                         Container = Container.Tablet,
-                        MessageType = MessageType.Lore
+                        MessageType = MessageType.Any
                     }, callback), "CONVO_FINISH")
                 }
             });

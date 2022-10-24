@@ -266,10 +266,7 @@ internal static class PowerManager
             }
 
             if (RandomizerManager.Settings.RandomizeTreasures)
-            {
                 _powerList["RELICDEALER_DOOR"].Tag = PowerTag.Global;
-                ObtainedPowers.Add(_powerList["RELICDEALER_DOOR"]);
-            }
         }
         else if (SettingManager.Instance.GameMode == GameMode.Normal)
             // Reset tags to default.

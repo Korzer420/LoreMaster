@@ -1,4 +1,5 @@
 using HutongGames.PlayMaker;
+using ItemChanger;
 using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
 using LoreMaster.Enums;
@@ -6,6 +7,7 @@ using Modding;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
@@ -128,7 +130,7 @@ public class BestMenderInTheWorldPower : Power
             {
                 hitInstance.DamageDealt = 1;
                 _menderbugHits++;
-                if (_menderbugHits >= 200)
+                if (_menderbugHits >= 2000)
                 {
                     PlayerData.instance.SetInt(nameof(PlayerData.instance.permadeathMode), 2);
                     HeroController.instance.TakeDamage(null, GlobalEnums.CollisionSide.top, 100, 1);
@@ -236,6 +238,32 @@ public class BestMenderInTheWorldPower : Power
     {
         if (_menderbugHits < 2)
             _trackJournal.Invoke(menderBug.GetComponent<EnemyDeathEffectsUninfected>(), new object[] { });
+        // Fail save for Menderbug items.
+        if (_menderbugHits > 10 && ItemChanger.Internal.Ref.Settings.Placements.ContainsKey("Journal_Entry-Menderbug"))
+        {
+            try
+            {
+                if (ItemChanger.Internal.Ref.Settings.Placements["Journal_Entry-Menderbug"].Items.Any(x => !x.IsObtained()))
+                {
+                    ItemChanger.Internal.Ref.Settings.Placements["Journal_Entry-Menderbug"].GiveAll(new()
+                    {
+                        FlingType = FlingType.DirectDeposit,
+                        MessageType = MessageType.Any,
+                    });
+                    ItemChanger.Internal.Ref.Settings.Placements["Hunter's_Notes-Menderbug"].GiveAll(new()
+                    {
+                        FlingType = FlingType.DirectDeposit,
+                        MessageType = MessageType.Any,
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                LoreMaster.Instance.LogError("An error occured with giving the items for Menderbug: " + ex.StackTrace);
+            }
+        }
+        if (_menderbugHits >= 200)
+            return;
         PlayMakerFSM playMakerFSM = PlayMakerFSM.FindFsmOnGameObject(FsmVariables.GlobalVariables.GetFsmGameObject("Enemy Dream Msg").Value, "Display");
         playMakerFSM.FsmVariables.GetFsmInt("Convo Amount").Value = 1;
         playMakerFSM.FsmVariables.GetFsmString("Convo Title").Value = _menderbugHits < 2 ? "Menderbug_Journal" : $"Menderbug_Warning_{_menderbugHits / 40}";

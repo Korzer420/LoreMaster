@@ -179,7 +179,7 @@ internal class LoreManager
             else
                 text = "The compass can't determine the hidden treasure.";
         }
-        else if (PowerManager.HasObtainedPower("QUEEN", false))
+        else if (PowerManager.HasObtainedPower("QUEEN", true))
         {
             if (key.Equals("CHARM_NAME_12"))
                 return "Queen's Thorns";

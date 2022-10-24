@@ -65,7 +65,7 @@ public static class ItemManager
         try
         {
             placements.AddRange(CreateTeleporter());
-            
+
             if (RandomizerManager.PlayingRandomizer)
             {
                 if (!RandomizerManager.Settings.RandomizeTreasures)
@@ -83,6 +83,8 @@ public static class ItemManager
                 placements.AddRange(CreateNpc());
                 placements.AddRange(CreateElderbugRewards());
             }
+            if (CreateTreasureCharts() is AbstractPlacement placement)
+                placements.Add(placement);
             placements.AddRange(CreateExtraLore());
         }
         catch (Exception exception)
@@ -356,7 +358,7 @@ public static class ItemManager
         // City Fountain
         Finder.DefineCustomLocation(Creator.CreateDialogueLocation(City_Fountain, "Ruins1_27", "Fountain Inspect"));
         Finder.DefineCustomItem(Creator.CreatePowerLoreItem(Inscription_City_Fountain, "RUINS_FOUNTAIN", "Lore Tablets", TextType.Lore, "Secret"));
-        
+
         // Dreamer Tablet
         Finder.DefineCustomLocation(Creator.CreateDialogueLocation(Dreamer_Tablet, "RestingGrounds_04", "Dreamer Plaque Inspect"));
         PowerLoreItem dreamerTablet = Creator.CreatePowerLoreItem(Inscription_Dreamer_Tablet, "DREAMERS_INSPECT_RG5", "Lore Tablets", TextType.Lore, "Secret");
@@ -677,7 +679,7 @@ public static class ItemManager
 
     private static void DefinePointOfInterest()
     {
-        
+
         Finder.DefineCustomLocation(Creator.CreateInspectLocation(Beast_Den_Altar, "Deepnest_Spider_Town", new Vector3(63.85f, 114.41f)));
         Finder.DefineCustomLocation(Creator.CreateInspectLocation(Weaver_Seal, "Deepnest_45_v02", new Vector3(12.29f, 43.41f)));
         Finder.DefineCustomLocation(Creator.CreateInspectLocation(Grimm_Machine, "Grimm_Main_Tent", new Vector3(83f, 45.41f)));
@@ -836,7 +838,7 @@ public static class ItemManager
     {
         List<AbstractPlacement> result = new();
         AbstractPlacement currentPlacement;
-        
+
         if (!RandomizerManager.PlayingRandomizer || !RandomizerManager.Settings.RandomizeTreasures)
         {
             // Lemms door
@@ -844,22 +846,6 @@ public static class ItemManager
             currentPlacement.Add(Finder.GetItem(Lemm_Sign));
             currentPlacement.Add(Finder.GetItem(Lemm_Order));
             result.Add(currentPlacement);
-
-            // Iseldas charts
-            // TODO: When/If IC fixes shop locations, use my own one.
-            currentPlacement = Finder.GetLocation(LocationNames.Iselda).Wrap();
-            if (ItemChanger.Internal.Ref.Settings.Placements.ContainsKey(LocationNames.Iselda))
-            {
-                currentPlacement = ItemChanger.Internal.Ref.Settings.Placements[LocationNames.Iselda];
-                for (int i = 1; i < 15; i++)
-                    currentPlacement.Add(Finder.GetItem($"{Treasure_Chart_Prefix}{i}"));
-            }
-            else
-            {
-                for (int i = 1; i < 15; i++)
-                    currentPlacement.Add(Finder.GetItem($"{Treasure_Chart_Prefix}{i}"));
-                result.Add(currentPlacement);
-            }
 
             // Place treasures.
             List<AbstractItem> treasureItems = new()
@@ -911,6 +897,36 @@ public static class ItemManager
         return result;
     }
 
+    private static AbstractPlacement CreateTreasureCharts()
+    {
+        // Iseldas charts
+        // TODO: When/If IC fixes shop locations, use my own one.
+        AbstractPlacement currentPlacement;
+        if (ItemChanger.Internal.Ref.Settings.Placements.ContainsKey(LocationNames.Iselda))
+        {
+            currentPlacement = ItemChanger.Internal.Ref.Settings.Placements[LocationNames.Iselda];
+            for (int i = 1; i < 15; i++)
+                currentPlacement.Add(Finder.GetItem($"{Treasure_Chart_Prefix}{i}"));
+            return null;
+        }
+        ShopLocation iseldaLocation = Finder.GetLocation(LocationNames.Iselda) as ShopLocation;
+        iseldaLocation.defaultShopItems = DefaultShopItems.IseldaCharms | DefaultShopItems.IseldaMaps | DefaultShopItems.IseldaMapPins 
+            | DefaultShopItems.IseldaMapMarkers | DefaultShopItems.IseldaQuill;
+        currentPlacement = iseldaLocation.Wrap();
+        for (int i = 1; i < 15; i++)
+            currentPlacement.Add(Finder.GetItem($"{Treasure_Chart_Prefix}{i}"));
+        currentPlacement.Add(Finder.GetItem(ItemNames.Wayward_Compass));
+        currentPlacement.Add(Finder.GetItem(ItemNames.Bench_Pin));
+        currentPlacement.Add(Finder.GetItem(ItemNames.Cocoon_Pin));
+        currentPlacement.Add(Finder.GetItem(ItemNames.Hot_Spring_Pin));
+        currentPlacement.Add(Finder.GetItem(ItemNames.Stag_Station_Pin));
+        currentPlacement.Add(Finder.GetItem(ItemNames.Tram_Pin));
+        currentPlacement.Add(Finder.GetItem(ItemNames.Vendor_Pin));
+        currentPlacement.Add(Finder.GetItem(ItemNames.Warriors_Grave_Pin));
+        currentPlacement.Add(Finder.GetItem(ItemNames.Whispering_Root_Pin));
+        return currentPlacement;
+    }
+
     private static List<AbstractPlacement> CreateNpc()
     {
         List<AbstractPlacement> result = new();
@@ -937,7 +953,7 @@ public static class ItemManager
             extraLore.Add(CreatePlacement(Dreamer_Tablet, Inscription_Dreamer_Tablet));
             extraLore.Add(CreatePlacement(City_Fountain, Inscription_City_Fountain));
         }
-        
+
         // If lore is randomized, the request will handle the replacement, otherwise we just add our own ones.
         if (RandomizerManager.PlayingRandomizer)
             if (CheckForLoreRandomized())
