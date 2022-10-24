@@ -154,5 +154,9 @@
     {
         "Name": "Vessel_Fragment-Basin",
         "Logic": "(ORIG) + READ"
+    },
+    {
+        "name": "Mask_Shard-Grey_Mourner",
+        "logic": "(ORIG) + LISTEN"
     }
 ]

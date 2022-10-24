@@ -366,8 +366,12 @@ public class LogicManager
         }
         // Extra logic for rando plus.
         if (RandomizerManager.Settings.CursedListening)
+        {
             for (int i = 0; i < _randoPlusLocation.Count; i++)
                 if (Finder.GetLocation(_randoPlusLocation[i]) != null && builder.LogicLookup.Any(x => string.Equals(_randoPlusLocation[i], x.Key, System.StringComparison.CurrentCultureIgnoreCase)))
                     builder.DoLogicEdit(new(_randoPlusLocation[i], "(ORIG) + LISTEN"));
+            if (builder.LogicLookup.Any(x => x.Key == "Hunter's_Notes-Nightmare_King" || x.Key == "Journal_Entry-Nightmare_King"))
+                builder.DoLogicEdit(new("Defeated_Any_Nightmare_King", "(ORIG) + LISTEN"));
+        }
     }
 }
