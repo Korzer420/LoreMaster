@@ -170,14 +170,21 @@ internal class LoreManager
                 text = RollElderbugHint();
             else
                 text = Properties.ElderbugDialog.ResourceManager.GetString(key);
-
+            if (text == null)
+                text = "Hm?";
         }
-        else if (key.Length > 2 && RandomizerRequestModifier.TreasureLocation.Contains(key.Substring(key.Length - 2)))
+        else if (key.StartsWith("Treasure-") && RandomizerRequestModifier.TreasureLocation.Contains(key.Substring(0, key.Length - 2)))
         {
-            if (ItemChanger.Internal.Ref.Settings.Placements.ContainsKey(key) && ItemChanger.Internal.Ref.Settings.Placements[key].Items.Any())
-                text = "Hidden Treasure: " + ItemChanger.Internal.Ref.Settings.Placements[key].Items[0]?.name;
-            else
-                text = "The compass can't determine the hidden treasure.";
+            key = key.Substring(0, key.Length - 2);
+            try
+            {
+                if (ItemChanger.Internal.Ref.Settings.Placements.ContainsKey(key) && ItemChanger.Internal.Ref.Settings.Placements[key].Items.Any())
+                    text = "The compass whispers: " + ItemChanger.Internal.Ref.Settings.Placements[key].Items[0]?.name.Replace("_", " ").Replace("-", " ") + " is buried.";
+            }
+            catch
+            {
+                text = "The compass couldn't determine the buried treasure";
+            }
         }
         else if (PowerManager.HasObtainedPower("QUEEN", true))
         {

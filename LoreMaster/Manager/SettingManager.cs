@@ -395,7 +395,30 @@ public class SettingManager
                 if (PlayerData.instance.GetBool(nameof(PlayerData.instance.hasDreamNail)))
                     self.SendEvent("SHINY PICKED UP");
             }), 0);
-
+        else if (EndCondition != BlackEggTempleCondition.Dreamers && string.Equals(self.FsmName, "Control") 
+            && string.Equals(self.gameObject.name, "Final Boss Door"))
+        {
+            self.AddState(new HutongGames.PlayMaker.FsmState(self.Fsm)
+            {
+                Name = "Lore Condition",
+                Actions = new HutongGames.PlayMaker.FsmStateAction[]
+                {
+                    new Lambda(() => 
+                    {
+                        LoreMaster.Instance.Log("Player has "+PowerManager.ObtainedPowers.Count+ " lore amount. They need "+NeededLore);
+                        if (EndCondition == BlackEggTempleCondition.Lore)
+                            self.SendEvent(PowerManager.ObtainedPowers.Count >= NeededLore ? "READY" : "FINISHED");
+                        else
+                            self.SendEvent(PowerManager.ObtainedPowers.Count >= NeededLore && PlayerData.instance.GetInt("guardiansDefeated") >= 3 
+                                ? "READY" : "FINISHED");
+                    })
+                }
+            });
+            self.GetState("Lore Condition").AddTransition("READY", "Ready");
+            self.GetState("Lore Condition").AddTransition("FINISHED", "Idle");
+            self.GetState("Init").AdjustTransition("READY", "Lore Condition");
+            self.GetState("Init").AdjustTransition("FINISHED", "Lore Condition");
+        }
 
         orig(self);
     }

@@ -3,6 +3,7 @@ using ItemChanger.Extensions;
 using LoreMaster.Enums;
 using LoreMaster.ItemChangerData.Locations.SpecialLocations;
 using LoreMaster.Manager;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -91,6 +92,12 @@ internal class TravellerLocation : DialogueLocation
                 return;
             }
         }
+        if (ObjectName == "/RestBench/Quirrel Bench")
+        {
+            npc.transform.SetParent(null);
+            LoreMaster.Instance.Handler.StartCoroutine(ActivateQuirrel(npc));
+        }
+
         // Remove all components which affect the spawn.
         foreach (DeactivateIfPlayerdataTrue item in npc.GetComponents<DeactivateIfPlayerdataTrue>())
             Component.Destroy(item);
@@ -205,5 +212,29 @@ internal class TravellerLocation : DialogueLocation
                     ItemManager.CreateInteropTag(data.Item1, locationName)
                 }
             };
+    }
+
+    /// <summary>
+    /// Activates quirrel, if he got deactivated via bench rando (if the bench got destroyed)
+    /// </summary>
+    /// <param name="quirrel"></param>
+    /// <returns></returns>
+    private IEnumerator ActivateQuirrel(GameObject quirrel)
+    {
+        yield return new WaitForSeconds(.5f);
+        if (quirrel != null)
+            foreach (Component component in quirrel.GetComponents<Component>())
+            {
+                if (component is tk2dSprite sprite)
+                    sprite.enabled = true;
+                else if (component is tk2dSpriteAnimator animator)
+                    animator.enabled = true;
+                else if (component is BoxCollider2D collider)
+                    collider.enabled = true;
+                else if (component is PlayMakerFSM fsm)
+                    fsm.enabled = true;
+                else if (component is PlayMakerFixedUpdate update)
+                    update.enabled = true;
+            }
     }
 }

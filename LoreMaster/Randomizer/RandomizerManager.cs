@@ -1,6 +1,7 @@
 using ItemChanger;
 using ItemChanger.Internal;
 using LoreMaster.Enums;
+using LoreMaster.ItemChangerData.Items;
 using LoreMaster.LorePowers;
 using LoreMaster.LorePowers.CityOfTears;
 using LoreMaster.LorePowers.RestingGrounds;
@@ -100,108 +101,22 @@ public static class RandomizerManager
     internal static bool RandoTracker(Area area, out string areaLore)
     {
         areaLore = null;
-        if (!RandomizerMod.RandomizerMod.IsRandoSave || !RandomizerMod.RandomizerMod.RS.GenerationSettings.PoolSettings.LoreTablets)
+        if (!PlayingRandomizer)
             return false;
         int maxPowerAmount = 0;
         int collectedPowerAmount = 0;
 
-        if (!Settings.RandomizeNpc)
-        {
-            Power power = null;
-            switch (area)
-            {
-                case Area.Dirtmouth:
-                    maxPowerAmount += 2;
-                    if (PowerManager.GetPowerByKey("GRAVEDIGGER", out power, false) && PowerManager.ObtainedPowers.Contains(power))
-                        collectedPowerAmount++;
-                    if (PowerManager.GetPowerByKey("BRETTA", out power, false) && PowerManager.ObtainedPowers.Contains(power))
-                        collectedPowerAmount++;
-                    break;
-                case Area.Crossroads:
-                    maxPowerAmount++;
-                    if (PowerManager.GetPowerByKey("MYLA", out power, false) && PowerManager.ObtainedPowers.Contains(power))
-                        collectedPowerAmount++;
-                    break;
-                case Area.Cliffs:
-                    maxPowerAmount++;
-                    if (PowerManager.GetPowerByKey("JONI", out power, false) && PowerManager.ObtainedPowers.Contains(power))
-                        collectedPowerAmount++;
-                    break;
-                case Area.FungalWastes:
-                    maxPowerAmount++;
-                    if (PowerManager.GetPowerByKey("WILLOH", out power, false) && PowerManager.ObtainedPowers.Contains(power))
-                        collectedPowerAmount++;
-                    break;
-                case Area.CityOfTears:
-                    maxPowerAmount += 3;
-                    if (PowerManager.GetPowerByKey("POGGY", out power, false) && PowerManager.ObtainedPowers.Contains(power))
-                        collectedPowerAmount++;
-                    if (PowerManager.GetPowerByKey("MARISSA", out power, false) && PowerManager.ObtainedPowers.Contains(power))
-                        collectedPowerAmount++;
-                    if (PowerManager.GetPowerByKey("EMILITIA", out power, false) && PowerManager.ObtainedPowers.Contains(power))
-                        collectedPowerAmount++;
-                    break;
-                case Area.WaterWays:
-                    maxPowerAmount++;
-                    if (PowerManager.GetPowerByKey("FLUKE_HERMIT", out power, false) && PowerManager.ObtainedPowers.Contains(power))
-                        collectedPowerAmount++;
-                    break;
-                case Area.Deepnest:
-                    maxPowerAmount += 2;
-                    if (PowerManager.GetPowerByKey("MIDWIFE", out power, false) && PowerManager.ObtainedPowers.Contains(power))
-                        collectedPowerAmount++;
-                    if (PowerManager.GetPowerByKey("MASKMAKER", out power, false) && PowerManager.ObtainedPowers.Contains(power))
-                        collectedPowerAmount++;
-                    break;
-                case Area.QueensGarden:
-                    maxPowerAmount += 3;
-                    if (PowerManager.GetPowerByKey("MOSSPROPHET", out power, false) && PowerManager.ObtainedPowers.Contains(power))
-                        collectedPowerAmount++;
-                    if (PowerManager.GetPowerByKey("QUEEN", out power, false) && PowerManager.ObtainedPowers.Contains(power))
-                        collectedPowerAmount++;
-                    if (PowerManager.GetPowerByKey("GRASSHOPPER", out power, false) && PowerManager.ObtainedPowers.Contains(power))
-                        collectedPowerAmount++;
-                    break;
-                case Area.KingdomsEdge:
-                    maxPowerAmount += 2;
-                    if (PowerManager.GetPowerByKey("HIVEQUEEN", out power, false) && PowerManager.ObtainedPowers.Contains(power))
-                        collectedPowerAmount++;
-                    if (PowerManager.GetPowerByKey("BARDOON", out power, false) && PowerManager.ObtainedPowers.Contains(power))
-                        collectedPowerAmount++;
-                    break;
-                case Area.Peaks:
-                    maxPowerAmount++;
-                    if (PowerManager.GetPowerByKey("QUIRREL", out power, false) && PowerManager.ObtainedPowers.Contains(power))
-                        collectedPowerAmount++;
-                    break;
-            }
-        }
-
         foreach (AbstractItem item in Ref.Settings.GetItems())
         {
+            if (item is not PowerLoreItem)
+                continue;
             string areaName = item.RandoLocation()?.LocationDef?.MapArea ?? "UNKNOWN";
-            if (string.Equals(areaName, _randoAreaNames[area]) && (item.name.Contains("Lore_Tablet-") || item.name.Contains("_Inspect")))
+            if (string.Equals(areaName, _randoAreaNames[area]))
             {
                 maxPowerAmount++;
                 if (item.IsObtained())
                     collectedPowerAmount++;
             }
-        }
-        // Since neither the fountain nor record bela are randomizeable, we add them manually to the tracker
-        if (area == Area.CityOfTears)
-        {
-            maxPowerAmount += 2;
-            if (PowerManager.ObtainedPowers.Any(x => x is TouristPower))
-                collectedPowerAmount++;
-            if (PowerManager.ObtainedPowers.Any(x => x is OverwhelmingPowerPower))
-                collectedPowerAmount++;
-        }
-        // Same for the dreamer tablet.
-        else if (area == Area.RestingGrounds)
-        {
-            maxPowerAmount++;
-            if (PowerManager.ObtainedPowers.Any(x => x is DreamBlessingPower))
-                collectedPowerAmount++;
         }
 
         areaLore = $"{collectedPowerAmount}/{maxPowerAmount}";

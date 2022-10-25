@@ -61,7 +61,7 @@ namespace LoreMaster.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die You have done it! You learned about everything in this world! Well… almost. There still are some knowledge bits that are not receivable yet. They say, that it may be accessable once the event &quot;Patch 2.1&quot; happens. Whatever that might be. Anyway, this kingdom is now yours. I have nothing to offer you anymore. I might consider leaving this place now… There are still some places elsewhere that are full of knowledge. ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die You have done it! You learned about everything in this world! Well… almost. There still are some knowledge bits that are not receivable yet. They say, that it may be accessable once the event &quot;Patch 2.2&quot; happens. Whatever that might be. Anyway, this kingdom is now yours. I have nothing to offer you anymore. I might consider leaving this place now… There are still some places elsewhere that are full of knowledge. ähnelt.
         /// </summary>
         internal static string Elderbug_All_Tasks_Done {
             get {
@@ -106,7 +106,7 @@ namespace LoreMaster.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Disappointed? Well I&apos;m sorry, but once &quot;Patch 2.1&quot; happen, there will be a conclusion to this story. Take care of yourself... ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Disappointed? Well I&apos;m sorry, but once &quot;Patch 2.2&quot; happen, there will be a conclusion to this story. Take care of yourself... ähnelt.
         /// </summary>
         internal static string Elderbug_End {
             get {

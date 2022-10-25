@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Elderbug_All_Tasks_Done" xml:space="preserve">
-    <value>You have done it! You learned about everything in this world! Well… almost. There still are some knowledge bits that are not receivable yet. They say, that it may be accessable once the event "Patch 2.1" happens. Whatever that might be. Anyway, this kingdom is now yours. I have nothing to offer you anymore. I might consider leaving this place now… There are still some places elsewhere that are full of knowledge.</value>
+    <value>You have done it! You learned about everything in this world! Well… almost. There still are some knowledge bits that are not receivable yet. They say, that it may be accessable once the event "Patch 2.2" happens. Whatever that might be. Anyway, this kingdom is now yours. I have nothing to offer you anymore. I might consider leaving this place now… There are still some places elsewhere that are full of knowledge.</value>
   </data>
   <data name="Elderbug_Casual_Normal" xml:space="preserve">
     <value>In this version of Hallownest I've nothing left to offer to you. Good luck on your journey.</value>
@@ -133,7 +133,7 @@
     <value>Oh, I can sense the power that coursing through your shell. You managed to obtain a spell, congratulations. As an reward I'll teach you how to comprehent the knowledge written on the tablets.</value>
   </data>
   <data name="Elderbug_End" xml:space="preserve">
-    <value>Disappointed? Well I'm sorry, but once "Patch 2.1" happen, there will be a conclusion to this story. Take care of yourself...</value>
+    <value>Disappointed? Well I'm sorry, but once "Patch 2.2" happen, there will be a conclusion to this story. Take care of yourself...</value>
   </data>
   <data name="Elderbug_Extra_Intro" xml:space="preserve">
     <value>Mh, but it seems like you'll have problems understanding the text and people of this world. I can teach you those skills, but since I don't want to waste time on a student which dies soon after learning, allow me to put you to a test first.</value>

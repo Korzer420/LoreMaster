@@ -33,7 +33,7 @@
     },
     {
         "name": "Cloth_Basin",
-        "logic": "Abyss_17[top1] + (LEFTCLAW | RIGHTCLAW | WINGS | DAMAGEBOOSTS + (MASKSHARDS>7 | Can_Bench + (Fragile_Heart + Can_Bench + Can_Repair_Fragile_Charms | Fragile_Heart>1 + Can_Bench | Lifeblood_Heart + NOTCHES>$SafeNotchCost[8] | Lifeblood_Core | Joni's_Blessing + NOTCHES>$SafeNotchCost[27])))"
+        "logic": "Abyss_17[top1] + (LEFTDASH | WINGS | LEFTSUPERDASH) + (LEFTCLAW | RIGHTCLAW | WINGS | DAMAGEBOOSTS + (MASKSHARDS>7 | Can_Bench + (Fragile_Heart + Can_Bench + Can_Repair_Fragile_Charms | Fragile_Heart>1 + Can_Bench | Lifeblood_Heart + NOTCHES>$SafeNotchCost[8] | Lifeblood_Core | Joni's_Blessing + NOTCHES>$SafeNotchCost[27])))"
     },
     {
         "name": "Cloth_Garden",

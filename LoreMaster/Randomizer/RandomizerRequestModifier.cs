@@ -299,6 +299,12 @@ internal static class RandomizerRequestModifier
                     requestBuilder.RemoveItemByName(item);
                     requestBuilder.AddItemByName(item + "_Empowered");
                 }
+        else
+            foreach (Area area in LoreItems.Keys)
+                foreach (string item in LoreItems[area])
+                {
+                    requestBuilder.AddToVanilla(item + "_Empowered", item);
+                }
 
         if (RandomizerManager.Settings.RandomizeNpc)
         {

@@ -39,6 +39,8 @@ internal class LorePage
 
     private static int _selectedEffect = 0;
 
+    private static GameObject _totalLore;
+
     #endregion
 
     #region Constructors
@@ -119,6 +121,16 @@ internal class LorePage
             _controlElements["Joker"].GetComponentInChildren<TextMeshPro>().text = LoreManager.Instance.JokerScrolls.ToString();
             _controlElements["Cleanse"].SetActive(LoreManager.Instance.CleansingScrolls >= 0);
             _controlElements["Cleanse"].GetComponentInChildren<TextMeshPro>().text = LoreManager.Instance.CleansingScrolls.ToString();
+
+            if (RandomizerManager.PlayingRandomizer && (RandomizerManager.Settings.BlackEggTempleCondition != BlackEggTempleCondition.Dreamers
+                || RandomizerManager.Settings.RandomizeElderbugRewards || RandomizerManager.Settings.DefineRefs))
+            {
+                _totalLore.SetActive(true);
+                _totalLore.GetComponent<TextMeshPro>().text = "Total Lore amount: " + PowerManager.ObtainedPowers.Count;
+            }
+            else
+                _totalLore.SetActive(false);
+            
         }
         catch (Exception exception)
         {
@@ -194,7 +206,6 @@ internal class LorePage
                 GameObject child = new("Image");
                 child.transform.SetParent(tablet.transform);
                 child.transform.localPosition = new(0f, 0f, 0f);
-                //child.transform.localScale = new(0.4f, 0.4f, 1f);
                 child.transform.localScale = new(1f, 1f, 1f);
                 child.layer = lorePage.layer;
                 child.AddComponent<SpriteRenderer>().sprite = _emptySprite;
@@ -433,6 +444,12 @@ internal class LorePage
                     }
                 }
             }));
+
+            _totalLore = GameObject.Instantiate(GameObject.Find("_GameCameras").transform.Find("HudCamera/Inventory/Charms/Text Name").gameObject);
+            _totalLore.transform.SetParent(lorePage.transform);
+            _totalLore.transform.position = new(-9.5106f, 0.9982f, 0f);
+            _totalLore.GetComponent<TextMeshPro>().text = "Total Lore Amount: 0";
+            _totalLore.GetComponent<TextMeshPro>().fontSize = 2;
 
             BuildExtraItems(lorePage);
 
