@@ -17,7 +17,7 @@ internal class PowerLoreItem : LoreItem
     /// Gets or sets the name of the sound file which should be played.
     /// </summary>
     public string SoundClipName { get; set; } = "Lore";
-
+    
     public override void GiveImmediate(GiveInfo info)
     {
         // Check if item is an actual power.

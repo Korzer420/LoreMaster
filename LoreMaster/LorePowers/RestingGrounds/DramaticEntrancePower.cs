@@ -3,7 +3,7 @@ using LoreMaster.Manager;
 using LoreMaster.Randomizer;
 using System;
 
-namespace LoreMaster.LorePowers.Crossroads;
+namespace LoreMaster.LorePowers.RestingGrounds;
 
 public class DramaticEntrancePower : Power
 {
@@ -22,10 +22,10 @@ public class DramaticEntrancePower : Power
 
     #region Constructors
 
-    public DramaticEntrancePower() : base("Dramatic Entrance", Area.Crossroads)
+    public DramaticEntrancePower() : base("Dramatic Entrance", Area.RestingGrounds)
     {
-        CustomText = "Ah! I wouldn't have thought that we meet again. Maybe you're not so much of a pityful bug as I expected. But I know exactly why I thought this. "+
-            "Your introduction is quite... lame. If you want to conquer in great battles, you have to show the enemy right on the start that they should be feared of you. "+
+        CustomText = "Ah! I wouldn't have thought that we meet again. Maybe you're not so much of a pityful bug as I expected. But I know exactly why I thought this. " +
+            "Your introduction is quite... lame. If you want to conquer in great battles, you have to show the enemy right on the start that they should be feared of you. " +
             "It doesn't matter how huge you are. All that counts is your stance. Let me teach you the great way of entering a fight, so that all know that YOU'RE the biggest threat.";
         On.HutongGames.PlayMaker.Actions.PlayerDataBoolTest.OnEnter += PlayerDataBoolTest_OnEnter;
     }
@@ -115,14 +115,14 @@ public class DramaticEntrancePower : Power
         }
         if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name.Contains("GG_"))
         {
-                if (PlayerData.instance.GetBool(nameof(PlayerData.instance.equippedCharm_27)))
-                {
-                    EventRegister.SendEvent("ADD BLUE HEALTH");
-                    EventRegister.SendEvent("ADD BLUE HEALTH");
-                }
-                else if (PlayerData.instance.GetInt(nameof(PlayerData.instance.health)) < PlayerData.instance.GetInt(nameof(PlayerData.instance.maxHealth)))
-                    HeroController.instance.AddHealth(1);
-                HeroController.instance.AddMPCharge(33);
+            if (PlayerData.instance.GetBool(nameof(PlayerData.instance.equippedCharm_27)))
+            {
+                EventRegister.SendEvent("ADD BLUE HEALTH");
+                EventRegister.SendEvent("ADD BLUE HEALTH");
+            }
+            else if (PlayerData.instance.GetInt(nameof(PlayerData.instance.health)) < PlayerData.instance.GetInt(nameof(PlayerData.instance.maxHealth)))
+                HeroController.instance.AddHealth(1);
+            HeroController.instance.AddMPCharge(33);
         }
         else
         {

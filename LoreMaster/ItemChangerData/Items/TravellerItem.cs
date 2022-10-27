@@ -27,7 +27,7 @@ internal class TravellerItem : PowerLoreItem
         if (UIDef is LoreUIDef lore)
             lore.name = new BoxedString($"{lore.name.Value} ({currentState} / {maxStage})");
         else
-            (UIDef as DreamLoreUIDef).name = new BoxedString($"{(UIDef as DreamLoreUIDef).name.Value} ({currentState} / {maxStage})");
+            (UIDef as DreamLoreUIDef).name = new BoxedString($"{(UIDef as DreamLoreUIDef).name.Value} Level ({currentState} / {maxStage})");
 
         // Allow cloth to enter the traitor lord fight (not sure if this is necessary, but just in case)
         if (Traveller == Traveller.Cloth && LoreManager.Instance.Traveller[Traveller.Cloth].CurrentStage >= 3)

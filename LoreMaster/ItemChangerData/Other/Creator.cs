@@ -31,7 +31,7 @@ internal static class Creator
             Traveller = traveller,
             UIDef = new LoreUIDef()
             {
-                name = new BoxedString(traveller.ToString()),
+                name = new BoxedString(traveller.ToString() + " Level"),
                 sprite = new CustomSprite(traveller.ToString()),
                 shopDesc = new BoxedString(Properties.ShopDescriptions.ResourceManager.GetString(traveller.ToString())),
                 lore = new LanguageString(traveller switch

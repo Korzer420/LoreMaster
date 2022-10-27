@@ -39,12 +39,12 @@ public static class ItemManager
             DefineElderbug();
             ModifyNormalLore();
             DefineNPC();
+            DefineTraveller();
             if (ModHooks.GetMod("Randomizer 4") is Mod)
             {
                 DefineDreamNailReactions();
                 DefinePointOfInterest();
                 DefineDreamWarrior();
-                DefineTraveller();
             }
         }
         catch (Exception exception)
@@ -74,6 +74,19 @@ public static class ItemManager
                     placements.AddRange(CreateNpc());
                 if (RandomizerManager.Settings.DefineRefs)
                     placements.AddRange(CreateVanillaRefs());
+                else if (!RandomizerManager.Settings.RandomizeTravellers)
+                {
+                    // We only generate the traveller locations which actually grant abilities
+                    placements.Add(CreatePlacement(Quirrel_Peaks, Dialogue_Quirrel_Peaks));
+                    placements.Add(CreatePlacement(Tiso_Blue_Lake, Dialogue_Tiso_Blue_Lake));
+                    placements.Add(CreatePlacement(Zote_Deepnest, Dialogue_Zote_Deepnest));
+
+                    // Adjust spawn logic for traveller.
+                    LoreManager.Instance.Traveller.Clear();
+                    LoreManager.Instance.Traveller.Add(Traveller.Quirrel, new() { CurrentStage = 0, Locations = new string[] { "Quirrel Mines" } });
+                    LoreManager.Instance.Traveller.Add(Traveller.Tiso, new() { CurrentStage = 0, Locations = new string[] { "Tiso Lake NPC" } });
+                    LoreManager.Instance.Traveller.Add(Traveller.Zote, new() { CurrentStage = 0, Locations = new string[] { "/Zote Deepnest/Faller/NPC" } });
+                }
                 if (!RandomizerManager.Settings.RandomizeElderbugRewards)
                     placements.AddRange(CreateElderbugRewards());
             }
@@ -82,7 +95,19 @@ public static class ItemManager
                 placements.AddRange(CreateTreasure());
                 placements.AddRange(CreateNpc());
                 placements.AddRange(CreateElderbugRewards());
+
+                // We only generate the traveller locations which actually grant abilities
+                placements.Add(CreatePlacement(Quirrel_Peaks, Dialogue_Quirrel_Peaks));
+                placements.Add(CreatePlacement(Tiso_Blue_Lake, Dialogue_Tiso_Blue_Lake));
+                placements.Add(CreatePlacement(Zote_Deepnest, Dialogue_Zote_Deepnest));
+
+                // Adjust spawn logic for traveller.
+                LoreManager.Instance.Traveller.Clear();
+                LoreManager.Instance.Traveller.Add(Traveller.Quirrel, new() { CurrentStage = 0, Locations = new string[] { "Quirrel Mines" } });
+                LoreManager.Instance.Traveller.Add(Traveller.Tiso, new() { CurrentStage = 0, Locations = new string[] { "Tiso Lake NPC" } });
+                LoreManager.Instance.Traveller.Add(Traveller.Zote, new() { CurrentStage = 0, Locations = new string[] { "/Zote Deepnest/Faller/NPC" } });
             }
+
             if (CreateTreasureCharts() is AbstractPlacement placement)
                 placements.Add(placement);
             placements.AddRange(CreateExtraLore());

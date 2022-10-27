@@ -63,7 +63,7 @@ internal static class RandomizerHelper
          {Dialogue_Willoh, "WILLOH" },
          {Dialogue_Grasshopper, "GRASSHOPPER" },
          {Dialogue_Marissa, "MARISSA" },
-         {Dialogue_Tiso_Crossroads, "TISO" },
+         {Dialogue_Tiso_Blue_Lake, "TISO" },
          {Dialogue_Zote_Deepnest, "ZOTE" },
          {Stag_Egg_Inspect, "STAG_EGG_INSPECT"},
          {Inscription_City_Fountain, "FOUNTAIN_PLAQUE_DESC" },

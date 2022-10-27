@@ -43,7 +43,6 @@ internal static class PowerManager
         {"PILGRIM_TAB_01", new ReluctantPilgrimPower() },
         {"COMPLETION_RATE_UNLOCKED", new GreaterMindPower() { DefaultTag = PowerTag.Global } },
         {"MYLA", new DiamondDashPower() },
-        {"TISO", new DramaticEntrancePower() },
         {"MENDERBUG", new BestMenderInTheWorldPower() },
         // Greenpath
         {"GREEN_TABLET_01", new TouchGrassPower() },
@@ -80,6 +79,7 @@ internal static class PowerManager
         {"QUIRREL", new DiamondCorePower() },
         // Resting Grounds
         {"DREAMERS_INSPECT_RG5", new DreamBlessingPower() },
+        {"TISO", new DramaticEntrancePower() },
         // Howling Cliffs
         {"CLIFF_TAB_02", new LifebloodOmenPower() },
         {"JONI", new JonisProtectionPower() },
