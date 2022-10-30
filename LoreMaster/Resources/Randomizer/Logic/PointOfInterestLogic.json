@@ -29,7 +29,7 @@
     },
     {
         "name": "Grimm_Machine",
-        "logic": "FLAMES>8 + (LEFTCLAW | RIGHTCLAW) + Grimm_Main_Tent[left1] + Second_Grimmchild_Upgrade"
+        "logic": "FLAMES>8 + WINGS + (LEFTCLAW | RIGHTCLAW) + Grimm_Main_Tent[left1] + Second_Grimmchild_Upgrade"
     },
     {
         "name": "Garden_Golem",

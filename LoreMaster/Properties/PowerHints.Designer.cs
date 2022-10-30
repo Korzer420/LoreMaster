@@ -268,7 +268,7 @@ namespace LoreMaster.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die You can now sense, which knowledge of the world you&apos;re missing. ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die You can now sense, which knowledge of the world you&apos;re missing. (Look in the mod menu for more options.) ähnelt.
         /// </summary>
         internal static string GreaterMind {
             get {

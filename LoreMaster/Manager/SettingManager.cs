@@ -216,6 +216,8 @@ public class SettingManager
             PowerManager.ControlState = PowerControlState.ReadAccess;
         else if (string.Equals(name, "LorePageControl"))
             PowerManager.ControlState = PowerControlState.ToggleAccess;
+        else if (name == "PopLore")
+            PowerManager.GetPowerByKey("POP", out Power power);
         return orig;
     }
 
@@ -405,7 +407,6 @@ public class SettingManager
                 {
                     new Lambda(() => 
                     {
-                        LoreMaster.Instance.Log("Player has "+PowerManager.ObtainedPowers.Count+ " lore amount. They need "+NeededLore);
                         if (EndCondition == BlackEggTempleCondition.Lore)
                             self.SendEvent(PowerManager.ObtainedPowers.Count >= NeededLore ? "READY" : "FINISHED");
                         else

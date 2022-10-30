@@ -147,8 +147,7 @@ internal class LoreManager
                 text = Properties.ElderbugDialog.ResourceManager.GetString(key);
                 if (RandomizerManager.PlayingRandomizer)
                     text += "<page>" + Properties.ElderbugDialog.ResourceManager.GetString("Elderbug_Randomizer");
-
-                if (SettingManager.Instance.GameMode != GameMode.Normal || (RandomizerManager.PlayingRandomizer && RandomizerManager.Settings.RandomizeElderbugRewards))
+                if (SettingManager.Instance.GameMode != GameMode.Normal || (RandomizerManager.PlayingRandomizer && (RandomizerManager.Settings.RandomizeElderbugRewards || RandomizerManager.Settings.DefineRefs)))
                 {
                     SettingManager.Instance.ElderbugState++;
                     text += "<page>" + Properties.ElderbugDialog.ResourceManager.GetString("Elderbug_Extra_Intro") + "<page>" + Properties.ElderbugDialog.ResourceManager.GetString("Elderbug_Task_1");
@@ -171,7 +170,7 @@ internal class LoreManager
             else
                 text = Properties.ElderbugDialog.ResourceManager.GetString(key);
             if (text == null)
-                text = "Hm?";
+                text = $"Hm? (Couldn't resolve: {key} (Report this to the mod developer.))";
         }
         else if (key.StartsWith("Treasure-") && RandomizerRequestModifier.TreasureLocation.Contains(key.Substring(0, key.Length - 2)))
         {

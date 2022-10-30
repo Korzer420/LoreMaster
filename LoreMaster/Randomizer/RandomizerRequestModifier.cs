@@ -438,7 +438,9 @@ internal static class RandomizerRequestModifier
         {
             requestBuilder.AddToVanilla(new(Wanderers_Journal, $"{Elderbug_Reward_Prefix}{1}"));
             requestBuilder.AddToVanilla(new(Hallownest_Seal, $"{Elderbug_Reward_Prefix}{2}"));
+            requestBuilder.AddToVanilla(new(Kings_Idol, $"{Elderbug_Reward_Prefix}{3}"));
             requestBuilder.AddToVanilla(new(Joker_Scroll, $"{Elderbug_Reward_Prefix}{4}"));
+            requestBuilder.AddToVanilla(new(Arcane_Egg, $"{Elderbug_Reward_Prefix}{5}"));
             requestBuilder.AddToVanilla(new(Joker_Scroll, $"{Elderbug_Reward_Prefix}{6}"));
             requestBuilder.AddToVanilla(new(Cleansing_Scroll, $"{Elderbug_Reward_Prefix}{7}"));
             requestBuilder.AddToVanilla(new(Joker_Scroll, $"{Elderbug_Reward_Prefix}{8}"));
@@ -447,7 +449,9 @@ internal static class RandomizerRequestModifier
             {
                 $"{Elderbug_Reward_Prefix}{1}",
                 $"{Elderbug_Reward_Prefix}{2}",
+                $"{Elderbug_Reward_Prefix}{3}",
                 $"{Elderbug_Reward_Prefix}{4}",
+                $"{Elderbug_Reward_Prefix}{5}",
                 $"{Elderbug_Reward_Prefix}{6}",
                 $"{Elderbug_Reward_Prefix}{7}",
                 $"{Elderbug_Reward_Prefix}{8}",

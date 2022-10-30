@@ -189,7 +189,7 @@ public abstract class Power
                 }
                 else
                     return;
-                LoreMaster.Instance.Log("Activated " + PowerName);
+                LoreMaster.Instance.LogDebug("Activated " + PowerName);
             }
         }
         catch (Exception exception)
@@ -217,7 +217,7 @@ public abstract class Power
                     Disable();
                 else if (State == PowerState.Twisted)
                     TwistDisable();
-                LoreMaster.Instance.Log("Disabled " + PowerName);
+                LoreMaster.Instance.LogDebug("Disabled " + PowerName);
                 State = PowerState.Disabled;
             }
             catch (Exception exception)

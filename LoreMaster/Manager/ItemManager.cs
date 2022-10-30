@@ -87,7 +87,7 @@ public static class ItemManager
                     LoreManager.Instance.Traveller.Add(Traveller.Tiso, new() { CurrentStage = 0, Locations = new string[] { "Tiso Lake NPC" } });
                     LoreManager.Instance.Traveller.Add(Traveller.Zote, new() { CurrentStage = 0, Locations = new string[] { "/Zote Deepnest/Faller/NPC" } });
                 }
-                if (!RandomizerManager.Settings.RandomizeElderbugRewards)
+                if (!RandomizerManager.Settings.RandomizeElderbugRewards && RandomizerManager.Settings.DefineRefs)
                     placements.AddRange(CreateElderbugRewards());
             }
             else
@@ -935,7 +935,7 @@ public static class ItemManager
             return null;
         }
         ShopLocation iseldaLocation = Finder.GetLocation(LocationNames.Iselda) as ShopLocation;
-        iseldaLocation.defaultShopItems = DefaultShopItems.IseldaCharms | DefaultShopItems.IseldaMaps | DefaultShopItems.IseldaMapPins 
+        iseldaLocation.defaultShopItems = DefaultShopItems.IseldaCharms | DefaultShopItems.IseldaMaps | DefaultShopItems.IseldaMapPins
             | DefaultShopItems.IseldaMapMarkers | DefaultShopItems.IseldaQuill;
         currentPlacement = iseldaLocation.Wrap();
         for (int i = 1; i < 15; i++)
@@ -1025,15 +1025,24 @@ public static class ItemManager
     {
         List<AbstractPlacement> placements = new();
         AbstractPlacement currentPlacement = Finder.GetLocation($"{Elderbug_Reward_Prefix}1").Wrap();
-        currentPlacement.Add(Finder.GetItem(Read_Ability));
+        if (!RandomizerManager.PlayingRandomizer)
+            currentPlacement.Add(Finder.GetItem(Read_Ability));
+        else
+            currentPlacement.Add(Finder.GetItem(ItemNames.Wanderers_Journal));
         placements.Add(currentPlacement);
 
         currentPlacement = Finder.GetLocation($"{Elderbug_Reward_Prefix}2").Wrap();
-        currentPlacement.Add(Finder.GetItem(Listen_Ability));
+        if (!RandomizerManager.PlayingRandomizer)
+            currentPlacement.Add(Finder.GetItem(Listen_Ability));
+        else
+            currentPlacement.Add(Finder.GetItem(ItemNames.Hallownest_Seal));
         placements.Add(currentPlacement);
 
         currentPlacement = Finder.GetLocation($"{Elderbug_Reward_Prefix}3").Wrap();
-        currentPlacement.Add(Finder.GetItem(Lore_Page));
+        if (!RandomizerManager.PlayingRandomizer)
+            currentPlacement.Add(Finder.GetItem(Lore_Page));
+        else
+            currentPlacement.Add(Finder.GetItem(ItemNames.Kings_Idol));
         placements.Add(currentPlacement);
 
         currentPlacement = Finder.GetLocation($"{Elderbug_Reward_Prefix}4").Wrap();
@@ -1041,7 +1050,10 @@ public static class ItemManager
         placements.Add(currentPlacement);
 
         currentPlacement = Finder.GetLocation($"{Elderbug_Reward_Prefix}5").Wrap();
-        currentPlacement.Add(Finder.GetItem(Lore_Page_Control));
+        if (!RandomizerManager.PlayingRandomizer)
+            currentPlacement.Add(Finder.GetItem(Lore_Page_Control));
+        else
+            currentPlacement.Add(Finder.GetItem(ItemNames.Arcane_Egg));
         placements.Add(currentPlacement);
 
         currentPlacement = Finder.GetLocation($"{Elderbug_Reward_Prefix}6").Wrap();

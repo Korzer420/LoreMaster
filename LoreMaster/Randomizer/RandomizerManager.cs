@@ -4,6 +4,7 @@ using LoreMaster.Enums;
 using LoreMaster.ItemChangerData.Items;
 using LoreMaster.LorePowers;
 using LoreMaster.LorePowers.CityOfTears;
+using LoreMaster.LorePowers.Crossroads;
 using LoreMaster.LorePowers.RestingGrounds;
 using LoreMaster.Manager;
 using LoreMaster.SaveManagement;
@@ -101,7 +102,7 @@ public static class RandomizerManager
     internal static bool RandoTracker(Area area, out string areaLore)
     {
         areaLore = null;
-        if (!PlayingRandomizer)
+        if (!PlayingRandomizer || GreaterMindPower.NormalTracker)
             return false;
         int maxPowerAmount = 0;
         int collectedPowerAmount = 0;

@@ -232,7 +232,7 @@ namespace LoreMaster.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die But it seems like that my inventory was unaffected by that. Well in that case I&apos;ve nothing left for you. Did you see that I granted you the lore artifact instantly? Use it wisely. Good luck with your &quot;Randomizer&quot;. Hehe ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die But it seems like that my inventory was unaffected by that. Well in that case I&apos;ve nothing left for you. Did you see that I granted you the lore artifact instantly? Use it wisely. Good luck with your &quot;Randomizer&quot;, hehe. ähnelt.
         /// </summary>
         internal static string Elderbug_Randomizer_Not_Randomized {
             get {

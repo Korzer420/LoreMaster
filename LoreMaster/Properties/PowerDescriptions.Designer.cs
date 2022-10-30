@@ -268,7 +268,7 @@ namespace LoreMaster.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Activates the tracker, to show you how many powers you are missing. If the counter is green, you have global access to the power in the area. ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Activates the tracker, to show you how many powers you are missing. If the counter is green, you have global access to the power in the area. (Look in the mod menu for more options.) ähnelt.
         /// </summary>
         internal static string GreaterMind {
             get {

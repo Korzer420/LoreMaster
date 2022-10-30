@@ -73,6 +73,8 @@ public class GreaterMindPower : Power
     /// </summary>
     public static bool PermanentTracker { get; set; }
 
+    public static bool NormalTracker { get; set; }
+
     #endregion
 
     #region Event handler

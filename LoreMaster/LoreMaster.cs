@@ -207,6 +207,15 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
             Loader = () => LorePowers.Crossroads.GreaterMindPower.PermanentTracker ? 0 : 1
         });
 
+        menu.Add(new()
+        {
+            Name = "Tracker Mode",
+            Description = "If Rando, the tracker will display the RANDOMIZED(!) lore power item amount.",
+            Values = new string[] { "Normal", "Rando" },
+            Saver = option => LorePowers.Crossroads.GreaterMindPower.NormalTracker = option == 0,
+            Loader = () => LorePowers.Crossroads.GreaterMindPower.NormalTracker ? 0 : 1
+        });
+
         return menu;
     }
 
@@ -232,7 +241,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
     /// <param name="globalSaveData"></param>
     public void OnLoadGlobal(LoreMasterGlobalSaveData globalSaveData)
     {
-        Log("Loaded global data");
+        LogDebug("Loaded global data");
         if (LoreManager.Instance == null)
             InitializeManager();
         LoreManager.Instance.UseHints = globalSaveData.ShowHint;

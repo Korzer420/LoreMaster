@@ -265,7 +265,7 @@ internal static class PowerManager
                     break;
             }
 
-            if (RandomizerManager.Settings.RandomizeTreasures)
+            if (RandomizerManager.Settings.RandomizeTreasures || RandomizerManager.Settings.DefineRefs)
                 _powerList["RELICDEALER_DOOR"].Tag = PowerTag.Global;
         }
         else if (SettingManager.Instance.GameMode == GameMode.Normal)

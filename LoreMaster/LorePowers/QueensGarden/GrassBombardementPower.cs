@@ -63,13 +63,15 @@ public class GrassBombardementPower : Power
 
     private void PlayMakerFSM_OnEnable(On.PlayMakerFSM.orig_OnEnable orig, PlayMakerFSM self)
     {
-        if (string.Equals(self.FsmName, "quake_floor"))
+        try
         {
-            self.AddState(new FsmState(self.Fsm)
+            if (string.Equals(self.FsmName, "quake_floor"))
             {
-                Name = "Explosion Quake",
-                Actions = new FsmStateAction[]
+                self.AddState(new FsmState(self.Fsm)
                 {
+                    Name = "Explosion Quake",
+                    Actions = new FsmStateAction[]
+                    {
                     self.GetState("Transient").Actions[0],
                     // Take this as an example why working with fsm can be absolute bs.
                     new Trigger2dEvent()
@@ -79,15 +81,15 @@ public class GrassBombardementPower : Power
                         storeCollider = new("None"),
                         collideLayer = new()
                     }
-                }
-            });
+                    }
+                });
 
-            // To prevent the "not-destruction" of dive or bomb if the other one is active, we add a additional state that handles both.
-            self.AddState(new FsmState(self.Fsm)
-            {
-                Name = "Multiple Breaker",
-                Actions = new FsmStateAction[]
+                // To prevent the "not-destruction" of dive or bomb if the other one is active, we add a additional state that handles both.
+                self.AddState(new FsmState(self.Fsm)
                 {
+                    Name = "Multiple Breaker",
+                    Actions = new FsmStateAction[]
+                    {
                     self.GetState("Transient").Actions[1],
                     new Trigger2dEvent()
                     {
@@ -96,33 +98,37 @@ public class GrassBombardementPower : Power
                         storeCollider = new("None"),
                         collideLayer = new()
                     }
-                }
-            });
+                    }
+                });
 
-            FsmState explosionState = self.GetState("Explosion Quake");
-            explosionState.AddTransition("VANISHED", "Solid");
-            explosionState.AddTransition("DESTROY", "PD Bool?");
-            explosionState.AddTransition("QUAKE FALL START", "Multiple Breaker");
+                FsmState explosionState = self.GetState("Explosion Quake");
+                explosionState.AddTransition("VANISHED", "Solid");
+                explosionState.AddTransition("DESTROY", "PD Bool?");
+                explosionState.AddTransition("QUAKE FALL START", "Multiple Breaker");
 
-            FsmState multipleBreak = self.GetState("Multiple Breaker");
-            multipleBreak.AddTransition("DESTROY", "PD Bool?");
-            multipleBreak.AddTransition("QUAKE FALL END", "Explosion Quake");
-            multipleBreak.AddTransition("VANISHED", "Transient");
+                FsmState multipleBreak = self.GetState("Multiple Breaker");
+                multipleBreak.AddTransition("DESTROY", "PD Bool?");
+                multipleBreak.AddTransition("QUAKE FALL END", "Explosion Quake");
+                multipleBreak.AddTransition("VANISHED", "Transient");
 
-            self.GetState("Solid").AddTransition("BOMBED", explosionState);
-            self.GetState("Solid").AddTransition("POWERBOMBED", "PD Bool?");
-            self.GetState("Transient").AddTransition("BOMBED", multipleBreak);
-            self.GetState("Transient").AddTransition("POWERBOMBED", "PD Bool?");
+                self.GetState("Solid").AddTransition("BOMBED", explosionState);
+                self.GetState("Solid").AddTransition("POWERBOMBED", "PD Bool?");
+                self.GetState("Transient").AddTransition("BOMBED", multipleBreak);
+                self.GetState("Transient").AddTransition("POWERBOMBED", "PD Bool?");
+            }
+            else if (string.Equals(self.FsmName, "Detect Quake"))
+            {
+                self.GetState("Detect").AddTransition("POWERBOMBED", "Quake Hit");
+                self.GetState("Check Quake").AddTransition("POWERBOMBED", "Quake Hit");
+            }
+            else if (string.Equals(self.FsmName, "break_floor"))
+                self.GetState("Idle").AddTransition("POWERBOMBED", "PlayerData");
+            else if (string.Equals(self.FsmName, "breakable_wall_v2"))
+                self.GetState("Idle").AddTransition("POWERBOMBED", "PD Bool?");
         }
-        else if (string.Equals(self.FsmName, "Detect Quake"))
+        catch (System.Exception)
         {
-            self.GetState("Detect").AddTransition("POWERBOMBED", "Quake Hit");
-            self.GetState("Check Quake").AddTransition("POWERBOMBED", "Quake Hit");
         }
-        else if (string.Equals(self.FsmName, "break_floor"))
-            self.GetState("Idle").AddTransition("POWERBOMBED", "PlayerData");
-        else if (string.Equals(self.FsmName, "breakable_wall_v2"))
-            self.GetState("Idle").AddTransition("POWERBOMBED", "PD Bool?");
         orig(self);
     }
 

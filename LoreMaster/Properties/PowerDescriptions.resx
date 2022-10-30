@@ -187,7 +187,7 @@
     <value>Pressing left while casting. spawns a bomb which explodes after 3 seconds, that deals 40 damage (60 with shaman stone) and breaks damaged walls/ground. Pressing right, will consume a lifeblood mask to spawn a more powerful bomb, with a bigger radius, 50 % more damage and the ability to break ALL damaged floors/walls in the room, even heavy floors and one way walls.</value>
   </data>
   <data name="GreaterMind" xml:space="preserve">
-    <value>Activates the tracker, to show you how many powers you are missing. If the counter is green, you have global access to the power in the area.</value>
+    <value>Activates the tracker, to show you how many powers you are missing. If the counter is green, you have global access to the power in the area. (Look in the mod menu for more options.)</value>
   </data>
   <data name="HappyFate" xml:space="preserve">
     <value>After sitting on a bench, your nail damage, nail range, running speed, dash speed and cdash charge up speed is increased. You also gain 1 soul per second.</value>
