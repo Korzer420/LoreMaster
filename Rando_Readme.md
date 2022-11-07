@@ -222,3 +222,8 @@ Determines how the abilities of the mod should behave.
   
 ### More Doors
 - The "Master Key" isn't able to open the doors placed by this mod. Instead it will show you at which location the key is.
+
+### Curse Randomizer
+- Treasure items can be mimicked, if enabled.
+- Non Power lore checks can be replaced, if the Black Egg Temple doesn't require Lore to open (Black Egg Temple Condition: Dreamers) and if
+"Custom" is enabled in "Replaceable Items".
