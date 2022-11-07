@@ -1,8 +1,8 @@
 # Lore Master
-Hollow Knight Mod that adds abilities to the lore tablets. (Requires Item Changer and SFCore)
+Hollow Knight Mod that adds abilities to the lore tablets and certain NPC. (Requires Item Changer and SFCore)
 
 ## How it works
-Reading a lore tablet displays the granted power name and a mostly vaguely description of what it does (or detailed description). The ability stays only active while you are in the zone, in which you found the lore tablet. If you have found all lore tablets in the zone, the powers are granted permanently. (Default)
+Reading a lore tablet/talking to a npc displays the granted power name and a mostly vaguely description of what it does (or detailed description). The ability stays only active while you are in the zone, in which you found the lore tablet. If you have found all lore tablets in the zone, the powers are granted permanently. (Default)
 
 ## What does count?
 I mostly oriented on the wiki page of lore tablets to see what actually counts. But there are a few addition, changes and removals to look out for:
@@ -13,7 +13,7 @@ I mostly oriented on the wiki page of lore tablets to see what actually counts. 
 - Badoon grant an ability.
 - The journal entry at the end of PoP grant an ability (Ability is only shown at the lore tablet at the start of PoP. This is the only power that by default is excluded (see below for more details))
 - The world sense tablet in the black egg temple does count.
-- Willow grants an ability.
+- Willoh grants an ability.
 - Myla grants an ability. (Myla doesn't disappear)
 - Quirrel in Crystal Peaks grants an ability. (Always present)
 - Emilitia in the city grants a power.
