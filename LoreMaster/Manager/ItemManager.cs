@@ -222,7 +222,6 @@ public static class ItemManager
         // Iseldas charts
         List<int> chartPrices = new() { 1, 30, 69, 120, 160, 200, 230, 290, 420, 500, 750, 870, 1000, 1150 };
         for (int i = 1; i < 15; i++)
-        {
             Finder.DefineCustomItem(new BoolItem()
             {
                 fieldName = Treasure_Chart_Prefix + i,
@@ -244,7 +243,7 @@ public static class ItemManager
                     new CostTag() { Cost = new GeoCost(chartPrices[i - 1]) }
                 }
             });
-        }
+        
 
         // Add Treasure locations
         for (int i = 0; i < 14; i++)
@@ -261,6 +260,18 @@ public static class ItemManager
                 name = new BoxedString("Magical Key"),
                 shopDesc = new BoxedString("The master key of this kingdom. Opens ALMOST every locked mechanism."),
                 sprite = new CustomSprite("MagicKey", false)
+            },
+            tags = new()
+            {
+                new InteropTag()
+                {
+                    Message = "CurseData",
+                    Properties = new()
+                    {
+                        {"CanMimic", new CanTreasureMimic() },
+                        {"MimicNames", new string[]{"Bass Koy", "Skeleton Key", "Magical Kiy"} }
+                    }
+                }
             }
         });
         Finder.DefineCustomItem(new BoolItem()
@@ -273,6 +284,18 @@ public static class ItemManager
                 name = new BoxedString("Dream Medallion"),
                 shopDesc = new BoxedString("An old artifact from the moth tribe. They say, the wielder of this medallion attracts the essence of dreams."),
                 sprite = new CustomSprite("Dream_Medallion", false)
+            },
+            tags = new()
+            {
+                new InteropTag()
+                {
+                    Message = "CurseData",
+                    Properties = new()
+                    {
+                        {"CanMimic", new CanTreasureMimic() },
+                        {"MimicNames", new string[]{"Dreem Medallion", "Dream Medalion", "Dream Meda11ion"} }
+                    }
+                }
             }
         });
         Finder.DefineCustomItem(new BoolItem()
@@ -285,6 +308,18 @@ public static class ItemManager
                 name = new BoxedString("Silksong Journal?"),
                 shopDesc = new BoxedString("A very special journal which was buried in this kingdom. The only thing on this, that Lemm could decifer, was the text \"Silksong Release Date\"."),
                 sprite = new CustomSprite("Silksong_Journal", false)
+            },
+            tags = new()
+            {
+                new InteropTag()
+                {
+                    Message = "CurseData",
+                    Properties = new()
+                    {
+                        {"CanMimic", new CanTreasureMimic() },
+                        {"MimicNames", new string[]{"Sliksong Journal?", "Silcksong Journal", "Silksong"} }
+                    }
+                }
             }
         });
         Finder.DefineCustomItem(new BoolItem()
@@ -297,6 +332,18 @@ public static class ItemManager
                 name = new BoxedString("Silver Seal"),
                 shopDesc = new BoxedString("A very special Hallownest seal which was buried in this kingdom. I personally like the colored design more."),
                 sprite = new CustomSprite("Silver_Seal", false)
+            },
+            tags = new()
+            {
+                new InteropTag()
+                {
+                    Message = "CurseData",
+                    Properties = new()
+                    {
+                        {"CanMimic", new CanTreasureMimic() },
+                        {"MimicNames", new string[]{"Silvered Seal", "Silwer Seal", "Silver Seel"} }
+                    }
+                }
             }
         });
         Finder.DefineCustomItem(new BoolItem()
@@ -309,6 +356,18 @@ public static class ItemManager
                 name = new BoxedString("Bronze King's Idol"),
                 shopDesc = new BoxedString("A very special King's Idol which was buried in this kingdom. If this color is caused by nature or artifical is beyond me."),
                 sprite = new CustomSprite("Bronze_King_Idol", false)
+            },
+            tags = new()
+            {
+                new InteropTag()
+                {
+                    Message = "CurseData",
+                    Properties = new()
+                    {
+                        {"CanMimic", new CanTreasureMimic() },
+                        {"MimicNames", new string[]{"Bronzed King's Idol", "Brinze Kong's Idol", "Bronze Idol"} }
+                    }
+                }
             }
         });
         Finder.DefineCustomItem(new BoolItem()
@@ -321,6 +380,18 @@ public static class ItemManager
                 name = new BoxedString("Golden Arcane Egg"),
                 shopDesc = new BoxedString("A very special arcane egg which was buried in this kingdom. Since it is one of a kind, I'm curious what kind of information it stored."),
                 sprite = new CustomSprite("Golden_Egg", false)
+            },
+            tags = new()
+            {
+                new InteropTag()
+                {
+                    Message = "CurseData",
+                    Properties = new()
+                    {
+                        {"CanMimic", new CanTreasureMimic() },
+                        {"MimicNames", new string[]{"Golden Arcane Eg", "Golden Egg", "Golden Arcane EGG!?"} }
+                    }
+                }
             }
         });
     }
@@ -940,6 +1011,12 @@ public static class ItemManager
         currentPlacement = iseldaLocation.Wrap();
         for (int i = 1; i < 15; i++)
             currentPlacement.Add(Finder.GetItem($"{Treasure_Chart_Prefix}{i}"));
+        // Only add default items if curse randomizer didn't create its own shop locations.
+        if (ItemChanger.Internal.Ref.Settings.Placements.ContainsKey("Iselda_Cheap")
+            || ItemChanger.Internal.Ref.Settings.Placements.ContainsKey("Iselda_Medium")
+            || ItemChanger.Internal.Ref.Settings.Placements.ContainsKey("Iselda_Expensive")
+            || ItemChanger.Internal.Ref.Settings.Placements.ContainsKey("Iselda_High_Valuable"))
+            return currentPlacement;
         currentPlacement.Add(Finder.GetItem(ItemNames.Wayward_Compass));
         currentPlacement.Add(Finder.GetItem(ItemNames.Bench_Pin));
         currentPlacement.Add(Finder.GetItem(ItemNames.Cocoon_Pin));

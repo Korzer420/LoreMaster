@@ -1,5 +1,6 @@
 using ItemChanger;
 using ItemChanger.Items;
+using ItemChanger.Tags;
 using ItemChanger.UIDefs;
 using LoreMaster.Enums;
 using LoreMaster.Helper;
@@ -65,7 +66,7 @@ internal static class Creator
             if (itemName.StartsWith("Dialogue-"))
             {
                 sprite = new(realName, true);
-                if (!System.IO.File.Exists(System.IO.Path.GetDirectoryName(typeof(LoreMaster).Assembly.Location) + "\\Resources\\Sounds\\" + realName + ".wav"))
+                if (!System.IO.File.Exists(System.IO.Path.GetDirectoryName(typeof(LoreMaster).Assembly.Location) + "/Resources/Sounds/" + realName + ".wav"))
                     soundClipName = "Dream_Ghost";
                 else
                     soundClipName = realName;
@@ -91,6 +92,16 @@ internal static class Creator
                     soundClipName = realName;
             }
             realName = realName.Replace("_", " ");
+            if (tagList == null)
+                tagList = new();
+            tagList.Add(new InteropTag()
+            {
+                Message = "CurseData",
+                Properties = new()
+                {
+                    {"CanReplace", new IsLoreObsolete() }
+                }
+            });
         }
 
         return new()

@@ -34,7 +34,7 @@ public class LogicManager
     public static void AttachLogic()
     {
         RCData.RuntimeLogicOverride.Subscribe(20f, ModifyLogic);
-        RCData.RuntimeLogicOverride.Subscribe(60f, ModifyConnectionLogic);
+        RCData.RuntimeLogicOverride.Subscribe(600f, ModifyConnectionLogic);
     }
 
     private static void ModifyLogic(GenerationSettings settings, LogicManagerBuilder builder)
@@ -373,5 +373,14 @@ public class LogicManager
             if (builder.LogicLookup.Any(x => x.Key == "Hunter's_Notes-Nightmare_King" || x.Key == "Journal_Entry-Nightmare_King"))
                 builder.DoLogicEdit(new("Defeated_Any_Nightmare_King", "(ORIG) + LISTEN"));
         }
+
+        if (builder.IsTerm("WALLET") && (RandomizerManager.Settings.RandomizeTreasures || RandomizerManager.Settings.DefineRefs))
+            for (int i = 6; i < 14; i++)
+                if (i < 10)
+                    builder.DoLogicEdit(new(RandomizerRequestModifier.TreasureLocation[i], "(ORIG) + WALLET"));
+                else if (i < 13)
+                    builder.DoLogicEdit(new(RandomizerRequestModifier.TreasureLocation[i], "(ORIG) + WALLET>1"));
+                else
+                    builder.DoLogicEdit(new(RandomizerRequestModifier.TreasureLocation[i], "(ORIG) + WALLET>2"));
     }
 }
