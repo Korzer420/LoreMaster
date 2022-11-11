@@ -275,6 +275,12 @@ internal class MenuManager : ModeMenuConstructor
         PowerElements = new MenuItem<PowerTag>[60];
         List<PowerTag> tags = (Enum.GetValues(typeof(PowerTag)) as PowerTag[]).ToList();
         int index = 0;
+        if (PowerManager.GlobalPowerStates == null)
+        {
+            PowerManager.GlobalPowerStates = new();
+            foreach (Power power in PowerManager.GetAllPowers())
+                PowerManager.GlobalPowerStates.Add(power.PowerName, power.Tag);
+        }
         foreach (string key in PowerManager.GlobalPowerStates.Keys)
         {
             MenuItem<PowerTag> item = new(PowerPage, key, tags, new MultiLineFormatter());
