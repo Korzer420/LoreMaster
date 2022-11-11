@@ -194,6 +194,7 @@ public class LogicManager
                 Traveller currentTraveller = Traveller.Quirrel;
                 for (int i = 0; i < RandomizerRequestModifier.TravellerItems.Length - 1; i++)
                 {
+                    // Changes to the other traveller (these get skipped because the last location remains as the final one)
                     if (i == 9 || i == 14 || i == 19)
                     {
                         currentTraveller++;
@@ -204,7 +205,7 @@ public class LogicManager
                         continue;
 
                     int stage = LoreManager.Instance.Traveller[currentTraveller].Locations.IndexOf(travellerLocation.ObjectName);
-                    if (stage != 0)
+                    if (stage != 0 && RandomizerManager.Settings.TravellerOrder != TravelOrder.Everywhere)
                         builder.DoLogicEdit(new(RandomizerRequestModifier.TravellerLocations[i], RandomizerManager.Settings.CursedListening
                         ? $"(ORIG) + LISTEN + {currentTerm.ToString().ToUpper()}>" + (stage - 1)
                         : $"(ORIG) + {currentTraveller.ToString().ToUpper()}>" + (stage - 1)));
@@ -228,22 +229,22 @@ public class LogicManager
                     int stage = LoreManager.Instance.Traveller[Traveller.Zote].Locations.IndexOf("Zote Buzzer Convo(Clone)");
                     if (stage == 0)
                         builder.DoLogicEdit(new(LocationList.Zote_Greenpath, "(ORIG) + LISTEN"));
-                    else
+                    else if (RandomizerManager.Settings.TravellerOrder != TravelOrder.Everywhere)
                         builder.DoLogicEdit(new(LocationList.Zote_Greenpath, "(ORIG) + LISTEN + ZOTE>" + (stage - 1)));
                     stage = LoreManager.Instance.Traveller[Traveller.Zote].Locations.IndexOf("/Zote Deepnest/Faller/NPC");
                     if (stage == 0)
                         builder.DoLogicEdit(new(LocationList.Zote_Deepnest, "(ORIG) + LISTEN"));
-                    else
+                    else if (RandomizerManager.Settings.TravellerOrder != TravelOrder.Everywhere)
                         builder.DoLogicEdit(new(LocationList.Zote_Deepnest, "(ORIG) + LISTEN + ZOTE>" + (stage - 1)));
                 }
                 else
                 {
                     // Because Zote sucks...
                     int stage = LoreManager.Instance.Traveller[Traveller.Zote].Locations.IndexOf("Zote Buzzer Convo(Clone)");
-                    if (stage != 0)
+                    if (stage != 0 && RandomizerManager.Settings.TravellerOrder != TravelOrder.Everywhere)
                         builder.DoLogicEdit(new(LocationList.Zote_Greenpath, "(ORIG) + ZOTE>" + (stage - 1)));
                     stage = LoreManager.Instance.Traveller[Traveller.Zote].Locations.IndexOf("/Zote Deepnest/Faller/NPC");
-                    if (stage != 0)
+                    if (stage != 0 && RandomizerManager.Settings.TravellerOrder != TravelOrder.Everywhere)
                         builder.DoLogicEdit(new(LocationList.Zote_Deepnest, "(ORIG) + ZOTE>" + (stage - 1)));
                 }
 
@@ -293,7 +294,7 @@ public class LogicManager
 
                 // Extra logic for Grey Prince Zote
                 int zoteDeepnestStage = LoreManager.Instance.Traveller[currentTraveller].Locations.IndexOf("/Zote Deepnest/Faller/NPC");
-                if (zoteDeepnestStage != 0)
+                if (zoteDeepnestStage != 0 && RandomizerManager.Settings.TravellerOrder != TravelOrder.Everywhere)
                     builder.DoLogicEdit(new("Defeated_Colosseum_Zote", "(ORIG) + ZOTE>" + (zoteDeepnestStage - 1)));
             }
             catch (System.Exception exception)

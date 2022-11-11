@@ -199,7 +199,10 @@ public class RandomizerMenu
         if ((bool)obj.Value)
             _menuElementFactory.Elements[7].Show();
         else
+        {
             _menuElementFactory.Elements[7].Hide();
+            _menuElementFactory.Elements[7].SetValue(TravelOrder.Vanilla);
+        }
     }
 
     private void ChangeEndCondition(IValueElement obj)
