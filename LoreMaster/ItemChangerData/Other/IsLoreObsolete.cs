@@ -7,7 +7,8 @@ namespace LoreMaster.ItemChangerData.Other;
 /// </summary>
 internal class IsLoreObsolete : IBool
 {
-    public bool Value => Randomizer.RandomizerManager.Settings.BlackEggTempleCondition != Enums.BlackEggTempleCondition.Dreamers;
+    public bool Value => Randomizer.RandomizerManager.Settings.BlackEggTempleCondition != Enums.BlackEggTempleCondition.Dreamers 
+        && !Randomizer.RandomizerManager.Settings.DefineRefs && !Randomizer.RandomizerManager.Settings.RandomizeElderbugRewards;
 
     public IBool Clone() => new IsLoreObsolete();
 }
