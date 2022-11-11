@@ -49,7 +49,7 @@
 	},
 	{ 
 		"name":"Fluke_Hermit",
-		"logic":"(Room_GG_Shortcut[top1] | (Room_GG_Shortcut[left1] + (LEFTCLAW | RIGHTCLAW))) + SWIM"
+		"logic":"(Room_GG_Shortcut[top1] | (Room_GG_Shortcut[left1] + (LEFTCLAW + WINGS | RIGHTCLAW))) + SWIM"
 	},
 	{ 
 		"name":"Grasshopper", 

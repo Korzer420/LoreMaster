@@ -462,6 +462,9 @@ public class SettingManager
                         : Convert.ToInt32(itemData.Placement.Name.Substring(16)) + 3)
                     : 2;
                 ElderbugLocation.ItemThrown = false;
+                GameObject elderBug = GameObject.Find("Elderbug");
+                if (elderBug != null && elderBug.GetComponent<BoxCollider2D>() is BoxCollider2D collider)
+                    collider.size = new(3.8361f, 0.2408f);
             }
         }
         catch (Exception exception)
@@ -647,70 +650,70 @@ public class SettingManager
                 try
                 {
                     DialogueBox box = self.GetState("Sly Rescued").GetFirstActionOfType<HutongGames.PlayMaker.Actions.CallMethodProper>().gameObject.GameObject.Value.GetComponent<DialogueBox>();
-                if (ElderbugState == 0)
-                    box.StartConversation("Elderbug_Met", "Elderbug");
-                else if (PlayerData.instance.GetBool(nameof(PlayerData.instance.hasXunFlower)) && !PlayerData.instance.GetBool(nameof(PlayerData.instance.xunFlowerBroken))
-                && !PlayerData.instance.GetBool(nameof(PlayerData.instance.elderbugGaveFlower)))
-                    self.SendEvent(PlayerData.instance.GetBool(nameof(PlayerData.instance.elderbugRequestedFlower)) ? "FLOWER REOFFER" : "FLOWER OFFER");
-                else if (ElderbugState == 1)
-                {
-                    if (PlayerData.instance.GetInt(nameof(PlayerData.instance.quakeLevel)) > 0
-                    || PlayerData.instance.GetInt(nameof(PlayerData.instance.screamLevel)) > 0
-                    || PlayerData.instance.GetInt(nameof(PlayerData.instance.fireballLevel)) > 0)
+                    if (ElderbugState == 0)
+                        box.StartConversation("Elderbug_Met", "Elderbug");
+                    else if (PlayerData.instance.GetBool(nameof(PlayerData.instance.hasXunFlower)) && !PlayerData.instance.GetBool(nameof(PlayerData.instance.xunFlowerBroken))
+                    && !PlayerData.instance.GetBool(nameof(PlayerData.instance.elderbugGaveFlower)))
+                        self.SendEvent(PlayerData.instance.GetBool(nameof(PlayerData.instance.elderbugRequestedFlower)) ? "FLOWER REOFFER" : "FLOWER OFFER");
+                    else if (ElderbugState == 1)
                     {
-                        if (ElderbugLocation.ItemThrown)
-                            box.StartConversation("Elderbug_Not_Reading", "Elderbug");
+                        if (PlayerData.instance.GetInt(nameof(PlayerData.instance.quakeLevel)) > 0
+                        || PlayerData.instance.GetInt(nameof(PlayerData.instance.screamLevel)) > 0
+                        || PlayerData.instance.GetInt(nameof(PlayerData.instance.fireballLevel)) > 0)
+                        {
+                            if (ElderbugLocation.ItemThrown)
+                                box.StartConversation("Elderbug_Not_Reading", "Elderbug");
+                            else
+                                self.SendEvent("Elderbug_Reward_1");
+                        }
                         else
-                            self.SendEvent("Elderbug_Reward_1");
+                            box.StartConversation("Elderbug_Remind_Task", "Elderbug");
                     }
-                    else
-                        box.StartConversation("Elderbug_Remind_Task", "Elderbug");
-                }
-                else if (ElderbugState == 2)
-                {
-                    ElderbugState++;
-                    box.StartConversation("Elderbug_Task_2", "Elderbug");
-                }
-                else if (ElderbugState == 3)
-                {
-                    if (PowerManager.ObtainedPowers.Count < 5)
-                        box.StartConversation("Elderbug_Not_Enough_Lore", "Elderbug");
-                    else
+                    else if (ElderbugState == 2)
                     {
-                        if (ElderbugLocation.ItemThrown)
-                            box.StartConversation("Elderbug_Not_Listening", "Elderbug");
-                        else
-                            self.SendEvent("Elderbug_Reward_2");
+                        ElderbugState++;
+                        box.StartConversation("Elderbug_Task_2", "Elderbug");
                     }
-                }
-                else if (ElderbugState == 4)
-                {
-                    ElderbugState++;
-                    box.StartConversation("Elderbug_Task_3", "Elderbug");
-                }
-                else if (ElderbugState > 4 && ElderbugState < 12)
-                {
-                    if (PowerManager.ObtainedPowers.Count < _elderbugRewardStages[ElderbugState - 5])
-                        box.StartConversation("Elderbug_Hint", "Elderbug");
-                    else if (ElderbugLocation.ItemThrown)
-                        box.StartConversation("Elderbug_Pickup_Reminder", "Elderbug");
+                    else if (ElderbugState == 3)
+                    {
+                        if (PowerManager.ObtainedPowers.Count < 5)
+                            box.StartConversation("Elderbug_Not_Enough_Lore", "Elderbug");
+                        else
+                        {
+                            if (ElderbugLocation.ItemThrown)
+                                box.StartConversation("Elderbug_Not_Listening", "Elderbug");
+                            else
+                                self.SendEvent("Elderbug_Reward_2");
+                        }
+                    }
+                    else if (ElderbugState == 4)
+                    {
+                        ElderbugState++;
+                        box.StartConversation("Elderbug_Task_3", "Elderbug");
+                    }
+                    else if (ElderbugState > 4 && ElderbugState < 12)
+                    {
+                        if (PowerManager.ObtainedPowers.Count < _elderbugRewardStages[ElderbugState - 5])
+                            box.StartConversation("Elderbug_Hint", "Elderbug");
+                        else if (ElderbugLocation.ItemThrown)
+                            box.StartConversation("Elderbug_Pickup_Reminder", "Elderbug");
+                        else
+                            self.SendEvent($"Elderbug_Reward_{ElderbugState - 2}");
+                    }
+                    else if (ElderbugState == 12)
+                    {
+                        ElderbugState++;
+                        box.StartConversation("Elderbug_All_Tasks_Done", "Elderbug");
+                    }
+                    else if (ElderbugState == 13)
+                        box.StartConversation("Elderbug_End", "Elderbug");
                     else
-                        self.SendEvent($"Elderbug_Reward_{ElderbugState - 2}");
+                        box.StartConversation("Elderbug_Casual", "Elderbug");
                 }
-                else if (ElderbugState == 12)
+                catch (Exception exception)
                 {
-                    ElderbugState++;
-                    box.StartConversation("Elderbug_All_Tasks_Done", "Elderbug");
+                    LoreMaster.Instance.LogError(exception.StackTrace);
                 }
-                else if (ElderbugState == 13)
-                    box.StartConversation("Elderbug_End", "Elderbug");
-                else
-                    box.StartConversation("Elderbug_Casual", "Elderbug");
-    }
-    catch (Exception exception)
-    {
-        LoreMaster.Instance.LogError(exception.StackTrace);
-    }
             })
         };
         self.GetState("Convo Choice").AddTransition("CONVO_FINISH", "Talk Finish");

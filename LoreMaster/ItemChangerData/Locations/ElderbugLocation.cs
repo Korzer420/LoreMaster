@@ -66,8 +66,9 @@ internal class ElderbugLocation : AutoLocation
                     Container container = Container.GetContainer(Container.Shiny);
                     GameObject treasure = container.GetNewContainer(new ContainerInfo(container.Name, Placement, FlingType.StraightUp));
                     ShinyUtility.FlingShinyRight(treasure.LocateMyFSM("Shiny Control"));
-                    container.ApplyTargetContext(treasure, fsm.gameObject, -2f);
+                    container.ApplyTargetContext(treasure, fsm.gameObject, 0f);
                     ItemThrown = true;
+                    fsm.gameObject.GetComponent<BoxCollider2D>().size = new(1.8361f, 0.2408f);
                 })
             }
         });

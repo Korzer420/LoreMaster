@@ -105,7 +105,7 @@ internal class TravellerLocation : DialogueLocation
             Component.Destroy(item);
         foreach (PlayMakerFSM item in npc.GetComponents<PlayMakerFSM>()?.Where(x => x.FsmName.StartsWith("Destroy") || x.FsmName == "FSM"
         || x.FsmName == "Death" || x.FsmName.StartsWith("Leave")
-        || x.FsmName == "deactivate" || x.FsmName == "Appear"))
+        || x.FsmName.StartsWith("deactivate") || x.FsmName == "Appear"))
             Component.Destroy(item);
         if (Placement.Items.All(x => x.IsObtained()))
         {

@@ -290,6 +290,11 @@ public class LogicManager
                     builder.AddItem(new SingleItem(ItemList.Dialogue_Zote_Greenpath, new(builder.GetOrAddTerm("ZOTE"), 1)));
                     builder.AddItem(new SingleItem(ItemList.Dialogue_Zote_Deepnest, new(builder.GetOrAddTerm("ZOTE"), 1)));
                 }
+
+                // Extra logic for Grey Prince Zote
+                int zoteDeepnestStage = LoreManager.Instance.Traveller[currentTraveller].Locations.IndexOf("/Zote Deepnest/Faller/NPC");
+                if (zoteDeepnestStage != 0)
+                    builder.DoLogicEdit(new("Defeated_Colosseum_Zote", "(ORIG) + ZOTE>" + (zoteDeepnestStage - 1)));
             }
             catch (System.Exception exception)
             {
