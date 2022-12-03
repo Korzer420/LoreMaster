@@ -1,17 +1,17 @@
 # Lore Master
-Hollow Knight Mod that adds abilities to the lore tablets and certain NPC. (Requires Item Changer and SFCore)
+Hollow Knight Mod that adds abilities to the lore tablets and certain NPC. (Requires ItemChanger, MenuChanger and SFCore)
 
 ## How it works
 Reading a lore tablet/talking to a npc displays the granted power name and a mostly vaguely description of what it does (or detailed description). The ability stays only active while you are in the zone, in which you found the lore tablet. If you have found all lore tablets in the zone, the powers are granted permanently. (Default)
 
 ## What does count?
 I mostly oriented on the wiki page of lore tablets to see what actually counts. But there are a few addition, changes and removals to look out for:
-- Menderbugs diary does nothing (I mean, you are granted "Regret" if you want to count it)
+- Menderbugs diary does grant an ability (does not require killing Menderbug)
 - Any of Bretta's diary entries does count for her power.
 - Midwife and the mask maker grant abilities.
 - The traitor's grave, Moss prophet and the queen grant abilites.
 - Badoon grant an ability.
-- The journal entry at the end of PoP grant an ability (Ability is only shown at the lore tablet at the start of PoP. This is the only power that by default is excluded (see below for more details))
+- The journal entry at the end of PoP grant an ability (This is the only power that by default is excluded (see below for more details))
 - The world sense tablet in the black egg temple does count.
 - Willoh grants an ability.
 - Myla grants an ability. (Myla doesn't disappear)
@@ -20,6 +20,8 @@ I mostly oriented on the wiki page of lore tablets to see what actually counts. 
 - The statue of the Hollow Knight in the city grants a ability.
 - All ghosts outside glade except Cloth grant abilities.
 - Record Bela grants an ability (extra lore tablet)
+- Zote in Deepnest grant an ability
+- Tiso at Blue Lake grant an ability
 
 Currently not implemented:
 - The shield on iselda's shop grants you a bonus but not ability. (Is not required for the dirtmouth loremaster)
