@@ -1,6 +1,7 @@
 using HutongGames.PlayMaker.Actions;
 using ItemChanger.Extensions;
 using LoreMaster.Enums;
+using Modding;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -57,6 +58,19 @@ public class MarissasAudiencePower : Power
 
     #endregion
 
+    #region Event handler
+
+    private string ModHooks_BeforeSceneLoadHook(string newScene)
+    {
+        if (_extraCompanions.Any())
+            foreach (GameObject companion in _extraCompanions)
+                GameObject.Destroy(companion);
+        _extraCompanions.Clear();
+        return newScene;
+    }
+
+    #endregion
+
     #region Control
 
     /// <inheritdoc/>
@@ -69,13 +83,16 @@ public class MarissasAudiencePower : Power
     }
 
     /// <inheritdoc/>
-    protected override void Enable() => StartRoutine(() => GatherAudience());
+    protected override void Enable() 
+    { 
+        StartRoutine(GatherAudience);
+        ModHooks.BeforeSceneLoadHook += ModHooks_BeforeSceneLoadHook;
+    }
 
     /// <inheritdoc/>
     protected override void Disable()
     {
-        if (_runningCoroutine != null)
-            LoreMaster.Instance.Handler.StopCoroutine(_runningCoroutine);
+        ModHooks.BeforeSceneLoadHook -= ModHooks_BeforeSceneLoadHook;
         if (_extraCompanions.Any())
             foreach (GameObject companion in _extraCompanions)
                 GameObject.Destroy(companion);

@@ -6,13 +6,10 @@ using MenuChanger;
 using MenuChanger.Extensions;
 using MenuChanger.MenuElements;
 using MenuChanger.MenuPanels;
-using Modding;
 using RandomizerMod.Menu;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -89,8 +86,8 @@ public class RandomizerMenu
         {
             _pageButton = new(previousPage, "Lore Master");
             _pageButton.AddHideAndShowEvent(previousPage, _mainPage);
-            _mainPage.BeforeGoBack += () => _pageButton.Text.color = Disabled() ? Colors.FALSE_COLOR : Colors.TRUE_COLOR;
-            _pageButton.Text.color = Disabled() ? Colors.FALSE_COLOR : Colors.TRUE_COLOR;
+            _mainPage.BeforeGoBack += () => _pageButton.Text.color = !RandomizerManager.Settings.Enabled ? Colors.FALSE_COLOR : Colors.TRUE_COLOR;
+            _pageButton.Text.color = !RandomizerManager.Settings.Enabled ? Colors.FALSE_COLOR : Colors.TRUE_COLOR;
             button = _pageButton;
             return true;
         }
@@ -102,17 +99,6 @@ public class RandomizerMenu
         return true;
     }
 
-    private bool Disabled()
-    {
-        return !RandomizerManager.Settings.DefineRefs && !RandomizerManager.Settings.RandomizeDreamDialogue
-            && !RandomizerManager.Settings.RandomizeTravellers && !RandomizerManager.Settings.RandomizeDreamWarriorStatues
-            && !RandomizerManager.Settings.RandomizeElderbugRewards && !RandomizerManager.Settings.RandomizeNpc
-            && !RandomizerManager.Settings.RandomizePointsOfInterest && !RandomizerManager.Settings.RandomizeTreasures
-            && !RandomizerManager.Settings.CursedReading && !RandomizerManager.Settings.CursedListening
-            && RandomizerManager.Settings.BlackEggTempleCondition == BlackEggTempleCondition.Dreamers
-            && RandomizerManager.Settings.PowerBehaviour == LoreSetOption.RemoveAllPowers;
-    }
-
     private void ConstructMenu(MenuPage previousPage)
     {
         try
@@ -120,33 +106,32 @@ public class RandomizerMenu
             On.FixVerticalAlign.AlignText += FixVerticalAlign_AlignText;
             _mainPage = new MenuPage("Lore Master", previousPage);
             _menuElementFactory = new MenuElementFactory<RandomizerSettings>(_mainPage, RandomizerManager.Settings);
-            _menuElementFactory.Elements[0].MoveTo(new(0f, 400f));
-            _mainPoolsPanel = new(_mainPage, new(-400, 350), 50f, true, _menuElementFactory.Elements.Skip(1).Take(5).ToArray());
-            _menuElementFactory.Elements[5].SelfChanged += CheckIfElderbugPossible;
-            new VerticalItemPanel(_mainPage, new(400, 350), 50f, true, _menuElementFactory.Elements.Skip(6).Take(4).ToArray());
+
+            _menuElementFactory.ElementLookup[nameof(RandomizerManager.Settings.Enabled)].MoveTo(new(0f, 500f));
+            _menuElementFactory.ElementLookup[nameof(RandomizerManager.Settings.DefineRefs)].MoveTo(new(0f, 400f));
+            _mainPoolsPanel = new(_mainPage, new(-400, 350), 50f, true, _menuElementFactory.Elements.Skip(2).Take(5).ToArray());
+            _menuElementFactory.ElementLookup[nameof(RandomizerManager.Settings.RandomizeElderbugRewards)].SelfChanged += CheckIfElderbugPossible;
+            new VerticalItemPanel(_mainPage, new(400, 350), 50f, true, _menuElementFactory.Elements.Skip(7).Take(4).ToArray());
             if (!RandomizerManager.Settings.RandomizeTravellers)
-                _menuElementFactory.Elements[7].Hide();
+                _menuElementFactory.ElementLookup[nameof(RandomizerManager.Settings.TravellerOrder)].Hide();
             if (!RandomizerManager.Settings.RandomizeTreasures)
-                _menuElementFactory.Elements[9].Hide();
+                _menuElementFactory.ElementLookup[nameof(RandomizerManager.Settings.ForceCompassForTreasure)].Hide();
 
-            for (int i = 0; i < 5; i++)
+            for (int i = 1; i < 6; i++)
                 _menuElementFactory.Elements[i].SelfChanged += AdjustLorePool;
-            _menuElementFactory.Elements[6].SelfChanged += AdjustLorePool;
+            _menuElementFactory.ElementLookup[nameof(RandomizerManager.Settings.RandomizeTravellers)].SelfChanged += AdjustLorePool;
 
-            _menuElementFactory.Elements[6].SelfChanged += TravellerOrderVisiblity;
-            _menuElementFactory.Elements[8].SelfChanged += CompassVisiblity;
-            new VerticalItemPanel(_mainPage, new(0, -0f), 50f, true, _menuElementFactory.Elements.Skip(10).Take(2).ToArray());
-            _menuElementFactory.Elements[12].MoveTo(new(-350f, -200f));
-            _menuElementFactory.Elements[12].SelfChanged += ChangeEndCondition;
-            _menuElementFactory.Elements[13].MoveTo(new(-350f, -275f));
-            _menuElementFactory.Elements[13].SelfChanged += CheckLoreCap;
+            _menuElementFactory.ElementLookup[nameof(RandomizerManager.Settings.RandomizeTravellers)].SelfChanged += TravellerOrderVisiblity;
+            _menuElementFactory.ElementLookup[nameof(RandomizerManager.Settings.RandomizeTreasures)].SelfChanged += CompassVisiblity;
+            new VerticalItemPanel(_mainPage, new(0, -0f), 50f, true, _menuElementFactory.Elements.Skip(11).Take(2).ToArray());
+            _menuElementFactory.ElementLookup[nameof(RandomizerManager.Settings.BlackEggTempleCondition)].MoveTo(new(-350f, -200f));
+            _menuElementFactory.ElementLookup[nameof(RandomizerManager.Settings.BlackEggTempleCondition)].SelfChanged += ChangeEndCondition;
+            _menuElementFactory.ElementLookup[nameof(RandomizerManager.Settings.NeededLore)].MoveTo(new(-350f, -275f));
+            _menuElementFactory.ElementLookup[nameof(RandomizerManager.Settings.NeededLore)].SelfChanged += CheckLoreCap;
             if (RandomizerManager.Settings.BlackEggTempleCondition == BlackEggTempleCondition.Dreamers)
-                _menuElementFactory.Elements[13].Hide();
-            _menuElementFactory.Elements[14].MoveTo(new(350f, -200f));
-            _menuElementFactory.Elements[14].SelfChanged += ShowPowerButton;
-
-            if (ModHooks.GetMod("ConnectionSettingsCode", true) is Mod mod)
-                ConnectionSettingManager.CreateSettingsCode(_mainPage, _menuElementFactory.Elements);
+                _menuElementFactory.ElementLookup[nameof(RandomizerManager.Settings.NeededLore)].Hide();
+            _menuElementFactory.ElementLookup[nameof(RandomizerManager.Settings.PowerBehaviour)].MoveTo(new(350f, -200f));
+            _menuElementFactory.ElementLookup[nameof(RandomizerManager.Settings.PowerBehaviour)].SelfChanged += ShowPowerButton;
             GeneratePowerPage();
         }
         catch (Exception exception)
@@ -159,9 +144,9 @@ public class RandomizerMenu
     private void AdjustLorePool(IValueElement obj)
     {
         if (RandomizerManager.Settings.RandomizeElderbugRewards && AvailableLore() < 55)
-            _menuElementFactory.Elements[5].SetValue(false);
+            _menuElementFactory.ElementLookup[nameof(RandomizerManager.Settings.RandomizeElderbugRewards)].SetValue(false);
         if (RandomizerManager.Settings.BlackEggTempleCondition != BlackEggTempleCondition.Dreamers && AvailableLore() < RandomizerManager.Settings.NeededLore)
-            _menuElementFactory.Elements[13].SetValue(AvailableLore());
+            _menuElementFactory.ElementLookup[nameof(RandomizerManager.Settings.NeededLore)].SetValue(AvailableLore());
     }
 
     private void CheckIfElderbugPossible(IValueElement obj)
@@ -189,28 +174,28 @@ public class RandomizerMenu
     private void CompassVisiblity(IValueElement obj)
     {
         if ((bool)obj.Value)
-            _menuElementFactory.Elements[9].Show();
+            _menuElementFactory.ElementLookup[nameof(RandomizerManager.Settings.ForceCompassForTreasure)].Show();
         else
-            _menuElementFactory.Elements[9].Hide();
+            _menuElementFactory.ElementLookup[nameof(RandomizerManager.Settings.ForceCompassForTreasure)].Hide();
     }
 
     private void TravellerOrderVisiblity(IValueElement obj)
     {
         if ((bool)obj.Value)
-            _menuElementFactory.Elements[7].Show();
+            _menuElementFactory.ElementLookup[nameof(RandomizerManager.Settings.TravellerOrder)].Show();
         else
         {
-            _menuElementFactory.Elements[7].Hide();
-            _menuElementFactory.Elements[7].SetValue(TravelOrder.Vanilla);
+            _menuElementFactory.ElementLookup[nameof(RandomizerManager.Settings.TravellerOrder)].Hide();
+            _menuElementFactory.ElementLookup[nameof(RandomizerManager.Settings.TravellerOrder)].SetValue(TravelOrder.Vanilla);
         }
     }
 
     private void ChangeEndCondition(IValueElement obj)
     {
         if ((BlackEggTempleCondition)obj.Value != BlackEggTempleCondition.Dreamers)
-            _menuElementFactory.Elements[13].Show();
+            _menuElementFactory.ElementLookup[nameof(RandomizerManager.Settings.NeededLore)].Show();
         else
-            _menuElementFactory.Elements[13].Hide();
+            _menuElementFactory.ElementLookup[nameof(RandomizerManager.Settings.NeededLore)].Hide();
     }
 
     private void ChangePowerTag(IValueElement element) => PowerManager.GlobalPowerStates[(element as MenuItem<PowerTag>).Name] = (element as MenuItem<PowerTag>).Value;
@@ -319,8 +304,7 @@ public class RandomizerMenu
         }
         catch (Exception exception)
         {
-            LoreMaster.Instance.LogError(exception.Message);
-            throw;
+            LoreMaster.Instance.LogError(exception.StackTrace);
         }
     }
 
@@ -341,6 +325,28 @@ public class RandomizerMenu
         if (RandomizerManager.Settings.RandomizePointsOfInterest || RandomizerManager.Settings.DefineRefs)
             lore += RandomizerRequestModifier.PointOfInterestItems.Length;
         return lore;
+    }
+
+    /// <summary>
+    /// Paste the settings from rando settings manager.
+    /// </summary>
+    /// <param name="settings"></param>
+    public void PasteSettings(FullRandoSettings settings)
+    {
+        if (settings == null || settings.BaseSettings == null || settings.Tags == null)
+        {
+            _menuElementFactory.ElementLookup[nameof(settings.BaseSettings.Enabled)].SetValue(false);
+            return;
+        }
+        _menuElementFactory.SetMenuValues(settings.BaseSettings);
+        int index = 0;
+        foreach (MenuItem<PowerTag> tag in _firstPowerSet.Items.Concat(_secondPowerSet.Items).Cast<MenuItem<PowerTag>>())
+        {
+            if (index >= settings.Tags.Count)
+                break;
+            tag.SetValue(settings.Tags[index]);
+            index++;
+        }
     }
 
     #endregion

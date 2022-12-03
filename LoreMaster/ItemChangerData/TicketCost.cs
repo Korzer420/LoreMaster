@@ -28,6 +28,8 @@ internal record Paypal: Cost
 
     IEnumerator Wait()
     {
+        // To prevent the player from being locked out of city. Taking the express automatically unlocks the store room stag.
+        PlayerData.instance.SetBool(nameof(PlayerData.instance.openedRuins1), true);
         yield return null;
         Paid = false;
 

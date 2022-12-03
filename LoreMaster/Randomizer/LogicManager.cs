@@ -39,6 +39,8 @@ public class LogicManager
 
     private static void ModifyLogic(GenerationSettings settings, LogicManagerBuilder builder)
     {
+        if (!RandomizerManager.Settings.Enabled)
+            return;
         Term loreTerm = null;
         if (RandomizerManager.Settings.BlackEggTempleCondition != BlackEggTempleCondition.Dreamers
             || RandomizerManager.Settings.RandomizeElderbugRewards
@@ -361,6 +363,8 @@ public class LogicManager
 
     private static void ModifyConnectionLogic(GenerationSettings settings, LogicManagerBuilder builder)
     {
+        if (!RandomizerManager.Settings.Enabled)
+            return;
         // Extra logic for journal rando
         if (RandomizerManager.Settings.CursedReading)
         {

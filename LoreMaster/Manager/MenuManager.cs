@@ -208,7 +208,7 @@ internal class MenuManager : ModeMenuConstructor
         SettingManager.Instance.NeededLore = Settings.NeededLore;
         SettingManager.Instance.GameMode = Settings.GameMode;
         foreach (Power power in PowerManager.GetAllPowers())
-            power.Tag = Settings.NightmareMode ? PowerTag.Global : PowerManager.GlobalPowerStates[power.PowerName];
+            power.DefaultTag = Settings.NightmareMode ? PowerTag.Global : PowerManager.GlobalPowerStates[power.PowerName];
         if (Settings.UseCursedLore != CursedLore.None)
         {
             int finalAmount = LoreMaster.Instance.Generator.Next(Settings.MinCursedLore, Settings.MaxCursedLore + 1);

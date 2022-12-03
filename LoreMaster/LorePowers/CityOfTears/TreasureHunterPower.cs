@@ -21,13 +21,6 @@ using UnityEngine;
 
 namespace LoreMaster.LorePowers.CityOfTears;
 
-/*
-    Crossroads_46
-    Crossroads_46b
-    Abyss_03
-    Abyss_03c
-    Abyss_03b
- */
 internal class TreasureHunterPower : Power
 {
     #region Members
@@ -175,7 +168,7 @@ internal class TreasureHunterPower : Power
                         treasure = "silksongJournal";
                         break;
                     case "SEAL":
-                        treasure = "silverJournal";
+                        treasure = "silverSeal";
                         break;
                     case "IDOL":
                         treasure = "bronzeKingIdol";
@@ -391,7 +384,7 @@ internal class TreasureHunterPower : Power
     /// </summary>
     private void QoLQuickSell()
     {
-        if (!QoL.Modules.NPCSellAll.LemmSellAll)
+        if (!QoL.Modules.NPCSellAll.LemmSellAll || PlayerData.instance.GetBool(nameof(PlayerData.instance.equippedCharm_10)))
             return;
         int finalGeo = 0;
         int trinket = 1;

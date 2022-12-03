@@ -25,7 +25,7 @@ public class OneOfUsPower : Power
     /// <summary>
     /// Gets the cloud object
     /// </summary>
-    public GameObject Cloud => _cloud == null ? GameObject.Find("_GameManager").transform.Find("GlobalPool/Knight Spore Cloud(Clone)").gameObject : _cloud;
+    public GameObject Cloud => _cloud == null ? _cloud = GameObject.Find("_GameManager").transform.Find("GlobalPool/Knight Spore Cloud(Clone)").gameObject : _cloud;
 
     #endregion
 

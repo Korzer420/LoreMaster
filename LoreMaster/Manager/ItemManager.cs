@@ -68,8 +68,9 @@ public static class ItemManager
 
             if (RandomizerManager.PlayingRandomizer)
             {
-                if (!RandomizerManager.Settings.RandomizeTreasures)
-                    placements.AddRange(CreateTreasure());
+                if (!RandomizerManager.Settings.Enabled)
+                    if (!RandomizerManager.Settings.RandomizeTreasures)
+                        placements.AddRange(CreateTreasure());
                 if (!RandomizerManager.Settings.RandomizeNpc)
                     placements.AddRange(CreateNpc());
                 if (RandomizerManager.Settings.DefineRefs)
@@ -207,18 +208,6 @@ public static class ItemManager
             }
         });
 
-        //Finder.DefineCustomLocation(new ShopLocation()
-        //{
-        //    name = Iselda_Treasure,
-        //    defaultShopItems = DefaultShopItems.IseldaCharms | DefaultShopItems.IseldaMaps
-        //    | DefaultShopItems.IseldaMapPins | DefaultShopItems.IseldaMapMarkers | DefaultShopItems.IseldaQuill,
-        //    requiredPlayerDataBool = "lemm_Allow",
-        //    sceneName = "Room_mapper",
-        //    flingType = FlingType.DirectDeposit,
-        //    objectName = "Iselda",
-        //    fsmName = "Conversation Control"
-        //});
-
         // Iseldas charts
         List<int> chartPrices = new() { 1, 30, 69, 120, 160, 200, 230, 290, 420, 500, 750, 870, 1000, 1150 };
         for (int i = 1; i < 15; i++)
@@ -243,7 +232,6 @@ public static class ItemManager
                     new CostTag() { Cost = new GeoCost(chartPrices[i - 1]) }
                 }
             });
-        
 
         // Add Treasure locations
         for (int i = 0; i < 14; i++)
@@ -487,6 +475,29 @@ public static class ItemManager
                 descTwo = new BoxedString("You can now comprehend the knowledge written down in the kingdom."),
                 take = new BoxedString("You learnt:"),
                 bigSprite = (Finder.GetItem("World_Sense").UIDef.Clone() as BigUIDef).bigSprite
+            },
+            tags = new()
+            {
+                new InteropTag()
+                {
+                    Message = "RandoSupplementalMetadata",
+                    Properties = new()
+                    {
+                        {"MajorItemName", "Reading" },
+                        {"ModSource", "LoreMaster" },
+                        {"IsMajorItem", true },
+                        {"PoolGroup", "Skills" }
+                    }
+                },
+                new InteropTag()
+                {
+                    Message = "CurseData",
+                    Properties = new()
+                    {
+                        {"CanMimic", new CurseTest(){IsReading = true } },
+                        {"MimicNames", new string[]{"Reed", "Read", "Reat"} }
+                    }
+                }
             }
         });
         Finder.DefineCustomItem(new BoolItem()
@@ -503,6 +514,29 @@ public static class ItemManager
                 descOne = new BoxedString("You finally learnt how to listen!"),
                 descTwo = new BoxedString("You can now \"communicate\" with the residents of Hallownest."),
                 bigSprite = (Finder.GetItem("World_Sense").UIDef.Clone() as BigUIDef).bigSprite
+            },
+            tags = new()
+            {
+                new InteropTag()
+                {
+                    Message = "RandoSupplementalMetadata",
+                    Properties = new()
+                    {
+                        {"MajorItemName", "Listening" },
+                        {"ModSource", "LoreMaster" },
+                        {"IsMajorItem", true },
+                        {"PoolGroup", "Skills" }
+                    }
+                },
+                new InteropTag()
+                {
+                    Message = "CurseData",
+                    Properties = new()
+                    {
+                        {"CanMimic", new CurseTest(){IsReading = false } },
+                        {"MimicNames", new string[]{"Listen", "Listen!", "Litsening"} }
+                    }
+                }
             }
         });
         Finder.DefineCustomItem(new BoolItem()

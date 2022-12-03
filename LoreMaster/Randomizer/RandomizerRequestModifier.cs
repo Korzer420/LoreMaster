@@ -291,6 +291,9 @@ internal static class RandomizerRequestModifier
 
     private static void AddLoreMasterExtra(RequestBuilder requestBuilder)
     {
+        if (!RandomizerManager.Settings.Enabled)
+            return;
+
         if (requestBuilder.gs.PoolSettings.LoreTablets)
             // Replace the normal lore item with the special ones.
             foreach (Area area in LoreItems.Keys)
@@ -556,7 +559,6 @@ internal static class RandomizerRequestModifier
                 };
             });
         }
-
 
         if (!requestBuilder.gs.PoolSettings.LoreTablets)
         {

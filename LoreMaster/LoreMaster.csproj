@@ -4,7 +4,7 @@
 		<TargetFramework>net472</TargetFramework>
 		<RootNamespace>LoreMaster</RootNamespace>
 		<AssemblyTitle>LoreMaster</AssemblyTitle>
-		<AssemblyVersion>2.1.8</AssemblyVersion>
+		<AssemblyVersion>2.2.0</AssemblyVersion>
 		<Deterministic>true</Deterministic>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<LangVersion>latest</LangVersion>
@@ -41,9 +41,6 @@
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
       <HintPath>..\..\..\..\..\Program Files\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\Assembly-CSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="ConnectionSettingsCode">
-      <HintPath>..\..\..\..\..\Program Files\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\Mods\ConnectionSettingsCode\ConnectionSettingsCode.dll</HintPath>
     </Reference>
     <Reference Include="ItemChanger">
       <HintPath>..\..\..\..\..\Program Files\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\Mods\ItemChanger\ItemChanger.dll</HintPath>
@@ -86,6 +83,9 @@
     </Reference>
     <Reference Include="RandomizerMod">
       <HintPath>..\..\..\..\..\Program Files\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\Mods\Randomizer 4\RandomizerMod.dll</HintPath>
+    </Reference>
+    <Reference Include="RandoSettingsManager">
+      <HintPath>..\..\..\..\..\Program Files\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\Mods\RandoSettingsManager\RandoSettingsManager.dll</HintPath>
     </Reference>
     <Reference Include="SFCore">
       <HintPath>..\..\..\..\..\Program Files\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\Mods\SFCore\SFCore.dll</HintPath>

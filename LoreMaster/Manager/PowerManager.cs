@@ -215,64 +215,83 @@ internal static class PowerManager
         ObtainedPowers.Clear();
         if (RandomizerManager.PlayingRandomizer)
         {
-            switch (RandomizerManager.Settings.PowerBehaviour)
+            if (!RandomizerManager.Settings.Enabled)
+                foreach (string key in _powerList.Keys)
+                    _powerList[key].DefaultTag = PowerTag.Remove;
+            else
             {
-                case LoreSetOption.Default:
-                    foreach (string key in _powerList.Keys)
-                    {
-                        _powerList[key].Tag = _powerList[key].DefaultTag;
-                        _powerList[key].StayTwisted = false;
-                    }
-                    break;
-                case LoreSetOption.AllGlobalPowers:
-                    foreach (string key in _powerList.Keys)
-                    {
-                        _powerList[key].Tag = PowerTag.Global;
-                        _powerList[key].StayTwisted = false;
-                    }
-                    break;
-                case LoreSetOption.OnlyRecommended:
-                    foreach (string key in _powerList.Keys)
-                    {
-                        if (key == "GRAVEDIGGER" || key == "FOUNTAIN_PLAQUE_DESC"
-                            || key == "STAG" || key == "RELICDEALER_DOOR"
-                            || key == "GRASSHOPPER" || key == "COMPLETION_RATE_UNLOCKED")
-                            _powerList[key].Tag = PowerTag.Global;
-                        else
-                            _powerList[key].Tag = PowerTag.Remove;
-                        _powerList[key].StayTwisted = false;
-                    }
-                    break;
-                case LoreSetOption.OnlyTracker:
-                    foreach (string key in _powerList.Keys)
-                    {
-                        _powerList[key].Tag = key == "COMPLETION_RATE_UNLOCKED" 
-                            ? PowerTag.Global 
-                            : PowerTag.Remove;
-                        _powerList[key].StayTwisted = false;
-                    }
-                    break;
-                case LoreSetOption.RemoveAllPowers:
-                    foreach (string key in _powerList.Keys)
-                    {
-                        _powerList[key].Tag = PowerTag.Remove;
-                        _powerList[key].StayTwisted = false;
-                    }
-                    break;
-                case LoreSetOption.Custom:
-                    foreach (string key in GlobalPowerStates.Keys)
-                        _powerList.Values.First(x => x.PowerName == key).Tag = GlobalPowerStates[key];
-                    break;
-            }
+                switch (RandomizerManager.Settings.PowerBehaviour)
+                {
+                    case LoreSetOption.Default:
+                        foreach (string key in _powerList.Keys)
+                        {
+                            if (key == "COMPLETION_RATE_UNLOCKED"
+                                || key == "RELICDEALER_DOOR" || key == "FOUNTAIN_PLAQUE_DESC")
+                                _powerList[key].DefaultTag = PowerTag.Global;
+                            else if (key == "POP")
+                                _powerList[key].DefaultTag = PowerTag.Exclude;
+                            else
+                                _powerList[key].DefaultTag = PowerTag.Local;
+                            _powerList[key].StayTwisted = false;
+                        }
+                        break;
+                    case LoreSetOption.AllGlobalPowers:
+                        foreach (string key in _powerList.Keys)
+                        {
+                            _powerList[key].DefaultTag = PowerTag.Global;
+                            _powerList[key].StayTwisted = false;
+                        }
+                        break;
+                    case LoreSetOption.OnlyRecommended:
+                        foreach (string key in _powerList.Keys)
+                        {
+                            if (key == "GRAVEDIGGER" || key == "FOUNTAIN_PLAQUE_DESC"
+                                || key == "STAG" || key == "RELICDEALER_DOOR"
+                                || key == "GRASSHOPPER" || key == "COMPLETION_RATE_UNLOCKED")
+                                _powerList[key].DefaultTag = PowerTag.Global;
+                            else
+                                _powerList[key].DefaultTag = PowerTag.Remove;
+                            _powerList[key].StayTwisted = false;
+                        }
+                        break;
+                    case LoreSetOption.OnlyTracker:
+                        foreach (string key in _powerList.Keys)
+                        {
+                            _powerList[key].DefaultTag = key == "COMPLETION_RATE_UNLOCKED"
+                                ? PowerTag.Global
+                                : PowerTag.Remove;
+                            _powerList[key].StayTwisted = false;
+                        }
+                        break;
+                    case LoreSetOption.RemoveAllPowers:
+                        foreach (string key in _powerList.Keys)
+                        {
+                            _powerList[key].DefaultTag = PowerTag.Remove;
+                            _powerList[key].StayTwisted = false;
+                        }
+                        break;
+                    case LoreSetOption.Custom:
+                        foreach (string key in GlobalPowerStates.Keys)
+                            _powerList.Values.First(x => x.PowerName == key).DefaultTag = GlobalPowerStates[key];
+                        break;
+                }
 
-            if (RandomizerManager.Settings.RandomizeTreasures || RandomizerManager.Settings.DefineRefs)
-                _powerList["RELICDEALER_DOOR"].Tag = PowerTag.Global;
+                if (RandomizerManager.Settings.RandomizeTreasures || RandomizerManager.Settings.DefineRefs)
+                    _powerList["RELICDEALER_DOOR"].DefaultTag = PowerTag.Global;
+            }
         }
         else if (SettingManager.Instance.GameMode == GameMode.Normal)
             // Reset tags to default.
             foreach (string key in _powerList.Keys)
             {
-                _powerList[key].Tag = _powerList[key].DefaultTag;
+                if (key == "COMPLETION_RATE_UNLOCKED"
+                            || key == "RELICDEALER_DOOR"
+                            || key == "FOUNTAIN_PLAQUE_DESC")
+                    _powerList[key].DefaultTag = PowerTag.Global;
+                else if (key == "POP")
+                    _powerList[key].DefaultTag = PowerTag.Exclude;
+                else
+                    _powerList[key].DefaultTag = PowerTag.Local;
                 _powerList[key].StayTwisted = false;
             }
 
@@ -282,6 +301,9 @@ internal static class PowerManager
         TreasureHunterPower.CanPurchaseTreasureCharts = false;
         for (int i = 0; i < TreasureHunterPower.HasCharts.Length; i++)
             TreasureHunterPower.HasCharts[i] = false;
+
+        foreach (Power power in _powerList.Values)
+            power.Tag = power.DefaultTag;
     }
 
     internal static void DisableAllPowers()

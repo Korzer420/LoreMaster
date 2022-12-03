@@ -1,13 +1,9 @@
 using HutongGames.PlayMaker;
-using ItemChanger.Extensions;
-using ItemChanger.FsmStateActions;
 using LoreMaster.Enums;
-using LoreMaster.Extensions;
 using LoreMaster.Helper;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace LoreMaster.LorePowers.FungalWastes;
@@ -31,7 +27,14 @@ public class UnitedWeStandPower : Power
     /// <summary>
     /// Get the amount of active companions
     /// </summary>
-    public int CompanionAmount => _companions.Count(x => x != null && x.activeSelf);
+    public int CompanionAmount
+    {
+        get
+        {
+            _companions.RemoveAll(x => x is null || !x.activeSelf);
+            return _companions.Count;
+        }
+    }
 
     #endregion
 
@@ -42,7 +45,7 @@ public class UnitedWeStandPower : Power
         orig(self);
         self.normalDetails.damage = State == PowerState.Twisted
             ? Math.Max(1, 10 - CompanionAmount)
-            : 10 + CompanionAmount * 2;
+            : Math.Max(34, 10 + CompanionAmount * 2);
     }
 
     private void Tk2dPlayAnimation_OnEnter(On.HutongGames.PlayMaker.Actions.Tk2dPlayAnimation.orig_OnEnter orig, HutongGames.PlayMaker.Actions.Tk2dPlayAnimation self)
@@ -94,8 +97,8 @@ public class UnitedWeStandPower : Power
     }
 
     /// <inheritdoc/>
-    protected override void Disable() 
-    { 
+    protected override void Disable()
+    {
         On.KnightHatchling.OnEnable -= HatchlingSpawn;
         On.HutongGames.PlayMaker.Actions.SetScale.OnEnter -= SetScale_OnEnter;
         On.HutongGames.PlayMaker.Actions.Tk2dPlayAnimation.OnEnter -= Tk2dPlayAnimation_OnEnter;

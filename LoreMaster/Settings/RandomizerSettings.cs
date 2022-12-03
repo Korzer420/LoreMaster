@@ -10,6 +10,11 @@ public class RandomizerSettings
     #region Properties
 
     /// <summary>
+    /// Gets or sets if this connection is enabled.
+    /// </summary>
+    public bool Enabled { get; set; }
+
+    /// <summary>
     /// Gets or sets the value which indicates, if the locations/items should be placed even if not randomized.
     /// </summary>
     public bool DefineRefs { get; set; }
