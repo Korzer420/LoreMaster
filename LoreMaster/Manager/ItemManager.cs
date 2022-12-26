@@ -15,12 +15,9 @@ using LoreMaster.Randomizer;
 using Modding;
 using System;
 using System.Collections.Generic;
-using System.Security.AccessControl;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using static LoreMaster.ItemChangerData.Other.ItemList;
 using static LoreMaster.ItemChangerData.Other.LocationList;
-using static Mono.Security.X509.X520;
 
 namespace LoreMaster.Manager;
 
@@ -482,7 +479,7 @@ public static class ItemManager
                     Message = "CurseData",
                     Properties = new()
                     {
-                        {"CanMimic", new CurseTest(){IsReading = true } },
+                        {"CanMimic", new BoxedBool(RandomizerManager.Settings.CursedReading) },
                         {"MimicNames", new string[]{"Reed", "Read", "Reat"} }
                     }
                 }
@@ -521,7 +518,7 @@ public static class ItemManager
                     Message = "CurseData",
                     Properties = new()
                     {
-                        {"CanMimic", new CurseTest(){IsReading = false } },
+                        {"CanMimic", new BoxedBool(RandomizerManager.Settings.CursedListening) },
                         {"MimicNames", new string[]{"Listen", "Listen!", "Litsening"} }
                     }
                 }
