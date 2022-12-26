@@ -1,6 +1,9 @@
+using ItemChanger;
+using ItemChanger.Internal.Menu;
 using LoreMaster.Enums;
 using LoreMaster.ItemChangerData.Other;
 using LoreMaster.LorePowers;
+using LoreMaster.LorePowers.Greenpath;
 using LoreMaster.LorePowers.HowlingCliffs;
 using LoreMaster.LorePowers.RestingGrounds;
 using LoreMaster.Randomizer;
@@ -135,6 +138,8 @@ internal class LoreManager
             text = "Only cowards retreat from battle...";
         else if (string.Equals(key, "Temple_Door"))
             text = "Want to enter the temple?";
+        else if (string.Equals(key, "Elderbug_Preview") && RandomizerManager.PlayingRandomizer)
+            text = GenerateElderbugPreview();
         else if (key.StartsWith("Elderbug_"))
         {
             if (key.EndsWith("Casual"))
@@ -288,6 +293,34 @@ internal class LoreManager
             }
         }
         return displayText;
+    }
+
+    private string GenerateElderbugPreview()
+    {
+        if (!ItemChanger.Internal.Ref.Settings.Placements.ContainsKey(LocationList.Elderbug_Reward_Prefix + "1"))
+            return "You shouldn't be able to see this.";
+        string tabletText = "Curious, what I have in store for you?<br>";
+
+        if (ItemChanger.Internal.Ref.Settings.Placements[LocationList.Elderbug_Reward_Prefix + "1"].Items.All(x => x.IsObtained()))
+            tabletText += "Any Spell - Obtained<br>";
+        else
+            tabletText += $"Any Spell - {ItemChanger.Internal.Ref.Settings.Placements[LocationList.Elderbug_Reward_Prefix + "1"].Items[0].UIDef.GetPreviewName()}<br>";
+
+        int[] neededLore = new int[] { 5, 10, 15, 20, 30, 40, 50, 55 };
+        for (int i = 2; i < 10; i++)
+        {
+            if (ItemChanger.Internal.Ref.Settings.Placements[LocationList.Elderbug_Reward_Prefix + "" + i].Items.All(x => x.IsObtained()))
+                tabletText += $"{neededLore[i - 2]} Lore - Obtained";
+            else
+                tabletText += $"{neededLore[i - 2]} Lore - {ItemChanger.Internal.Ref.Settings.Placements[LocationList.Elderbug_Reward_Prefix + "" + i].Items[0].UIDef.GetPreviewName()}";
+
+            if (i == 2 || i == 5 || i == 8)
+                tabletText += "<page>";
+            else
+                tabletText += "<br>";
+        }
+        LoreMaster.Instance.Log("Tablet text is: "+tabletText);
+        return tabletText;
     }
 
     #region NPC Dialogues

@@ -15,9 +15,12 @@ using LoreMaster.Randomizer;
 using Modding;
 using System;
 using System.Collections.Generic;
+using System.Security.AccessControl;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using static LoreMaster.ItemChangerData.Other.ItemList;
 using static LoreMaster.ItemChangerData.Other.LocationList;
+using static Mono.Security.X509.X520;
 
 namespace LoreMaster.Manager;
 
@@ -69,27 +72,12 @@ public static class ItemManager
             if (RandomizerManager.PlayingRandomizer)
             {
                 if (!RandomizerManager.Settings.Enabled)
-                    if (!RandomizerManager.Settings.RandomizeTreasures)
-                        placements.AddRange(CreateTreasure());
-                if (!RandomizerManager.Settings.RandomizeNpc)
-                    placements.AddRange(CreateNpc());
+                    return;
                 if (RandomizerManager.Settings.DefineRefs)
                     placements.AddRange(CreateVanillaRefs());
-                else if (!RandomizerManager.Settings.RandomizeTravellers)
-                {
-                    // We only generate the traveller locations which actually grant abilities
-                    placements.Add(CreatePlacement(Quirrel_Peaks, Dialogue_Quirrel_Peaks));
-                    placements.Add(CreatePlacement(Tiso_Blue_Lake, Dialogue_Tiso_Blue_Lake));
-                    placements.Add(CreatePlacement(Zote_Deepnest, Dialogue_Zote_Deepnest));
-
-                    // Adjust spawn logic for traveller.
-                    LoreManager.Instance.Traveller.Clear();
-                    LoreManager.Instance.Traveller.Add(Traveller.Quirrel, new() { CurrentStage = 0, Locations = new string[] { "Quirrel Mines" } });
-                    LoreManager.Instance.Traveller.Add(Traveller.Tiso, new() { CurrentStage = 0, Locations = new string[] { "Tiso Lake NPC" } });
-                    LoreManager.Instance.Traveller.Add(Traveller.Zote, new() { CurrentStage = 0, Locations = new string[] { "/Zote Deepnest/Faller/NPC" } });
-                }
-                if (!RandomizerManager.Settings.RandomizeElderbugRewards && RandomizerManager.Settings.DefineRefs)
-                    placements.AddRange(CreateElderbugRewards());
+                if (CreateTreasureCharts() is AbstractPlacement placement)
+                    placements.Add(placement);
+                placements.AddRange(CreateExtraLore());
             }
             else
             {
@@ -107,11 +95,11 @@ public static class ItemManager
                 LoreManager.Instance.Traveller.Add(Traveller.Quirrel, new() { CurrentStage = 0, Locations = new string[] { "Quirrel Mines" } });
                 LoreManager.Instance.Traveller.Add(Traveller.Tiso, new() { CurrentStage = 0, Locations = new string[] { "Tiso Lake NPC" } });
                 LoreManager.Instance.Traveller.Add(Traveller.Zote, new() { CurrentStage = 0, Locations = new string[] { "/Zote Deepnest/Faller/NPC" } });
-            }
 
-            if (CreateTreasureCharts() is AbstractPlacement placement)
-                placements.Add(placement);
-            placements.AddRange(CreateExtraLore());
+                if (CreateTreasureCharts() is AbstractPlacement placement)
+                    placements.Add(placement);
+                placements.AddRange(CreateExtraLore());
+            }
         }
         catch (Exception exception)
         {
@@ -645,21 +633,21 @@ public static class ItemManager
     private static void DefineNPC()
     {
         Finder.DefineCustomLocation(Creator.CreateDialogueLocation(Bretta_Diary, "Room_Bretta", "Diary"));
+        Finder.DefineCustomLocation(Creator.CreateDialogueLocation(Menderbug_Diary, "Room_Mender_House", "Diary"));
         Finder.DefineCustomLocation(Creator.CreateDialogueLocation(Bardoon, "Deepnest_East_04", "Big Caterpillar"));
-        Finder.DefineCustomLocation(Creator.CreateDialogueLocation(Vespa, "Hive_05", "Vespa NPC"));
+        Finder.DefineCustomLocation(Creator.CreateGhostDialogueLocation(Vespa, "Hive_05", "Vespa NPC"));
         Finder.DefineCustomLocation(Creator.CreateDialogueLocation(Mask_Maker, "Room_Mask_Maker", "Maskmaker NPC"));
         Finder.DefineCustomLocation(Creator.CreateDialogueLocation(Midwife, "Deepnest_41", "NPC"));
-        Finder.DefineCustomLocation(Creator.CreateDialogueLocation(Gravedigger, "Town", "Gravedigger NPC"));
-        Finder.DefineCustomLocation(Creator.CreateDialogueLocation(Poggy, "Ruins_Elevator", "Ghost NPC"));
-        Finder.DefineCustomLocation(Creator.CreateDialogueLocation(Joni, "Cliffs_05", "Ghost NPC Joni"));
-        Finder.DefineCustomLocation(Creator.CreateDialogueLocation(Myla, "Crossroads_45", "Miner"));
+        Finder.DefineCustomLocation(Creator.CreateGhostDialogueLocation(Gravedigger, "Town", "Gravedigger NPC"));
+        Finder.DefineCustomLocation(Creator.CreateGhostDialogueLocation(Poggy, "Ruins_Elevator", "Ghost NPC"));
         Finder.DefineCustomLocation(Creator.CreateDialogueLocation(Emilitia, "Ruins_House_03", "Emilitia NPC"));
         Finder.DefineCustomLocation(Creator.CreateDialogueLocation(Willoh, "Fungus2_34", "Giraffe NPC"));
-        Finder.DefineCustomLocation(Creator.CreateDialogueLocation(Moss_Prophet, "Fungus3_39", "Moss Cultist"));
         Finder.DefineCustomLocation(Creator.CreateDialogueLocation(Fluke_Hermit, "Room_GG_Shortcut", "Fluke Hermit"));
         Finder.DefineCustomLocation(Creator.CreateDialogueLocation(Queen, "Room_Queen", "Queen"));
-        Finder.DefineCustomLocation(Creator.CreateDialogueLocation(Marissa, "Ruins_Bathhouse", "Ghost NPC"));
-        Finder.DefineCustomLocation(Creator.CreateDialogueLocation(Grasshopper, "Fungus1_24", "Ghost NPC"));
+        Finder.DefineCustomLocation(Creator.CreateGhostDialogueLocation(Marissa, "Ruins_Bathhouse", "Ghost NPC"));
+        Finder.DefineCustomLocation(Creator.CreateGhostDialogueLocation(Grasshopper, "Fungus1_24", "Ghost NPC"));
+        
+        // These locations have additional that need to take place.
         Finder.DefineCustomLocation(new DungDefenderLocation()
         {
             name = Dung_Defender,
@@ -672,7 +660,39 @@ public static class ItemManager
                 CreateInteropTag("Waterways_05", Dung_Defender)
             }
         });
-        Finder.DefineCustomLocation(Creator.CreateDialogueLocation(Menderbug_Diary, "Room_Mender_House", "Diary"));
+        Finder.DefineCustomLocation(new JoniDreamLocation()
+        {
+            name = Joni,
+            sceneName = "Cliffs_05",
+            ObjectName = "Ghost NPC Joni",
+            FsmName = "Conversation Control",
+            tags = new()
+            {
+               CreateInteropTag("Cliffs_05", Joni)
+            }
+        });
+        Finder.DefineCustomLocation(new MylaLocation()
+        {
+            name = Myla,
+            sceneName = "Crossroads_45",
+            ObjectName = "Miner",
+            FsmName = "Conversation Control",
+            tags = new()
+            {
+               CreateInteropTag("Crossroads_45", Myla)
+            }
+        });
+        Finder.DefineCustomLocation(new MossProphetLocation()
+        {
+            name = Moss_Prophet,
+            sceneName = "Fungus3_39",
+            ObjectName = "Moss Cultist",
+            FsmName = "Conversation Control",
+            tags = new()
+            {
+               CreateInteropTag("Fungus3_39", Moss_Prophet)
+            }
+        });
 
         Finder.DefineCustomItem(Creator.CreatePowerLoreItem(Dialogue_Bretta_Diary, "BRETTA_DIARY_1", "Minor NPC"));
         Finder.DefineCustomItem(Creator.CreatePowerLoreItem(Dialogue_Bardoon, "BIGCAT_TALK_01"));
@@ -1052,6 +1072,7 @@ public static class ItemManager
             || ItemChanger.Internal.Ref.Settings.Placements.ContainsKey("Iselda_High_Valuable"))
             return currentPlacement;
         currentPlacement.Add(Finder.GetItem(ItemNames.Wayward_Compass));
+        currentPlacement.Add(Finder.GetItem(ItemNames.Quill));
         currentPlacement.Add(Finder.GetItem(ItemNames.Bench_Pin));
         currentPlacement.Add(Finder.GetItem(ItemNames.Cocoon_Pin));
         currentPlacement.Add(Finder.GetItem(ItemNames.Hot_Spring_Pin));
@@ -1060,6 +1081,19 @@ public static class ItemManager
         currentPlacement.Add(Finder.GetItem(ItemNames.Vendor_Pin));
         currentPlacement.Add(Finder.GetItem(ItemNames.Warriors_Grave_Pin));
         currentPlacement.Add(Finder.GetItem(ItemNames.Whispering_Root_Pin));
+        currentPlacement.Add(Finder.GetItem(ItemNames.Ancient_Basin_Map));
+        currentPlacement.Add(Finder.GetItem(ItemNames.City_of_Tears_Map));
+        currentPlacement.Add(Finder.GetItem(ItemNames.Crossroads_Map));
+        currentPlacement.Add(Finder.GetItem(ItemNames.Crystal_Peak_Map));
+        currentPlacement.Add(Finder.GetItem(ItemNames.Deepnest_Map));
+        currentPlacement.Add(Finder.GetItem(ItemNames.Fog_Canyon_Map));
+        currentPlacement.Add(Finder.GetItem(ItemNames.Fungal_Wastes_Map));
+        currentPlacement.Add(Finder.GetItem(ItemNames.Greenpath_Map));
+        currentPlacement.Add(Finder.GetItem(ItemNames.Howling_Cliffs_Map));
+        currentPlacement.Add(Finder.GetItem(ItemNames.Kingdoms_Edge_Map));
+        currentPlacement.Add(Finder.GetItem(ItemNames.Queens_Gardens_Map));
+        currentPlacement.Add(Finder.GetItem(ItemNames.Resting_Grounds_Map));
+        currentPlacement.Add(Finder.GetItem(ItemNames.Royal_Waterways_Map));
         return currentPlacement;
     }
 
@@ -1078,7 +1112,7 @@ public static class ItemManager
         currentPlacement.Add(Finder.GetItem(Path_of_Pain_Reward));
         extraLore.Add(currentPlacement);
 
-        if (!(RandomizerManager.PlayingRandomizer && (RandomizerManager.Settings.RandomizePointsOfInterest || RandomizerManager.Settings.DefineRefs)))
+        if (!RandomizerManager.PlayingRandomizer || (!RandomizerManager.Settings.RandomizePointsOfInterest && RandomizerManager.Settings.DefineRefs))
         {
             currentPlacement = Finder.GetLocation(Stag_Nest).Wrap();
             currentPlacement.Add(Finder.GetItem(Stag_Egg_Inspect));
@@ -1113,6 +1147,10 @@ public static class ItemManager
     private static List<AbstractPlacement> CreateVanillaRefs()
     {
         List<AbstractPlacement> refs = new();
+        if (!RandomizerManager.Settings.RandomizeTreasures)
+            refs.AddRange(CreateTreasure());
+        if (!RandomizerManager.Settings.RandomizeNpc)
+            refs.AddRange(CreateNpc());
         if (!RandomizerManager.Settings.RandomizeTravellers)
             for (int i = 0; i < RandomizerRequestModifier.TravellerItems.Length; i++)
                 refs.Add(CreatePlacement(RandomizerRequestModifier.TravellerLocations[i], RandomizerRequestModifier.TravellerItems[i]));
@@ -1129,6 +1167,8 @@ public static class ItemManager
             // Adds the stag egg
             refs[refs.Count - 1].Items.Add(Finder.GetItem(Stag_Egg));
         }
+        if (!RandomizerManager.Settings.RandomizeElderbugRewards)
+            refs.AddRange(CreateElderbugRewards());
         return refs;
     }
 

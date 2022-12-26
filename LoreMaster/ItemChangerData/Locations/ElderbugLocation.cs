@@ -5,6 +5,8 @@ using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
 using ItemChanger.Locations;
 using ItemChanger.Util;
+using LoreMaster.ItemChangerData.Other;
+using LoreMaster.Randomizer;
 using System;
 using UnityEngine;
 
@@ -26,11 +28,48 @@ internal class ElderbugLocation : AutoLocation
     protected override void OnLoad()
     {
         Events.AddFsmEdit("Town", new("Elderbug", "Conversation Control"), ModifyElderbug);
+        LoreMaster.Instance.Log("Elderbug location name is: " + name);
+        if (name == LocationList.Elderbug_Reward_Prefix + "1")
+            Events.AddSceneChangeEdit("Town", a =>
+            {
+                if (!RandomizerManager.PlayingRandomizer)
+                    return;
+
+                GameObject tablet = GameObject.Instantiate(LoreMaster.Instance.PreloadedObjects["Glow Response Mage Computer"]);
+                tablet.name = "Elderbug_Tablet";
+                tablet.transform.localPosition = new(105.74f, 14.21f, 0.5f);
+                tablet.SetActive(true);
+
+                GameObject inspectRegion = GameObject.Instantiate(LoreMaster.Instance.PreloadedObjects["Inspect Region"]);
+                inspectRegion.name = name;
+                inspectRegion.transform.localPosition = new(105.74f, 12.11f);
+                inspectRegion.SetActive(true);
+                inspectRegion.LocateMyFSM("inspect_region").FsmVariables.FindFsmString("Game Text Convo").Value = "Elderbug_Preview";
+            });
     }
 
     protected override void OnUnload()
     {
         Events.RemoveFsmEdit("Town", new("Elderbug", "Conversation Control"), ModifyElderbug);
+        if (name == LocationList.Elderbug_Reward_Prefix + "1")
+            Events.RemoveSceneChangeEdit("Town", a =>
+            {
+                if (!RandomizerManager.PlayingRandomizer)
+                    return;
+                if (name == LocationList.Lore_Tablet_Record_Bela)
+                {
+                    GameObject tablet = GameObject.Instantiate(LoreMaster.Instance.PreloadedObjects["Glow Response Mage Computer"]);
+                    tablet.name = "Mage_Computer_2";
+                    tablet.transform.localPosition = new(105.74f, 11.41f);
+                    tablet.SetActive(true);
+                }
+
+                GameObject inspectRegion = GameObject.Instantiate(LoreMaster.Instance.PreloadedObjects["Inspect Region"]);
+                inspectRegion.name = name;
+                inspectRegion.transform.localPosition = new(105.74f, 11.41f);
+                inspectRegion.SetActive(true);
+                inspectRegion.LocateMyFSM("inspect_region").FsmVariables.FindFsmString("Elderbug_Preview");
+            });
     }
 
     private void ModifyElderbug(PlayMakerFSM fsm)

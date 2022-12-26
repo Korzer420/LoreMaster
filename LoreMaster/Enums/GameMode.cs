@@ -23,5 +23,10 @@ public enum GameMode
     /// <summary>
     /// The heroic mode. Until you obtain a power you get a debuff if you are in the area where the ability would be. Obtaining a power DOESN'T give you their positive effect.
     /// </summary>
-    Heroic
+    Heroic,
+
+    /// <summary>
+    /// Modifies nothing.
+    /// </summary>
+    Disabled,
 }

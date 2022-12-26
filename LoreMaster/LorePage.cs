@@ -420,7 +420,7 @@ internal class LorePage
                 {
                     Power power = _powers[indexVariable.Value];
 
-                    if (power.State == PowerState.Active && SettingManager.Instance.GameMode != GameMode.Heroic)
+                    if (power.State == PowerState.Active && (SettingManager.Instance.GameMode != GameMode.Heroic && SettingManager.Instance.GameMode != GameMode.Disabled))
                     {
                         if (power is MarissasAudiencePower audience && audience.IsMarissaDead)
                             return;

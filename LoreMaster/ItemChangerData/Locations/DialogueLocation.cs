@@ -24,7 +24,7 @@ internal class DialogueLocation : AutoLocation
     #endregion
 
     protected override void OnLoad()
-    {
+    { 
         Events.AddFsmEdit(sceneName, new(ObjectName, FsmName), SkipDialog);
         if (name == LocationList.Dung_Defender)
             Events.AddFsmEdit(sceneName, new(ObjectName, "FSM"), x => x.GetState("Check").ClearTransitions());

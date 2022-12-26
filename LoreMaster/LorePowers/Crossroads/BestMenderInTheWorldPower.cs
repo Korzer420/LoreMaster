@@ -3,6 +3,8 @@ using ItemChanger;
 using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
 using LoreMaster.Enums;
+using LoreMaster.Manager;
+using LoreMaster.Randomizer;
 using Modding;
 using System;
 using System.Collections;
@@ -117,20 +119,20 @@ public class BestMenderInTheWorldPower : Power
 
     private void HealthManager_ApplyExtraDamage(On.HealthManager.orig_ApplyExtraDamage orig, HealthManager self, int damageAmount)
     {
-        if (string.Equals(self.gameObject.name, "Mender Bug") && damageAmount > 0)
+        if (string.Equals(self.gameObject.name, "Mender Bug") && damageAmount > 0 && !RandomizerManager.PlayingRandomizer)
             damageAmount = 0;
         orig(self, damageAmount);
     }
 
     private void HealthManager_Hit(On.HealthManager.orig_Hit orig, HealthManager self, HitInstance hitInstance)
     {
-        if (string.Equals(self.gameObject.name, "Mender Bug") && hitInstance.DamageDealt > 0)
+        if (string.Equals(self.gameObject.name, "Mender Bug") && hitInstance.DamageDealt > 0 && !RandomizerManager.PlayingRandomizer)
         {
             if (hitInstance.AttackType == AttackTypes.Nail)
             {
                 hitInstance.DamageDealt = 1;
                 _menderbugHits++;
-                if (_menderbugHits >= 2000)
+                if (_menderbugHits >= 1000)
                 {
                     PlayerData.instance.SetInt(nameof(PlayerData.instance.permadeathMode), 2);
                     HeroController.instance.TakeDamage(null, GlobalEnums.CollisionSide.top, 100, 1);
@@ -146,7 +148,7 @@ public class BestMenderInTheWorldPower : Power
 
     private void Pacify(On.PlayMakerFSM.orig_OnEnable orig, PlayMakerFSM self)
     {
-        if (string.Equals(self.FsmName, "Mender Bug Ctrl"))
+        if (string.Equals(self.FsmName, "Mender Bug Ctrl") && !RandomizerManager.PlayingRandomizer)
         {
             self.GetState("Idle").ClearTransitions();
             self.GetState("Init").ClearTransitions();
@@ -158,7 +160,7 @@ public class BestMenderInTheWorldPower : Power
 
     private void RandomInt_OnEnter(On.HutongGames.PlayMaker.Actions.RandomInt.orig_OnEnter orig, HutongGames.PlayMaker.Actions.RandomInt self)
     {
-        if (string.Equals(self.Fsm.GameObjectName, "Mender Bug"))
+        if (string.Equals(self.Fsm.GameObjectName, "Mender Bug") && SettingManager.Instance.GameMode != GameMode.Disabled)
             self.min.Value = State == PowerState.Active ? 50 : 40;
         orig(self);
     }

@@ -1,4 +1,5 @@
 using GlobalEnums;
+using HutongGames.PlayMaker;
 using ItemChanger;
 using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
@@ -117,6 +118,12 @@ public class SettingManager
         try
         {
             orig(self, permaDeath, bossRush);
+
+            if (GameMode == GameMode.Disabled)
+                if (RandomizerManager.PlayingRandomizer)
+                    return;
+                else
+                    GameMode = GameMode.Normal;
             ItemManager.CreatePlacements();
             _fromMenu = true;
             LoreManager.Instance.JokerScrolls = -1;
@@ -133,8 +140,7 @@ public class SettingManager
             On.PlayerData.IntAdd += PlayerData_IntAdd;
             ModHooks.LanguageGetHook += LoreManager.Instance.GetText;
             ModHooks.GetPlayerBoolHook += CheckIfInventoryAccessible;
-            On.DeactivateIfPlayerdataTrue.OnEnable += ForceMyla;
-            On.DeactivateIfPlayerdataFalse.OnEnable += PreventMylaZombie;
+            
             SendEventByName.OnEnter += EndAllPowers;
             On.PlayMakerFSM.OnEnable += FsmEdits;
             AbstractItem.BeforeGiveGlobal += GiveLoreItem;
@@ -158,6 +164,8 @@ public class SettingManager
     {
         _fromMenu = true;
         orig(self);
+        if (GameMode == GameMode.Disabled)
+            return;
         try
         {
             ModHooks.SetPlayerBoolHook += PlayerData_SetBool;
@@ -165,8 +173,6 @@ public class SettingManager
             ModHooks.LanguageGetHook += LoreManager.Instance.GetText;
             ModHooks.GetPlayerBoolHook += CheckIfInventoryAccessible;
             On.PlayMakerFSM.OnEnable += FsmEdits;
-            On.DeactivateIfPlayerdataTrue.OnEnable += ForceMyla;
-            On.DeactivateIfPlayerdataFalse.OnEnable += PreventMylaZombie;
             SendEventByName.OnEnter += EndAllPowers;
             AbstractItem.BeforeGiveGlobal += GiveLoreItem;
         }
@@ -181,18 +187,19 @@ public class SettingManager
     {
         try
         {
-            PowerManager.DisableAllPowers();
-            LoreMaster.Instance.Handler.StopAllCoroutines();
-            CurrentArea = Area.None;
-            On.PlayMakerFSM.OnEnable -= FsmEdits;
-            On.DeactivateIfPlayerdataTrue.OnEnable -= ForceMyla;
-            On.DeactivateIfPlayerdataFalse.OnEnable -= PreventMylaZombie;
-            SendEventByName.OnEnter -= EndAllPowers;
-            ModHooks.LanguageGetHook -= LoreManager.Instance.GetText;
-            AbstractItem.BeforeGiveGlobal -= GiveLoreItem;
-            ModHooks.SetPlayerBoolHook -= PlayerData_SetBool;
-            On.PlayerData.IntAdd -= PlayerData_IntAdd;
-            ModHooks.GetPlayerBoolHook -= CheckIfInventoryAccessible;
+            if (GameMode != GameMode.Disabled)
+            {
+                PowerManager.DisableAllPowers();
+                LoreMaster.Instance.Handler.StopAllCoroutines();
+                CurrentArea = Area.None;
+                On.PlayMakerFSM.OnEnable -= FsmEdits;
+                SendEventByName.OnEnter -= EndAllPowers;
+                ModHooks.LanguageGetHook -= LoreManager.Instance.GetText;
+                AbstractItem.BeforeGiveGlobal -= GiveLoreItem;
+                ModHooks.SetPlayerBoolHook -= PlayerData_SetBool;
+                On.PlayerData.IntAdd -= PlayerData_IntAdd;
+                ModHooks.GetPlayerBoolHook -= CheckIfInventoryAccessible;
+            }
         }
         catch (Exception exception)
         {
@@ -252,6 +259,8 @@ public class SettingManager
     {
         try
         {
+            if (GameMode == GameMode.Disabled)
+                return;
             if (GameManager.instance != null && GameManager.instance.IsGameplayScene() && !string.Equals(arg1.name, "Quit_To_Menu"))
             {
                 // Resets the flag, that powers can be used.
@@ -313,137 +322,98 @@ public class SettingManager
     /// </summary>
     private void FsmEdits(On.PlayMakerFSM.orig_OnEnable orig, PlayMakerFSM self)
     {
-        // The quirrel in peaks has 3 fsm (don't ask) that indicates if he can be there: If he has been encountered in archives, if you have superdash or if he has just left the mines.
-        // We remove all those checks.
-        if (string.Equals(self.gameObject.name, "Quirrel Mines") && string.Equals(self.FsmName, "FSM"))
-            self.GetState("Check").RemoveTransitionsTo("Destroy");
-        // Prevent Moss Prophet from dying
-        else if (string.Equals(self.gameObject.name, "Moss Cultist") && string.Equals(self.FsmName, "FSM"))
+        try
         {
-            self.GetState("Check").RemoveTransitionsTo("Destroy");
-            self.gameObject.GetComponent<BoxCollider2D>().enabled = true;
-        }
-        // Deactives moss prophet corpse, so that it doesn't block the living one.
-        else if (string.Equals(self.gameObject.name, "corpse set") && string.Equals(self.FsmName, "FSM"))
-            self.gameObject.FindChild("corpse0000").SetActive(false);
-        else if (string.Equals(self.gameObject.name, "Elderbug"))
-        {
-            if (string.Equals(self.FsmName, "npc_control"))
+            if (string.Equals(self.gameObject.name, "Elderbug"))
             {
-                self.transform.localScale = new(2f, 2f, 2f);
-                self.transform.localPosition = new(126.36f, 12.35f, 0f);
-            }
-            else if (string.Equals(self.FsmName, "Conversation Control"))
-                AddElderbugExtra(self);
-
-        }
-        // Prevent killing ghosts with abilities.
-        else if (string.Equals(self.FsmName, "ghost_npc_death"))
-        {
-            string ghostName = "";
-            try
-            {
-                ghostName = self.gameObject?.LocateMyFSM("Conversation Control")?.FsmVariables?.FindFsmString("Ghost Name")?.Value?.ToUpper();
-                if (string.Equals(ghostName, "POGGY") || string.Equals(ghostName, "HIVEQUEEN")
-                    || string.Equals(ghostName, "JONI") || string.Equals(ghostName, "GRAVEDIGGER")
-                    || string.Equals(ghostName, "GRASSHOPPER") || string.Equals(ghostName, "MARISSA"))
+                if (string.Equals(self.FsmName, "npc_control"))
                 {
-                    self.GetState("Revek?").ReplaceAction(new Lambda(() =>
+                    self.transform.localScale = new(2f, 2f, 2f);
+                    self.transform.localPosition = new(126.36f, 12.35f, 0f);
+                }
+                else if (string.Equals(self.FsmName, "Conversation Control"))
+                    AddElderbugExtra(self);
+            }
+            else if (!LoreManager.Instance.CanRead && (
+                // Big Lore tablets
+                (string.Equals(self.FsmName, "Inspection") && PowerManager.GetPowerByKey(self.FsmVariables.FindFsmString("Convo Name")?.Value, out Power power, false))
+                ||
+                // Small known lore tablets (like Record Abba) and dream warrior inspects
+                (string.Equals(self.FsmName, "inspect_region") && (!RandomizerManager.PlayingRandomizer
+                || !RandomizerRequestModifier.PointOfInterestLocations.Contains(self.gameObject.name))
+                && (PowerManager.GetPowerByKey(self.FsmVariables.FindFsmString("Game Text Convo")?.Value, out power, false)
+                || string.Equals(self.gameObject.name, "Inspect Region Ghost")))
+                // Special boards
+                || ((self.gameObject.name.EndsWith("Trial Board") || self.gameObject.name == "Dreamer Plaque Inspect"
+                || self.gameObject.name == "Fountain Inspect" || self.transform.parent?.name == "Mantis Grave"
+                || self.gameObject.name == "Antique Dealer Door" || self.gameObject.name == "Diary") && self.FsmName == "npc_control")))
+                self.GetState("Init").ClearTransitions();
+            else if (!LoreManager.Instance.CanListen && ((string.Equals(self.FsmName, "npc_control")
+                && self.FsmVariables.FindFsmString("Prompt Name")?.Value == "Listen") || self.gameObject.name == "Stag" && self.FsmName == "Stag Control"))
+            {
+                // There are a few exceptions with npc which we want to ignore.
+                if (self.gameObject.name != "Moth NPC" && !self.gameObject.name.Contains("Shaman"))
+                {
+                    if (self.GetState("In Range") is FsmState state)
                     {
-                        // Prevent the ghosts death, if it power hasn't been obtained.
-                        if (!PowerManager.HasObtainedPower(ghostName, false))
-                            self.SendEvent("IMMUNE");
-                        else
-                            self.SendEvent(self.FsmVariables.FindFsmBool("z_Revek").Value ? "REVEK" : "FINISHED");
-                    })
-                    { Name = "Prevent Death" }, 0);
-                    self.GetState("Revek?").AddTransition("IMMUNE", "Idle");
+                        state.GetFirstActionOfType<ShowPromptMarker>().labelName.Value = "???";
+                        if (self.GetState("In Range Turns") is FsmState secondState)
+                            secondState.GetFirstActionOfType<ShowPromptMarker>().labelName.Value = "???";
+                        self.AddState(new FsmState(self.Fsm)
+                        {
+                            Name = "Block Interaction",
+                            Actions = new FsmStateAction[]
+                            {
+                                new Lambda(() =>
+                                {
+                                    self.SendEvent(!LoreManager.Instance.CanListen ? "FINISHED" : "UP PRESSED");
+                                })
+                            }
+                        });
+                        state.AdjustTransition("UP PRESSED", "Block Interaction");
+                        self.GetState("Block Interaction").AddTransition("UP PRESSED", "Can Talk?");
+                        self.GetState("Block Interaction").AddTransition("FINISHED", "Cancel Frame");
+                    }
+                    else
+                        self.GetState("Idle").ClearTransitions();
                 }
             }
-            catch (Exception exception)
+            else if (string.Equals(self.FsmName, "Shop Region") && !LoreManager.Instance.CanListen)
+                self.GetState("Out Of Range").ClearTransitions();
+            else if (string.Equals(self.FsmName, "Thorn Counter"))
             {
-                LoreMaster.Instance.LogError("Error while modifying ghost: " + ghostName + ": " + exception.Message);
+                PowerManager.GetPowerByKey("QUEEN", out Power power2, false);
+                ((QueenThornsPower)power2).ModifyThorns(self);
+            }
+            else if (EndCondition != BlackEggTempleCondition.Dreamers && string.Equals(self.FsmName, "Control")
+                && string.Equals(self.gameObject.name, "Final Boss Door"))
+            {
+                self.AddState(new FsmState(self.Fsm)
+                {
+                    Name = "Lore Condition",
+                    Actions = new FsmStateAction[]
+                    {
+                        new Lambda(() =>
+                        {
+                            if (EndCondition == BlackEggTempleCondition.Lore)
+                                self.SendEvent(PowerManager.ObtainedPowers.Count >= NeededLore ? "READY" : "FINISHED");
+                            else
+                                self.SendEvent(PowerManager.ObtainedPowers.Count >= NeededLore && PlayerData.instance.GetInt("guardiansDefeated") >= 3
+                                    ? "READY" : "FINISHED");
+                        })
+                    }
+                });
+                self.GetState("Lore Condition").AddTransition("READY", "Ready");
+                self.GetState("Lore Condition").AddTransition("FINISHED", "Idle");
+                self.GetState("Init").AdjustTransition("READY", "Lore Condition");
+                self.GetState("Init").AdjustTransition("FINISHED", "Lore Condition");
             }
         }
-        else if (!LoreManager.Instance.CanRead && ((string.Equals(self.FsmName, "Inspection") && PowerManager.GetPowerByKey(self.FsmVariables.FindFsmString("Convo Name")?.Value, out Power power, false))
-            || (string.Equals(self.FsmName, "inspect_region") && (!RandomizerManager.PlayingRandomizer
-            || !RandomizerRequestModifier.PointOfInterestLocations.Contains(self.gameObject.name))
-            && (PowerManager.GetPowerByKey(self.FsmVariables.FindFsmString("Game Text Convo")?.Value, out power, false)
-            || string.Equals(self.gameObject.name, "Inspect Region Ghost")))
-            || ((self.gameObject.name.EndsWith("Trial Board") || self.gameObject.name == "Dreamer Plaque Inspect"
-            || self.gameObject.name == "Fountain Inspect" || self.transform.parent?.name == "Mantis Grave"
-            || self.gameObject.name == "Antique Dealer Door") && self.FsmName == "npc_control")))
-            self.GetState("Init").ClearTransitions();
-        else if (!LoreManager.Instance.CanListen && ((string.Equals(self.FsmName, "npc_control")
-            && self.FsmVariables.FindFsmString("Prompt Name")?.Value == "Listen") || self.gameObject.name == "Stag" && self.FsmName == "Stag Control"))
+        catch (Exception exception)
         {
-            // There are a few exceptions with npc which we want to ignore.
-            if (self.gameObject.name != "Moth NPC" && !self.gameObject.name.Contains("Shaman"))
-                self.GetState("Idle").ClearTransitions();
-        }
-        else if (string.Equals(self.FsmName, "Stag Control") && !LoreManager.Instance.CanListen)
-            self.GetState("Idle").ClearTransitions();
-        else if (string.Equals(self.FsmName, "Shop Region") && !LoreManager.Instance.CanListen)
-            self.GetState("Out Of Range").ClearTransitions();
-        else if (string.Equals(self.FsmName, "Thorn Counter"))
-        {
-            PowerManager.GetPowerByKey("QUEEN", out Power power2, false);
-            ((QueenThornsPower)power2).ModifyThorns(self);
-        }
-        else if (string.Equals(self.gameObject.name, "Ghost Activator") && self.transform.childCount > 0 && string.Equals("Ghost NPC Joni", self.transform.GetChild(0)?.name)
-            && RandomizerManager.PlayingRandomizer)
-            self.GetState("Idle").ReplaceAction(new Lambda(() =>
-            {
-                if (PlayerData.instance.GetBool(nameof(PlayerData.instance.hasDreamNail)))
-                    self.SendEvent("SHINY PICKED UP");
-            }), 0);
-        else if (EndCondition != BlackEggTempleCondition.Dreamers && string.Equals(self.FsmName, "Control") 
-            && string.Equals(self.gameObject.name, "Final Boss Door"))
-        {
-            self.AddState(new HutongGames.PlayMaker.FsmState(self.Fsm)
-            {
-                Name = "Lore Condition",
-                Actions = new HutongGames.PlayMaker.FsmStateAction[]
-                {
-                    new Lambda(() => 
-                    {
-                        if (EndCondition == BlackEggTempleCondition.Lore)
-                            self.SendEvent(PowerManager.ObtainedPowers.Count >= NeededLore ? "READY" : "FINISHED");
-                        else
-                            self.SendEvent(PowerManager.ObtainedPowers.Count >= NeededLore && PlayerData.instance.GetInt("guardiansDefeated") >= 3 
-                                ? "READY" : "FINISHED");
-                    })
-                }
-            });
-            self.GetState("Lore Condition").AddTransition("READY", "Ready");
-            self.GetState("Lore Condition").AddTransition("FINISHED", "Idle");
-            self.GetState("Init").AdjustTransition("READY", "Lore Condition");
-            self.GetState("Init").AdjustTransition("FINISHED", "Lore Condition");
+            LoreMaster.Instance.LogError("Couldn't modify fsm " + self.FsmName + ": "+exception.Message+" at " + exception.StackTrace);
         }
 
-        orig(self);
-    }
-
-    /// <summary>
-    /// Despawns mylas other versions.
-    /// </summary>
-    private void PreventMylaZombie(On.DeactivateIfPlayerdataFalse.orig_OnEnable orig, DeactivateIfPlayerdataFalse self)
-    {
-        if (self.gameObject.name.Contains("Zombie Myla") || string.Equals(self.gameObject.name, "Myla Crazy NPC"))
-        {
-            self.gameObject.SetActive(false);
-            return;
-        }
-        orig(self);
-    }
-
-    /// <summary>
-    /// Forces Myla (best character btw) to always appear, like she should.
-    /// </summary>
-    private void ForceMyla(On.DeactivateIfPlayerdataTrue.orig_OnEnable orig, DeactivateIfPlayerdataTrue self)
-    {
-        if (string.Equals(self.gameObject.name, "Miner"))
-            return;
         orig(self);
     }
 

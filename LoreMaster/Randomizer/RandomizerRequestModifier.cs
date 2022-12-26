@@ -1,6 +1,7 @@
 using ItemChanger;
 using LoreMaster.Enums;
 using LoreMaster.ItemChangerData.Other;
+using LoreMaster.Manager;
 using RandomizerMod.RC;
 using System.Collections.Generic;
 using static ItemChanger.ItemNames;
@@ -292,7 +293,10 @@ internal static class RandomizerRequestModifier
     private static void AddLoreMasterExtra(RequestBuilder requestBuilder)
     {
         if (!RandomizerManager.Settings.Enabled)
+        {
+            SettingManager.Instance.GameMode = GameMode.Disabled;
             return;
+        }
 
         if (requestBuilder.gs.PoolSettings.LoreTablets)
             // Replace the normal lore item with the special ones.

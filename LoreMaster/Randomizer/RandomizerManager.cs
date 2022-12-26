@@ -230,12 +230,12 @@ public static class RandomizerManager
     {
         RandoSettingsManagerMod.Instance.RegisterConnection(new SimpleSettingsProxy<FullRandoSettings>(LoreMaster.Instance,
         RandomizerMenu.Instance.PasteSettings,
-        () => new() { BaseSettings = Settings, Tags = PowerManager.GlobalPowerStates.Values.ToList() }));
+        () => Settings.Enabled ? new() { BaseSettings = Settings, Tags = PowerManager.GlobalPowerStates.Values.ToList() } : null));
     }
 
     private static int RandoController_OnCalculateHash(RandomizerMod.RC.RandoController controller, int original)
     {
-        if (!Settings.Enabled)
+        if (Settings.Enabled)
             if (Settings.PowerBehaviour != LoreSetOption.Default || Settings.BlackEggTempleCondition != BlackEggTempleCondition.Dreamers
                 || Settings.ForceCompassForTreasure || Settings.TravellerOrder != TravelOrder.Vanilla)
                 return 72767 + PowerManager.GetAllPowers().Count() + ((int)Settings.PowerBehaviour * 120 +

@@ -168,7 +168,7 @@ public abstract class Power
         {
             if (InitializePower())
             {
-                if ((!PowerManager.ObtainedPowers.Contains(this) && State != PowerState.Twisted && SettingManager.Instance.GameMode != GameMode.Normal)
+                if ((!PowerManager.ObtainedPowers.Contains(this) && State != PowerState.Twisted && (SettingManager.Instance.GameMode != GameMode.Normal && SettingManager.Instance.GameMode != GameMode.Disabled))
                     || (State == PowerState.Disabled && PowerManager.ObtainedPowers.Contains(this) && StayTwisted))
                 {
                     TwistEnable();
@@ -183,7 +183,7 @@ public abstract class Power
                 }
                 else if (State == PowerState.Disabled && PowerManager.ObtainedPowers.Contains(this) && !StayTwisted)
                 {
-                    if (SettingManager.Instance.GameMode != GameMode.Heroic)
+                    if (SettingManager.Instance.GameMode != GameMode.Heroic && SettingManager.Instance.GameMode != GameMode.Disabled)
                         Enable();
                     State = PowerState.Active;
                 }
@@ -213,7 +213,7 @@ public abstract class Power
                 if (_runningCoroutine != null)
                     LoreMaster.Instance.Handler.StopCoroutine(_runningCoroutine);
                 // In heroic mode, powers fake to be active, which is why we ignore them in those cases.
-                if (State == PowerState.Active && SettingManager.Instance.GameMode != GameMode.Heroic)
+                if (State == PowerState.Active && (SettingManager.Instance.GameMode != GameMode.Heroic && SettingManager.Instance.GameMode != GameMode.Disabled))
                     Disable();
                 else if (State == PowerState.Twisted)
                     TwistDisable();

@@ -410,7 +410,7 @@ internal static class PowerManager
             if (power.State != PowerState.Disabled && power.SceneAction != null)
                 try
                 {
-                    if (power.State == PowerState.Twisted || SettingManager.Instance.GameMode != GameMode.Heroic)
+                    if (power.State == PowerState.Twisted || (SettingManager.Instance.GameMode != GameMode.Heroic && SettingManager.Instance.GameMode != GameMode.Disabled))
                         power.SceneAction.Invoke();
                 }
                 catch (Exception exception)

@@ -157,6 +157,6 @@
     },
     {
         "name": "Mask_Shard-Grey_Mourner",
-        "logic": "(ORIG) + LISTEN"
+        "logic": "(ORIG) + READ"
     }
 ]

@@ -86,8 +86,8 @@ public class RandomizerMenu
         {
             _pageButton = new(previousPage, "Lore Master");
             _pageButton.AddHideAndShowEvent(previousPage, _mainPage);
-            _mainPage.BeforeGoBack += () => _pageButton.Text.color = !RandomizerManager.Settings.Enabled ? Colors.FALSE_COLOR : Colors.TRUE_COLOR;
-            _pageButton.Text.color = !RandomizerManager.Settings.Enabled ? Colors.FALSE_COLOR : Colors.TRUE_COLOR;
+            _mainPage.BeforeGoBack += () => _pageButton.Text.color = !RandomizerManager.Settings.Enabled ? Colors.DEFAULT_COLOR : Colors.TRUE_COLOR;
+            _pageButton.Text.color = !RandomizerManager.Settings.Enabled ? Colors.DEFAULT_COLOR : Colors.TRUE_COLOR;
             button = _pageButton;
             return true;
         }
@@ -225,19 +225,26 @@ public class RandomizerMenu
     private static void FixVerticalAlign_AlignText(On.FixVerticalAlign.orig_AlignText orig, FixVerticalAlign self)
     {
         orig(self);
-        if (PowerManager.GlobalPowerStates == null || !PowerManager.GlobalPowerStates.Any())
+        try
         {
-            PowerManager.GlobalPowerStates = new();
-            foreach (Power power in PowerManager.GetAllPowers())
-                PowerManager.GlobalPowerStates.Add(power.PowerName, power.DefaultTag);
+            if (PowerManager.GlobalPowerStates == null || !PowerManager.GlobalPowerStates.Any())
+            {
+                PowerManager.GlobalPowerStates = new();
+                foreach (Power power in PowerManager.GetAllPowers())
+                    PowerManager.GlobalPowerStates.Add(power.PowerName, power.DefaultTag);
+            }
+            if (!string.IsNullOrEmpty(self.transform.parent?.name) &&
+                self.transform.parent.name.Length > 7
+                && PowerManager.GlobalPowerStates.ContainsKey(self.transform.parent.name.Substring(0, self.transform.parent.name.Length - 7)))
+            {
+                Text text = self.GetComponent<Text>();
+                text.verticalOverflow = VerticalWrapMode.Overflow;
+                text.lineSpacing = 1f;
+            }
         }
-        if (!string.IsNullOrEmpty(self.transform.parent?.name) && 
-            self.transform.parent.name.Length > 7
-            && PowerManager.GlobalPowerStates.ContainsKey(self.transform.parent.name.Substring(0, self.transform.parent.name.Length - 7)))
+        catch (Exception exception)
         {
-            Text text = self.GetComponent<Text>();
-            text.verticalOverflow = VerticalWrapMode.Overflow;
-            text.lineSpacing = 1f;
+            LoreMaster.Instance.LogError("Error in align text: " + exception.StackTrace);
         }
     }
 

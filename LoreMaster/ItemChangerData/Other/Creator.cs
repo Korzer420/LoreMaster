@@ -239,7 +239,7 @@ internal static class Creator
     }
 
     /// <summary>
-    /// Creates a npc locations. This method is used, because the deserialization of IC calls the default constructor (or another constructor, but with <see langword="null"/> values.
+    /// Creates a npc locations. This method is used, because the deserialization of IC calls the default constructor (or another constructor, but with <see langword="null"/> values).
     /// </summary>
     public static DialogueLocation CreateDialogueLocation(string locationName, string scene, string objectName, string fsmName = "Conversation Control")
         => new()
@@ -253,6 +253,21 @@ internal static class Creator
                     ItemManager.CreateInteropTag(scene, locationName)
                 }
         };
+
+    public static DialogueLocation CreateGhostDialogueLocation(string locationName, string scene, string objectName, string fsmName = "Conversation Control")
+    {
+        return new GhostDialogueLocation()
+        {
+            name = locationName,
+            sceneName = scene,
+            ObjectName = objectName,
+            FsmName = fsmName,
+            tags = new()
+                {
+                    ItemManager.CreateInteropTag(scene, locationName)
+                }
+        };
+    }
 
     #endregion
 
