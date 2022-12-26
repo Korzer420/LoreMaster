@@ -1,5 +1,6 @@
 using LoreMaster.Enums;
 using LoreMaster.UnityComponents;
+using Modding;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,27 +51,27 @@ public class LaughableThreatPower : Power
 
     protected override void Enable()
     {
-        On.HealthManager.TakeDamage += HealthManager_TakeDamage;
+        ModHooks.HitInstanceHook += ModHooks_HitInstanceHook;
     }
 
     protected override void Disable()
     {
-        On.HealthManager.TakeDamage -= HealthManager_TakeDamage;
-    }
-
-    private void HealthManager_TakeDamage(On.HealthManager.orig_TakeDamage orig, HealthManager self, HitInstance hitInstance)
-    {
-        if (!_hasAttacked)
-        {
-            _hasAttacked = true;
-            UpdateEnemyCollider();
-        }
-        orig(self, hitInstance);
+        ModHooks.HitInstanceHook -= ModHooks_HitInstanceHook;
     }
 
     #endregion
 
     #region Methods
+
+    private HitInstance ModHooks_HitInstanceHook(HutongGames.PlayMaker.Fsm owner, HitInstance hit)
+    {
+        if (hit.AttackType == AttackTypes.Nail && !_hasAttacked)
+        {
+            _hasAttacked = true;
+            UpdateEnemyCollider();
+        }
+        return hit;
+    }
 
     private void UpdateEnemyCollider()
     {
