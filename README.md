@@ -10,7 +10,7 @@ I mostly oriented on the wiki page of lore tablets to see what actually counts. 
 - Any of Bretta's diary entries does count for her power.
 - Midwife and the mask maker grant abilities.
 - The traitor's grave, Moss prophet and the queen grant abilites.
-- Badoon grant an ability.
+- Bardoon grant an ability.
 - The journal entry at the end of PoP grant an ability (This is the only power that by default is excluded (see below for more details))
 - The world sense tablet in the black egg temple does count.
 - Willoh grants an ability.
@@ -18,14 +18,13 @@ I mostly oriented on the wiki page of lore tablets to see what actually counts. 
 - Quirrel in Crystal Peaks grants an ability. (Always present)
 - Emilitia in the city grants a power.
 - The statue of the Hollow Knight in the city grants a ability.
-- All ghosts outside glade except Cloth grant abilities.
+- All ghosts outside glade except Cloth and the dream warriors grant abilities.
 - Record Bela grants an ability (extra lore tablet)
 - Zote in Deepnest grant an ability
 - Tiso at Blue Lake grant an ability
 
 Currently not implemented:
 - The shield on iselda's shop grants you a bonus but not ability. (Is not required for the dirtmouth loremaster)
-- Lemm's sign on his shop (after getting a dreamer) grants a bonus but no ability (Is not required for city of tears loremaster)
 - All Dream Warrior statues grant a bonus (not required).
 - Elderbug grants the final power. (requires all other)
 
@@ -48,18 +47,7 @@ If the power name is green you have global access to the power.
 
 ## Randomizer Use
 
-This mod has compability with the Randomizer 4 and extension mod. The acquired power is displayed when you pick up the lore tablet, even if you don't get the text box, the name of the power will be displayed in the item message (bottom left when you pick up an item). The mod also offers a few extra settings:
-
-- Randomize NPC: Randomizes the text of NPC (only the ones that would give you powers + Elderbug). Also randomizes the lore inventory page.
-- Randomize Warrior Statues: Randomizes the inspect text of Dream Warrior Statues/Corpses.
-- Cursed Reading: Randomizes the ability to read lore tablets and dream warrior statues/corpses.
-- Cursed Listening: Randomizes the ability to talk to NPC. This includes all Merchants and Stags. Note that this also prevents you from talking to Grimm + Hornet 2 after fights, which results in having to redo the fight if you don't have the abilities.
-- Power Behaviour: Determine how all powers should behave. You can use this if you just want the rando settings without the actual abilities or if you want to ignore the whole condition thing on abilities.
-- Black Egg Temple Condition: Allows you to change the requirement of the Black Egg Temple Door to Lore (or both). The needed lore is capped at 31 (+ 18 if you randomize NPC, + 7 if you randomize Warrior statues). Note that the fountain, dreamer tablet and Record Bela are not considered for the logic even though they count for the door.
-
-The fountain, Record Bela and the dreamer tablet cannot be randomized!
-
-The tracker will also behave differently if lore is randomized. In this case, the tracker will display how many lore is actually in the zone instead of the original ones.
+This mods adds over 80 new possible locations to the randomizer. For more details what each setting does, look in the RandoReadme.
 
 ## Manual Setup
 
