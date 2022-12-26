@@ -3,8 +3,17 @@
 This mod offers a lot of settings as a connection for Randomizer 4. This file will explain everything detailed.
 In Rando, the lore page control is granted at the start.
 
+If you choose to disabled this connection entirely, no modifications are done by this mod! Though there is one exceptions to this:
+- The teleporter of the Tourist power are placed regardless of your settings.
+
+If this connection is enabled, some global modifications take place regardless of your settings:
+- Normal lore items are replaced by the powered ones. If no abilities are used, this simply changes the sprite and name of lore tablets.
+- Menderbugs spawn rate is increased to 20%.
+- The "Sacred Shell" power at the end of PoP is placed.
+- Elderbugs text and size is adjusted.
+
 ## Define Refs
-Places all not randomized items which the mod offers anyway. Doesn't affect treasures, since they are added anyway for vanilla purposes!
+Places all not randomized items which the mod offers anyway. It is important to note that if neither this nor "Randomize NPC" + "Randomize point of interest" are enabled, it is no longer possible to obtain all abilities!
 
 ## Pools
 
@@ -18,7 +27,7 @@ Randomizes all NPC which purpose would normally just providing the player with l
 - Midwife
 - Gravedigger
 - Poggy (In the hidden room in the pleasure house elevator)
-- Joni
+- Joni (is spawned automatically regardless if the item in place of the charm has been obtained)
 - Myla
 - Emilitia
 - Willoh
@@ -33,9 +42,11 @@ Randomizes all NPC which purpose would normally just providing the player with l
 This setting DOES NOT randomize Elderbug and Quirrel anymore!
 
 This mod does prevent killing ghost npc until their item has been obtained.
+Also npc with a limited interaction time, like Myla or Moss prophet, will not vanish until their item has been obtained.
 
 #### Interaction
 - If Cursed listening is active, you'll be prevented from talking to them until you find the ability.
+- If Cursed reading is active, you'll be prevented from reading Brettas and Menderbugs diary until you find the ability.
 - If you randomized Elderbug Rewards, Defined Refs or set the Black egg temple condition to not dreamer, these will count towards the lore amount.
 
 ### Randomize Dream Warrior Statues
@@ -78,11 +89,11 @@ Randomizes major dream nail dialogue. As major count most npc/objects which trig
 ### Interaction
 - If you randomized Elderbug Rewards, Defined Refs or set the Black egg temple condition to not dreamer, these will count towards the lore amount.
 - The descending dark and white (king) fragement locations will not be available until your acquired their dream dialogue checks.
-- The golem in the abyss may require a room reload, to give the second location items. This only occurs if you enter the room with void heart will the first location
+- The golem in the abyss may require a room reload, to give the second location items. This only occurs if you enter the room with void heart while the first location
 still does have items.
 
 ### Randomize Point of Interest
-Randomizes interesting location scattered around HK. Since a few of them are hidden well, it is advices that you only use this setting, 
+Randomizes interesting location scattered around HK. Since a few of them are hidden well, it is adviced that you only use this setting, 
 if you know the game fairly good.
 - The fountain of the Hollow Knight
 - The dreamer tablet in Resting Grounds
@@ -97,6 +108,7 @@ if you know the game fairly good.
 
 ### Interaction
 - If you randomized Elderbug Rewards, Defined Refs or set the Black egg temple condition to not dreamer, these will count towards the lore amount.
+- The dreamer tablet and the HK fountain are affected by "Cursed Reading".
 
 ### Randomize Elderbug Rewards
 In Lore Master Extra, the player can follow a questline with Elderbug, which gives various rewards for certain milestones. These will be randomized.
@@ -113,6 +125,8 @@ In Lore Master Extra, the player can follow a questline with Elderbug, which giv
 Adds special items to the pool:
 - 3 scrolls to automatically gain a missing lore tablet.
 - 3 scrolls to undo curses (unused in randomizer, will turn to geo)
+
+**A lore tablet is placed where Elderbugs "Grimm iteration" would normally stand, which tells you the rewards that you can get.**
 
 #### Interaction
 - Elderbug is NOT affected by Cursed Listening (as well as the snail shaman for Vengeful Spirit, due to the original questline)
@@ -165,6 +179,8 @@ will always immediatly grant you the Ability "Treasure Hunter", which allows you
 Shuffles the Master key, which opens most doors in the game and is considered in logic for keys.
 Also add a medallion which increases the chance of obtaining essence from enemies drastically.
 
+**Since this a treasure hunt, the locations will not appear in RMM. If you are curious what the logic behind them is, you can check out the TreasureLogic.json file.**
+
 ### Force Compass for Treasure
 If on, every treasure ground is only considered in logic, once you got Wayward Compass. Entering a room with a treasure location while having Compass equipped,
 will notify you that there's a treasure in this room and display what the item there is. This setting is recommended for the first time, you play with treasures.
@@ -173,8 +189,6 @@ will notify you that there's a treasure in this room and display what the item t
 Randomizes the 14 treasure charts, Lemms Door and Iselda's second shop. With "Lemm's Order" (an item) you have access to more items in Iselda's shop 
 (like with Sly's Key).
 
-Treasure Charts and Treasure will be added to vanilla regardless of your settings!
-
 #### Cursed Listening
 - Randomizes the ability to talk to NPC.
 
@@ -182,7 +196,7 @@ Treasure Charts and Treasure will be added to vanilla regardless of your setting
 - Randomizes the ability to read lore tablets.
 
 #### Black Egg Temple Condition
-Determines what is need for opening the black egg temple.
+Determines what is needed for opening the black egg temple.
 - Dreamers: Like Vanilla the door opens once you have 3 dreamers.
 - Lore: The door opens once you obtained enough lore bits.
 - Both: Self explaining.
@@ -217,8 +231,7 @@ Determines how the abilities of the mod should behave.
 
 ### Real Journal Rando
 - Colo 3 and the shade statue in Hall of Gods are affected by Cursed Reading.
-- LoreMaster increases the chance to see Menderbug drastically, making randomized Menderbug way less tedious. Also this mod prevents Menderbug from fleeing and the
-  player from killing them. You will be granted the items, once you hit them with your nail.
+- LoreMaster increases the chance to see Menderbug drastically, making randomized Menderbug way less tedious.
   
 ### More Doors
 - The "Master Key" isn't able to open the doors placed by this mod. Instead it will show you at which location the key is.
@@ -227,3 +240,4 @@ Determines how the abilities of the mod should behave.
 - Treasure items can be mimicked, if enabled.
 - Non Power lore checks can be replaced, if the Black Egg Temple doesn't require Lore to open (Black Egg Temple Condition: Dreamers) and if
 "Custom" is enabled in "Replaceable Items".
+- Reading and listening can be mimicked.
