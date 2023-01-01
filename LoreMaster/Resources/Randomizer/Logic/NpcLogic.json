@@ -49,7 +49,7 @@
 	},
 	{ 
 		"name":"Fluke_Hermit",
-		"logic":"(Room_GG_Shortcut[top1] | (Room_GG_Shortcut[left1] + (LEFTCLAW + WINGS | RIGHTCLAW))) + SWIM"
+		"logic":"(Room_GG_Shortcut[top1] | Room_GG_Shortcut[left1] + (LEFTCLAW + WINGS | RIGHTCLAW) + (RIGHTCLAW + WINGS | (WINGS + LEFTDASH | WINGS + LEFTSUPERDASH | SWIM) + (RIGHTCLAW + (RIGHTDASH | LEFTCLAW + (RIGHTSUPERDASH | ENEMYPOGOS))) | LEFTCLAW + RIGHTDASH + WINGS + PRECISEMOVEMENT)) + (SWIM | (FULLCLAW + RIGHTSUPERDASH + ACIDSKIPS))"
 	},
 	{ 
 		"name":"Grasshopper", 
