@@ -30,9 +30,9 @@ public class BlessingOfTheButterflyPower : Power
 
     public BlessingOfTheButterflyPower() : base("Blessing of the Butterfly", Area.CityOfTears)
     {
-        Hint += " You can 100% be sure, that I'd end your game immediatly if you kill her, if it wasn't for the audience power. Though for another power in the future I'll not be that kind, just a fair warning. " +
+        Hint += " If it wasn't for the audience power, you can be 100% sure that I'd end your game immediately if you kill her. Just a fair warning, I'll not be that kind for another power in the future. " +
             "Don't mess with the innocent and happy bugs in this game. >:c";
-        Description += " You can 100% be sure, that I'd end your game immediatly if you kill her, if it wasn't for the audience power. Though for another power in the future I'll not be that kind, just a fair warning. " +
+        Description += " If it wasn't for the audience power, you can be 100% sure that I'd end your game immediately if you kill her. Just a fair warning, I'll not be that kind for another power in the future. " +
             "Don't mess with the innocent and happy bugs in this game. >:c";
     }
 

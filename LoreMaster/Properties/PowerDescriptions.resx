@@ -118,37 +118,37 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="BagOfMushrooms" xml:space="preserve">
-    <value>Allows you to pick a mushroom to consume each 180 seconds. White shroom: Increases the speed of the game by 40%. Yellow shroom: Generates 20 soul each second, but causes nausea. Red shroom: Gives you 4 extra health, heals you fully and increases your nail damage by 20%, but you can't dash. Green shroom: Makes you small, decrease the gravity by 50% and doubles all damage taken. Taking the same mushroom twice in a row nerfs it's positive effect by 50%. Taking the same mushroom three times in a row, deals 2 damage to you instead. Press quick map to select another and cdash + dash to consume the mushroom.</value>
+    <value>Allows you to pick a mushroom to consume every 180 seconds. White Shroom: Increases the speed of the game by 40%. Yellow Shroom: Generates 20 soul per second but causes nausea. Red Shroom: Gives you 4 extra health, heals you fully, and increases your nail damage by 20%, but you can't dash. Green Shroom: Makes you small, decreases gravity by 50%, and doubles all damage taken. Picking the same mushroom twice in a row nerfs its positive effect by 50%. Picking the same mushroom three times in a row deals 2 damage to you instead. Press quick map to select another and cdash + dash to consume the mushroom.</value>
   </data>
   <data name="BestMenderInTheWorld" xml:space="preserve">
-    <value>Menderbug asked Mender Berri out and she said yes ^-^ Most signs of this kingdom are now unbreakable and grant small amount of geo once it. Also causes Menderbug to always appear at the sign. &lt;3</value>
+    <value>Menderbug asked Mender Berri out and she said, "Yes!" ^-^ Most signs in this kingdom are now unbreakable and grant a small amount of geo when hit. Additionally, Menderbug always appears at the sign. &lt;3</value>
   </data>
   <data name="BlessingOfTheButterfly" xml:space="preserve">
-    <value>Wings now deal 12 damage upon contact with enemy, apply massive knockback downwards and give you slightly more height. While your double jump is on cooldown, instead of taking damage from enemies below you, you deal 4 damage to them, regain soul and jump automatically again. (This does not restore wings)</value>
+    <value>Wings now deal 12 damage upon contact with an enemy, apply massive knockback downwards, and give you slightly more height. While your double jump is on cooldown, you deal 4 damage to enemies below you instead of taking damage from them. You regain soul and automatically jump again. (This does not restore wings.)</value>
   </data>
   <data name="Camouflage" xml:space="preserve">
     <value>After standing still for 5 seconds, you gain invincibility until you do something. If you are wearing Shape of Unn, you keep the invincibility while focusing and moving as a slug.</value>
   </data>
   <data name="CaringShell" xml:space="preserve">
-    <value>Enviroment hazards (like spikes) don't deal damage to you anymore.</value>
+    <value>Environment hazards (like spikes) don't deal damage to you anymore.</value>
   </data>
   <data name="ConcussiveStrike" xml:space="preserve">
-    <value>Great Slash and Dash Slash cause Concussion on their target for 3 seconds. Concussed enemies take 10% more damage from nail attacks and increase their knockback by 50% (66% of Heavy Blow). Nail hits on the target extend the duration by 0.5 seconds each. Cyclone Slash is not counted as a nail slash in this case. Also cause enemies to glance 50% of their hits, decreasing their damage by 1.</value>
+    <value>Great Slash and Dash Slash cause Concussion on their target for 3 seconds. Concussed enemies take 10% more damage from nail attacks and increase their knockback by 50% (66% with Heavy Blow). Nail hits on the target extend the duration by 0.5 seconds each. Cyclone Slash is not counted as a nail slash in this case. This also causes enemies to glance 50% of their hits decreasing their damage by 1.</value>
   </data>
   <data name="DeliciousMeal" xml:space="preserve">
-    <value>You can consume a rancid egg to heal you for 1 mask every 8 seconds and gain a +20% damage buff for 3 minutes. Press jump to consume the egg.</value>
+    <value>You can consume a rancid egg: for 3 minutes you heal 1 mask every 8 seconds and gain a +20% damage buff. Press jump to consume the egg.</value>
   </data>
   <data name="DiamondCore" xml:space="preserve">
-    <value>Crystal Heart snares all enemies in the room if you hit a wall. The duration of the stun and cdash damage increases with the c dash duration. (Stun duration is capped at 10 seconds, gain 5 damage and 10% speed per second, gain invincibility after 3 seconds.)</value>
+    <value>Crystal Heart stuns all enemies in the room if you hit a wall. The cdash damage and the duration of the stun increase with the duration of the cdash. (Stun duration is capped at 10 seconds. You gain 5 damage and 10% speed per second. You gain invincibility after 3 seconds.)</value>
   </data>
   <data name="DiamondDash" xml:space="preserve">
-    <value>Crystal Heart is cast 0.3 seconds faster and can be hold midair while pressing up. Doubled, if you have Diamond Core unlocked. Drains 20 Soul per second (or 10 if you have Diamond Core).</value>
+    <value>Crystal Heart is cast 0.3 seconds faster and can be held midair while pressing up. This is doubled if you have Diamond Core unlocked. Drains 20 soul per second (or 10 if you have Diamond Core).</value>
   </data>
   <data name="DiminishingCurse" xml:space="preserve">
-    <value>If you take 10 hits, you will no longer count as overcharmed, resets if you sit on a bench. The UI only updates if you open the charm screen.</value>
+    <value>If you take 10 hits, you will no longer count as overcharmed. This resets if you sit on a bench. The UI only updates if you open the charm screen.</value>
   </data>
   <data name="DramaticEntrance" xml:space="preserve">
-    <value>Heals you to full health and soul once entering a boss fight. If you have joni's equipped you will be granted up to 8 lifeblood masks instead. In godhome these effects are weakend heavily.</value>
+    <value>Heals you to full health and soul upon entering a boss fight. If you have Joni's Blessing equipped, you will be granted up to 8 lifeblood masks instead. In Godhome, these effects are heavily weakened.</value>
   </data>
   <data name="DreamBlessing" xml:space="preserve">
     <value>Defeated Dreamers grant the dream nail an additional effect (doubled with awoken dreamnail).&lt;br&gt;Lurien: Roots the target for 3 seconds (15 seconds cooldown)&lt;br&gt;Herrah: Spawn 2 weavers. &lt;br&gt;Monomon: Per 100 Essence you have a 1% chance to instant kill the enemy (capped at 125 damage). Capped at 2400 Essence for 24%.</value>
