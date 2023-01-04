@@ -254,7 +254,7 @@ internal static class Creator
                 }
         };
 
-    public static DialogueLocation CreateGhostDialogueLocation(string locationName, string scene, string objectName, string fsmName = "Conversation Control")
+    public static DialogueLocation CreateGhostDialogueLocation(string locationName, string ghostName, string scene, string objectName, string fsmName = "Conversation Control")
     {
         return new GhostDialogueLocation()
         {
@@ -262,6 +262,7 @@ internal static class Creator
             sceneName = scene,
             ObjectName = objectName,
             FsmName = fsmName,
+            GhostName = ghostName,
             tags = new()
                 {
                     ItemManager.CreateInteropTag(scene, locationName)

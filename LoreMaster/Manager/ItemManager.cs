@@ -632,17 +632,17 @@ public static class ItemManager
         Finder.DefineCustomLocation(Creator.CreateDialogueLocation(Bretta_Diary, "Room_Bretta", "Diary"));
         Finder.DefineCustomLocation(Creator.CreateDialogueLocation(Menderbug_Diary, "Room_Mender_House", "Diary"));
         Finder.DefineCustomLocation(Creator.CreateDialogueLocation(Bardoon, "Deepnest_East_04", "Big Caterpillar"));
-        Finder.DefineCustomLocation(Creator.CreateGhostDialogueLocation(Vespa, "Hive_05", "Vespa NPC"));
+        Finder.DefineCustomLocation(Creator.CreateGhostDialogueLocation(Vespa, "HIVEQUEEN", "Hive_05", "Vespa NPC"));
         Finder.DefineCustomLocation(Creator.CreateDialogueLocation(Mask_Maker, "Room_Mask_Maker", "Maskmaker NPC"));
         Finder.DefineCustomLocation(Creator.CreateDialogueLocation(Midwife, "Deepnest_41", "NPC"));
-        Finder.DefineCustomLocation(Creator.CreateGhostDialogueLocation(Gravedigger, "Town", "Gravedigger NPC"));
-        Finder.DefineCustomLocation(Creator.CreateGhostDialogueLocation(Poggy, "Ruins_Elevator", "Ghost NPC"));
+        Finder.DefineCustomLocation(Creator.CreateGhostDialogueLocation(Gravedigger, "GRAVEDIGGER", "Town", "Gravedigger NPC"));
+        Finder.DefineCustomLocation(Creator.CreateGhostDialogueLocation(Poggy, "POGGY", "Ruins_Elevator", "Ghost NPC"));
         Finder.DefineCustomLocation(Creator.CreateDialogueLocation(Emilitia, "Ruins_House_03", "Emilitia NPC"));
         Finder.DefineCustomLocation(Creator.CreateDialogueLocation(Willoh, "Fungus2_34", "Giraffe NPC"));
         Finder.DefineCustomLocation(Creator.CreateDialogueLocation(Fluke_Hermit, "Room_GG_Shortcut", "Fluke Hermit"));
         Finder.DefineCustomLocation(Creator.CreateDialogueLocation(Queen, "Room_Queen", "Queen"));
-        Finder.DefineCustomLocation(Creator.CreateGhostDialogueLocation(Marissa, "Ruins_Bathhouse", "Ghost NPC"));
-        Finder.DefineCustomLocation(Creator.CreateGhostDialogueLocation(Grasshopper, "Fungus1_24", "Ghost NPC"));
+        Finder.DefineCustomLocation(Creator.CreateGhostDialogueLocation(Marissa, "MARISSA", "Ruins_Bathhouse", "Ghost NPC"));
+        Finder.DefineCustomLocation(Creator.CreateGhostDialogueLocation(Grasshopper, "GRASSHOPPER", "Fungus1_24", "Ghost NPC"));
         
         // These locations have additional that need to take place.
         Finder.DefineCustomLocation(new DungDefenderLocation()
@@ -663,6 +663,7 @@ public static class ItemManager
             sceneName = "Cliffs_05",
             ObjectName = "Ghost NPC Joni",
             FsmName = "Conversation Control",
+            GhostName = "JONI",
             tags = new()
             {
                CreateInteropTag("Cliffs_05", Joni)
