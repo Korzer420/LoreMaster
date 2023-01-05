@@ -6,6 +6,7 @@ using LoreMaster.Enums;
 using LoreMaster.Helper;
 using LoreMaster.LorePowers;
 using LoreMaster.LorePowers.CityOfTears;
+using LoreMaster.LorePowers.FungalWastes;
 using LoreMaster.LorePowers.HowlingCliffs;
 using LoreMaster.Manager;
 using LoreMaster.Randomizer;
@@ -290,7 +291,9 @@ internal class LorePage
 
                                 if (power is DeliciousMealPower && RandomizerManager.PlayingRandomizer && !RandomizerManager.CanConsumeEgg())
                                     powerDescription.GetComponent<TextMeshPro>().text += "\r\n<color=#fc0b03>This isn't the right time, to consume an egg. Someone else seems to want these even more than you.</color>";
-                            }
+
+								powerDescription.GetComponent<TextMeshPro>().fontSize = !LoreManager.Instance.UseHints && power is BagOfMushroomsPower ? 4.6f : 5.35f;
+							}
                         }
                         else
                         {
