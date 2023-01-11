@@ -39,8 +39,8 @@ public class BestMenderInTheWorldPower : Power
         On.HealthManager.Hit += HealthManager_Hit;
         On.HealthManager.ApplyExtraDamage += HealthManager_ApplyExtraDamage;
         _trackJournal = ReflectionHelper.GetMethodInfo(typeof(EnemyDeathEffects), "RecordKillForJournal");
-        Hint += "DON'T EVEN DARE KILLING THEM! I'LL END YOUR GAME IF YOU DO THAT!";
-        Description += "DON'T EVEN DARE KILLING THEM! I'LL END YOUR GAME IF YOU DO THAT!";
+        Hint += " DON'T EVEN DARE KILLING THEM! I'LL END YOUR GAME IF YOU DO THAT!";
+        Description += " DON'T EVEN DARE KILLING THEM! I'LL END YOUR GAME IF YOU DO THAT!";
     }
 
     #endregion
