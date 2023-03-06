@@ -4,6 +4,7 @@ using ItemChanger.Internal;
 using ItemChanger;
 using LoreMaster.Helper;
 using System;
+using KorzUtils.Helper;
 
 namespace LoreMaster.ItemChangerData;
 
@@ -24,7 +25,7 @@ internal class CustomSprite : ISprite
     public bool RandoSprite { get; set; }
 
     [Newtonsoft.Json.JsonIgnore]
-    public Sprite Value => SpriteHelper.CreateSprite(Key, RandoSprite);
+    public Sprite Value => SpriteHelper.CreateSprite<LoreMaster>(RandoSprite ? "Randomizer." + Key : "Base. "+Key);
 
     public ISprite Clone() => new CustomSprite(Key, RandoSprite);
 }

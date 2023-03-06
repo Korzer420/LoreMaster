@@ -2,6 +2,7 @@ using HutongGames.PlayMaker;
 using HutongGames.PlayMaker.Actions;
 using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
+using KorzUtils.Helper;
 using LoreMaster.Enums;
 using LoreMaster.Helper;
 using UnityEngine;
@@ -123,13 +124,7 @@ public class FollowTheLightPower : Power
                             HeroController.instance.transform.localPosition = _gatePosition;
                         }
                         else
-                        {
-                            _dreamGate.transform.localPosition = HeroController.instance.transform.localPosition;
-                            // Adjust to place the portal on the ground
-                            _dreamGate.transform.localPosition -= new Vector3(0f,1.4f,0f);
                             HeroController.instance.transform.localPosition = _gatePosition;
-                            _gatePosition = _dreamGate.transform.localPosition;
-                        }
                     }
                 })
             }

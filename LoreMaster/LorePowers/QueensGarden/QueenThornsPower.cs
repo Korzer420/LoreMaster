@@ -1,8 +1,9 @@
 using HutongGames.PlayMaker;
 using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
+using KorzUtils.Helper;
 using LoreMaster.Enums;
-using LoreMaster.Extensions;
+
 using LoreMaster.Helper;
 using System;
 using UnityEngine;
@@ -165,7 +166,7 @@ public class QueenThornsPower : Power
         if (_sprites[1] == null)
         {
             _sprites[0] = CharmIconList.Instance.spriteList[12];
-            _sprites[1] = SpriteHelper.CreateSprite("Queens_Thorns");
+            _sprites[1] = SpriteHelper.CreateSprite<LoreMaster>("Base.Queens_Thorns");
         }
     }
 

@@ -4,8 +4,9 @@ using ItemChanger;
 using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
 using ItemChanger.Modules;
+using KorzUtils.Helper;
 using LoreMaster.Enums;
-using LoreMaster.Extensions;
+
 using LoreMaster.Helper;
 using LoreMaster.ItemChangerData.Locations;
 using LoreMaster.LorePowers;
@@ -356,7 +357,8 @@ public class SettingManager
                 {
                     if (self.GetState("In Range") is FsmState state)
                     {
-                        state.GetFirstActionOfType<ShowPromptMarker>().labelName.Value = "???";
+                        if (state.GetFirstActionOfType<ShowPromptMarker>() is ShowPromptMarker marker)
+                            marker.labelName.Value = "???";
                         if (self.GetState("In Range Turns") is FsmState secondState)
                             secondState.GetFirstActionOfType<ShowPromptMarker>().labelName.Value = "???";
                         self.AddState(new FsmState(self.Fsm)

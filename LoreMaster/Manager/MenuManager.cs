@@ -1,3 +1,4 @@
+using KorzUtils.Helper;
 using LoreMaster.Enums;
 using LoreMaster.Helper;
 using LoreMaster.LorePowers;
@@ -359,7 +360,7 @@ internal class MenuManager : ModeMenuConstructor
 
     public override bool TryGetModeButton(MenuPage modeMenu, out BigButton button)
     {
-        button = new BigButton(modeMenu, SpriteHelper.CreateSprite("Lore"), "Lore Master Extra");
+        button = new BigButton(modeMenu, SpriteHelper.CreateSprite<LoreMaster>("Base.Lore"), "Lore Master Extra");
         button.AddHideAndShowEvent(modeMenu, ExtraPage);
         return true;
     }

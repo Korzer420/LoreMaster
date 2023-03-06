@@ -1,6 +1,7 @@
 using HutongGames.PlayMaker;
 using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
+using KorzUtils.Helper;
 using LoreMaster.Enums;
 using LoreMaster.Helper;
 using Modding;
@@ -36,8 +37,8 @@ public class StagAdoptionPower : Power
 
     internal Sprite[] InventorySprites { get; } = new Sprite[]
     {
-        SpriteHelper.CreateSprite("Stag_Egg"),
-        SpriteHelper.CreateSprite("Stag_Egg_Broken")
+        SpriteHelper.CreateSprite<LoreMaster>("Base.Stag_Egg"),
+        SpriteHelper.CreateSprite<LoreMaster>("Base.Stag_Egg_Broken")
     };
 
     public PlayMakerFSM MenuFsm => _menuFsm == null ? _menuFsm = GameObject.Find("_GameCameras").transform.Find("HudCamera/Menus").gameObject.LocateMyFSM("Open Stag") : _menuFsm;

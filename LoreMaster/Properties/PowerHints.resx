@@ -157,7 +157,7 @@
     <value>When entering a new room with enemies the list marks enemies. If you succeed the \"talk\" with them, you are granted a reward. Be careful, elderbug demands a clean execution.</value>
   </data>
   <data name="EternalSentinel" xml:space="preserve">
-    <value>Increases your scent while wearing the sign of the protector. The shield of the ancient ones is more resistent and gather soul with the blessing of the protector.</value>
+    <value>The shield of the ancient ones is more resistent and gather soul with the blessing of the protector.</value>
   </data>
   <data name="EternalValor" xml:space="preserve">
     <value>The heat of the battle shall allow you to endure more pain.</value>

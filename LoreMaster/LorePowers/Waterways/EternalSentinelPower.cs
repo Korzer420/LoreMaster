@@ -1,9 +1,8 @@
 using HutongGames.PlayMaker;
 using HutongGames.PlayMaker.Actions;
 using ItemChanger.Extensions;
-using ItemChanger.FsmStateActions;
+using KorzUtils.Helper;
 using LoreMaster.Enums;
-using LoreMaster.Extensions;
 using LoreMaster.Helper;
 using Modding;
 using UnityEngine;
@@ -53,20 +52,6 @@ public class EternalSentinelPower : Power
         orig(self);
     }
 
-    private void OnSetPositionAction(On.HutongGames.PlayMaker.Actions.SetPosition.orig_OnEnter orig, SetPosition self)
-    {
-        if (string.Equals(self.Fsm.GameObjectName, "Knight Dung Trail(Clone)") && string.Equals(self.Fsm.Name, "Control") 
-            && string.Equals(self.State.Name, "Init"))
-        {
-            self.Fsm.FsmComponent.gameObject.transform.localPosition = HeroController.instance.transform.position;
-            self.Fsm.FsmComponent.gameObject.transform.localScale = State == PowerState.Active ? new(2.5f, 2.5f) : new(1f, 1f);
-            if (self.Fsm.FsmComponent.gameObject.GetComponent<DamageEffectTicker>() is DamageEffectTicker dET)
-                dET.SetDamageInterval(State == PowerState.Active ? 0.15f : 0.3f);
-        }
-
-        orig(self);
-    }
-
     private void Wait_OnEnter(On.HutongGames.PlayMaker.Actions.Wait.orig_OnEnter orig, Wait self)
     {
         if (self.IsCorrectContext("Control", null, "Wait") && self.Fsm.FsmComponent.gameObject.name.Contains("Knight Dung Trail"))
@@ -105,7 +90,6 @@ public class EternalSentinelPower : Power
     protected override void Initialize()
     {
         ModifyBaldurShell(GameObject.Find("Knight/Charm Effects").transform.Find("Blocker Shield").gameObject.LocateMyFSM("Control"));
-        On.HutongGames.PlayMaker.Actions.SetPosition.OnEnter += OnSetPositionAction;
         On.HutongGames.PlayMaker.Actions.Wait.OnEnter += Wait_OnEnter;
         On.PlayMakerFSM.OnEnable += PlayMakerFSM_OnEnable;
     }
@@ -113,7 +97,6 @@ public class EternalSentinelPower : Power
     /// <inheritdoc/>
     protected override void Terminate()
     {
-        On.HutongGames.PlayMaker.Actions.SetPosition.OnEnter -= OnSetPositionAction;
         On.HutongGames.PlayMaker.Actions.Wait.OnEnter -= Wait_OnEnter;
         On.PlayMakerFSM.OnEnable -= PlayMakerFSM_OnEnable;
     }

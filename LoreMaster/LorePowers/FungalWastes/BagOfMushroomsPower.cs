@@ -1,3 +1,4 @@
+using KorzUtils.Helper;
 using LoreMaster.Enums;
 using LoreMaster.Helper;
 using LoreMaster.Manager;
@@ -41,7 +42,7 @@ public class BagOfMushroomsPower : Power
     {
         Hint += " WARNING: The yellow one causes a nausea effect! If you don't want to use that, you can turn off the effect in the mod settings. Eating the yellow mushroom then, will only give a small effect.";
         Description += " WARNING: The yellow one causes a nausea effect! If you don't want to use that, you can turn off the effect in the mod settings. Eating the yellow mushroom then, will only give a small effect.";
-        _mushroomSprite = SpriteHelper.CreateSprite("MushroomChoice");
+        _mushroomSprite = SpriteHelper.CreateSprite<LoreMaster>("Base.MushroomChoice");
     }
 
     #endregion

@@ -157,7 +157,7 @@
     <value>When entering a new room marks a random enemy with a red outline. If you kill that enemy FIRST another one gets marked. If all enemies are killed in the right order you receive a soul vessel fragment, mask shard, charm notch, 200 geo, or a small damage buff.</value>
   </data>
   <data name="EternalSentinel" xml:space="preserve">
-    <value>Defender's Crest clouds are 150% bigger and tick twice as fast. Baldur shell now takes seven hits instead of four (ten with defender's Crest. When getting hit, while baldur shell is up, you gain 15 soul if you are also wearing Defender's Crest.</value>
+    <value>Baldur shell now takes seven hits instead of four (ten with defender's Crest). When getting hit, while baldur shell is up, you gain 15 soul if you are also wearing Defender's Crest.</value>
   </data>
   <data name="EternalValor" xml:space="preserve">
     <value>Each 12 hits on enemies, heal you for 1 mask. Not hitting an enemy for 3 seconds will take away a stack each half of a second.</value>

@@ -138,7 +138,7 @@ public static class ItemManager
     {
         Finder.DefineCustomLocation(new CoordinateLocation() { x = 35.0f, y = 5.4f, elevation = 0, sceneName = "Ruins1_27", name = City_Teleporter });
         Finder.DefineCustomLocation(new CoordinateLocation() { x = 57f, y = 5f, elevation = 0, sceneName = "Room_temple", name = Temple_Teleporter });
-        Finder.DefineCustomItem(new TouristMagnetItem()
+        Finder.DefineCustomItem(new TeleportItem()
         {
             name = City_Ticket,
             UIDef = new MsgUIDef()
@@ -153,7 +153,7 @@ public static class ItemManager
                 new CompletionWeightTag() { Weight = 0}
             }
         });
-        Finder.DefineCustomItem(new TouristMagnetItem()
+        Finder.DefineCustomItem(new TeleportItem()
         {
             name = Temple_Ticket,
             UIDef = new MsgUIDef()
@@ -165,7 +165,11 @@ public static class ItemManager
             tags = new List<Tag>()
             {
                 new PersistentItemTag() { Persistence = Persistence.Persistent},
-                new CompletionWeightTag() { Weight = 0}
+                new CompletionWeightTag() { Weight = 0},
+                new CostTag()
+                {
+                    Cost = new Paypal()
+                }
             }
         });
     }
@@ -479,7 +483,7 @@ public static class ItemManager
                     Message = "CurseData",
                     Properties = new()
                     {
-                        {"CanMimic", new BoxedBool(RandomizerManager.Settings.CursedReading) },
+                        {"CanMimic", new BoxedBool(true) },
                         {"MimicNames", new string[]{"Reed", "Read", "Reat"} }
                     }
                 }
@@ -518,7 +522,7 @@ public static class ItemManager
                     Message = "CurseData",
                     Properties = new()
                     {
-                        {"CanMimic", new BoxedBool(RandomizerManager.Settings.CursedListening) },
+                        {"CanMimic", new BoxedBool(true) },
                         {"MimicNames", new string[]{"Listen", "Listen!", "Litsening"} }
                     }
                 }
@@ -971,13 +975,18 @@ public static class ItemManager
         placement.Location = Finder.GetLocation(City_Teleporter) as CoordinateLocation;
         placement.Cost = new Paypal() { ToTemple = true };
         placement.containerType = Container.Shiny;
-        placement.Add(Finder.GetItem(City_Ticket));
+        TeleportItem teleportItem = Finder.GetItem(City_Ticket) as TeleportItem;
+        teleportItem.ToTemple = true;
+        placement.Add(teleportItem);
         teleporter.Add(placement);
+
         placement = new(Temple_Teleporter);
         placement.Location = Finder.GetLocation(Temple_Teleporter) as CoordinateLocation;
         placement.Cost = new Paypal() { ToTemple = false };
         placement.containerType = Container.Shiny;
-        placement.Add(Finder.GetItem(Temple_Ticket));
+        teleportItem = Finder.GetItem(City_Ticket) as TeleportItem;
+        teleportItem.ToTemple = false;
+        placement.Add(teleportItem);
         teleporter.Add(placement);
         return teleporter;
     }

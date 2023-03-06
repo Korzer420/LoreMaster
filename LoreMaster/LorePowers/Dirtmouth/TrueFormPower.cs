@@ -2,8 +2,9 @@ using HutongGames.PlayMaker;
 using HutongGames.PlayMaker.Actions;
 using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
+using KorzUtils.Helper;
 using LoreMaster.Enums;
-using LoreMaster.Extensions;
+
 using LoreMaster.Helper;
 using LoreMaster.UnityComponents;
 using Modding;
@@ -82,7 +83,7 @@ public class TrueFormPower : Power
     private void PlayMakerFSM_OnEnable(On.PlayMakerFSM.orig_OnEnable orig, PlayMakerFSM self)
     {
         if (self.gameObject.name.Contains("Hollow Shade Death") && string.Equals(self.FsmName, "Shade Control"))
-            self.GetState("Blow").ReplaceAction(new Lambda(() =>
+            self.GetState("Blow").AddLastAction(new Lambda(() =>
             {
                 ModifyNailLength(-.5f);
                 _shadeState = 0;

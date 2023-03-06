@@ -1,4 +1,5 @@
 using HutongGames.PlayMaker;
+using KorzUtils.Helper;
 using LoreMaster.Enums;
 using LoreMaster.Helper;
 using LoreMaster.Manager;
@@ -47,7 +48,7 @@ public class GreaterMindPower : Power
 
     public GreaterMindPower() : base("Greater Mind", Area.Crossroads)
     {
-        _loreSprite = SpriteHelper.CreateSprite("Lore");
+        _loreSprite = SpriteHelper.CreateSprite<LoreMaster>("Base.Lore");
     }
 
     #endregion

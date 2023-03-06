@@ -1,6 +1,7 @@
 using HutongGames.PlayMaker;
 using HutongGames.PlayMaker.Actions;
 using ItemChanger.Extensions;
+using KorzUtils.Helper;
 using LoreMaster.Enums;
 using LoreMaster.Helper;
 using System;
@@ -14,7 +15,7 @@ public class EyeOfTheWatcherPower : Power
 {
     #region Members
 
-    private Sprite _eyeSprite = SpriteHelper.CreateSprite("EyeOfLurien");
+    private Sprite _eyeSprite = SpriteHelper.CreateSprite<LoreMaster>("Base.EyeOfLurien");
 
     private GameObject _eye;
 

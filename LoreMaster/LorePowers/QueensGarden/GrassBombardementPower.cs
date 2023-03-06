@@ -2,13 +2,12 @@ using HutongGames.PlayMaker;
 using HutongGames.PlayMaker.Actions;
 using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
-using LoreMaster.UnityComponents;
+using KorzUtils.Helper;
 using LoreMaster.Enums;
-using LoreMaster.Extensions;
-using LoreMaster.Helper;
-using UnityEngine;
 using LoreMaster.Manager;
+using LoreMaster.UnityComponents;
 using System.Collections;
+using UnityEngine;
 
 namespace LoreMaster.LorePowers.QueensGarden;
 
@@ -284,7 +283,7 @@ public class GrassBombardementPower : Power
         {
             _bombPrefab = new("Bomb");
             _bombPrefab.SetActive(false);
-            _bombPrefab.AddComponent<SpriteRenderer>().sprite = SpriteHelper.CreateSprite("LifebloodBomb");
+            _bombPrefab.AddComponent<SpriteRenderer>().sprite = SpriteHelper.CreateSprite<LoreMaster>("Base.LifebloodBomb");
             Rigidbody2D rigidbody = _bombPrefab.AddComponent<Rigidbody2D>();
             rigidbody.gravityScale = 1f;
             rigidbody.mass = 200f;

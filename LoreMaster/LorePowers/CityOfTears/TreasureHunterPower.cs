@@ -4,6 +4,7 @@ using ItemChanger;
 using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
 using ItemChanger.Placements;
+using KorzUtils.Helper;
 using LoreMaster.Enums;
 using LoreMaster.Helper;
 using LoreMaster.ItemChangerData.Other;
@@ -63,13 +64,13 @@ internal class TreasureHunterPower : Power
 
     public TreasureHunterPower() : base("Treasure Hunter", Area.CityOfTears)
     {
-        _treasureSprites[0] = SpriteHelper.CreateSprite("Silksong_Journal", false);
-        _treasureSprites[1] = SpriteHelper.CreateSprite("Silver_Seal", false);
-        _treasureSprites[2] = SpriteHelper.CreateSprite("Bronze_King_Idol", false);
-        _treasureSprites[3] = SpriteHelper.CreateSprite("Golden_Egg", false);
-        _treasureSprites[4] = SpriteHelper.CreateSprite("MagicKey", false);
-        _treasureSprites[5] = SpriteHelper.CreateSprite("Dream_Medallion", false);
-        _treasureSprites[6] = SpriteHelper.CreateSprite("Lemms_Order", false);
+        _treasureSprites[0] = SpriteHelper.CreateSprite<LoreMaster>("Base.Silksong_Journal");
+        _treasureSprites[1] = SpriteHelper.CreateSprite<LoreMaster>("Base.Silver_Seal");
+        _treasureSprites[2] = SpriteHelper.CreateSprite<LoreMaster>("Base.Bronze_King_Idol");
+        _treasureSprites[3] = SpriteHelper.CreateSprite<LoreMaster>("Base.Golden_Egg");
+        _treasureSprites[4] = SpriteHelper.CreateSprite<LoreMaster>("Base.MagicKey");
+        _treasureSprites[5] = SpriteHelper.CreateSprite<LoreMaster>("Base.Dream_Medallion");
+        _treasureSprites[6] = SpriteHelper.CreateSprite<LoreMaster>("Base.Lemms_Order");
         //_treasureSprites[7] = Finder.GetItem(ItemNames.Wanderers_Journal).UIDef.GetSprite();
         //_treasureSprites[8] = Finder.GetItem(ItemNames.Hallownest_Seal).UIDef.GetSprite();
         //_treasureSprites[9] = Finder.GetItem(ItemNames.Kings_Idol).UIDef.GetSprite();
@@ -484,7 +485,7 @@ internal class TreasureHunterPower : Power
                 xPosition = -9.1f;
                 yPosition -= 1.6f;
             }
-            _chartImages[i] = SpriteHelper.CreateSprite("Treasure_Chart_" + (i + 1), ".jpg");
+            _chartImages[i] = SpriteHelper.CreateSprite<LoreMaster>("Base.Treasure_Chart_" + (i + 1), ".jpg");
             _inventoryItems[i] = map;
         }
 
@@ -494,7 +495,7 @@ internal class TreasureHunterPower : Power
         item.transform.localPosition = new(-6, -9.5f, 0f);
         item.AddComponent<BoxCollider2D>();
         item.layer = treasureChartPage.layer;
-        item.AddComponent<SpriteRenderer>().sprite = SpriteHelper.CreateSprite("Lemms_Order");
+        item.AddComponent<SpriteRenderer>().sprite = SpriteHelper.CreateSprite<LoreMaster>("Base.Lemms_Order");
         item.GetComponent<SpriteRenderer>().sortingLayerID = 629535577;
         item.GetComponent<SpriteRenderer>().sortingLayerName = "HUD";
         _inventoryItems[14] = item;
@@ -584,7 +585,7 @@ internal class TreasureHunterPower : Power
         // Add transition from init to main
         currentWorkingState.AddTransition("FINISHED", "Handle Item");
         AddInventoryMovement(inventoryFsm, indexVariable);
-        _chartSprite = SpriteHelper.CreateSprite("Treasure_Chart");
+        _chartSprite = SpriteHelper.CreateSprite<LoreMaster>("Base.Treasure_Chart");
         treasureChartPage.SetActive(false);
     }
 

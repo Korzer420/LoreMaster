@@ -1,4 +1,5 @@
 using HutongGames.PlayMaker;
+using KorzUtils.Helper;
 using LoreMaster.Enums;
 using LoreMaster.Helper;
 using LoreMaster.Manager;
@@ -123,9 +124,9 @@ public class DiamondCorePower : Power
         try
         {
             _originalSprite = CrystalHeartSprite.sprite;
-            _corelessSprite = SpriteHelper.CreateSprite("DiamondHeart_Coreless");
-            _shelllessSprite = SpriteHelper.CreateSprite("DiamondHeart_Shellless");
-            _diamondSprite = SpriteHelper.CreateSprite("DiamondHeart");
+            _corelessSprite = SpriteHelper.CreateSprite<LoreMaster>("Base.DiamondHeart_Coreless");
+            _shelllessSprite = SpriteHelper.CreateSprite<LoreMaster>("Base.DiamondHeart_Shellless");
+            _diamondSprite = SpriteHelper.CreateSprite<LoreMaster>("Base.DiamondHeart");
             _trailSprite = GameObject.Find("Knight").transform.Find("Effects/SD Trail").GetComponent<tk2dSprite>();
             On.HeroController.Start += HeroController_Start;
             On.HutongGames.PlayMaker.Actions.ListenForJump.OnEnter += ListenForJump_OnEnter;

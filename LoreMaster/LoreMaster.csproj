@@ -1,10 +1,10 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<ProjectGuid>{D92EF200-4F1A-4279-96EE-CF68EB5E1FA9}</ProjectGuid>
 		<TargetFramework>net472</TargetFramework>
 		<RootNamespace>LoreMaster</RootNamespace>
 		<AssemblyTitle>LoreMaster</AssemblyTitle>
-		<AssemblyVersion>2.3.0</AssemblyVersion>
+		<AssemblyVersion>2.3.1</AssemblyVersion>
 		<Deterministic>true</Deterministic>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<LangVersion>latest</LangVersion>
@@ -18,12 +18,6 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <None Remove="Resources\**\*.png" />
-    <None Remove="Resources\**\*.json" />
-    <None Remove="Resources\**\*.xml" />
-  </ItemGroup>
-  
-  <ItemGroup>
     <EmbeddedResource Include="Resources\**\*.png" />
 	<EmbeddedResource Include="Resources\**\*.jpg" />
     <EmbeddedResource Include="Resources\**\*.json" />
@@ -31,22 +25,17 @@
   </ItemGroup>
   
   <ItemGroup>
-    <_CopyItems Include="Resources\Base\*.*" />
-	<_TabletItems Include="Resources\Base\Tablets\*.*" />
-	<_RandoItems Include="Resources\Randomizer\*.*" />
-	<_SoundItems Include="Resources\Sounds\*.*" />
-	<_LogicItems Include="Resources\Randomizer\Logic\*.*" />
-  </ItemGroup>
-  
-  <ItemGroup>
     <Reference Include="Assembly-CSharp">
       <HintPath>..\..\..\..\..\Program Files\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="ItemChanger">
-      <HintPath>..\..\..\..\..\Program Files\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\Mods\ItemChanger\ItemChanger.dll</HintPath>
+      <HintPath>..\..\..\HK Mod\ItemChanger\ItemChanger.dll</HintPath>
+    </Reference>
+    <Reference Include="KorzUtils">
+      <HintPath>..\..\..\Program Files\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\Mods\KorzUtils\KorzUtils.dll</HintPath>
     </Reference>
     <Reference Include="MenuChanger">
-      <HintPath>..\..\..\..\..\Program Files\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\Mods\MenuChanger\MenuChanger.dll</HintPath>
+      <HintPath>..\..\..\HK Mod\MenuChanger\MenuChanger.dll</HintPath>
     </Reference>
     <Reference Include="MMHOOK_Assembly-CSharp">
       <HintPath>..\..\..\..\..\Program Files\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\MMHOOK_Assembly-CSharp.dll</HintPath>
@@ -67,7 +56,7 @@
       <HintPath>..\..\..\..\..\Program Files\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\MonoMod.Utils.dll</HintPath>
     </Reference>
     <Reference Include="MoreDoors">
-      <HintPath>..\..\..\..\..\Program Files\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\Mods\MoreDoors\MoreDoors.dll</HintPath>
+      <HintPath>..\..\..\HK Mod\MoreDoors\MoreDoors.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\..\..\..\..\Program Files\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\Newtonsoft.Json.dll</HintPath>
@@ -76,19 +65,19 @@
       <HintPath>..\..\..\..\..\Program Files\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\PlayMaker.dll</HintPath>
     </Reference>
     <Reference Include="QoL">
-      <HintPath>..\..\..\..\..\Program Files\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\Mods\QoL\QoL.dll</HintPath>
+      <HintPath>..\..\..\HK Mod\QoL\QoL.dll</HintPath>
     </Reference>
     <Reference Include="RandomizerCore">
-      <HintPath>..\..\..\..\..\Program Files\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\Mods\RandomizerCore\RandomizerCore.dll</HintPath>
+      <HintPath>..\..\..\HK Mod\RandoCore\RandomizerCore.dll</HintPath>
     </Reference>
     <Reference Include="RandomizerMod">
-      <HintPath>..\..\..\..\..\Program Files\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\Mods\Randomizer 4\RandomizerMod.dll</HintPath>
+      <HintPath>..\..\..\HK Mod\Randomizer\RandomizerMod.dll</HintPath>
     </Reference>
     <Reference Include="RandoSettingsManager">
-      <HintPath>..\..\..\..\..\Program Files\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\Mods\RandoSettingsManager\RandoSettingsManager.dll</HintPath>
+      <HintPath>..\..\..\HK Mod\RandoSettingsManager\RandoSettingsManager.dll</HintPath>
     </Reference>
     <Reference Include="SFCore">
-      <HintPath>..\..\..\..\..\Program Files\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\Mods\SFCore\SFCore.dll</HintPath>
+      <HintPath>..\..\..\HK Mod\SFCore\SFCore.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="UnityEngine">
@@ -221,11 +210,6 @@
   
   <Target Name="CopyMod" AfterTargets="PostBuildEvent">
     <Copy SourceFiles="$(TargetPath);$(TargetDir)$(TargetName).pdb" DestinationFolder="$(HollowKnightRefs)\Mods\$(TargetName)" OverwriteReadOnlyFiles="true" />
-	<Copy SourceFiles="@(_CopyItems)" DestinationFolder="$(HollowKnightRefs)\Mods\$(TargetName)\Resources\Base" SkipUnchangedFiles="true" />
-	<Copy SourceFiles="@(_RandoItems)" DestinationFolder="$(HollowKnightRefs)\Mods\$(TargetName)\Resources\Randomizer" SkipUnchangedFiles="true" />
-	<Copy SourceFiles="@(_SoundItems)" DestinationFolder="$(HollowKnightRefs)\Mods\$(TargetName)\Resources\Sounds" SkipUnchangedFiles="true" />
-	<Copy SourceFiles="@(_TabletItems)" DestinationFolder="$(HollowKnightRefs)\Mods\$(TargetName)\Resources\Base\Tablets" SkipUnchangedFiles="true" />
-	<Copy SourceFiles="@(_LogicItems)" DestinationFolder="$(HollowKnightRefs)\Mods\$(TargetName)\Resources\Randomizer\Logic" SkipUnchangedFiles="true" />
   </Target>
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">

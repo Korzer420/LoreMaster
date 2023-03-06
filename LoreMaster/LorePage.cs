@@ -2,6 +2,7 @@ using HutongGames.PlayMaker;
 using HutongGames.PlayMaker.Actions;
 using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
+using KorzUtils.Helper;
 using LoreMaster.Enums;
 using LoreMaster.Helper;
 using LoreMaster.LorePowers;
@@ -48,9 +49,9 @@ internal class LorePage
     static LorePage()
     {
         _emptySprite = GameObject.Find("_GameCameras").transform.Find("HudCamera/Inventory/Charms/Backboards/BB 3").GetComponent<SpriteRenderer>().sprite;
-        _notActive = SpriteHelper.CreateSprite("DisabledPower");
+        _notActive = SpriteHelper.CreateSprite<LoreMaster>("Base.DisabledPower");
         for (int i = 1; i < 16; i++)
-            _sprites.Add((Area)i, SpriteHelper.CreateSprite($"/Tablets/{(Area)i}"));
+            _sprites.Add((Area)i, SpriteHelper.CreateSprite<LoreMaster>($"Base.Tablets.{(Area)i}"));
     }
 
     #endregion
@@ -540,7 +541,7 @@ internal class LorePage
         SpriteRenderer spriteRenderer = jokerScroll.AddComponent<SpriteRenderer>();
         spriteRenderer.sortingLayerID = 629535577;
         spriteRenderer.sortingLayerName = "HUD";
-        spriteRenderer.sprite = SpriteHelper.CreateSprite("SummoningScroll");
+        spriteRenderer.sprite = SpriteHelper.CreateSprite<LoreMaster>("Base.SummoningScroll");
         GameObject jokerAmount = GameObject.Instantiate(GameObject.Find("_GameCameras").transform.Find("HudCamera/Inventory/Charms/Text Desc").gameObject);
         jokerAmount.transform.SetParent(jokerScroll.transform);
         jokerAmount.transform.localScale = new(1.2f, 1.2f, 1);
@@ -559,7 +560,7 @@ internal class LorePage
         spriteRenderer = cleanseScroll.AddComponent<SpriteRenderer>();
         spriteRenderer.sortingLayerID = 629535577;
         spriteRenderer.sortingLayerName = "HUD";
-        spriteRenderer.sprite = SpriteHelper.CreateSprite("CurseDispell");
+        spriteRenderer.sprite = SpriteHelper.CreateSprite<LoreMaster>("Base.CurseDispell");
         GameObject cleanseAmount = GameObject.Instantiate(GameObject.Find("_GameCameras").transform.Find("HudCamera/Inventory/Charms/Text Desc").gameObject);
         cleanseAmount.transform.SetParent(cleanseScroll.transform);
         cleanseAmount.transform.localScale = new(1.2f, 1.2f, 1);

@@ -1,7 +1,7 @@
 using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
 using LoreMaster.Enums;
-using LoreMaster.Extensions;
+
 using Modding;
 using System;
 using System.Collections;

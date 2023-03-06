@@ -178,7 +178,7 @@ namespace LoreMaster.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Increases your scent while wearing the sign of the protector. The shield of the ancient ones is more resistent and gather soul with the blessing of the protector. ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die The shield of the ancient ones is more resistent and gather soul with the blessing of the protector. ähnelt.
         /// </summary>
         internal static string EternalSentinel {
             get {

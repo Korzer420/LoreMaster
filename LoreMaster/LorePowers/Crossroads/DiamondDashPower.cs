@@ -1,4 +1,5 @@
 using HutongGames.PlayMaker.Actions;
+using KorzUtils.Helper;
 using LoreMaster.Enums;
 using LoreMaster.Helper;
 using LoreMaster.Manager;
@@ -89,9 +90,9 @@ public class DiamondDashPower : Power
     {
         _crystalHeartSprite = GameObject.Find("_GameCameras").transform.Find("HudCamera/Inventory/Inv/Equipment/Super Dash").GetComponent<SpriteRenderer>();
         _originalSprite = _crystalHeartSprite?.sprite;
-        _corelessSprite = SpriteHelper.CreateSprite("DiamondHeart_Coreless");
-        _shelllessSprite = SpriteHelper.CreateSprite("DiamondHeart_Shellless");
-        _diamondSprite = SpriteHelper.CreateSprite("DiamondHeart");
+        _corelessSprite = SpriteHelper.CreateSprite<LoreMaster>("Base.DiamondHeart_Coreless");
+        _shelllessSprite = SpriteHelper.CreateSprite<LoreMaster>("Base.DiamondHeart_Shellless");
+        _diamondSprite = SpriteHelper.CreateSprite<LoreMaster>("Base.DiamondHeart");
         On.HutongGames.PlayMaker.Actions.Wait.OnEnter += Wait_OnEnter;
         On.HutongGames.PlayMaker.FsmStateAction.Finish += FsmStateAction_Finish;
     }

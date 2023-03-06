@@ -178,7 +178,7 @@ namespace LoreMaster.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Defender&apos;s Crest clouds are 150% bigger and tick twice as fast. Baldur shell now takes seven hits instead of four (ten with defender&apos;s Crest. When getting hit, while baldur shell is up, you gain 15 soul if you are also wearing Defender&apos;s Crest. ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Baldur shell now takes seven hits instead of four (ten with defender&apos;s Crest). When getting hit, while baldur shell is up, you gain 15 soul if you are also wearing Defender&apos;s Crest. ähnelt.
         /// </summary>
         internal static string EternalSentinel {
             get {

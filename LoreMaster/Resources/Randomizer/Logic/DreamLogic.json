@@ -17,7 +17,7 @@
 	},
 	{
 		"name": "Ancient_Nailsmith_Golem_Dream",
-		"logic": "Deepnest_East_14b[top1] | Deepnest_East_14b[right1] + (LEFTCLAW + RIGHTCLAW | WINGS | ENEMYPOGOS + DANGEROUSSKIPS) + DREAMNAIL"
+		"logic": "(Deepnest_East_14b[top1] | Deepnest_East_14b[right1] + (LEFTCLAW + RIGHTCLAW | WINGS | ENEMYPOGOS + DANGEROUSSKIPS)) + DREAMNAIL"
 	},
 	{
 		"name": "Shade_Golem_Dream_Normal",
@@ -41,7 +41,7 @@
 	},
 	{
 		"name": "Isma_Dream",
-		"logic": "Waterways_13[left1] + (LEFTCLAW + RIGHTCLAW | (LEFTCLAW | RIGHTCLAW) + (WINGS | ENEMYPOGOS) | LEFTCLAW + (RIGHTDASH | RIGHTSUPERDASH)) | Waterways_13[left2] + (ACID + (RIGHTCLAW | WINGS | ENEMYPOGOS) | ACIDSKIPS + LEFTCLAW + RIGHTSUPERDASH + (WINGS | RIGHTCLAW)) + DREAMNAIL"
+		"logic": "(Waterways_13[left1] + (LEFTCLAW + RIGHTCLAW | (LEFTCLAW | RIGHTCLAW) + (WINGS | ENEMYPOGOS) | LEFTCLAW + (RIGHTDASH | RIGHTSUPERDASH)) | Waterways_13[left2] + (ACID + (RIGHTCLAW | WINGS | ENEMYPOGOS) | ACIDSKIPS + LEFTCLAW + RIGHTSUPERDASH + (WINGS | RIGHTCLAW))) + DREAMNAIL"
 	},
 	{
 		"name": "Shriek_Statue_Dream",
@@ -49,7 +49,7 @@
 	},
 	{
 		"name": "Radiance_Statue_Dream",
-		"logic": "Mines_34[bot1] + (LEFTCLAW + (WINGS | RIGHTDASH | RIGHTSUPERDASH | SPIKETUNNELS) | RIGHTCLAW + (WINGS | ENEMYPOGOS + (RIGHTDASH | SPIKETUNNELS))) + DREAMNAIL"
+		"logic": "(Mines_34[bot1] + (LEFTCLAW + (WINGS | RIGHTDASH | RIGHTSUPERDASH | SPIKETUNNELS) | RIGHTCLAW + (WINGS | ENEMYPOGOS + (RIGHTDASH | SPIKETUNNELS)))) + DREAMNAIL"
 	},
 	{
 		"name": "Dashmaster_Statue_Dream",
@@ -74,6 +74,5 @@
 	{
 		"name": "Dream_Shield_Statue_Dream",
 		"logic": "RestingGrounds_17[right1] + DREAMNAIL"
-	},
-	
+	}
 ]
