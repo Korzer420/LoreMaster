@@ -41,7 +41,7 @@ public class BagOfMushroomsPower : Power
     public BagOfMushroomsPower() : base("Bag of Mushrooms", Area.FungalWastes)
     {
         Hint += " WARNING: The yellow one causes a nausea effect! If you don't want that to happen, you can turn off the effect in the mod settings. Eating the yellow mushroom will then only give a small effect.";
-        Description += " WARNING: The yellow one causes a nausea effect! If you don't want that to happen, you can turn off the effect in the mod settings. Eating the yellow mushroom will then only give a small effect."; _mushroomSprite = SpriteHelper.CreateSprite("MushroomChoice");
+        Description += " WARNING: The yellow one causes a nausea effect! If you don't want that to happen, you can turn off the effect in the mod settings. Eating the yellow mushroom will then only give a small effect.";
         _mushroomSprite = SpriteHelper.CreateSprite<LoreMaster>("Base.MushroomChoice");
     }
 
