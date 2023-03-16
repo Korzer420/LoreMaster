@@ -25,7 +25,7 @@ internal class CustomSprite : ISprite
     public bool RandoSprite { get; set; }
 
     [Newtonsoft.Json.JsonIgnore]
-    public Sprite Value => SpriteHelper.CreateSprite<LoreMaster>(RandoSprite ? "Randomizer." + Key : "Base. "+Key);
+    public Sprite Value => SpriteHelper.CreateSprite<LoreMaster>(RandoSprite ? "Randomizer." + Key : "Base."+Key);
 
     public ISprite Clone() => new CustomSprite(Key, RandoSprite);
 }

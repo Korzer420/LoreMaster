@@ -165,7 +165,7 @@ public static class ItemManager
             tags = new List<Tag>()
             {
                 new PersistentItemTag() { Persistence = Persistence.Persistent},
-                new CompletionWeightTag() { Weight = 0},
+                new CompletionWeightTag() { Weight = 0 },
                 new CostTag()
                 {
                     Cost = new Paypal()
