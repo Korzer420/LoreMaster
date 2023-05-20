@@ -6,7 +6,6 @@ using ItemChanger.FsmStateActions;
 using ItemChanger.Modules;
 using KorzUtils.Helper;
 using LoreMaster.Enums;
-
 using LoreMaster.Helper;
 using LoreMaster.ItemChangerData.Locations;
 using LoreMaster.LorePowers;
@@ -126,6 +125,7 @@ public class SettingManager
                 else
                     GameMode = GameMode.Normal;
             ItemManager.CreatePlacements();
+            ItemChangerMod.Modules.GetOrAdd<MenderbugUnlock>();
             _fromMenu = true;
             LoreManager.Instance.JokerScrolls = -1;
             LoreManager.Instance.CleansingScrolls = -1;
