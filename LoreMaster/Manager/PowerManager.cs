@@ -15,9 +15,7 @@ using LoreMaster.LorePowers.QueensGarden;
 using LoreMaster.LorePowers.RestingGrounds;
 using LoreMaster.LorePowers.Waterways;
 using LoreMaster.LorePowers.WhitePalace;
-using LoreMaster.Randomizer;
 using LoreMaster.SaveManagement;
-using Modding;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -71,7 +69,6 @@ internal static class PowerManager
         {"EMILITIA", new HappyFatePower() },
         {"MARISSA", new BlessingOfTheButterflyPower() },
         {"POGGY", new DeliciousMealPower() },
-        {"RELICDEALER_DOOR", new TreasureHunterPower() {DefaultTag = PowerTag.Global } },
         // Waterways
         {"DUNG_DEF_SIGN", new EternalSentinelPower() },
         {"FLUKE_HERMIT", new RelentlessSwarmPower() },
@@ -209,103 +206,6 @@ internal static class PowerManager
         return false;
     }
 
-    internal static void ResetPowers()
-    {
-        // Unsure if this is needed, but just in case.
-        ObtainedPowers.Clear();
-        if (RandomizerManager.PlayingRandomizer)
-        {
-            if (!RandomizerManager.Settings.Enabled)
-                foreach (string key in _powerList.Keys)
-                    _powerList[key].DefaultTag = PowerTag.Remove;
-            else
-            {
-                switch (RandomizerManager.Settings.PowerBehaviour)
-                {
-                    case LoreSetOption.Default:
-                        foreach (string key in _powerList.Keys)
-                        {
-                            if (key == "COMPLETION_RATE_UNLOCKED"
-                                || key == "RELICDEALER_DOOR" || key == "FOUNTAIN_PLAQUE_DESC")
-                                _powerList[key].DefaultTag = PowerTag.Global;
-                            else if (key == "POP")
-                                _powerList[key].DefaultTag = PowerTag.Exclude;
-                            else
-                                _powerList[key].DefaultTag = PowerTag.Local;
-                            _powerList[key].StayTwisted = false;
-                        }
-                        break;
-                    case LoreSetOption.AllGlobalPowers:
-                        foreach (string key in _powerList.Keys)
-                        {
-                            _powerList[key].DefaultTag = PowerTag.Global;
-                            _powerList[key].StayTwisted = false;
-                        }
-                        break;
-                    case LoreSetOption.OnlyRecommended:
-                        foreach (string key in _powerList.Keys)
-                        {
-                            if (key == "GRAVEDIGGER" || key == "FOUNTAIN_PLAQUE_DESC"
-                                || key == "STAG" || key == "RELICDEALER_DOOR"
-                                || key == "GRASSHOPPER" || key == "COMPLETION_RATE_UNLOCKED")
-                                _powerList[key].DefaultTag = PowerTag.Global;
-                            else
-                                _powerList[key].DefaultTag = PowerTag.Remove;
-                            _powerList[key].StayTwisted = false;
-                        }
-                        break;
-                    case LoreSetOption.OnlyTracker:
-                        foreach (string key in _powerList.Keys)
-                        {
-                            _powerList[key].DefaultTag = key == "COMPLETION_RATE_UNLOCKED"
-                                ? PowerTag.Global
-                                : PowerTag.Remove;
-                            _powerList[key].StayTwisted = false;
-                        }
-                        break;
-                    case LoreSetOption.RemoveAllPowers:
-                        foreach (string key in _powerList.Keys)
-                        {
-                            _powerList[key].DefaultTag = PowerTag.Remove;
-                            _powerList[key].StayTwisted = false;
-                        }
-                        break;
-                    case LoreSetOption.Custom:
-                        foreach (string key in GlobalPowerStates.Keys)
-                            _powerList.Values.First(x => x.PowerName == key).DefaultTag = GlobalPowerStates[key];
-                        break;
-                }
-
-                if (RandomizerManager.Settings.RandomizeTreasures || RandomizerManager.Settings.DefineRefs)
-                    _powerList["RELICDEALER_DOOR"].DefaultTag = PowerTag.Global;
-            }
-        }
-        else if (SettingManager.Instance.GameMode == GameMode.Normal)
-            // Reset tags to default.
-            foreach (string key in _powerList.Keys)
-            {
-                if (key == "COMPLETION_RATE_UNLOCKED"
-                            || key == "RELICDEALER_DOOR"
-                            || key == "FOUNTAIN_PLAQUE_DESC")
-                    _powerList[key].DefaultTag = PowerTag.Global;
-                else if (key == "POP")
-                    _powerList[key].DefaultTag = PowerTag.Exclude;
-                else
-                    _powerList[key].DefaultTag = PowerTag.Local;
-                _powerList[key].StayTwisted = false;
-            }
-
-        GloryOfTheWealthPower.GloryCost = 0;
-        foreach (string key in TreasureHunterPower.Treasures.Keys.ToList())
-            TreasureHunterPower.Treasures[key] = TreasureState.NotObtained;
-        TreasureHunterPower.CanPurchaseTreasureCharts = false;
-        for (int i = 0; i < TreasureHunterPower.HasCharts.Length; i++)
-            TreasureHunterPower.HasCharts[i] = false;
-
-        foreach (Power power in _powerList.Values)
-            power.Tag = power.DefaultTag;
-    }
-
     internal static void DisableAllPowers()
     {
         CanPowersActivate = false;
@@ -346,11 +246,6 @@ internal static class PowerManager
         if (saveData == null)
             return;
         GloryOfTheWealthPower.GloryCost = saveData.GloryCost;
-        TreasureHunterPower.HasCharts = saveData.TreasureCharts;
-        foreach (string key in saveData.TreasureStates.Keys)
-            if (TreasureHunterPower.Treasures.ContainsKey(key))
-                TreasureHunterPower.Treasures[key] = saveData.TreasureStates[key];
-        TreasureHunterPower.CanPurchaseTreasureCharts = saveData.CanBuyTreasureCharts;
         StagAdoptionPower.Instance.CanSpawnStag = saveData.CanSpawnStag;
     }
 
@@ -377,11 +272,8 @@ internal static class PowerManager
     /// </summary>
     internal static LocalPowerSaveData PreparePowerData() => new()
     {
-        CanBuyTreasureCharts = TreasureHunterPower.CanPurchaseTreasureCharts,
         CanSpawnStag = StagAdoptionPower.Instance.CanSpawnStag,
-        GloryCost = GloryOfTheWealthPower.GloryCost,
-        TreasureCharts = TreasureHunterPower.HasCharts,
-        TreasureStates = TreasureHunterPower.Treasures
+        GloryCost = GloryOfTheWealthPower.GloryCost
     };
 
 

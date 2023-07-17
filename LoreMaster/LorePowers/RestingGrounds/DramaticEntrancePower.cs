@@ -1,6 +1,5 @@
 using LoreMaster.Enums;
 using LoreMaster.Manager;
-using LoreMaster.Randomizer;
 using System;
 
 namespace LoreMaster.LorePowers.RestingGrounds;
@@ -27,7 +26,6 @@ public class DramaticEntrancePower : Power
         CustomText = "Ah! I wouldn't have thought that we meet again. Maybe you're not so much of a pityful bug as I expected. But I know exactly why I thought this. " +
             "Your introduction is quite... lame. If you want to conquer in great battles, you have to show the enemy right on the start that they should be feared of you. " +
             "It doesn't matter how huge you are. All that counts is your stance. Let me teach you the great way of entering a fight, so that all know that YOU'RE the biggest threat.";
-        On.HutongGames.PlayMaker.Actions.PlayerDataBoolTest.OnEnter += PlayerDataBoolTest_OnEnter;
     }
 
     #endregion
@@ -65,16 +63,6 @@ public class DramaticEntrancePower : Power
         orig(self);
         if (string.Equals(self.variableName.Value, "Area Event") && !string.Equals(self.Fsm.Name, "Conversation Control"))
             PrepareForBattle();
-    }
-
-    private void PlayerDataBoolTest_OnEnter(On.HutongGames.PlayMaker.Actions.PlayerDataBoolTest.orig_OnEnter orig, HutongGames.PlayMaker.Actions.PlayerDataBoolTest self)
-    {
-        if (self.Fsm.GameObjectName.StartsWith("Tiso ") && string.Equals(self.Fsm.Name, "FSM")
-            && PlayerData.instance.GetBool(nameof(PlayerData.instance.tisoEncounteredTown)) && !PowerManager.ObtainedPowers.Contains(this)
-            && string.Equals("Crossroads_47", UnityEngine.SceneManagement.SceneManager.GetActiveScene().name))
-            if (!RandomizerManager.PlayingRandomizer || !RandomizerManager.Settings.RandomizeNpc)
-                self.isTrue = null;
-        orig(self);
     }
 
     #endregion

@@ -1,5 +1,4 @@
 using LoreMaster.Enums;
-using LoreMaster.ItemChangerData.Other;
 using System.Collections.Generic;
 
 namespace LoreMaster.SaveManagement;
@@ -68,9 +67,4 @@ public class LoreMasterLocalSaveData
     /// Gets or sets the state of the inventory power page.
     /// </summary>
     public PowerControlState PageState { get; set; }
-
-    /// <summary>
-    /// Gets or sets the data for the travelling npcs.
-    /// </summary>
-    public Dictionary<Traveller, TravellerData> TravellerOrder { get; set; } = new();
 }

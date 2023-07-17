@@ -1,6 +1,6 @@
 using KorzUtils.Helper;
 using LoreMaster.Enums;
-using LoreMaster.Helper;
+
 using LoreMaster.LorePowers;
 using LoreMaster.Settings;
 using MenuChanger;

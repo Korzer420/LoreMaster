@@ -3,7 +3,7 @@ using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
 using KorzUtils.Helper;
 using LoreMaster.Enums;
-using LoreMaster.Helper;
+
 using Modding;
 using System;
 using System.Collections.Generic;

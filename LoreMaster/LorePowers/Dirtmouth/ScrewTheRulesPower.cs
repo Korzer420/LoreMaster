@@ -1,7 +1,7 @@
 using HutongGames.PlayMaker.Actions;
 using KorzUtils.Helper;
 using LoreMaster.Enums;
-using LoreMaster.Helper;
+
 using MonoMod.Cil;
 using System;
 using UnityEngine;

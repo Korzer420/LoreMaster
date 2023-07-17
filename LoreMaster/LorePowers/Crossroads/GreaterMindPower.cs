@@ -1,9 +1,7 @@
 using HutongGames.PlayMaker;
 using KorzUtils.Helper;
 using LoreMaster.Enums;
-using LoreMaster.Helper;
 using LoreMaster.Manager;
-using LoreMaster.Randomizer;
 using Modding;
 using System;
 using System.Collections;
@@ -164,19 +162,6 @@ public class GreaterMindPower : Power
         {
             _loreTracker.SetActive(true);
             TextMeshPro currentCounter = _loreTracker.GetComponent<DisplayItemAmount>().textObject;
-            if (ModHooks.GetMod("Randomizer 4") is Mod && RandomizerManager.RandoTracker(currentArea, out string areaLore))
-            {
-                currentCounter.text = $"{_areas[currentArea]}: {areaLore}";
-                if (globalActive)
-                    currentCounter.text = $"<color=#7FFF7B>{currentCounter.text}</color>";
-            }
-            else
-            {
-                currentCounter.text = _areas[currentArea] + ": " + activePowers.Count(x => x.Location == currentArea);
-                currentCounter.text += "/" + allPowers.Count(x => x.Location == currentArea);
-                if (globalActive)
-                    currentCounter.text = "<color=#7FFF7B>" + currentCounter.text + "</color>";
-            }
             if (!PermanentTracker)
                 LoreMaster.Instance.Handler.StartCoroutine(HideTracker());
         }

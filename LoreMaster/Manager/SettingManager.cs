@@ -6,12 +6,8 @@ using ItemChanger.FsmStateActions;
 using ItemChanger.Modules;
 using KorzUtils.Helper;
 using LoreMaster.Enums;
-using LoreMaster.Helper;
-using LoreMaster.ItemChangerData.Locations;
 using LoreMaster.LorePowers;
-using LoreMaster.LorePowers.CityOfTears;
 using LoreMaster.LorePowers.QueensGarden;
-using LoreMaster.Randomizer;
 using LoreMaster.UnityComponents;
 using Modding;
 using On.HutongGames.PlayMaker.Actions;
@@ -119,41 +115,18 @@ public class SettingManager
         {
             orig(self, permaDeath, bossRush);
 
-            if (GameMode == GameMode.Disabled)
-                if (RandomizerManager.PlayingRandomizer)
-                    return;
-                else
-                    GameMode = GameMode.Normal;
-            ItemManager.CreatePlacements();
             ItemChangerMod.Modules.GetOrAdd<MenderbugUnlock>();
             _fromMenu = true;
             LoreManager.Instance.JokerScrolls = -1;
             LoreManager.Instance.CleansingScrolls = -1;
-            PowerManager.ControlState = RandomizerManager.PlayingRandomizer ? PowerControlState.ToggleAccess : PowerControlState.NotObtained;
             ElderbugState = 0;
-            if (GameMode == GameMode.Normal && !RandomizerManager.PlayingRandomizer)
-            {
-                EndCondition = BlackEggTempleCondition.Dreamers;
-                NeededLore = 0;
-            }
-            PowerManager.ResetPowers();
             ModHooks.SetPlayerBoolHook += PlayerData_SetBool;
             On.PlayerData.IntAdd += PlayerData_IntAdd;
-            ModHooks.LanguageGetHook += LoreManager.Instance.GetText;
             ModHooks.GetPlayerBoolHook += CheckIfInventoryAccessible;
-            
+
             SendEventByName.OnEnter += EndAllPowers;
             On.PlayMakerFSM.OnEnable += FsmEdits;
             AbstractItem.BeforeGiveGlobal += GiveLoreItem;
-            if ((GameMode == GameMode.Hard || GameMode == GameMode.Heroic) && PowerManager.GetPowerByKey("POGGY", out Power power, false) && power.Tag == PowerTag.Global)
-                PlayerData.instance.SetInt(nameof(PlayerData.instance.rancidEggs), 50);
-            if (RandomizerManager.PlayingRandomizer)
-                RandomizerManager.ApplyRando();
-            else
-            {
-                LoreManager.Instance.CanRead = GameMode == GameMode.Normal;
-                LoreManager.Instance.CanListen = GameMode == GameMode.Normal;
-            }
         }
         catch (Exception exception)
         {
@@ -171,7 +144,6 @@ public class SettingManager
         {
             ModHooks.SetPlayerBoolHook += PlayerData_SetBool;
             On.PlayerData.IntAdd += PlayerData_IntAdd;
-            ModHooks.LanguageGetHook += LoreManager.Instance.GetText;
             ModHooks.GetPlayerBoolHook += CheckIfInventoryAccessible;
             On.PlayMakerFSM.OnEnable += FsmEdits;
             SendEventByName.OnEnter += EndAllPowers;
@@ -195,7 +167,6 @@ public class SettingManager
                 CurrentArea = Area.None;
                 On.PlayMakerFSM.OnEnable -= FsmEdits;
                 SendEventByName.OnEnter -= EndAllPowers;
-                ModHooks.LanguageGetHook -= LoreManager.Instance.GetText;
                 AbstractItem.BeforeGiveGlobal -= GiveLoreItem;
                 ModHooks.SetPlayerBoolHook -= PlayerData_SetBool;
                 On.PlayerData.IntAdd -= PlayerData_IntAdd;
@@ -249,8 +220,6 @@ public class SettingManager
             LoreManager.Instance.CleansingScrolls += LoreManager.Instance.CleansingScrolls == -1 ? amount + 1 : amount;
             LorePage.UpdateLorePage();
         }
-        else if (Enum.TryParse(intName, out Traveller traveller))
-            LoreManager.Instance.Traveller[traveller].CurrentStage += amount;
     }
 
     /// <summary>
@@ -267,7 +236,7 @@ public class SettingManager
                 // Resets the flag, that powers can be used.
                 PowerManager.CanPowersActivate = true;
                 // Move the bench slightly to the side to allow easier pick up of Elderbugs items.
-                if ((GameMode != GameMode.Normal || RandomizerManager.PlayingRandomizer) && string.Equals(arg1.name, "Town")
+                if (GameMode != GameMode.Normal && string.Equals(arg1.name, "Town")
                     && GameObject.Find("RestBench") != null)
                     GameObject.Find("RestBench").transform.position += new Vector3(3f, 0f);
 
@@ -325,60 +294,10 @@ public class SettingManager
     {
         try
         {
-            if (string.Equals(self.gameObject.name, "Elderbug"))
+            if (string.Equals(self.gameObject.name, "Elderbug") && string.Equals(self.FsmName, "npc_control"))
             {
-                if (string.Equals(self.FsmName, "npc_control"))
-                {
-                    self.transform.localScale = new(2f, 2f, 2f);
-                    self.transform.localPosition = new(126.36f, 12.35f, 0f);
-                }
-                else if (string.Equals(self.FsmName, "Conversation Control"))
-                    AddElderbugExtra(self);
-            }
-            else if (!LoreManager.Instance.CanRead && (
-                // Big Lore tablets
-                (string.Equals(self.FsmName, "Inspection") && PowerManager.GetPowerByKey(self.FsmVariables.FindFsmString("Convo Name")?.Value, out Power power, false))
-                ||
-                // Small known lore tablets (like Record Abba) and dream warrior inspects
-                (string.Equals(self.FsmName, "inspect_region") && (!RandomizerManager.PlayingRandomizer
-                || !RandomizerRequestModifier.PointOfInterestLocations.Contains(self.gameObject.name))
-                && (PowerManager.GetPowerByKey(self.FsmVariables.FindFsmString("Game Text Convo")?.Value, out power, false)
-                || string.Equals(self.gameObject.name, "Inspect Region Ghost")))
-                // Special boards
-                || ((self.gameObject.name.EndsWith("Trial Board") || self.gameObject.name == "Dreamer Plaque Inspect"
-                || self.gameObject.name == "Fountain Inspect" || self.transform.parent?.name == "Mantis Grave"
-                || self.gameObject.name == "Antique Dealer Door" || self.gameObject.name == "Diary") && self.FsmName == "npc_control")))
-                self.GetState("Init").ClearTransitions();
-            else if (!LoreManager.Instance.CanListen && ((string.Equals(self.FsmName, "npc_control")
-                && self.FsmVariables.FindFsmString("Prompt Name")?.Value == "Listen") || self.gameObject.name == "Stag" && self.FsmName == "Stag Control"))
-            {
-                // There are a few exceptions with npc which we want to ignore.
-                if (self.gameObject.name != "Moth NPC" && !self.gameObject.name.Contains("Shaman"))
-                {
-                    if (self.GetState("In Range") is FsmState state)
-                    {
-                        if (state.GetFirstActionOfType<ShowPromptMarker>() is ShowPromptMarker marker)
-                            marker.labelName.Value = "???";
-                        if (self.GetState("In Range Turns") is FsmState secondState)
-                            secondState.GetFirstActionOfType<ShowPromptMarker>().labelName.Value = "???";
-                        self.AddState(new FsmState(self.Fsm)
-                        {
-                            Name = "Block Interaction",
-                            Actions = new FsmStateAction[]
-                            {
-                                new Lambda(() =>
-                                {
-                                    self.SendEvent(!LoreManager.Instance.CanListen ? "FINISHED" : "UP PRESSED");
-                                })
-                            }
-                        });
-                        state.AdjustTransition("UP PRESSED", "Block Interaction");
-                        self.GetState("Block Interaction").AddTransition("UP PRESSED", "Can Talk?");
-                        self.GetState("Block Interaction").AddTransition("FINISHED", "Cancel Frame");
-                    }
-                    else
-                        self.GetState("Idle").ClearTransitions();
-                }
+                self.transform.localScale = new(2f, 2f, 2f);
+                self.transform.localPosition = new(126.36f, 12.35f, 0f);
             }
             else if (string.Equals(self.FsmName, "Shop Region") && !LoreManager.Instance.CanListen)
                 self.GetState("Out Of Range").ClearTransitions();
@@ -413,7 +332,7 @@ public class SettingManager
         }
         catch (Exception exception)
         {
-            LoreMaster.Instance.LogError("Couldn't modify fsm " + self.FsmName + ": "+exception.Message+" at " + exception.StackTrace);
+            LoreMaster.Instance.LogError("Couldn't modify fsm " + self.FsmName + ": " + exception.Message + " at " + exception.StackTrace);
         }
 
         orig(self);
@@ -433,7 +352,6 @@ public class SettingManager
                         ? 4
                         : Convert.ToInt32(itemData.Placement.Name.Substring(16)) + 3)
                     : 2;
-                ElderbugLocation.ItemThrown = false;
                 GameObject elderBug = GameObject.Find("Elderbug");
                 if (elderBug != null && elderBug.GetComponent<BoxCollider2D>() is BoxCollider2D collider)
                     collider.size = new(3.8361f, 0.2408f);
@@ -602,109 +520,10 @@ public class SettingManager
             PowerManager.UpdateTracker(newArea);
         }
         LorePage.UpdateLorePage();
-        TreasureHunterPower.UpdateTreasurePage();
 
         // Execute all actions that powers want to do when the scene changes.
         PowerManager.ExecuteSceneActions();
         CurrentArea = newArea;
-    }
-
-    private void AddElderbugExtra(PlayMakerFSM self)
-    {
-        // Prevent grimm despawn
-        self.GetState("Init").AdjustTransition("FINISHED", "Idle");
-        ElderbugLocation.ItemThrown = false;
-        self.GetState("Convo Choice").Actions = new HutongGames.PlayMaker.FsmStateAction[]
-        {
-            self.GetState("Sly Rescued").GetFirstActionOfType<HutongGames.PlayMaker.Actions.AudioPlayerOneShot>(),
-            new Lambda(() =>
-            {
-                try
-                {
-                    DialogueBox box = self.GetState("Sly Rescued").GetFirstActionOfType<HutongGames.PlayMaker.Actions.CallMethodProper>().gameObject.GameObject.Value.GetComponent<DialogueBox>();
-                    if (ElderbugState == 0)
-                        box.StartConversation("Elderbug_Met", "Elderbug");
-                    else if (PlayerData.instance.GetBool(nameof(PlayerData.instance.hasXunFlower)) && !PlayerData.instance.GetBool(nameof(PlayerData.instance.xunFlowerBroken))
-                    && !PlayerData.instance.GetBool(nameof(PlayerData.instance.elderbugGaveFlower)))
-                        self.SendEvent(PlayerData.instance.GetBool(nameof(PlayerData.instance.elderbugRequestedFlower)) ? "FLOWER REOFFER" : "FLOWER OFFER");
-                    else if (ElderbugState == 1)
-                    {
-                        if (PlayerData.instance.GetInt(nameof(PlayerData.instance.quakeLevel)) > 0
-                        || PlayerData.instance.GetInt(nameof(PlayerData.instance.screamLevel)) > 0
-                        || PlayerData.instance.GetInt(nameof(PlayerData.instance.fireballLevel)) > 0)
-                        {
-                            if (ElderbugLocation.ItemThrown)
-                                box.StartConversation("Elderbug_Not_Reading", "Elderbug");
-                            else
-                                self.SendEvent("Elderbug_Reward_1");
-                        }
-                        else
-                            box.StartConversation("Elderbug_Remind_Task", "Elderbug");
-                    }
-                    else if (ElderbugState == 2)
-                    {
-                        ElderbugState++;
-                        box.StartConversation("Elderbug_Task_2", "Elderbug");
-                    }
-                    else if (ElderbugState == 3)
-                    {
-                        if (PowerManager.ObtainedPowers.Count < 5)
-                            box.StartConversation("Elderbug_Not_Enough_Lore", "Elderbug");
-                        else
-                        {
-                            if (ElderbugLocation.ItemThrown)
-                                box.StartConversation("Elderbug_Not_Listening", "Elderbug");
-                            else
-                                self.SendEvent("Elderbug_Reward_2");
-                        }
-                    }
-                    else if (ElderbugState == 4)
-                    {
-                        ElderbugState++;
-                        box.StartConversation("Elderbug_Task_3", "Elderbug");
-                    }
-                    else if (ElderbugState > 4 && ElderbugState < 12)
-                    {
-                        if (PowerManager.ObtainedPowers.Count < _elderbugRewardStages[ElderbugState - 5])
-                            box.StartConversation("Elderbug_Hint", "Elderbug");
-                        else if (ElderbugLocation.ItemThrown)
-                            box.StartConversation("Elderbug_Pickup_Reminder", "Elderbug");
-                        else
-                            self.SendEvent($"Elderbug_Reward_{ElderbugState - 2}");
-                    }
-                    else if (ElderbugState == 12)
-                    {
-                        ElderbugState++;
-                        box.StartConversation("Elderbug_All_Tasks_Done", "Elderbug");
-                    }
-                    else if (ElderbugState == 13)
-                        box.StartConversation("Elderbug_End", "Elderbug");
-                    else
-                        box.StartConversation("Elderbug_Casual", "Elderbug");
-                }
-                catch (Exception exception)
-                {
-                    LoreMaster.Instance.LogError(exception.StackTrace);
-                }
-            })
-        };
-        self.GetState("Convo Choice").AddTransition("CONVO_FINISH", "Talk Finish");
-
-        self.AddState(new HutongGames.PlayMaker.FsmState(self.Fsm)
-        {
-            Name = "Good Deed",
-            Actions = new HutongGames.PlayMaker.FsmStateAction[]
-            {
-                        new Lambda(() => {
-                            HeroController.instance.AddGeo(1200);
-                            PlayerData.instance.SetInt(nameof(PlayerData.instance.dreamOrbs), PlayerData.instance.GetInt(nameof(PlayerData.instance.dreamOrbs)) + 300);
-                            PlayMakerFSM.BroadcastEvent("DREAM ORB COLLECT");
-                            self.SendEvent("FINISHED");
-                        })
-            }
-        });
-        self.GetState("Good Deed").AddTransition("FINISHED", "Talk Finish");
-        self.GetState("Flower Accept").AdjustTransition("CONVO_FINISH", "Good Deed");
     }
 
     #endregion

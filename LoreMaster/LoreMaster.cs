@@ -1,7 +1,5 @@
 using LoreMaster.LorePowers;
-using LoreMaster.LorePowers.CityOfTears;
 using LoreMaster.Manager;
-using LoreMaster.Randomizer;
 using LoreMaster.SaveManagement;
 using LoreMaster.UnityComponents;
 using Modding;
@@ -24,7 +22,6 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
             InitializeManager();
         LorePage.PassPowers(PowerManager.GetAllPowers().ToList());
         InventoryHelper.AddInventoryPage(InventoryPageType.Empty, "Lore", "LoreMaster", "LoreMaster", "LoreArtifact", LorePage.GeneratePage);
-        InventoryHelper.AddInventoryPage(InventoryPageType.Empty, "Treasures", "TreasureCharts", "TreasureCharts", "hasTreasureCharts", TreasureHunterPower.BuildInventory);
     }
 
     #endregion
@@ -134,20 +131,6 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
                         PreloadedObjects.Add(subKey, toAdd);
                         GameObject.DontDestroyOnLoad(toAdd);
                     }
-            try
-            {
-                ItemManager.DefineIC();
-                if (ModHooks.GetMod("Randomizer 4") is Mod mod)
-                {
-                    Log("Detected Randomizer. Adding compability.");
-                    RandomizerManager.AttachToRandomizer();
-                }
-            }
-            catch (Exception exception)
-            {
-                LoreMaster.Instance.LogError("Error while setting up rando: " + exception.Message);
-                LoreMaster.Instance.LogError(exception.StackTrace);
-            }
         }
         catch (Exception exception)
         {
@@ -161,60 +144,62 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
     /// </summary>
     public List<IMenuMod.MenuEntry> GetMenuData(IMenuMod.MenuEntry? toggleButtonEntry)
     {
-        List<IMenuMod.MenuEntry> menu = new();
-        menu.Add(new()
+        List<IMenuMod.MenuEntry> menu = new()
         {
-            Name = "Custom Text",
-            Description = "Replaces the text of tablets or conversations (if available).",
-            Values = new string[] { "On", "Off" },
-            Saver = option => LoreManager.Instance.UseCustomText = option == 0,
-            Loader = () => LoreManager.Instance.UseCustomText ? 0 : 1
-        });
+            new()
+            {
+                Name = "Custom Text",
+                Description = "Replaces the text of tablets or conversations (if available).",
+                Values = new string[] { "On", "Off" },
+                Saver = option => LoreManager.Instance.UseCustomText = option == 0,
+                Loader = () => LoreManager.Instance.UseCustomText ? 0 : 1
+            },
 
-        menu.Add(new()
-        {
-            Name = "Power Explanations",
-            Description = "Determines how powers show be descripted",
-            Values = new string[] { "Vague Hints", "Descriptions" },
-            Saver = option => LoreManager.Instance.UseHints = option == 0,
-            Loader = () => LoreManager.Instance.UseHints ? 0 : 1
-        });
+            new()
+            {
+                Name = "Power Explanations",
+                Description = "Determines how powers show be descripted",
+                Values = new string[] { "Vague Hints", "Descriptions" },
+                Saver = option => LoreManager.Instance.UseHints = option == 0,
+                Loader = () => LoreManager.Instance.UseHints ? 0 : 1
+            },
 
-        menu.Add(new()
-        {
-            Name = "Disable Yellow Mushroom",
-            Description = "If on, the yellow mushroom will not cause a nausea effect.",
-            Values = new string[] { "On", "Off" },
-            Saver = option => SettingManager.Instance.DisableYellowMushroom = option == 0,
-            Loader = () => SettingManager.Instance.DisableYellowMushroom ? 0 : 1
-        });
+            new()
+            {
+                Name = "Disable Yellow Mushroom",
+                Description = "If on, the yellow mushroom will not cause a nausea effect.",
+                Values = new string[] { "On", "Off" },
+                Saver = option => SettingManager.Instance.DisableYellowMushroom = option == 0,
+                Loader = () => SettingManager.Instance.DisableYellowMushroom ? 0 : 1
+            },
 
-        menu.Add(new()
-        {
-            Name = "Allow Bomb quick cast",
-            Description = "If on, the bomb spell can cast via quickcast.",
-            Values = new string[] { "On", "Off" },
-            Saver = option => SettingManager.Instance.BombQuickCast = option == 0,
-            Loader = () => SettingManager.Instance.BombQuickCast ? 0 : 1
-        });
+            new()
+            {
+                Name = "Allow Bomb quick cast",
+                Description = "If on, the bomb spell can cast via quickcast.",
+                Values = new string[] { "On", "Off" },
+                Saver = option => SettingManager.Instance.BombQuickCast = option == 0,
+                Loader = () => SettingManager.Instance.BombQuickCast ? 0 : 1
+            },
 
-        menu.Add(new()
-        {
-            Name = "Tracker Permanent",
-            Description = "If off, the tracker will disappear after 5 seconds.",
-            Values = new string[] { "On", "Off" },
-            Saver = option => LorePowers.Crossroads.GreaterMindPower.PermanentTracker = option == 0,
-            Loader = () => LorePowers.Crossroads.GreaterMindPower.PermanentTracker ? 0 : 1
-        });
+            new()
+            {
+                Name = "Tracker Permanent",
+                Description = "If off, the tracker will disappear after 5 seconds.",
+                Values = new string[] { "On", "Off" },
+                Saver = option => LorePowers.Crossroads.GreaterMindPower.PermanentTracker = option == 0,
+                Loader = () => LorePowers.Crossroads.GreaterMindPower.PermanentTracker ? 0 : 1
+            },
 
-        menu.Add(new()
-        {
-            Name = "Tracker Mode",
-            Description = "If Rando, the tracker will display the RANDOMIZED(!) lore power item amount.",
-            Values = new string[] { "Normal", "Rando" },
-            Saver = option => LorePowers.Crossroads.GreaterMindPower.NormalTracker = option == 0,
-            Loader = () => LorePowers.Crossroads.GreaterMindPower.NormalTracker ? 0 : 1
-        });
+            new()
+            {
+                Name = "Tracker Mode",
+                Description = "If Rando, the tracker will display the RANDOMIZED(!) lore power item amount.",
+                Values = new string[] { "Normal", "Rando" },
+                Saver = option => LorePowers.Crossroads.GreaterMindPower.NormalTracker = option == 0,
+                Loader = () => LorePowers.Crossroads.GreaterMindPower.NormalTracker ? 0 : 1
+            }
+        };
 
         return menu;
     }
@@ -249,7 +234,6 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         SettingManager.Instance.DisableYellowMushroom = globalSaveData.DisableNausea;
         SettingManager.Instance.BombQuickCast = globalSaveData.BombQuickCast;
         LorePowers.Crossroads.GreaterMindPower.PermanentTracker = globalSaveData.TrackerPermanently;
-        RandomizerManager.LoadSettings(globalSaveData);
         if (globalSaveData.MenuPowerTags == null)
         {
             PowerManager.GlobalPowerStates = new();
@@ -270,7 +254,6 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
             EnableCustomText = LoreManager.Instance.UseCustomText,
             DisableNausea = SettingManager.Instance.DisableYellowMushroom,
             BombQuickCast = SettingManager.Instance.BombQuickCast,
-            RandoSettings = RandomizerManager.Settings,
             MenuPowerTags = PowerManager.GlobalPowerStates,
             TrackerPermanently = LorePowers.Crossroads.GreaterMindPower.PermanentTracker
         };
@@ -293,7 +276,6 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
             SettingManager.Instance.GameMode = saveData.GameMode;
             SettingManager.Instance.ElderbugState = saveData.ElderbugState;
             PowerManager.ControlState = saveData.PageState;
-            LoreManager.Instance.Traveller = saveData.TravellerOrder;
         }
         catch (Exception exception)
         {
@@ -321,7 +303,6 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
             saveData.PageState = PowerManager.ControlState;
             saveData.CleansingScrolls = LoreManager.Instance.CleansingScrolls;
             saveData.JokerScrolls = LoreManager.Instance.JokerScrolls;
-            saveData.TravellerOrder = LoreManager.Instance.Traveller;
         }
         catch (Exception ex)
         {

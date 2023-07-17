@@ -4,7 +4,6 @@ using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
 using LoreMaster.Enums;
 using LoreMaster.Manager;
-using LoreMaster.Randomizer;
 using Modding;
 using System;
 using System.Collections;
@@ -35,9 +34,6 @@ public class BestMenderInTheWorldPower : Power
         // Breakable or BreakablePoleSimple
         // Direction Pole Tram (Crossroads_27)
         On.HutongGames.PlayMaker.Actions.RandomInt.OnEnter += RandomInt_OnEnter;
-        On.PlayMakerFSM.OnEnable += Pacify;
-        On.HealthManager.Hit += HealthManager_Hit;
-        On.HealthManager.ApplyExtraDamage += HealthManager_ApplyExtraDamage;
         _trackJournal = ReflectionHelper.GetMethodInfo(typeof(EnemyDeathEffects), "RecordKillForJournal");
         Hint += " DON'T EVEN DARE KILLING THEM! I'LL END YOUR GAME IF YOU DO THAT!";
         Description += " DON'T EVEN DARE KILLING THEM! I'LL END YOUR GAME IF YOU DO THAT!";
@@ -115,47 +111,6 @@ public class BestMenderInTheWorldPower : Power
         }
         else
             orig(self, flingAngleMin, flingAngleMax, impactMultiplier);
-    }
-
-    private void HealthManager_ApplyExtraDamage(On.HealthManager.orig_ApplyExtraDamage orig, HealthManager self, int damageAmount)
-    {
-        if (string.Equals(self.gameObject.name, "Mender Bug") && damageAmount > 0 && !RandomizerManager.PlayingRandomizer)
-            damageAmount = 0;
-        orig(self, damageAmount);
-    }
-
-    private void HealthManager_Hit(On.HealthManager.orig_Hit orig, HealthManager self, HitInstance hitInstance)
-    {
-        if (string.Equals(self.gameObject.name, "Mender Bug") && hitInstance.DamageDealt > 0 && !RandomizerManager.PlayingRandomizer)
-        {
-            if (hitInstance.AttackType == AttackTypes.Nail)
-            {
-                hitInstance.DamageDealt = 1;
-                _menderbugHits++;
-                if (_menderbugHits >= 1000)
-                {
-                    PlayerData.instance.SetInt(nameof(PlayerData.instance.permadeathMode), 2);
-                    HeroController.instance.TakeDamage(null, GlobalEnums.CollisionSide.top, 100, 1);
-                }
-                else if (_menderbugHits < 2 || (_menderbugHits % 20 == 0 && _menderbugHits != 0))
-                    WarnPlayer(self.gameObject);
-            }
-            else
-                hitInstance.DamageDealt = 0;
-        }
-        orig(self, hitInstance);
-    }
-
-    private void Pacify(On.PlayMakerFSM.orig_OnEnable orig, PlayMakerFSM self)
-    {
-        if (string.Equals(self.FsmName, "Mender Bug Ctrl") && !RandomizerManager.PlayingRandomizer)
-        {
-            self.GetState("Idle").ClearTransitions();
-            self.GetState("Init").ClearTransitions();
-            self.GetState("Init").AddTransition("FINISHED", "Chance");
-            self.GetComponent<HealthManager>().hp = 10000;
-        }
-        orig(self);
     }
 
     private void RandomInt_OnEnter(On.HutongGames.PlayMaker.Actions.RandomInt.orig_OnEnter orig, HutongGames.PlayMaker.Actions.RandomInt self)

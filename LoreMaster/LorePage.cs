@@ -4,13 +4,11 @@ using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
 using KorzUtils.Helper;
 using LoreMaster.Enums;
-using LoreMaster.Helper;
 using LoreMaster.LorePowers;
 using LoreMaster.LorePowers.CityOfTears;
 using LoreMaster.LorePowers.FungalWastes;
 using LoreMaster.LorePowers.HowlingCliffs;
 using LoreMaster.Manager;
-using LoreMaster.Randomizer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -99,7 +97,7 @@ internal class LorePage
                     else if (_powers[i].State == PowerState.Twisted)
                     {
                         _loreObjects[i].GetComponentInChildren<SpriteRenderer>().sprite = _sprites[_powers[i].Location];
-                        _loreObjects[i].GetComponentInChildren<SpriteRenderer>().color = new(1f,0f,1f);
+                        _loreObjects[i].GetComponentInChildren<SpriteRenderer>().color = new(1f, 0f, 1f);
                         _loreObjects[i].transform.eulerAngles = new Vector3(0f, 0f, 180f);
                     }
                     else if (PowerManager.ObtainedPowers.Contains(_powers[i]))
@@ -124,15 +122,9 @@ internal class LorePage
             _controlElements["Cleanse"].SetActive(LoreManager.Instance.CleansingScrolls >= 0);
             _controlElements["Cleanse"].GetComponentInChildren<TextMeshPro>().text = LoreManager.Instance.CleansingScrolls.ToString();
 
-            if (RandomizerManager.PlayingRandomizer && (RandomizerManager.Settings.BlackEggTempleCondition != BlackEggTempleCondition.Dreamers
-                || RandomizerManager.Settings.RandomizeElderbugRewards || RandomizerManager.Settings.DefineRefs))
-            {
-                _totalLore.SetActive(true);
-                _totalLore.GetComponent<TextMeshPro>().text = "Total Lore amount: " + PowerManager.ObtainedPowers.Count;
-            }
-            else
-                _totalLore.SetActive(false);
-            
+            _totalLore.SetActive(true);
+            _totalLore.GetComponent<TextMeshPro>().text = "Total Lore amount: " + PowerManager.ObtainedPowers.Count;
+
         }
         catch (Exception exception)
         {
@@ -290,11 +282,11 @@ internal class LorePage
                                    && (PowerManager.IsAreaGlobal(power.Location) || SettingManager.Instance.CurrentArea == power.Location)
                                    && PowerManager.ControlState == PowerControlState.ToggleAccess);
 
-                                if (power is DeliciousMealPower && RandomizerManager.PlayingRandomizer && !RandomizerManager.CanConsumeEgg())
-                                    powerDescription.GetComponent<TextMeshPro>().text += "\r\n<color=#fc0b03>This isn't the right time to consume an egg. Someone else seems to want these even more than you.</color>";
+                                //if (power is DeliciousMealPower && RandomizerManager.PlayingRandomizer && !RandomizerManager.CanConsumeEgg())
+                                //    powerDescription.GetComponent<TextMeshPro>().text += "\r\n<color=#fc0b03>This isn't the right time to consume an egg. Someone else seems to want these even more than you.</color>";
 
-								powerDescription.GetComponent<TextMeshPro>().fontSize = !LoreManager.Instance.UseHints && power is BagOfMushroomsPower ? 4.6f : 5.35f;
-							}
+                                powerDescription.GetComponent<TextMeshPro>().fontSize = !LoreManager.Instance.UseHints && power is BagOfMushroomsPower ? 4.6f : 5.35f;
+                            }
                         }
                         else
                         {
