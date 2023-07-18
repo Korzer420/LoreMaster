@@ -79,39 +79,29 @@ internal class LorePage
                     continue;
                 }
 
-                if (_powers[i].Tag == PowerTag.Remove)
+                if (_powers[i].State == PowerState.Active)
+                {
+                    _loreObjects[i].GetComponentInChildren<SpriteRenderer>().sprite = _sprites[_powers[i].Location];
+                    _loreObjects[i].GetComponentInChildren<SpriteRenderer>().color = Color.white;
+                    _loreObjects[i].transform.eulerAngles = new Vector3(0f, 0f, 0f);
+                }
+                else if (_powers[i].State == PowerState.Twisted)
+                {
+                    _loreObjects[i].GetComponentInChildren<SpriteRenderer>().sprite = _sprites[_powers[i].Location];
+                    _loreObjects[i].GetComponentInChildren<SpriteRenderer>().color = new(1f, 0f, 1f);
+                    _loreObjects[i].transform.eulerAngles = new Vector3(0f, 0f, 180f);
+                }
+                else if (PowerManager.ObtainedPowers.Contains(_powers[i]))
                 {
                     _loreObjects[i].GetComponentInChildren<SpriteRenderer>().sprite = _notActive;
-                    _loreObjects[i].GetComponentInChildren<SpriteRenderer>().color = PowerManager.ObtainedPowers.Contains(_powers[i])
-                        ? Color.red
-                        : Color.grey;
+                    _loreObjects[i].GetComponentInChildren<SpriteRenderer>().color = Color.red;
+                    _loreObjects[i].transform.eulerAngles = new Vector3(0f, 0f, 0f);
                 }
                 else
                 {
-                    if (_powers[i].State == PowerState.Active)
-                    {
-                        _loreObjects[i].GetComponentInChildren<SpriteRenderer>().sprite = _sprites[_powers[i].Location];
-                        _loreObjects[i].GetComponentInChildren<SpriteRenderer>().color = Color.white;
-                        _loreObjects[i].transform.eulerAngles = new Vector3(0f, 0f, 0f);
-                    }
-                    else if (_powers[i].State == PowerState.Twisted)
-                    {
-                        _loreObjects[i].GetComponentInChildren<SpriteRenderer>().sprite = _sprites[_powers[i].Location];
-                        _loreObjects[i].GetComponentInChildren<SpriteRenderer>().color = new(1f, 0f, 1f);
-                        _loreObjects[i].transform.eulerAngles = new Vector3(0f, 0f, 180f);
-                    }
-                    else if (PowerManager.ObtainedPowers.Contains(_powers[i]))
-                    {
-                        _loreObjects[i].GetComponentInChildren<SpriteRenderer>().sprite = _notActive;
-                        _loreObjects[i].GetComponentInChildren<SpriteRenderer>().color = Color.red;
-                        _loreObjects[i].transform.eulerAngles = new Vector3(0f, 0f, 0f);
-                    }
-                    else
-                    {
-                        _loreObjects[i].GetComponentInChildren<SpriteRenderer>().sprite = _emptySprite;
-                        _loreObjects[i].GetComponentInChildren<SpriteRenderer>().color = Color.white;
-                        _loreObjects[i].transform.eulerAngles = new Vector3(0f, 0f, 0f);
-                    }
+                    _loreObjects[i].GetComponentInChildren<SpriteRenderer>().sprite = _emptySprite;
+                    _loreObjects[i].GetComponentInChildren<SpriteRenderer>().color = Color.white;
+                    _loreObjects[i].transform.eulerAngles = new Vector3(0f, 0f, 0f);
                 }
             }
             _stagEgg.sprite = StagAdoptionPower.Instance.CanSpawnStag
@@ -243,69 +233,7 @@ internal class LorePage
                     new Lambda(() => fsm.gameObject.LocateMyFSM("Update Cursor").SendEvent("UPDATE CURSOR")),
                     new Lambda(() =>
                     {
-                        if (_selectedEffect == 1)
-                            _controlElements["Cursor"].transform.Find("Interact Option").GetComponent<SpriteRenderer>().sprite = PowerManager.ObtainedPowers.Contains(_powers[indexVariable.Value])
-                            || indexVariable.Value == 59
-                                ? _notActive
-                                : _controlElements["Joker"].GetComponent<SpriteRenderer>().sprite;
-                        else if (_selectedEffect == 2)
-                        {
-                            _controlElements["Cursor"].transform.Find("Interact Option").GetComponent<SpriteRenderer>().sprite = !PowerManager.ObtainedPowers.Contains(_powers[indexVariable.Value])
-                            || !_powers[indexVariable.Value].StayTwisted
-                                ? _notActive
-                                : _controlElements["Cleanse"].GetComponent<SpriteRenderer>().sprite;
-                        }
 
-                        if (PowerManager.ObtainedPowers.Contains(_powers[indexVariable.Value]))
-                        {
-                            Power power = _powers[indexVariable.Value];
-                            if (power.StayTwisted)
-                            {
-                                powerTitle.GetComponent<TextMeshPro>().text = "<color=#c034eb>Cursed: "+ power.PowerName + "</color>";
-                                powerDescription.GetComponent<TextMeshPro>().text = LoreManager.Instance.UseHints
-                                    ? power.TwistedHint.Replace("<br>","\r\n")
-                                    :power.TwistedDescription.Replace("<br>","\r\n");
-                                confirmButton.SetActive(_selectedEffect == 2);
-                            }
-                            else
-                            {
-                                powerTitle.GetComponent<TextMeshPro>().text = power.Tag == PowerTag.Global || PowerManager.IsAreaGlobal(power.Location)
-                                ? "<color=#7FFF7B>"+ power.PowerName + "</color>"
-                                : power.PowerName;
-                                powerDescription.GetComponent<TextMeshPro>().text = LoreManager.Instance.UseHints
-                                    ? power.Hint.Replace("<br>","\r\n")
-                                    :power.Description.Replace("<br>","\r\n");
-                                if(power.State == PowerState.Active)
-                                    confirmButton.SetActive(PlayerData.instance.GetBool(nameof(PlayerData.instance.atBench)) && PowerManager.ControlState == PowerControlState.ToggleAccess);
-                                else
-                                    confirmButton.SetActive(PlayerData.instance.GetBool(nameof(PlayerData.instance.atBench))
-                                   && (PowerManager.IsAreaGlobal(power.Location) || SettingManager.Instance.CurrentArea == power.Location)
-                                   && PowerManager.ControlState == PowerControlState.ToggleAccess);
-
-                                //if (power is DeliciousMealPower && RandomizerManager.PlayingRandomizer && !RandomizerManager.CanConsumeEgg())
-                                //    powerDescription.GetComponent<TextMeshPro>().text += "\r\n<color=#fc0b03>This isn't the right time to consume an egg. Someone else seems to want these even more than you.</color>";
-
-                                powerDescription.GetComponent<TextMeshPro>().fontSize = !LoreManager.Instance.UseHints && power is BagOfMushroomsPower ? 4.6f : 5.35f;
-                            }
-                        }
-                        else
-                        {
-                            Power power = _powers[indexVariable.Value];
-                            if (power.State == PowerState.Twisted)
-                            {
-                                powerTitle.GetComponent<TextMeshPro>().text = "<color=#c034eb>Cursed: "+ power.PowerName + "</color>";
-                                powerDescription.GetComponent<TextMeshPro>().text = LoreManager.Instance.UseHints
-                                    ? power.TwistedHint.Replace("<br>","\r\n")
-                                    :power.TwistedDescription.Replace("<br>","\r\n");
-                                confirmButton.SetActive(false);
-                            }
-                            else
-                            {
-                                powerTitle.GetComponent<TextMeshPro>().text = "???";
-                                powerDescription.GetComponent<TextMeshPro>().text = "You don't have obtained the power yet. Maybe someone can help you finding it?";
-                                confirmButton.SetActive(false);
-                            }
-                        }
                     })
                 }
             });
@@ -391,54 +319,7 @@ internal class LorePage
             currentWorkingState.AddTransition("FINISHED", "Powers");
             currentWorkingState.AddLastAction(new Lambda(() =>
             {
-                if (_selectedEffect == 1 && indexVariable.Value != 59 && !PowerManager.ObtainedPowers.Contains(_powers[indexVariable.Value]))
-                {
-                    _selectedEffect = 0;
-                    LoreManager.Instance.JokerScrolls--;
-                    _controlElements["Cursor"].transform.Find("Interact Option").GetComponent<SpriteRenderer>().sprite = null;
-                    PowerManager.GetPowerByName(_powers[indexVariable.Value].PowerName, out Power power, false);
-                    UpdateLorePage();
-                }
-                else if (_selectedEffect == 2 && _powers[indexVariable.Value].StayTwisted && PowerManager.ObtainedPowers.Contains(_powers[indexVariable.Value]))
-                {
-                    _selectedEffect = 0;
-                    LoreManager.Instance.CleansingScrolls--;
-                    _controlElements["Cursor"].transform.Find("Interact Option").GetComponent<SpriteRenderer>().sprite = null;
-                    if (_powers[indexVariable.Value].State != PowerState.Disabled)
-                        _powers[indexVariable.Value].DisablePower();
-                    _powers[indexVariable.Value].StayTwisted = false;
-                    _powers[indexVariable.Value].EnablePower();
-                    UpdateLorePage();
-                }
 
-                if (PlayerData.instance.GetBool(nameof(PlayerData.instance.atBench)) && PowerManager.ObtainedPowers.Contains(_powers[indexVariable.Value])
-                && PowerManager.ControlState == PowerControlState.ToggleAccess)
-                {
-                    Power power = _powers[indexVariable.Value];
-
-                    if (power.State == PowerState.Active && (SettingManager.Instance.GameMode != GameMode.Heroic && SettingManager.Instance.GameMode != GameMode.Disabled))
-                    {
-                        if (power is MarissasAudiencePower audience && audience.IsMarissaDead)
-                            return;
-
-                        power.DisablePower();
-                        _loreObjects[indexVariable.Value].GetComponentInChildren<SpriteRenderer>().sprite = _notActive;
-                        _loreObjects[indexVariable.Value].GetComponentInChildren<SpriteRenderer>().color = Color.red;
-                        power.Tag = power.DefaultTag != PowerTag.Remove && power.DefaultTag != PowerTag.Disable
-                        ? PowerTag.Disable
-                        : power.DefaultTag;
-                    }
-                    else if ((power.Tag == PowerTag.Global || PowerManager.IsAreaGlobal(power.Location) || SettingManager.Instance.CurrentArea == power.Location)
-                     && !power.StayTwisted)
-                    {
-                        _loreObjects[indexVariable.Value].GetComponentInChildren<SpriteRenderer>().sprite = _sprites[power.Location];
-                        _loreObjects[indexVariable.Value].GetComponentInChildren<SpriteRenderer>().color = Color.white;
-                        power.Tag = power.DefaultTag == PowerTag.Remove || power.DefaultTag == PowerTag.Disable
-                        ? PowerTag.Local
-                        : power.DefaultTag;
-                        power.EnablePower();
-                    }
-                }
             }));
 
             _totalLore = GameObject.Instantiate(GameObject.Find("_GameCameras").transform.Find("HudCamera/Inventory/Charms/Text Name").gameObject);

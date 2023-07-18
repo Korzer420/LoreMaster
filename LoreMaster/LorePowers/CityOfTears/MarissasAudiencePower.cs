@@ -129,8 +129,6 @@ public class MarissasAudiencePower : Power
         {
             if (IsMarissaDead || State == PowerState.Twisted)
             {
-                if (State == PowerState.Active)
-                    Tag = PowerTag.Global;
                 yield return new WaitForSeconds(LoreMaster.Instance.Generator.Next(45, 121));
                 _revek = GameObject.Instantiate(LoreMaster.Instance.PreloadedObjects["Ghost Battle Revek"], HeroController.instance.transform.position, Quaternion.identity);
                 _revek.SetActive(true);

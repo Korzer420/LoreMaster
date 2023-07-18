@@ -11,7 +11,7 @@ public class LoreMasterLocalSaveData
     /// <summary>
     /// Gets or sets the tags and twisted value of the powers.
     /// </summary>
-    public Dictionary<string, (PowerTag, bool)> Tags { get; set; } = new();
+    public Dictionary<string, (PowerRank, bool)> Tags { get; set; } = new();
 
     /// <summary>
     /// Get or set the acquired powers key.

@@ -39,7 +39,7 @@ internal static class PowerManager
         {"GRAVEDIGGER", new RequiemPower() },
         // Crossroads
         {"PILGRIM_TAB_01", new ReluctantPilgrimPower() },
-        {"COMPLETION_RATE_UNLOCKED", new GreaterMindPower() { DefaultTag = PowerTag.Global } },
+        {"COMPLETION_RATE_UNLOCKED", new GreaterMindPower() },
         {"MYLA", new DiamondDashPower() },
         {"MENDERBUG", new BestMenderInTheWorldPower() },
         // Greenpath
@@ -60,7 +60,7 @@ internal static class PowerManager
         {"WILLOH", new BagOfMushroomsPower() },
         // City of Tears
         {"RUIN_TAB_01", new HotStreakPower() },
-        {"FOUNTAIN_PLAQUE_DESC", new TouristPower() {DefaultTag = PowerTag.Global } },
+        {"FOUNTAIN_PLAQUE_DESC", new TouristPower()},
         {"RUINS_MARISSA_POSTER", new MarissasAudiencePower() },
         {"MAGE_COMP_01", new SoulExtractEfficiencyPower() },
         {"MAGE_COMP_02", new OverwhelmingPowerPower() },
@@ -104,7 +104,7 @@ internal static class PowerManager
         {"WP_WORKSHOP_01", new ShadowForgedPower() },
         {"WP_THRONE_01", new ShiningBoundPower() },
         {"PLAQUE_WARN", new DiminishingCursePower() },
-        {"POP", new SacredShellPower() { DefaultTag = PowerTag.Exclude } },
+        {"POP", new SacredShellPower()},
     };
 
     #endregion
@@ -123,7 +123,7 @@ internal static class PowerManager
     /// </summary>
     public static PowerControlState ControlState { get; set; }
 
-    public static Dictionary<string, PowerTag> GlobalPowerStates { get; set; }
+    public static Dictionary<string, PowerRank> GlobalPowerStates { get; set; }
 
     #endregion
 
@@ -222,7 +222,6 @@ internal static class PowerManager
         ObtainedPowers.Clear();
         foreach (string key in saveData.Tags.Keys)
         {
-            _powerList[key].Tag = saveData.Tags[key].Item1;
             _powerList[key].StayTwisted = saveData.Tags[key].Item2;
         }
 
@@ -256,7 +255,6 @@ internal static class PowerManager
     {
         foreach (string key in _powerList.Keys)
         {
-            saveData.Tags.Add(key, (_powerList[key].Tag, _powerList[key].StayTwisted));
             if (ObtainedPowers.Contains(_powerList[key]))
                 saveData.ObtainedPowerKeys.Add(key);
         }
@@ -282,18 +280,6 @@ internal static class PowerManager
     #endregion
 
     /// <summary>
-    /// Checks through all needed powers to determine if the powers should be granted globally.
-    /// </summary>
-    internal static bool IsAreaGlobal(Area toCheck)
-    {
-        List<Power> neededAreaPowers = _powerList.Values.Where(x => x.Location == toCheck && (x.Tag == PowerTag.Local || x.Tag == PowerTag.Disable || x.Tag == PowerTag.Global)).ToList();
-        foreach (Power neededPower in neededAreaPowers)
-            if (!ObtainedPowers.Contains(neededPower))
-                return false;
-        return true;
-    }
-
-    /// <summary>
     /// Let all powers execute their behaviour for entering a new room.
     /// </summary>
     public static void ExecuteSceneActions()
@@ -312,59 +298,6 @@ internal static class PowerManager
     }
 
     /// <summary>
-    /// Recalculate which powers should be active and disabled.
-    /// </summary>
-    /// <param name="newArea"></param>
-    internal static void CalculatePowerStates(Area newArea)
-    {
-        try
-        {
-            IEnumerable<Power> powersToActivate = (int)SettingManager.Instance.GameMode >= 2
-                ? _powerList.Select(x => x.Value).Where(x => x.Location == newArea)
-                : ObtainedPowers.Where(x => x.Location == newArea);
-            // Activate all local abilities
-            foreach (Power power in powersToActivate)
-                if (power.Tag == PowerTag.Exclude || power.Tag == PowerTag.Local)
-                    power.EnablePower();
-
-            // Disable all local abilities from all other zone (this has to be done that way for randomizer compability)
-            foreach (Area area in ((Area[])Enum.GetValues(typeof(Area))).Skip(1))
-                if (area != newArea && !IsAreaGlobal(area))
-                {
-                    IEnumerable<Power> powersToDisable = SettingManager.Instance.GameMode != GameMode.Normal
-                        ? _powerList.Select(x => x.Value).Where(x => x.Location == area)
-                        : ObtainedPowers.Where(x => x.Location == area);
-                    foreach (Power power in powersToDisable)
-                        if (power.Tag == PowerTag.Local || power.Tag == PowerTag.Exclude)
-                            if (power is RequiemPower requiem)
-                                LoreMaster.Instance.Handler.StartCoroutine(requiem.DelayDisabling());
-                            else
-                                power.DisablePower();
-                }
-        }
-        catch (Exception exception)
-        {
-            LoreMaster.Instance.LogError("An error occured in the area change: " + exception.Message);
-        }
-        UpdateTracker(newArea);
-    }
-
-    internal static void FirstPowerInitialization()
-    {
-        // Enables the powers beforehand. This has to be done because otherwise the effects will only stay permanent once the player enters the area.
-        List<Power> toActivate = new();
-        if (SettingManager.Instance.GameMode == GameMode.Hard || SettingManager.Instance.GameMode == GameMode.Heroic)
-            toActivate.AddRange(_powerList.Values.Where(x => x.Tag == PowerTag.Global));
-        toActivate.AddRange(_powerList.Select(x => x.Value).Where(x => x.Tag == PowerTag.Global && ObtainedPowers.Contains(x)));
-
-        foreach (Area area in (Area[])Enum.GetValues(typeof(Area)))
-            if (IsAreaGlobal(area))
-                toActivate.AddRange(ObtainedPowers.Where(x => x.Tag != PowerTag.Global && x.Location == area));
-        foreach (Power power in toActivate.Distinct())
-            power.EnablePower();
-    }
-
-    /// <summary>
     /// Updates the lore tracker.
     /// </summary>
     public static void UpdateTracker(Area areaToUpdate)
@@ -375,7 +308,7 @@ internal static class PowerManager
             {
                 GreaterMindPower logPower = (GreaterMindPower)_powerList["COMPLETION_RATE_UNLOCKED"];
                 if (logPower.State == PowerState.Active)
-                    logPower.UpdateLoreCounter(ObtainedPowers, _powerList.Values, areaToUpdate, IsAreaGlobal(areaToUpdate));
+                    logPower.UpdateLoreCounter(ObtainedPowers, _powerList.Values, areaToUpdate, true);
             }
         }
         catch (Exception exception)

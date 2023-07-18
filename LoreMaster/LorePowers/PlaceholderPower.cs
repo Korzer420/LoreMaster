@@ -7,7 +7,6 @@ internal class PlaceholderPower : Power
 {
     public PlaceholderPower() : base("Placeholder", Enums.Area.None)
     {
-        Tag = Enums.PowerTag.Remove;
-        DefaultTag = Enums.PowerTag.Remove;
+        Rank = Enums.PowerRank.None;
     }
 }

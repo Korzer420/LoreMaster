@@ -441,11 +441,8 @@ public class SettingManager
                     currentLine = currentLine.Substring(powerName.Length + 1);
                     string tagText = string.Concat(currentLine.TakeWhile(x => !x.Equals('|')));
                     tagText = char.ToUpper(tagText[0]) + tagText.Substring(1);
-                    if (!Enum.TryParse(tagText, out PowerTag tag))
+                    if (!Enum.TryParse(tagText, out PowerRank tag))
                         continue;
-                    if (power.Tag != tag)
-                        LoreMaster.Instance.Log($"Change {power.PowerName} tag from {power.Tag} to {tag}");
-                    power.Tag = tag;
 
                     currentLine = currentLine.Substring(tagText.Length);
                     if (currentLine.Contains("add") && !PowerManager.ObtainedPowers.Contains(power))
@@ -494,9 +491,6 @@ public class SettingManager
                 LoreMaster.Instance.LogError("Couldn't find area: " + newMapZone);
         }
 
-        if (CurrentArea != newArea)
-            PowerManager.CalculatePowerStates(newArea);
-
         // Initialization taken when we entered from the menu.
         if (_fromMenu)
         {
@@ -516,7 +510,6 @@ public class SettingManager
             { Name = "Fake Damage" }, 0);
 
             _fromMenu = false;
-            PowerManager.FirstPowerInitialization();
             PowerManager.UpdateTracker(newArea);
         }
         LorePage.UpdateLorePage();

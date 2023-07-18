@@ -234,14 +234,6 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         SettingManager.Instance.DisableYellowMushroom = globalSaveData.DisableNausea;
         SettingManager.Instance.BombQuickCast = globalSaveData.BombQuickCast;
         LorePowers.Crossroads.GreaterMindPower.PermanentTracker = globalSaveData.TrackerPermanently;
-        if (globalSaveData.MenuPowerTags == null)
-        {
-            PowerManager.GlobalPowerStates = new();
-            foreach (Power power in PowerManager.GetAllPowers())
-                PowerManager.GlobalPowerStates.Add(power.PowerName, power.Tag);
-        }
-        else
-            PowerManager.GlobalPowerStates = globalSaveData.MenuPowerTags;
     }
 
     /// <summary>
@@ -253,8 +245,6 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
             ShowHint = LoreManager.Instance.UseHints,
             EnableCustomText = LoreManager.Instance.UseCustomText,
             DisableNausea = SettingManager.Instance.DisableYellowMushroom,
-            BombQuickCast = SettingManager.Instance.BombQuickCast,
-            MenuPowerTags = PowerManager.GlobalPowerStates,
             TrackerPermanently = LorePowers.Crossroads.GreaterMindPower.PermanentTracker
         };
 

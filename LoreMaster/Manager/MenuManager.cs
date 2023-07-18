@@ -26,7 +26,7 @@ internal class MenuManager : ModeMenuConstructor
 
     public MenuPage PowerPage { get; set; }
 
-    public MenuItem<PowerTag>[] PowerElements { get; set; }
+    public MenuItem<PowerRank>[] PowerElements { get; set; }
 
     public GridItemPanel FirstPowerSet { get; set; }
 
@@ -79,13 +79,13 @@ internal class MenuManager : ModeMenuConstructor
         MoveButtons[0].Hide();
     }
 
-    private void Change_PowerControl(PowerTag chosenTag)
+    private void Change_PowerControl(PowerRank chosenTag)
     {
-        foreach (MenuItem<PowerTag> item in PowerElements)
+        foreach (MenuItem<PowerRank> item in PowerElements)
             item.SetValue(chosenTag);
     }
 
-    private void ChangePowerTag(IValueElement element) => PowerManager.GlobalPowerStates[(element as MenuItem<PowerTag>).Name] = (element as MenuItem<PowerTag>).Value;
+    private void ChangePowerTag(IValueElement element) => PowerManager.GlobalPowerStates[(element as MenuItem<PowerRank>).Name] = (element as MenuItem<PowerRank>).Value;
 
     private void ChangeEndCondition(BlackEggTempleCondition condition)
     {
@@ -208,8 +208,6 @@ internal class MenuManager : ModeMenuConstructor
         SettingManager.Instance.EndCondition = Settings.EndCondition;
         SettingManager.Instance.NeededLore = Settings.NeededLore;
         SettingManager.Instance.GameMode = Settings.GameMode;
-        foreach (Power power in PowerManager.GetAllPowers())
-            power.DefaultTag = Settings.NightmareMode ? PowerTag.Global : PowerManager.GlobalPowerStates[power.PowerName];
         if (Settings.UseCursedLore != CursedLore.None)
         {
             int finalAmount = LoreMaster.Instance.Generator.Next(Settings.MinCursedLore, Settings.MaxCursedLore + 1);
@@ -273,25 +271,19 @@ internal class MenuManager : ModeMenuConstructor
         ((SmallButton)Elements[5]).AddHideAndShowEvent(ExtraPage, PowerPage);
 
         // Power tag control
-        PowerElements = new MenuItem<PowerTag>[60];
-        List<PowerTag> tags = (Enum.GetValues(typeof(PowerTag)) as PowerTag[]).ToList();
+        PowerElements = new MenuItem<PowerRank>[60];
+        List<PowerRank> tags = (Enum.GetValues(typeof(PowerRank)) as PowerRank[]).ToList();
         int index = 0;
-        if (PowerManager.GlobalPowerStates == null)
-        {
-            PowerManager.GlobalPowerStates = new();
-            foreach (Power power in PowerManager.GetAllPowers())
-                PowerManager.GlobalPowerStates.Add(power.PowerName, power.Tag);
-        }
         foreach (string key in PowerManager.GlobalPowerStates.Keys)
         {
-            MenuItem<PowerTag> item = new(PowerPage, key, tags, new MultiLineFormatter());
+            MenuItem<PowerRank> item = new(PowerPage, key, tags, new MultiLineFormatter());
             // This is a wacky workaround, since I can't bind on a dictionary that easily and have no clue how I'd implement that.
             item.SelfChanged += ChangePowerTag;
             PowerElements[index] = item;
             index++;
         }
 
-        MenuItem<PowerTag> powerControl = new(PowerPage, "All Powers", tags);
+        MenuItem<PowerRank> powerControl = new(PowerPage, "All Powers", tags);
         powerControl.ValueChanged += Change_PowerControl;
         MoveButtons = new SmallButton[2];
         SmallButton rightButton = new(PowerPage, ">>");
@@ -309,7 +301,7 @@ internal class MenuManager : ModeMenuConstructor
         SecondPowerSet.Hide();
         leftButton.Hide();
         On.FixVerticalAlign.AlignText += FixVerticalAlign_AlignText;
-        foreach (MenuItem<PowerTag> item in PowerElements)
+        foreach (MenuItem<PowerRank> item in PowerElements)
             item.SetValue(PowerManager.GlobalPowerStates[item.Name]);
 
         // Cursed lore stuff

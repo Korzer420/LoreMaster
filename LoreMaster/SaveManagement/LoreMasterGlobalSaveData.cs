@@ -30,11 +30,4 @@ public class LoreMasterGlobalSaveData
     /// Gets or sets the value that indicates, if the tracker from Greater Mind should be displayed permanently or fade away after 5 seconds.
     /// </summary>
     public bool TrackerPermanently { get; set; }
-
-    /// <summary>
-    /// Gets or sets the setting for rando.
-    /// </summary>
-    public RandomizerSettings RandoSettings { get; set; }
-
-    public Dictionary<string, PowerTag> MenuPowerTags { get; set; }
 }

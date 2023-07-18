@@ -72,12 +72,7 @@ public abstract class Power
     /// <summary>
     /// Gets or sets the tag, to determine how this power activation behave.
     /// </summary>
-    public PowerTag Tag { get; set; } = PowerTag.Local;
-
-    /// <summary>
-    /// Gets or sets the default tag. This is used to toggle the power on/off in the menu.
-    /// </summary>
-    public PowerTag DefaultTag { get; set; } = PowerTag.Local;
+    public PowerRank Rank { get; set; } = PowerRank.Lower;
 
     /// <summary>
     /// Gets or sets the action the power should execute on a scene change (gameplay scene only)
@@ -133,6 +128,12 @@ public abstract class Power
     /// </summary>
     protected virtual void TwistDisable() { }
 
+    /// <summary>
+    /// Determines how the power might modify enemies.
+    /// If left untouched, a random modifier is applied.
+    /// </summary>
+    protected virtual void EnemyBuff(HealthManager enemy) => ApplyRandomBuff(enemy);
+
     #endregion
 
     #region Wrapper Methods
@@ -162,7 +163,7 @@ public abstract class Power
     /// </summary>
     internal void EnablePower()
     {
-        if (State == PowerState.Active || Tag == PowerTag.Disable || Tag == PowerTag.Remove || !PowerManager.CanPowersActivate)
+        if (State == PowerState.Active || !PowerManager.CanPowersActivate)
             return;
         try
         {
@@ -234,6 +235,8 @@ public abstract class Power
         }
     }
 
+    internal void CastOnEnemy(HealthManager enemy) => EnemyBuff(enemy);
+
     #endregion
 
     #region Extras
@@ -254,6 +257,27 @@ public abstract class Power
                 return;
             }
         _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(coroutine.Invoke());
+    }
+
+    /// <summary>
+    /// Check if a random buff is applied to the enemy.
+    /// </summary>
+    /// <param name="healthManager"></param>
+    private void ApplyRandomBuff(HealthManager healthManager)
+    {
+        int rolled = UnityEngine.Random.Range(1, 101);
+        if (healthManager.hp <= 1 || rolled <= 30)
+            return;
+        else if (rolled <= 55)
+            healthManager.hp = Convert.ToInt32(healthManager.hp * UnityEngine.Random.Range(1.25f, 3.5f));
+        else if (rolled <= 80)
+        {
+            DamageHero damageComponent = healthManager.GetComponent<DamageHero>();
+            if (damageComponent is not null)
+                damageComponent.damageDealt *= 2;
+        }
+        else
+            healthManager.transform.localScale = new Vector3(healthManager.transform.localScale.x * 1.2f, healthManager.transform.localScale.y * 1.2f, healthManager.transform.localScale.z);
     }
 
     #endregion
