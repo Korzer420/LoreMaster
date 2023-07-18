@@ -114,7 +114,7 @@ public class GreaterMindPower : Power
         if (_loreTracker != null)
         {
             _loreTracker.SetActive(true);
-            UpdateLoreCounter(PowerManager.ObtainedPowers, PowerManager.GetAllPowers(), SettingManager.Instance.CurrentArea, PowerManager.IsAreaGlobal(SettingManager.Instance.CurrentArea));
+            UpdateLoreCounter(PowerManager.ObtainedPowers, PowerManager.GetAllPowers(), SettingManager.Instance.CurrentArea, true);
         }
     }
 

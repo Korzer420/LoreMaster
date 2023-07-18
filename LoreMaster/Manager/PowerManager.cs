@@ -29,82 +29,81 @@ internal static class PowerManager
 {
     #region Members
 
-    private static Dictionary<string, Power> _powerList = new()
+    private static List<Power> _powerList = new()
     {
         // Dirtmouth/King's Pass
-        {"TUT_TAB_01", new WellFocusedPower() },
-        {"TUT_TAB_02", new ScrewTheRulesPower() },
-        {"TUT_TAB_03", new TrueFormPower() },
-        {"BRETTA", new CaringShellPower() },
-        {"GRAVEDIGGER", new RequiemPower() },
+        new WellFocusedPower(),
+        new ScrewTheRulesPower(),
+        new TrueFormPower(),
+        new CaringShellPower(),
+        new RequiemPower(),
         // Crossroads
-        {"PILGRIM_TAB_01", new ReluctantPilgrimPower() },
-        {"COMPLETION_RATE_UNLOCKED", new GreaterMindPower() },
-        {"MYLA", new DiamondDashPower() },
-        {"MENDERBUG", new BestMenderInTheWorldPower() },
+        new ReluctantPilgrimPower(),
+        new GreaterMindPower(),
+        new DiamondDashPower(),
+        new BestMenderInTheWorldPower(),
         // Greenpath
-        {"GREEN_TABLET_01", new TouchGrassPower() },
-        {"GREEN_TABLET_02", new GiftOfUnnPower() },
-        {"GREEN_TABLET_03", new MindblastOfUnnPower() },
-        {"GREEN_TABLET_05", new CamouflagePower() },
-        {"GREEN_TABLET_06", new ReturnToUnnPower() },
-        {"GREEN_TABLET_07", new GraspOfLifePower() },
+        new TouchGrassPower(),
+        new GiftOfUnnPower(),
+        new MindblastOfUnnPower(),
+        new CamouflagePower(),
+        new ReturnToUnnPower(),
+        new GraspOfLifePower(),
         // Fungal Wastes
-        {"FUNG_TAB_04", new OneOfUsPower() },
-        {"FUNG_TAB_01", new PaleLuckPower() },
-        {"FUNG_TAB_02", new ImposterPower() },
-        {"FUNG_TAB_03", new UnitedWeStandPower() },
-        {"MANTIS_PLAQUE_01", new MantisStylePower() },
-        {"MANTIS_PLAQUE_02", new EternalValorPower() },
-        {"PILGRIM_TAB_02", new GloryOfTheWealthPower() },
-        {"WILLOH", new BagOfMushroomsPower() },
+        new OneOfUsPower(),
+        new PaleLuckPower(),
+        new ImposterPower(),
+        new UnitedWeStandPower(),
+        new MantisStylePower(),
+        new EternalValorPower(),
+        new GloryOfTheWealthPower(),
+        new BagOfMushroomsPower(),
         // City of Tears
-        {"RUIN_TAB_01", new HotStreakPower() },
-        {"FOUNTAIN_PLAQUE_DESC", new TouristPower()},
-        {"RUINS_MARISSA_POSTER", new MarissasAudiencePower() },
-        {"MAGE_COMP_01", new SoulExtractEfficiencyPower() },
-        {"MAGE_COMP_02", new OverwhelmingPowerPower() },
-        {"MAGE_COMP_03", new PureSpiritPower() },
-        {"LURIAN_JOURNAL", new EyeOfTheWatcherPower() },
-        {"EMILITIA", new HappyFatePower() },
-        {"MARISSA", new BlessingOfTheButterflyPower() },
-        {"POGGY", new DeliciousMealPower() },
+        new HotStreakPower(),
+        new TouristPower(),
+        new MarissasAudiencePower(),
+        new SoulExtractEfficiencyPower(),
+        new OverwhelmingPowerPower(),
+        new PureSpiritPower(),
+        new EyeOfTheWatcherPower(),
+        new HappyFatePower(),
+        new BlessingOfTheButterflyPower(),
+        new DeliciousMealPower(),
         // Waterways
-        {"DUNG_DEF_SIGN", new EternalSentinelPower() },
-        {"FLUKE_HERMIT", new RelentlessSwarmPower() },
+        new EternalSentinelPower(),
+        new RelentlessSwarmPower(),
         // Crystal Peaks
-        {"QUIRREL", new DiamondCorePower() },
+        new DiamondCorePower(),
         // Resting Grounds
-        {"DREAMERS_INSPECT_RG5", new DreamBlessingPower() },
-        {"TISO", new DramaticEntrancePower() },
+        new DreamBlessingPower(),
+        new DramaticEntrancePower(),
         // Howling Cliffs
-        {"CLIFF_TAB_02", new LifebloodOmenPower() },
-        {"JONI", new JonisProtectionPower() },
-        {"STAG_EGG_INSPECT", new StagAdoptionPower() },
+        new LifebloodOmenPower(),
+        new JonisProtectionPower(),
+        new StagAdoptionPower(),
         // Fog Canyon
-        {"ARCHIVE_01", new FriendOfTheJellyfishPower() },
-        {"ARCHIVE_02", new JellyBellyPower() },
-        {"ARCHIVE_03", new JellyfishFlowPower() },
+        new FriendOfTheJellyfishPower(),
+        new JellyBellyPower(),
+        new JellyfishFlowPower(),
         // Ancient Basin
-        {"ABYSS_TUT_TAB_01", new WeDontTalkAboutShadePower() },
+        new WeDontTalkAboutShadePower(),
         // Deepnest
-        {"MASKMAKER", new MaskOverchargePower() },
-        {"MIDWIFE", new InfestedPower() },
-        {"ZOTE", new LaughableThreatPower() },
+        new MaskOverchargePower(),
+        new InfestedPower(),
+        new LaughableThreatPower(),
         // Kingdom's Edge
-        {"MR_MUSH_RIDDLE_TAB_NORMAL", new WisdomOfTheSagePower() },
-        {"BARDOON", new ConcussiveStrikePower() },
-        {"HIVEQUEEN", new YouLikeJazzPower() },
+        new WisdomOfTheSagePower(),
+        new ConcussiveStrikePower(),
+        new YouLikeJazzPower(),
         // Queen's Garden
-        {"XUN_GRAVE_INSPECT", new FlowerRingPower() },
-        {"QUEEN", new QueenThornsPower() },
-        {"MOSSPROPHET", new FollowTheLightPower() },
-        {"GRASSHOPPER", new GrassBombardementPower() },
+        new FlowerRingPower(),
+        new QueenThornsPower(),
+        new FollowTheLightPower(),
         // White Palace
-        {"WP_WORKSHOP_01", new ShadowForgedPower() },
-        {"WP_THRONE_01", new ShiningBoundPower() },
-        {"PLAQUE_WARN", new DiminishingCursePower() },
-        {"POP", new SacredShellPower()},
+        new ShadowForgedPower(),
+        new ShiningBoundPower(),
+        new DiminishingCursePower(),
+        new SacredShellPower()
     };
 
     #endregion
@@ -136,32 +135,11 @@ internal static class PowerManager
     /// </summary>
     /// <param name="key">The ingame language key that is used. For NPC this mod uses just the names of the npc</param>
     /// <param name="power">The power that matches the key, if no match has been found, this will be null.</param>
-    /// <param name="collectIfPossible">If <see langword="true"/>, the power will automatically be added if it isn't in <see cref="ObtainedPowers"/>.</param>
     /// <returns>True if a matching power was found</returns>
-    public static bool GetPowerByKey(string key, out Power power, bool collectIfPossible = true)
+    public static bool GetPowerByKey(string key, out Power power)
     {
-        power = null;
-        if (string.IsNullOrEmpty(key))
-            return false;
-        if (_powerList.TryGetValue(key.ToUpper(), out power))
-            try
-            {
-                if (collectIfPossible && !ObtainedPowers.Contains(power))
-                {
-                    if (power is EyeOfTheWatcherPower watcherPower)
-                        watcherPower.EyeActive = true;
-                    ObtainedPowers.Add(power);
-                    power.EnablePower();
-                    UpdateTracker(SettingManager.Instance.CurrentArea);
-                    LorePage.UpdateLorePage();
-                }
-                return true;
-            }
-            catch (Exception exception)
-            {
-                LoreMaster.Instance.LogError(exception.Message);
-            }
-        return false;
+        power = _powerList.FirstOrDefault(x => x.CorrespondingKey == key);
+        return power != null;
     }
 
     public static bool GetPowerByName(string name, out Power power, bool ignoreWhiteSpaces = true, bool collectIfPossible = true)
@@ -169,7 +147,7 @@ internal static class PowerManager
         power = null;
         if (string.IsNullOrEmpty(name))
             return false;
-        if (_powerList.Values.FirstOrDefault(x => string.Equals(name, ignoreWhiteSpaces ? x.PowerName.Replace(" ", "") : x.PowerName, StringComparison.CurrentCultureIgnoreCase)) is Power foundPower)
+        if (_powerList.FirstOrDefault(x => string.Equals(name, ignoreWhiteSpaces ? x.PowerName.Replace(" ", "") : x.PowerName, StringComparison.CurrentCultureIgnoreCase)) is Power foundPower)
             try
             {
                 power = foundPower;
@@ -197,7 +175,7 @@ internal static class PowerManager
         return false;
     }
 
-    internal static IEnumerable<Power> GetAllPowers() => _powerList.Values;
+    internal static IEnumerable<Power> GetAllPowers() => _powerList;
 
     public static bool HasObtainedPower(string key, bool onlyActive = true)
     {

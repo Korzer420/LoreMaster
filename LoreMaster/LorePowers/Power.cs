@@ -38,6 +38,11 @@ public abstract class Power
     public Area Location { get; protected set; }
 
     /// <summary>
+    /// Gets the corresponding language key to activate the ability.
+    /// </summary>
+    public string CorrespondingKey => Properties.PowerKeys.ResourceManager.GetString(GetType().Name);
+
+    /// <summary>
     /// Gets or sets the name of the power.
     /// </summary>
     public string PowerName { get; set; }

@@ -144,6 +144,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>PowerHints.resx</DependentUpon>
     </Compile>
+    <Compile Update="Properties\PowerKeys.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>PowerKeys.resx</DependentUpon>
+    </Compile>
     <Compile Update="Properties\ShopDescriptions.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -186,6 +191,10 @@
     <EmbeddedResource Update="Properties\PowerHints.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>PowerHints.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Properties\PowerKeys.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>PowerKeys.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Properties\ShopDescriptions.resx">
       <Generator>ResXFileCodeGenerator</Generator>
