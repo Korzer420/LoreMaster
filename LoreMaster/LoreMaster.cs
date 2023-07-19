@@ -18,8 +18,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
 
     public LoreMaster()
     {
-        if (LoreManager.Instance == null)
-            InitializeManager();
+        InitializeManager();
         LorePage.PassPowers(PowerManager.GetAllPowers().ToList());
         InventoryHelper.AddInventoryPage(InventoryPageType.Empty, "Lore", "LoreMaster", "LoreMaster", "LoreArtifact", LorePage.GeneratePage);
     }
@@ -151,37 +150,33 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
                 Name = "Custom Text",
                 Description = "Replaces the text of tablets or conversations (if available).",
                 Values = new string[] { "On", "Off" },
-                Saver = option => LoreManager.Instance.UseCustomText = option == 0,
-                Loader = () => LoreManager.Instance.UseCustomText ? 0 : 1
+                Saver = option => LoreManager.UseCustomText = option == 0,
+                Loader = () => LoreManager.UseCustomText ? 0 : 1
             },
-
             new()
             {
                 Name = "Power Explanations",
                 Description = "Determines how powers show be descripted",
                 Values = new string[] { "Vague Hints", "Descriptions" },
-                Saver = option => LoreManager.Instance.UseHints = option == 0,
-                Loader = () => LoreManager.Instance.UseHints ? 0 : 1
+                Saver = option => LoreManager.UseHints = option == 0,
+                Loader = () => LoreManager.UseHints ? 0 : 1
             },
-
-            new()
-            {
-                Name = "Disable Yellow Mushroom",
-                Description = "If on, the yellow mushroom will not cause a nausea effect.",
-                Values = new string[] { "On", "Off" },
-                Saver = option => SettingManager.Instance.DisableYellowMushroom = option == 0,
-                Loader = () => SettingManager.Instance.DisableYellowMushroom ? 0 : 1
-            },
-
-            new()
-            {
-                Name = "Allow Bomb quick cast",
-                Description = "If on, the bomb spell can cast via quickcast.",
-                Values = new string[] { "On", "Off" },
-                Saver = option => SettingManager.Instance.BombQuickCast = option == 0,
-                Loader = () => SettingManager.Instance.BombQuickCast ? 0 : 1
-            },
-
+            //new()
+            //{
+            //    Name = "Disable Yellow Mushroom",
+            //    Description = "If on, the yellow mushroom will not cause a nausea effect.",
+            //    Values = new string[] { "On", "Off" },
+            //    Saver = option => SettingManager.Instance.DisableYellowMushroom = option == 0,
+            //    Loader = () => SettingManager.Instance.DisableYellowMushroom ? 0 : 1
+            //},
+            //new()
+            //{
+            //    Name = "Allow Bomb quick cast",
+            //    Description = "If on, the bomb spell can cast via quickcast.",
+            //    Values = new string[] { "On", "Off" },
+            //    Saver = option => SettingManager.Instance.BombQuickCast = option == 0,
+            //    Loader = () => SettingManager.Instance.BombQuickCast ? 0 : 1
+            //},
             new()
             {
                 Name = "Tracker Permanent",
@@ -190,7 +185,6 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
                 Saver = option => LorePowers.Crossroads.GreaterMindPower.PermanentTracker = option == 0,
                 Loader = () => LorePowers.Crossroads.GreaterMindPower.PermanentTracker ? 0 : 1
             },
-
             new()
             {
                 Name = "Tracker Mode",
@@ -210,9 +204,6 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
     public void InitializeManager()
     {
         Instance = this;
-        LoreManager loreManager = new();
-        SettingManager settingManager = new();
-        settingManager.Initialize();
         MenuManager.AddMode();
     }
 
@@ -227,12 +218,9 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
     public void OnLoadGlobal(LoreMasterGlobalSaveData globalSaveData)
     {
         LogDebug("Loaded global data");
-        if (LoreManager.Instance == null)
-            InitializeManager();
-        LoreManager.Instance.UseHints = globalSaveData.ShowHint;
-        LoreManager.Instance.UseCustomText = globalSaveData.EnableCustomText;
-        SettingManager.Instance.DisableYellowMushroom = globalSaveData.DisableNausea;
-        SettingManager.Instance.BombQuickCast = globalSaveData.BombQuickCast;
+        InitializeManager();
+        LoreManager.UseHints = globalSaveData.ShowHint;
+        LoreManager.UseCustomText = globalSaveData.EnableCustomText;
         LorePowers.Crossroads.GreaterMindPower.PermanentTracker = globalSaveData.TrackerPermanently;
     }
 
@@ -242,9 +230,8 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
     LoreMasterGlobalSaveData IGlobalSettings<LoreMasterGlobalSaveData>.OnSaveGlobal()
         => new()
         {
-            ShowHint = LoreManager.Instance.UseHints,
-            EnableCustomText = LoreManager.Instance.UseCustomText,
-            DisableNausea = SettingManager.Instance.DisableYellowMushroom,
+            ShowHint = LoreManager.UseHints,
+            EnableCustomText = LoreManager.UseCustomText,
             TrackerPermanently = LorePowers.Crossroads.GreaterMindPower.PermanentTracker
         };
 
@@ -255,16 +242,6 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
     {
         try
         {
-            PowerManager.LoadPowers(saveData);
-            PowerManager.LoadPowerData(saveData.PowerData);
-            LoreManager.Instance.CanRead = saveData.HasReadAbility;
-            LoreManager.Instance.CanListen = saveData.HasListenAbility;
-            LoreManager.Instance.CleansingScrolls = saveData.CleansingScrolls;
-            LoreManager.Instance.JokerScrolls = saveData.JokerScrolls;
-            SettingManager.Instance.EndCondition = saveData.EndCondition;
-            SettingManager.Instance.NeededLore = saveData.NeededLore;
-            SettingManager.Instance.GameMode = saveData.GameMode;
-            SettingManager.Instance.ElderbugState = saveData.ElderbugState;
             PowerManager.ControlState = saveData.PageState;
         }
         catch (Exception exception)
@@ -282,17 +259,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         LoreMasterLocalSaveData saveData = new();
         try
         {
-            PowerManager.SavePowers(ref saveData);
-            saveData.PowerData = PowerManager.PreparePowerData();
-            saveData.HasReadAbility = LoreManager.Instance.CanRead;
-            saveData.HasListenAbility = LoreManager.Instance.CanListen;
-            saveData.EndCondition = SettingManager.Instance.EndCondition;
-            saveData.NeededLore = SettingManager.Instance.NeededLore;
-            saveData.GameMode = SettingManager.Instance.GameMode;
-            saveData.ElderbugState = SettingManager.Instance.ElderbugState;
             saveData.PageState = PowerManager.ControlState;
-            saveData.CleansingScrolls = LoreManager.Instance.CleansingScrolls;
-            saveData.JokerScrolls = LoreManager.Instance.JokerScrolls;
         }
         catch (Exception ex)
         {

@@ -25,7 +25,7 @@ namespace LoreMaster.Manager;
 /// <summary>
 /// Manager for handling the powers.
 /// </summary>
-internal static class PowerManager
+public static class PowerManager
 {
     #region Members
 
@@ -110,8 +110,6 @@ internal static class PowerManager
 
     #region Properties
 
-    public static List<Power> ObtainedPowers { get; set; } = new();
-
     /// <summary>
     /// Gets or sets the flag that indicates if powers can be activated. This is used for end cutscenes.
     /// </summary>
@@ -122,8 +120,6 @@ internal static class PowerManager
     /// </summary>
     public static PowerControlState ControlState { get; set; }
 
-    public static Dictionary<string, PowerRank> GlobalPowerStates { get; set; }
-
     #endregion
 
     #region Methods
@@ -131,168 +127,92 @@ internal static class PowerManager
     #region Power Information
 
     /// <summary>
-    /// Check if the key is binded to a power and possibly add it.
+    /// Check for a power by its language key. If another mod adds powers the need to overwrite <see cref="Power.CorrespondingKey"/> in order to work.
     /// </summary>
-    /// <param name="key">The ingame language key that is used. For NPC this mod uses just the names of the npc</param>
-    /// <param name="power">The power that matches the key, if no match has been found, this will be null.</param>
+    /// <param name="languageKey">The ingame language key that is used.</param>
     /// <returns>True if a matching power was found</returns>
-    public static bool GetPowerByKey(string key, out Power power)
+    public static Power GetPowerByKey(string languageKey)
     {
-        power = _powerList.FirstOrDefault(x => x.CorrespondingKey == key);
-        return power != null;
+        Power power = _powerList.FirstOrDefault(x => x.CorrespondingKey == languageKey);
+        return power;
     }
 
-    public static bool GetPowerByName(string name, out Power power, bool ignoreWhiteSpaces = true, bool collectIfPossible = true)
+    /// <summary>
+    /// Checks for a power by its name.
+    /// </summary>
+    /// <param name="name">The name of the power.</param>
+    public static Power GetPowerByName(string name)
     {
-        power = null;
+        Power power = null;
         if (string.IsNullOrEmpty(name))
-            return false;
-        if (_powerList.FirstOrDefault(x => string.Equals(name, ignoreWhiteSpaces ? x.PowerName.Replace(" ", "") : x.PowerName, StringComparison.CurrentCultureIgnoreCase)) is Power foundPower)
-            try
-            {
-                power = foundPower;
-                if (collectIfPossible && !ObtainedPowers.Contains(foundPower))
-                {
-                    if (power is EyeOfTheWatcherPower watcherPower)
-                        watcherPower.EyeActive = true;
-                    if (power is GreaterMindPower)
-                        ObtainedPowers.Insert(0, power);
-                    else
-                        ObtainedPowers.Add(power);
-                    power.EnablePower();
-                    UpdateTracker(SettingManager.Instance.CurrentArea);
-                    LorePage.UpdateLorePage();
-                }
-                return true;
-            }
-            catch (Exception exception)
-            {
-                LoreMaster.Instance.LogError(exception.Message);
-            }
-        else
-            LoreMaster.Instance.Log("Couldn't find power: " + name);
-        power = null;
-        return false;
+            return null;
+        power = _powerList.FirstOrDefault(x => string.Equals(name, x.PowerName, StringComparison.CurrentCultureIgnoreCase));
+        // Second attempt with removed white spaces.
+        if (power != null)
+            power = _powerList.FirstOrDefault(x => string.Equals(name, x.PowerName.Replace(" ", ""), StringComparison.CurrentCultureIgnoreCase));
+        return power;
     }
 
-    internal static IEnumerable<Power> GetAllPowers() => _powerList;
+    /// <summary>
+    /// Gets a power by its type.
+    /// </summary>
+    public static T GetPower<T>() where T : Power => _powerList.FirstOrDefault(x => x is T) as T;
 
-    public static bool HasObtainedPower(string key, bool onlyActive = true)
+    /// <summary>
+    /// Returns a copy of all powers.
+    /// </summary>
+    /// <returns></returns>
+    public static List<Power> GetAllPowers() => _powerList.ToList();
+
+    /// <summary>
+    /// Check if a power has been obtained already.
+    /// </summary>
+    /// <param name="onlyActive">If <see langword="true"/>, this will only return <see langword="true"/> if the power is equipped.</param>
+    public static bool HasObtainedPower<T>(bool onlyActive = true) where T : Power
     {
-        if (_powerList.TryGetValue(key, out Power power))
-            return ObtainedPowers.Contains(power) && (!onlyActive || power.State == PowerState.Active);
-        return false;
+        Power power = _powerList.FirstOrDefault(x => x is T);
+        if (power == null)
+            return false;
+        return !onlyActive || (LoreManager.Module?.AcquiredPowers?.Contains(power.PowerName) ?? false);
     }
 
+    /// <summary>
+    /// Disables all powers. WHO WOULD'VE THOUGHT??? :O
+    /// </summary>
     internal static void DisableAllPowers()
     {
         CanPowersActivate = false;
-        foreach (Power power in ObtainedPowers)
+        foreach (Power power in _powerList.Where(x => x.State == PowerState.Active))
             power.DisablePower(true);
     }
 
     /// <summary>
-    /// Loads the acquired powers and tags of powers in the save file.
+    /// Adds a power to the internal list.
     /// </summary>
-    /// <param name="saveData"></param>
-    internal static void LoadPowers(LoreMasterLocalSaveData saveData)
+    /// <param name="power">The power to add. Only one power per type can be added.</param>
+    public static void AddPower(Power power)
     {
-        ObtainedPowers.Clear();
-        foreach (string key in saveData.Tags.Keys)
-        {
-            _powerList[key].StayTwisted = saveData.Tags[key].Item2;
-        }
-
-        foreach (string key in saveData.ObtainedPowerKeys)
-        {
-            // Since this method would normally activate the power instantly, we add the power later. This is because I'm unsure when local settings are loaded.
-            if (string.Equals(key, "dream warrior"))
-                ObtainedPowers.Add(new PlaceholderPower());
-            GetPowerByKey(key, out Power pow, false);
-            if (pow != null)
-                ObtainedPowers.Add(pow);
-        }
+        if (!_powerList.Any(x => x.GetType() == power.GetType()))
+            _powerList.Add(power);
     }
-
-    /// <summary>
-    /// Loads power specific data in the save file.
-    /// </summary>
-    /// <param name="saveData"></param>
-    internal static void LoadPowerData(LocalPowerSaveData saveData)
-    {
-        if (saveData == null)
-            return;
-        GloryOfTheWealthPower.GloryCost = saveData.GloryCost;
-        StagAdoptionPower.Instance.CanSpawnStag = saveData.CanSpawnStag;
-    }
-
-    /// <summary>
-    /// Saves the acquired powers and tags.
-    /// </summary>
-    internal static void SavePowers(ref LoreMasterLocalSaveData saveData)
-    {
-        foreach (string key in _powerList.Keys)
-        {
-            if (ObtainedPowers.Contains(_powerList[key]))
-                saveData.ObtainedPowerKeys.Add(key);
-        }
-
-        // Place the fake powers in the save data as well.
-        if (ObtainedPowers.Any(x => x is PlaceholderPower))
-            for (int i = 0; i < ObtainedPowers.Count(x => x is PlaceholderPower); i++)
-                saveData.ObtainedPowerKeys.Add("dream warrior");
-    }
-
-    /// <summary>
-    /// Prepare the save data for power specific data.
-    /// </summary>
-    internal static LocalPowerSaveData PreparePowerData() => new()
-    {
-        CanSpawnStag = StagAdoptionPower.Instance.CanSpawnStag,
-        GloryCost = GloryOfTheWealthPower.GloryCost
-    };
-
-
-    internal static void AddPower(string key, Power power) => _powerList.Add(key, power);
 
     #endregion
 
     /// <summary>
     /// Let all powers execute their behaviour for entering a new room.
     /// </summary>
-    public static void ExecuteSceneActions()
+    internal static void ExecuteSceneActions()
     {
-        foreach (Power power in ObtainedPowers)
-            if (power.State != PowerState.Disabled && power.SceneAction != null)
+        foreach (Power power in _powerList)
+            if (power.State == PowerState.Active && power.SceneAction != null)
                 try
                 {
-                    if (power.State == PowerState.Twisted || (SettingManager.Instance.GameMode != GameMode.Heroic && SettingManager.Instance.GameMode != GameMode.Disabled))
-                        power.SceneAction.Invoke();
+                    power.SceneAction.Invoke();
                 }
                 catch (Exception exception)
                 {
                     LoreMaster.Instance.LogError("Error while executing scene action for " + power.PowerName + ": " + exception.Message + "StackTrace: " + exception.StackTrace);
                 }
-    }
-
-    /// <summary>
-    /// Updates the lore tracker.
-    /// </summary>
-    public static void UpdateTracker(Area areaToUpdate)
-    {
-        try
-        {
-            if (ObtainedPowers.Contains(_powerList["COMPLETION_RATE_UNLOCKED"]))
-            {
-                GreaterMindPower logPower = (GreaterMindPower)_powerList["COMPLETION_RATE_UNLOCKED"];
-                if (logPower.State == PowerState.Active)
-                    logPower.UpdateLoreCounter(ObtainedPowers, _powerList.Values, areaToUpdate, true);
-            }
-        }
-        catch (Exception exception)
-        {
-            LoreMaster.Instance.LogError(exception.Message);
-        }
     }
 
     #endregion

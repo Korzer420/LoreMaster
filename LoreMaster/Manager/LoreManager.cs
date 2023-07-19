@@ -1,49 +1,58 @@
+using LoreMaster.ItemChangerData;
+using LoreMaster.LorePowers.QueensGarden;
+using LoreMaster.LorePowers;
+
 namespace LoreMaster.Manager;
 
 /// <summary>
 /// Manager for handling the lore related logic.
 /// </summary>
-internal class LoreManager
+internal static class LoreManager
 {
-    #region Constructors
+    #region Properties
 
-    public LoreManager() => Instance = this;
+    public static LorePowerModule Module { get; set; }
+
+    public static bool UseCustomText { get; set; }
+
+    public static bool UseHints { get; set; }
 
     #endregion
 
-    #region Properties
+    #region Eventhandler
+
+    private static void PlayMakerFSM_OnEnable(On.PlayMakerFSM.orig_OnEnable orig, PlayMakerFSM self)
+    {
+        if (string.Equals(self.gameObject.name, "Elderbug") && string.Equals(self.FsmName, "npc_control"))
+        {
+            self.transform.localScale = new(2f, 2f, 2f);
+            self.transform.localPosition = new(126.36f, 12.35f, 0f);
+        }
+        else if (string.Equals(self.FsmName, "Thorn Counter"))
+            PowerManager.GetPower<QueenThornsPower>().ModifyThorns(self);
+        orig(self);
+    }
 
     /// <summary>
-    /// Gets or sets that powers should display their custom text (if available)
+    /// Event handler to disable all powers after a final boss has been killed.
     /// </summary>
-    public bool UseCustomText { get; set; } = true;
+    private static void EndAllPowers(On.HutongGames.PlayMaker.Actions.SendEventByName.orig_OnEnter orig, HutongGames.PlayMaker.Actions.SendEventByName self)
+    {
+        orig(self);
+        if (string.Equals(self.sendEvent.Value, "ALL CHARMS END") && (string.Equals(self.Fsm.GameObjectName, "Hollow Knight Boss")
+            || string.Equals(self.Fsm.GameObjectName, "Radiance") || string.Equals(self.Fsm.GameObjectName, "Absolute Radiance")))
+            PowerManager.DisableAllPowers();
+    }
 
-    /// <summary>
-    /// Gets or sets if hints should be displayed instead of clear descriptions.
-    /// </summary>
-    public bool UseHints { get; set; } = true;
+    #endregion
 
-    /// <summary>
-    /// Gets or sets the value, that indicates if the player can read lore tablets. (Rando only)
-    /// </summary>
-    public bool CanRead { get; set; } = true;
+    #region Methods
 
-    /// <summary>
-    /// Gets or sets the value, that indicates if the player can listen to npc.
-    /// </summary>
-    public bool CanListen { get; set; } = true;
-
-    /// <summary>
-    /// Gets or sets the amount of joker scrolls, that the player can use to obtain a power of their choice.
-    /// </summary>
-    public int JokerScrolls { get; set; } = 3;
-
-    /// <summary>
-    /// Gets or sets the amount of cleansing scrolls, that the player can use to undo a twisted obtain power of their choice.
-    /// </summary>
-    public int CleansingScrolls { get; set; } = 3;
-
-    public static LoreManager Instance { get; set; }
+    public static void Initialize()
+    {
+        On.PlayMakerFSM.OnEnable += PlayMakerFSM_OnEnable;
+        On.HutongGames.PlayMaker.Actions.SendEventByName.OnEnter += EndAllPowers;
+    }
 
     #endregion
 }

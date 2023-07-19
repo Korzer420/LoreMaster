@@ -1,5 +1,6 @@
 using KorzUtils.Helper;
 using LoreMaster.Enums;
+using LoreMaster.LorePowers.Ancient_Basin;
 using LoreMaster.Manager;
 using System.Collections;
 using UnityEngine;
@@ -131,7 +132,7 @@ public class OverwhelmingPowerPower : Power
         yield return new WaitForSeconds(LoreMaster.Instance.Generator.Next(30, 121));
         // The shade spawn is determined by the soul limiter, which means to prevent the shade from spawning until the effect is over.
         if (string.Equals(PlayerData.instance.shadeScene, "None")
-            || (PowerManager.HasObtainedPower("ABYSS_TUT_TAB_01")))
+            || PowerManager.HasObtainedPower<WeDontTalkAboutShadePower>())
         {
             PlayerData.instance.EndSoulLimiter();
             PlayMakerFSM.BroadcastEvent("SOUL LIMITER DOWN");

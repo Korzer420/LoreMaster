@@ -40,7 +40,7 @@ public abstract class Power
     /// <summary>
     /// Gets the corresponding language key to activate the ability.
     /// </summary>
-    public string CorrespondingKey => Properties.PowerKeys.ResourceManager.GetString(GetType().Name);
+    public virtual string CorrespondingKey => Properties.PowerKeys.ResourceManager.GetString(GetType().Name);
 
     /// <summary>
     /// Gets or sets the name of the power.
@@ -174,27 +174,7 @@ public abstract class Power
         {
             if (InitializePower())
             {
-                if ((!PowerManager.ObtainedPowers.Contains(this) && State != PowerState.Twisted && (SettingManager.Instance.GameMode != GameMode.Normal && SettingManager.Instance.GameMode != GameMode.Disabled))
-                    || (State == PowerState.Disabled && PowerManager.ObtainedPowers.Contains(this) && StayTwisted))
-                {
-                    TwistEnable();
-                    State = PowerState.Twisted;
-                }
-                else if (State == PowerState.Twisted && PowerManager.ObtainedPowers.Contains(this) && !StayTwisted)
-                {
-                    TwistDisable();
-                    if (SettingManager.Instance.GameMode == GameMode.Hard)
-                        Enable();
-                    State = PowerState.Active;
-                }
-                else if (State == PowerState.Disabled && PowerManager.ObtainedPowers.Contains(this) && !StayTwisted)
-                {
-                    if (SettingManager.Instance.GameMode != GameMode.Heroic && SettingManager.Instance.GameMode != GameMode.Disabled)
-                        Enable();
-                    State = PowerState.Active;
-                }
-                else
-                    return;
+                
                 LoreMaster.Instance.LogDebug("Activated " + PowerName);
             }
         }
@@ -218,11 +198,6 @@ public abstract class Power
             {
                 if (_runningCoroutine != null)
                     LoreMaster.Instance.Handler.StopCoroutine(_runningCoroutine);
-                // In heroic mode, powers fake to be active, which is why we ignore them in those cases.
-                if (State == PowerState.Active && (SettingManager.Instance.GameMode != GameMode.Heroic && SettingManager.Instance.GameMode != GameMode.Disabled))
-                    Disable();
-                else if (State == PowerState.Twisted)
-                    TwistDisable();
                 LoreMaster.Instance.LogDebug("Disabled " + PowerName);
                 State = PowerState.Disabled;
             }

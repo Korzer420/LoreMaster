@@ -1,7 +1,7 @@
 using HutongGames.PlayMaker;
 using KorzUtils.Helper;
 using LoreMaster.Enums;
-
+using LoreMaster.LorePowers.Crossroads;
 using LoreMaster.Manager;
 using System;
 using System.Collections;
@@ -40,7 +40,7 @@ public class DiamondCorePower : Power
 
     #region Properties
 
-    public bool HasDiamondDash => PowerManager.HasObtainedPower("MYLA");
+    public bool HasDiamondDash => PowerManager.HasObtainedPower<DiamondDashPower>();
 
     public SpriteRenderer CrystalHeartSprite => _crystalHeartSprite == null ? _crystalHeartSprite = GameObject.Find("_GameCameras").transform.Find("HudCamera/Inventory/Inv/Equipment/Super Dash").GetComponent<SpriteRenderer>() : _crystalHeartSprite;
 

@@ -1,4 +1,5 @@
 using LoreMaster.Enums;
+using LoreMaster.LorePowers.Dirtmouth;
 using LoreMaster.Manager;
 using Modding;
 using MonoMod.Cil;
@@ -58,7 +59,7 @@ public class ReluctantPilgrimPower : Power
 
                     // We check for fury, in case we have one hp (or two with screw the rules), we want the fury version of grubber fly instead of the normal one. 
                     if (PlayerData.instance.GetBool("equippedCharm_6")
-                    && (x == 1 || (x == 2 && PowerManager.HasObtainedPower("TUT_TAB_02"))))
+                    && (x == 1 || (x == 2 && PowerManager.HasObtainedPower<ScrewTheRulesPower>())))
                         return x;
                     // Always causes grubberfly to trigger, if joni's is not equipped at least.
                     return PlayerData.instance.GetInt("maxHealth");

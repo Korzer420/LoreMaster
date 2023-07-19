@@ -1,3 +1,4 @@
+using KorzUtils.Helper;
 using LoreMaster.Enums;
 using LoreMaster.Manager;
 using LoreMaster.UnityComponents;
@@ -63,7 +64,7 @@ public class MindblastOfUnnPower : Power
         };
 
         // Color all dream nail components accordingly (just for fun)
-        foreach (tk2dSprite dreamNailComponent in HeroManager.DreamNailSprites)
+        foreach (tk2dSprite dreamNailComponent in HeroHelper.DreamNailSprites)
             dreamNailComponent.color = dreamNailColor;
     }
 
@@ -126,7 +127,7 @@ public class MindblastOfUnnPower : Power
         On.EnemyDreamnailReaction.RecieveDreamImpact -= Apply_Mindblast;
         On.HealthManager.TakeDamage -= AddMindblastDamage;
         ModHooks.CharmUpdateHook -= UpdateDreamNailColor;
-        foreach (tk2dSprite dreamNailComponent in HeroManager.DreamNailSprites)
+        foreach (tk2dSprite dreamNailComponent in HeroHelper.DreamNailSprites)
             dreamNailComponent.color = Color.white;
     }
 

@@ -2,22 +2,20 @@
 using LoreCore.Items;
 using LoreMaster.LorePowers;
 using LoreMaster.Manager;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LoreMaster.ItemChangerData;
 
 /// <summary>
 /// Manages the acquisition of powers.
 /// </summary>
-internal class LorePowerModule : Module
+public class LorePowerModule : Module
 {
     #region Properties
 
     public List<string> AcquiredPowers { get; set; } = new();
+
+    public int AcquiredLore { get; set; } = 0;
 
     #endregion
 
@@ -25,11 +23,19 @@ internal class LorePowerModule : Module
 
     private string PowerLoreItem_AcquirePowerItem(string key, string originalText)
     {
-        if (PowerManager.GetPowerByKey(key, out Power power))
+        if (PowerManager.GetPowerByKey(key) is Power power)
         {
             AcquiredPowers.Add(power.PowerName);
+            if (LoreManager.UseCustomText && !string.IsNullOrEmpty(power.CustomText))
+                originalText = power.CustomText;
+            originalText += $"<page>[{power.PowerName}]<br>";
+            if (LoreManager.UseHints)
+                originalText += power.Hint;
+            else
+                originalText += power.Description;
             LorePage.UpdateLorePage();
         }
+        AcquiredLore++;
         return originalText;
     }
 
@@ -38,14 +44,12 @@ internal class LorePowerModule : Module
     #region Methods
 
     public override void Initialize()
-    {
-        PowerLoreItem.AcquirePowerItem += PowerLoreItem_AcquirePowerItem;
-    }
+        => PowerLoreItem.AcquirePowerItem += PowerLoreItem_AcquirePowerItem;
+
 
     public override void Unload()
-    {
-        PowerLoreItem.AcquirePowerItem -= PowerLoreItem_AcquirePowerItem;
-    }
+        => PowerLoreItem.AcquirePowerItem -= PowerLoreItem_AcquirePowerItem;
+
 
     #endregion
 }

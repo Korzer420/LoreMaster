@@ -83,15 +83,15 @@ public class DreamBlessingPower : Power
     public string GetExtraText(string key)
     {
         if (key.Equals("DREAMERS_INSPECT_RG2"))
-            return LoreManager.Instance.UseHints ? " Through her knowledge she exposes the foes biggest weakness." : " Per 100 Essence you have a 1% chance to instant kill the enemy (capped at 175 damage).";
+            return LoreManager.UseHints ? " Through her knowledge she exposes the foes biggest weakness." : " Per 100 Essence you have a 1% chance to instant kill the enemy (capped at 175 damage).";
         else if (key.Equals("DREAMERS_INSPECT_RG3"))
-            return LoreManager.Instance.UseHints ? " His gaze may freeze the enemy in place." : " Roots the target for 3 seconds (15 seconds cooldown)";
+            return LoreManager.UseHints ? " His gaze may freeze the enemy in place." : " Roots the target for 3 seconds (15 seconds cooldown)";
         else if (key.Equals("DREAMERS_INSPECT_RG4"))
-            return LoreManager.Instance.UseHints ? " Invoking her children from her victim." : " Spawn 2 weavers for the current room.";
+            return LoreManager.UseHints ? " Invoking her children from her victim." : " Spawn 2 weavers for the current room.";
         else if (key.Equals("DREAMERS_INSPECT_RG5"))
             return StayTwisted 
-                ? " [Cursed: " + PowerName + "] " + (LoreManager.Instance.UseHints ? TwistedHint : TwistedDescription )
-                : " [" + PowerName + "] " + (LoreManager.Instance.UseHints ? "The dream artifact uses the power it absorbs from their powerful victims to use it's hidden power." : "Defeated Dreamers grant the dream nail an additional effect (doubled with awoken dreamnail).");
+                ? " [Cursed: " + PowerName + "] " + (LoreManager.UseHints ? TwistedHint : TwistedDescription )
+                : " [" + PowerName + "] " + (LoreManager.UseHints ? "The dream artifact uses the power it absorbs from their powerful victims to use it's hidden power." : "Defeated Dreamers grant the dream nail an additional effect (doubled with awoken dreamnail).");
         return string.Empty;
     }
 

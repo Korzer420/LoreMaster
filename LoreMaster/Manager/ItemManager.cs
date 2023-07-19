@@ -60,13 +60,6 @@ public static class ItemManager
 
     #region Placing
 
-    private static AbstractPlacement CreatePlacement(string locationName, string itemName)
-    {
-        AbstractPlacement placement = Finder.GetLocation(locationName).Wrap();
-        placement.Items.Add(Finder.GetItem(itemName));
-        return placement;
-    }
-
     private static List<AbstractPlacement> CreateTeleporter()
     {
         List<AbstractPlacement> teleporter = new();

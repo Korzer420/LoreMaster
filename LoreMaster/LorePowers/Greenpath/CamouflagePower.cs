@@ -1,3 +1,4 @@
+using KorzUtils.Helper;
 using LoreMaster.Enums;
 using LoreMaster.Manager;
 using System;
@@ -49,7 +50,7 @@ public class CamouflagePower : Power
             LoreMaster.Instance.Handler.StopCoroutine(_runningCoroutine);
         _isCamouflaged = false;
         PlayerData.instance.SetBool(nameof(PlayerData.instance.isInvincible), false);
-        HeroManager.Sprite.color = Color.white;
+        HeroHelper.Sprite.color = Color.white;
         On.HeroController.CanTakeDamage -= HeroController_CanTakeDamage;
     }
 
@@ -79,12 +80,12 @@ public class CamouflagePower : Power
             }
             if (passedTime >= 5f)
             {
-                HeroManager.Sprite.color = Color.green;
+                HeroHelper.Sprite.color = Color.green;
                 _isCamouflaged = true;
             }
             else
             {
-                HeroManager.Sprite.color = Color.white;
+                HeroHelper.Sprite.color = Color.white;
                 _isCamouflaged = false;
             }
         }
@@ -94,11 +95,11 @@ public class CamouflagePower : Power
     {
         while (true)
         {
-            if (HeroController.instance == null || HeroManager.Sprite == null)
-                yield return new WaitUntil(() => HeroController.instance != null && HeroManager.Sprite);
-            Color color = HeroManager.Sprite.color;
+            if (HeroController.instance == null || HeroHelper.Sprite == null)
+                yield return new WaitUntil(() => HeroController.instance != null && HeroHelper.Sprite);
+            Color color = HeroHelper.Sprite.color;
             color.a = 1f;
-            HeroManager.Sprite.color = color;
+            HeroHelper.Sprite.color = color;
             yield return null;
         }
     }

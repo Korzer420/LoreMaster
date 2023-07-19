@@ -115,7 +115,7 @@ public class BestMenderInTheWorldPower : Power
 
     private void RandomInt_OnEnter(On.HutongGames.PlayMaker.Actions.RandomInt.orig_OnEnter orig, HutongGames.PlayMaker.Actions.RandomInt self)
     {
-        if (string.Equals(self.Fsm.GameObjectName, "Mender Bug") && SettingManager.Instance.GameMode != GameMode.Disabled)
+        if (string.Equals(self.Fsm.GameObjectName, "Mender Bug"))
             self.min.Value = State == PowerState.Active ? 50 : 40;
         orig(self);
     }

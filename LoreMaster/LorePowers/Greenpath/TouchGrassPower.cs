@@ -1,3 +1,4 @@
+using KorzUtils.Helper;
 using LoreMaster.Enums;
 using LoreMaster.Manager;
 using System.Collections;
@@ -131,7 +132,7 @@ public class TouchGrassPower : Power
             float passedTime = 0f;
             while (passedTime <= HealTime)
             {
-                if (_triggeredCollider == null || HeroManager.Collider == null || (!_triggeredCollider.IsTouching(HeroManager.Collider) && !HeroManager.Collider.IsTouching(_triggeredCollider)))
+                if (_triggeredCollider == null || HeroHelper.Collider == null || (!_triggeredCollider.IsTouching(HeroHelper.Collider) && !HeroHelper.Collider.IsTouching(_triggeredCollider)))
                 {
                     _currentlyRunning = false;
                     yield break;

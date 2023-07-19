@@ -73,47 +73,47 @@ internal class LorePage
         {
             for (int i = 0; i < _loreObjects.Length; i++)
             {
-                if (_loreObjects[i] == null)
-                {
-                    LoreMaster.Instance.LogDebug("Lore Object " + i + " doesn't exist");
-                    continue;
-                }
+                //if (_loreObjects[i] == null)
+                //{
+                //    LoreMaster.Instance.LogDebug("Lore Object " + i + " doesn't exist");
+                //    continue;
+                //}
 
-                if (_powers[i].State == PowerState.Active)
-                {
-                    _loreObjects[i].GetComponentInChildren<SpriteRenderer>().sprite = _sprites[_powers[i].Location];
-                    _loreObjects[i].GetComponentInChildren<SpriteRenderer>().color = Color.white;
-                    _loreObjects[i].transform.eulerAngles = new Vector3(0f, 0f, 0f);
-                }
-                else if (_powers[i].State == PowerState.Twisted)
-                {
-                    _loreObjects[i].GetComponentInChildren<SpriteRenderer>().sprite = _sprites[_powers[i].Location];
-                    _loreObjects[i].GetComponentInChildren<SpriteRenderer>().color = new(1f, 0f, 1f);
-                    _loreObjects[i].transform.eulerAngles = new Vector3(0f, 0f, 180f);
-                }
-                else if (PowerManager.ObtainedPowers.Contains(_powers[i]))
-                {
-                    _loreObjects[i].GetComponentInChildren<SpriteRenderer>().sprite = _notActive;
-                    _loreObjects[i].GetComponentInChildren<SpriteRenderer>().color = Color.red;
-                    _loreObjects[i].transform.eulerAngles = new Vector3(0f, 0f, 0f);
-                }
-                else
-                {
-                    _loreObjects[i].GetComponentInChildren<SpriteRenderer>().sprite = _emptySprite;
-                    _loreObjects[i].GetComponentInChildren<SpriteRenderer>().color = Color.white;
-                    _loreObjects[i].transform.eulerAngles = new Vector3(0f, 0f, 0f);
-                }
+                //if (_powers[i].State == PowerState.Active)
+                //{
+                //    _loreObjects[i].GetComponentInChildren<SpriteRenderer>().sprite = _sprites[_powers[i].Location];
+                //    _loreObjects[i].GetComponentInChildren<SpriteRenderer>().color = Color.white;
+                //    _loreObjects[i].transform.eulerAngles = new Vector3(0f, 0f, 0f);
+                //}
+                //else if (_powers[i].State == PowerState.Twisted)
+                //{
+                //    _loreObjects[i].GetComponentInChildren<SpriteRenderer>().sprite = _sprites[_powers[i].Location];
+                //    _loreObjects[i].GetComponentInChildren<SpriteRenderer>().color = new(1f, 0f, 1f);
+                //    _loreObjects[i].transform.eulerAngles = new Vector3(0f, 0f, 180f);
+                //}
+                //else if (PowerManager.HasObtainedPower)
+                //{
+                //    _loreObjects[i].GetComponentInChildren<SpriteRenderer>().sprite = _notActive;
+                //    _loreObjects[i].GetComponentInChildren<SpriteRenderer>().color = Color.red;
+                //    _loreObjects[i].transform.eulerAngles = new Vector3(0f, 0f, 0f);
+                //}
+                //else
+                //{
+                //    _loreObjects[i].GetComponentInChildren<SpriteRenderer>().sprite = _emptySprite;
+                //    _loreObjects[i].GetComponentInChildren<SpriteRenderer>().color = Color.white;
+                //    _loreObjects[i].transform.eulerAngles = new Vector3(0f, 0f, 0f);
+                //}
             }
             _stagEgg.sprite = StagAdoptionPower.Instance.CanSpawnStag
                 ? StagAdoptionPower.Instance.InventorySprites[0]
                 : StagAdoptionPower.Instance.InventorySprites[1];
-            _controlElements["Joker"].SetActive(LoreManager.Instance.JokerScrolls >= 0);
-            _controlElements["Joker"].GetComponentInChildren<TextMeshPro>().text = LoreManager.Instance.JokerScrolls.ToString();
-            _controlElements["Cleanse"].SetActive(LoreManager.Instance.CleansingScrolls >= 0);
-            _controlElements["Cleanse"].GetComponentInChildren<TextMeshPro>().text = LoreManager.Instance.CleansingScrolls.ToString();
+            //_controlElements["Joker"].SetActive(LoreManager.JokerScrolls >= 0);
+            //_controlElements["Joker"].GetComponentInChildren<TextMeshPro>().text = LoreManager.JokerScrolls.ToString();
+            //_controlElements["Cleanse"].SetActive(LoreManager.CleansingScrolls >= 0);
+            //_controlElements["Cleanse"].GetComponentInChildren<TextMeshPro>().text = LoreManager.CleansingScrolls.ToString();
 
-            _totalLore.SetActive(true);
-            _totalLore.GetComponent<TextMeshPro>().text = "Total Lore amount: " + PowerManager.ObtainedPowers.Count;
+            //_totalLore.SetActive(true);
+            //_totalLore.GetComponent<TextMeshPro>().text = "Total Lore amount: " + PowerManager.ObtainedPowers.Count;
 
         }
         catch (Exception exception)
@@ -480,7 +480,7 @@ internal class LorePage
                     _lastState = "Select Joker Scroll";
                     _controlElements["powerTitle"].GetComponent<TextMeshPro>().text = "Knowledge Scroll";
                     _controlElements["powerDescription"].GetComponent<TextMeshPro>().text = "A cryptic scroll written by Elderbug. Apparently this can be used once to obtain a power of your choice.";
-                    _controlElements["confirmButton"].SetActive(LoreManager.Instance.JokerScrolls > 0);
+                    //_controlElements["confirmButton"].SetActive(LoreManager.JokerScrolls > 0);
                 })
             }
         });
@@ -491,19 +491,19 @@ internal class LorePage
             {
                 new Lambda(() =>
                 {
-                    if (LoreManager.Instance.JokerScrolls >= 1)
-                    {
-                        if (_selectedEffect == 1)
-                        {
-                            _selectedEffect = 0;
-                            interactSprite.GetComponent<SpriteRenderer>().sprite = null;
-                        }
-                        else
-                        {
-                            _selectedEffect = 1;
-                            interactSprite.GetComponent<SpriteRenderer>().sprite = jokerScroll.GetComponent<SpriteRenderer>().sprite;
-                        }
-                    }
+                    //if (LoreManager.JokerScrolls >= 1)
+                    //{
+                    //    if (_selectedEffect == 1)
+                    //    {
+                    //        _selectedEffect = 0;
+                    //        interactSprite.GetComponent<SpriteRenderer>().sprite = null;
+                    //    }
+                    //    else
+                    //    {
+                    //        _selectedEffect = 1;
+                    //        interactSprite.GetComponent<SpriteRenderer>().sprite = jokerScroll.GetComponent<SpriteRenderer>().sprite;
+                    //    }
+                    //}
                     fsm.SendEvent("FINISHED");
                 })
             }
@@ -531,7 +531,7 @@ internal class LorePage
                     }
                     _controlElements["powerTitle"].GetComponent<TextMeshPro>().text = "Cleansing Scroll";
                     _controlElements["powerDescription"].GetComponent<TextMeshPro>().text = "A mysterious scroll written by Elderbug. If he's right, you can undo a curse spoken by acquired knowledge from you once.";
-                    _controlElements["confirmButton"].SetActive(LoreManager.Instance.CleansingScrolls > 0);
+                    //_controlElements["confirmButton"].SetActive(LoreManager.CleansingScrolls > 0);
                 })
             }
         });
@@ -542,19 +542,19 @@ internal class LorePage
             {
                 new Lambda(() =>
                 {
-                    if (LoreManager.Instance.CleansingScrolls >= 1)
-                    {
-                        if (_selectedEffect == 2)
-                        {
-                            _selectedEffect = 0;
-                            interactSprite.GetComponent<SpriteRenderer>().sprite = null;
-                        }
-                        else
-                        {
-                            _selectedEffect = 2;
-                            interactSprite.GetComponent<SpriteRenderer>().sprite = cleanseScroll.GetComponent<SpriteRenderer>().sprite;
-                        }
-                    }
+                    //if (LoreManager.CleansingScrolls >= 1)
+                    //{
+                    //    if (_selectedEffect == 2)
+                    //    {
+                    //        _selectedEffect = 0;
+                    //        interactSprite.GetComponent<SpriteRenderer>().sprite = null;
+                    //    }
+                    //    else
+                    //    {
+                    //        _selectedEffect = 2;
+                    //        interactSprite.GetComponent<SpriteRenderer>().sprite = cleanseScroll.GetComponent<SpriteRenderer>().sprite;
+                    //    }
+                    //}
                     fsm.SendEvent("FINISHED");
                 })
             }

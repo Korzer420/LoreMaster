@@ -393,7 +393,7 @@ public class BagOfMushroomsPower : Power
     {
         if (active)
         {
-            if (SettingManager.Instance.DisableYellowMushroom)
+            if (/*SettingManager.Instance.DisableYellowMushroom*/true)
                 HeroController.instance.AddMPCharge(HasEatenTwice ? 5 : 10);
             else
             {
@@ -496,7 +496,7 @@ public class BagOfMushroomsPower : Power
             {
                 passedTime = 0f;
                 timer = LoreMaster.Instance.Generator.Next(10, 61);
-                if (SettingManager.Instance.DisableYellowMushroom)
+                if (passedTime >= 5f/*SettingManager.Instance.DisableYellowMushroom*/)
                 {
                     _twistedTimeScale = 1 + (float)LoreMaster.Instance.Generator.NextDouble();
                     AdrenalineMushroom(true);

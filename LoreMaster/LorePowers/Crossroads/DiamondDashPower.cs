@@ -1,7 +1,7 @@
 using HutongGames.PlayMaker.Actions;
 using KorzUtils.Helper;
 using LoreMaster.Enums;
-
+using LoreMaster.LorePowers.Peaks;
 using LoreMaster.Manager;
 using System;
 using System.Collections;
@@ -40,7 +40,7 @@ public class DiamondDashPower : Power
     /// <summary>
     /// Gets the indicator if diamond core has also been acquired.
     /// </summary>
-    public bool HasDiamondCore => PowerManager.HasObtainedPower("QUIRREL");
+    public bool HasDiamondCore => PowerManager.HasObtainedPower<DiamondCorePower>();
 
     /// <inheritdoc/>
     public override Action SceneAction => () =>
