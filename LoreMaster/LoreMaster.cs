@@ -1,3 +1,9 @@
+using ItemChanger.Locations;
+using ItemChanger.Tags;
+using ItemChanger.UIDefs;
+using ItemChanger;
+using LoreMaster.ItemChangerData.Items;
+using LoreMaster.ItemChangerData;
 using LoreMaster.LorePowers;
 using LoreMaster.Manager;
 using LoreMaster.SaveManagement;
@@ -9,6 +15,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
+using ItemChanger.Placements;
 
 namespace LoreMaster;
 
@@ -18,8 +25,8 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
 
     public LoreMaster()
     {
-        InitializeManager();
-        LorePage.PassPowers(PowerManager.GetAllPowers().ToList());
+        Instance = this;
+        MenuManager.AddMode();
         InventoryHelper.AddInventoryPage(InventoryPageType.Empty, "Lore", "LoreMaster", "LoreMaster", "LoreArtifact", LorePage.GeneratePage);
     }
 
@@ -130,12 +137,14 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
                         PreloadedObjects.Add(subKey, toAdd);
                         GameObject.DontDestroyOnLoad(toAdd);
                     }
+
+            // IC
+            DefineTeleporter();
         }
         catch (Exception exception)
         {
             LogError("Error while preloading: " + exception.Message);
         }
-
     }
 
     /// <summary>
@@ -198,15 +207,6 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         return menu;
     }
 
-    /// <summary>
-    /// Initializes all manager.
-    /// </summary>
-    public void InitializeManager()
-    {
-        Instance = this;
-        MenuManager.AddMode();
-    }
-
     #endregion
 
     #region Save Management
@@ -218,7 +218,6 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
     public void OnLoadGlobal(LoreMasterGlobalSaveData globalSaveData)
     {
         LogDebug("Loaded global data");
-        InitializeManager();
         LoreManager.UseHints = globalSaveData.ShowHint;
         LoreManager.UseCustomText = globalSaveData.EnableCustomText;
         LorePowers.Crossroads.GreaterMindPower.PermanentTracker = globalSaveData.TrackerPermanently;
@@ -268,7 +267,74 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         return saveData;
     }
 
-    #endregion 
+    #endregion
+
+    #region IC Setup
+
+    private static void DefineTeleporter()
+    {
+        Finder.DefineCustomLocation(new CoordinateLocation() { x = 35.0f, y = 5.4f, elevation = 0, sceneName = "Ruins1_27", name = "City_Teleporter" });
+        Finder.DefineCustomLocation(new CoordinateLocation() { x = 57f, y = 5f, elevation = 0, sceneName = "Room_temple", name = "Temple_Teleporter" });
+        Finder.DefineCustomItem(new TeleportItem()
+        {
+            name = "City_Ticket",
+            UIDef = new MsgUIDef()
+            {
+                name = new BoxedString("Lumafly Express"),
+                shopDesc = new BoxedString("If you see this, something went wrong."),
+                sprite = (Finder.GetItem(ItemNames.Tram_Pass).GetResolvedUIDef() as MsgUIDef).sprite
+            },
+            tags = new List<Tag>()
+            {
+                new PersistentItemTag() { Persistence = Persistence.Persistent},
+                new CompletionWeightTag() { Weight = 0}
+            }
+        });
+        Finder.DefineCustomItem(new TeleportItem()
+        {
+            name = "Temple_Ticket",
+            UIDef = new MsgUIDef()
+            {
+                name = new BoxedString("Lumafly Express"),
+                shopDesc = new BoxedString("If you see this, something went wrong."),
+                sprite = (Finder.GetItem(ItemNames.Tram_Pass).GetResolvedUIDef() as MsgUIDef).sprite
+            },
+            tags = new List<Tag>()
+            {
+                new PersistentItemTag() { Persistence = Persistence.Persistent},
+                new CompletionWeightTag() { Weight = 0 },
+                new CostTag()
+                {
+                    Cost = new Paypal()
+                }
+            }
+        });
+    }
+
+    private static List<AbstractPlacement> CreateTeleporter()
+    {
+        List<AbstractPlacement> teleporter = new();
+        MutablePlacement placement = new("City_Teleporter");
+        placement.Location = Finder.GetLocation("City_Teleporter") as CoordinateLocation;
+        placement.Cost = new Paypal() { ToTemple = true };
+        placement.containerType = Container.Shiny;
+        TeleportItem teleportItem = Finder.GetItem("City_Ticket") as TeleportItem;
+        teleportItem.ToTemple = true;
+        placement.Add(teleportItem);
+        teleporter.Add(placement);
+
+        placement = new("Temple_Teleporter");
+        placement.Location = Finder.GetLocation("Temple_Teleporter") as CoordinateLocation;
+        placement.Cost = new Paypal() { ToTemple = false };
+        placement.containerType = Container.Shiny;
+        teleportItem = Finder.GetItem("City_Ticket") as TeleportItem;
+        teleportItem.ToTemple = false;
+        placement.Add(teleportItem);
+        teleporter.Add(placement);
+        return teleporter;
+    }
+
+    #endregion
 
     #endregion
 }

@@ -16,12 +16,6 @@ internal class ExtraSettings
 
     public bool SteelSoul { get; set; }
 
-    public CursedLore UseCursedLore { get; set; }
-
-    public int MinCursedLore { get; set; } = 1;
-
-    public int MaxCursedLore { get; set; } = 10;
-
     #endregion
 }
 

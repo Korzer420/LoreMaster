@@ -5,7 +5,7 @@ using LoreMaster.LorePowers;
 namespace LoreMaster.Manager;
 
 /// <summary>
-/// Manager for handling the lore related logic.
+/// Manager for handling basic operations of this mod.
 /// </summary>
 internal static class LoreManager
 {
@@ -52,6 +52,12 @@ internal static class LoreManager
     {
         On.PlayMakerFSM.OnEnable += PlayMakerFSM_OnEnable;
         On.HutongGames.PlayMaker.Actions.SendEventByName.OnEnter += EndAllPowers;
+    }
+
+    public static void Unload()
+    {
+        On.PlayMakerFSM.OnEnable -= PlayMakerFSM_OnEnable;
+        On.HutongGames.PlayMaker.Actions.SendEventByName.OnEnter -= EndAllPowers;
     }
 
     #endregion

@@ -9,6 +9,7 @@ using LoreMaster.LorePowers.CityOfTears;
 using LoreMaster.LorePowers.FungalWastes;
 using LoreMaster.LorePowers.HowlingCliffs;
 using LoreMaster.Manager;
+using SFCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -141,7 +142,7 @@ internal class LorePage
             FsmInt indexVariable = new() { Name = "ItemIndex", Value = 0 };
             intVariables.Add(indexVariable);
             fsm.FsmVariables.IntVariables = intVariables.ToArray();
-
+            
             // Generates the power holder
             GameObject powerList = new("Power List");
             powerList.transform.SetParent(lorePage.transform);

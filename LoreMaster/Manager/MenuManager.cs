@@ -63,10 +63,6 @@ internal class MenuManager : ModeMenuConstructor
                 : selectedGameMode == GameMode.Hard
                     ? 20
                     : 25;
-            if (Settings.MinCursedLore < minValue)
-                (CursedRange.Items[0] as NumericEntryField<int>).SetValue(minValue);
-            if (Settings.MaxCursedLore < maxValue)
-                (CursedRange.Items[1] as NumericEntryField<int>).SetValue(maxValue);
         }
         else
         {

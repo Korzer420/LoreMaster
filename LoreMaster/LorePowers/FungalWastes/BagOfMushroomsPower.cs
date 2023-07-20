@@ -1,6 +1,5 @@
 using KorzUtils.Helper;
 using LoreMaster.Enums;
-
 using LoreMaster.Manager;
 using Modding;
 using Mono.Cecil.Cil;
@@ -20,8 +19,7 @@ public class BagOfMushroomsPower : Power
     private int _selectedEffect;
     private int _activeEffect;
     private GameObject _mushroomBag;
-    private Sprite _mushroomSprite;
-    private Color[] _colors = new Color[4] { Color.white, Color.yellow, Color.red, Color.green };
+    private Sprite[] _mushroomSprites = new Sprite[4];
     private int[] _lastMushrooms = new int[2] { -1, -1 };
 
     // Needed for mega mushroom
@@ -42,7 +40,10 @@ public class BagOfMushroomsPower : Power
     {
         Hint += " WARNING: The yellow one causes a nausea effect! If you don't want that to happen, you can turn off the effect in the mod settings. Eating the yellow mushroom will then only give a small effect.";
         Description += " WARNING: The yellow one causes a nausea effect! If you don't want that to happen, you can turn off the effect in the mod settings. Eating the yellow mushroom will then only give a small effect.";
-        _mushroomSprite = SpriteHelper.CreateSprite<LoreMaster>("Base.MushroomChoice");
+        _mushroomSprites[0] = SpriteHelper.CreateSprite<LoreMaster>("Base.CleansingMushroom");
+        _mushroomSprites[1] = SpriteHelper.CreateSprite<LoreMaster>("Base.AdrenalineMushroom");
+        _mushroomSprites[2] = SpriteHelper.CreateSprite<LoreMaster>("Base.SuperMushroom");
+        _mushroomSprites[3] = SpriteHelper.CreateSprite<LoreMaster>("Base.MiniMushroom");
     }
 
     #endregion
@@ -59,7 +60,7 @@ public class BagOfMushroomsPower : Power
                 _mushroomBag.transform.SetParent(GameObject.Find("Knight")?.transform);
                 _mushroomBag.transform.localScale = new(1f, 1f);
                 _mushroomBag.transform.localPosition = new(.4f, .4f);
-                _mushroomBag.AddComponent<SpriteRenderer>().sprite = _mushroomSprite;
+                _mushroomBag.AddComponent<SpriteRenderer>().sprite = _mushroomSprites[0];
             }
             return _mushroomBag;
         }
@@ -241,7 +242,7 @@ public class BagOfMushroomsPower : Power
             RevertMushroom();
         _activeEffect = 0;
         _selectedEffect = LoreMaster.Instance.Generator.Next(1, 5);
-        MushroomBag.GetComponent<SpriteRenderer>().color = _colors[_selectedEffect - 1];
+        MushroomBag.GetComponent<SpriteRenderer>().sprite = _mushroomSprites[_selectedEffect - 1];
         MushroomBag.SetActive(false);
     }
 
@@ -270,7 +271,7 @@ public class BagOfMushroomsPower : Power
         _selectedEffect++;
         if (_selectedEffect > 4)
             _selectedEffect = 1;
-        MushroomBag.GetComponent<SpriteRenderer>().color = _colors[_selectedEffect - 1];
+        MushroomBag.GetComponent<SpriteRenderer>().sprite = _mushroomSprites[_selectedEffect - 1];
         yield return new WaitForSeconds(.5f);
         _pressed = false;
     }
@@ -337,7 +338,7 @@ public class BagOfMushroomsPower : Power
         yield return new WaitForSeconds(180f);
         _activeEffect = 0;
         _selectedEffect = LoreMaster.Instance.Generator.Next(1, 5);
-        MushroomBag.GetComponent<SpriteRenderer>().color = _colors[_selectedEffect - 1];
+        MushroomBag.GetComponent<SpriteRenderer>().sprite = _mushroomSprites[_selectedEffect - 1];
         MushroomBag.SetActive(true);
     }
 
