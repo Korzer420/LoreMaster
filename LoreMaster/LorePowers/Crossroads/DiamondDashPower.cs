@@ -90,9 +90,9 @@ public class DiamondDashPower : Power
     {
         _crystalHeartSprite = GameObject.Find("_GameCameras").transform.Find("HudCamera/Inventory/Inv/Equipment/Super Dash").GetComponent<SpriteRenderer>();
         _originalSprite = _crystalHeartSprite?.sprite;
-        _corelessSprite = SpriteHelper.CreateSprite<LoreMaster>("Base.DiamondHeart_Coreless");
-        _shelllessSprite = SpriteHelper.CreateSprite<LoreMaster>("Base.DiamondHeart_Shellless");
-        _diamondSprite = SpriteHelper.CreateSprite<LoreMaster>("Base.DiamondHeart");
+        _corelessSprite = SpriteHelper.CreateSprite<LoreMaster>("Sprites.DiamondHeart_Coreless");
+        _shelllessSprite = SpriteHelper.CreateSprite<LoreMaster>("Sprites.DiamondHeart_Shellless");
+        _diamondSprite = SpriteHelper.CreateSprite<LoreMaster>("Sprites.DiamondHeart");
         On.HutongGames.PlayMaker.Actions.Wait.OnEnter += Wait_OnEnter;
         On.HutongGames.PlayMaker.FsmStateAction.Finish += FsmStateAction_Finish;
     }

@@ -1,0 +1,219 @@
+[
+  {
+    "$type": "ItemChanger.Items.BoolItem, ItemChanger",
+    "fieldName": "hasStagEgg",
+    "setValue": true,
+    "name": "Stag_Egg",
+    "UIDef": {
+      "$type": "ItemChanger.UIDefs.MsgUIDef, ItemChanger",
+      "name": {
+        "$type": "ItemChanger.BoxedString, ItemChanger",
+        "value": "Stag Egg"
+      },
+      "shopDesc": {
+        "$type": "ItemChanger.BoxedString, ItemChanger",
+        "value": "If you're seeing this, something went wrong :("
+      },
+      "sprite": {
+        "$type": "LoreMaster.ItemChangerData.WrappedSprite, LoreMaster",
+        "Key": "Stag_Egg"
+      }
+    },
+    "tags": [
+      {
+        "$type": "ItemChanger.Tags.PersistentItemTag, ItemChanger",
+        "Persistence": "Persistent"
+      }
+    ],
+    "obtainState": 0
+  },
+  {
+    "$type": "LoreMaster.ItemChangerData.Items.TeleportItem, LoreMaster",
+    "name": "City_Ticket",
+    "UIDef": {
+      "$type": "ItemChanger.UIDefs.MsgUIDef, ItemChanger",
+      "name": {
+        "$type": "ItemChanger.BoxedString, ItemChanger",
+        "value": "Lumafly Express"
+      },
+      "shopDesc": {
+        "$type": "ItemChanger.BoxedString, ItemChanger",
+        "value": "If you're seeing this, something went wrong :("
+      },
+      "sprite": {
+        "$type": "ItemChanger.ItemChangerSprite, ItemChanger",
+        "key": "ShopIcons.TramPass"
+      }
+    },
+    "tags": [
+      {
+        "$type": "ItemChanger.Tags.PersistentItemTag, ItemChanger",
+        "Persistence": "Persistent"
+      },
+      {
+        "$type": "ItemChanger.Tags.CompletionWeightTag, ItemChanger",
+        "Weight": 0
+      },
+      {
+        "$type": "ItemChanger.CostTag, ItemChanger",
+        "Cost": {
+          "$type": "LoreMaster.ItemChangerData.Paypal, LoreMaster",
+          "ToTemple": true
+        }
+      }
+    ],
+    "obtainState": 0
+  },
+  {
+    "$type": "LoreMaster.ItemChangerData.Items.TeleportItem, LoreMaster",
+    "name": "Temple_Ticket",
+    "UIDef": {
+      "$type": "ItemChanger.UIDefs.MsgUIDef, ItemChanger",
+      "name": {
+        "$type": "ItemChanger.BoxedString, ItemChanger",
+        "value": "Lumafly Express"
+      },
+      "shopDesc": {
+        "$type": "ItemChanger.BoxedString, ItemChanger",
+        "value": "If you're seeing this, something went wrong :("
+      },
+      "sprite": {
+        "$type": "ItemChanger.ItemChangerSprite, ItemChanger",
+        "key": "ShopIcons.TramPass"
+      }
+    },
+    "tags": [
+      {
+        "$type": "ItemChanger.Tags.PersistentItemTag, ItemChanger",
+        "Persistence": "Persistent"
+      },
+      {
+        "$type": "ItemChanger.Tags.CompletionWeightTag, ItemChanger",
+        "Weight": 0
+      },
+      {
+        "$type": "ItemChanger.CostTag, ItemChanger",
+        "Cost": {
+          "$type": "LoreMaster.ItemChangerData.Paypal, LoreMaster",
+          "ToTemple": false
+        }
+      }
+    ],
+    "obtainState": 0
+  },
+  {
+    "$type": "ItemChanger.Items.IntItem, ItemChanger",
+    "fieldName": "mysticScrolls",
+    "amount": 1,
+    "name": "Mystic_Scroll",
+    "UIDef": {
+      "$type": "ItemChanger.UIDefs.MsgUIDef, ItemChanger",
+      "name": {
+        "$type": "ItemChanger.BoxedString, ItemChanger",
+        "value": "Mystical Scroll"
+      },
+      "shopDesc": {
+        "$type": "ItemChanger.BoxedString, ItemChanger",
+        "value": "I don't know why Elderbug did write all these scrolls with random poems, but he didn't mind that I took a few of him. So I can at least make some profit out of this, I guess."
+      },
+      "sprite": {
+        "$type": "LoreMaster.ItemChangerData.WrappedSprite, LoreMaster",
+        "key": "SummoningScroll"
+      }
+    },
+    "tags": null,
+    "obtainState": 0
+  },
+  {
+    "$type": "ItemChanger.Items.IntItem, ItemChanger",
+    "fieldName": "cleansingScrolls",
+    "amount": 1,
+    "name": "Cleansing_Scroll",
+    "UIDef": {
+      "$type": "ItemChanger.UIDefs.MsgUIDef, ItemChanger",
+      "name": {
+        "$type": "ItemChanger.BoxedString, ItemChanger",
+        "value": "Cleansing Scroll"
+      },
+      "shopDesc": {
+        "$type": "ItemChanger.BoxedString, ItemChanger",
+        "value": "I don't know why Elderbug did write all these scrolls with random poems, but he didn't mind that I took a few of him. So I can at least make some profit out of this, I guess."
+      },
+      "sprite": {
+        "$type": "LoreMaster.ItemChangerData.WrappedSprite, LoreMaster",
+        "key": "CurseDispell"
+      }
+    },
+    "tags": null,
+    "obtainState": 0
+  },
+  {
+    "$type": "ItemChanger.Items.IntItem, ItemChanger",
+    "fieldName": "majorGlyphSlots",
+    "amount": 1,
+    "name": "Major_Glyph",
+    "UIDef": {
+      "$type": "ItemChanger.UIDefs.MsgUIDef, ItemChanger",
+      "name": {
+        "$type": "ItemChanger.BoxedString, ItemChanger",
+        "value": "Major glyph slot"
+      },
+      "shopDesc": {
+        "$type": "ItemChanger.BoxedString, ItemChanger",
+        "value": "This vessel allows you to store the most powerful lore abilities that Elderbug has created."
+      },
+      "sprite": {
+        "$type": "ItemChanger.ItemChangerSprite, ItemChanger",
+        "key": "ShopIcons.CharmNotch"
+      }
+    },
+    "tags": null,
+    "obtainState": 0
+  },
+  {
+    "$type": "ItemChanger.Items.IntItem, ItemChanger",
+    "fieldName": "minorGlyphSlots",
+    "amount": 1,
+    "name": "Minor_Glyph",
+    "UIDef": {
+      "$type": "ItemChanger.UIDefs.MsgUIDef, ItemChanger",
+      "name": {
+        "$type": "ItemChanger.BoxedString, ItemChanger",
+        "value": "Minor glyph slot"
+      },
+      "shopDesc": {
+        "$type": "ItemChanger.BoxedString, ItemChanger",
+        "value": "This vessel allows you to store powerful lore abilities that Elderbug has created."
+      },
+      "sprite": {
+        "$type": "ItemChanger.ItemChangerSprite, ItemChanger",
+        "key": "ShopIcons.CharmNotch"
+      }
+    },
+    "tags": null,
+    "obtainState": 0
+  },
+  {
+    "$type": "ItemChanger.Items.IntItem, ItemChanger",
+    "fieldName": "smallGlyphSlots",
+    "amount": 1,
+    "name": "Small_Glyph",
+    "UIDef": {
+      "$type": "ItemChanger.UIDefs.MsgUIDef, ItemChanger",
+      "name": {
+        "$type": "ItemChanger.BoxedString, ItemChanger",
+        "value": "Small glyph slot"
+      },
+      "shopDesc": {
+        "$type": "ItemChanger.BoxedString, ItemChanger",
+        "value": "This vessel allows you to store weak lore abilities that Elderbug has created."
+      },
+      "sprite": {
+        "$type": "ItemChanger.ItemChangerSprite, ItemChanger",
+        "key": "ShopIcons.CharmNotch"
+      }
+    },
+    "tags": null,
+    "obtainState": 0
+  }
+]

@@ -1,6 +1,12 @@
+using ItemChanger;
+using KorzUtils.Helper;
 using LoreMaster.ItemChangerData;
-using LoreMaster.LorePowers.QueensGarden;
 using LoreMaster.LorePowers;
+using LoreMaster.SaveManagement;
+using Modding;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
 namespace LoreMaster.Manager;
 
@@ -9,28 +15,28 @@ namespace LoreMaster.Manager;
 /// </summary>
 internal static class LoreManager
 {
+    #region Members
+
+    private static bool _active;
+
+    #endregion
+
     #region Properties
 
     public static LorePowerModule Module { get; set; }
 
-    public static bool UseCustomText { get; set; }
+    public static LoreMasterGlobalSaveData GlobalSaveData { get; set; } = new();
 
-    public static bool UseHints { get; set; }
+    public static LoreMasterLocalSaveData LocalSaveData { get; set; } = new();
 
     #endregion
 
     #region Eventhandler
 
-    private static void PlayMakerFSM_OnEnable(On.PlayMakerFSM.orig_OnEnable orig, PlayMakerFSM self)
+    private static void SceneManager_activeSceneChanged(UnityEngine.SceneManagement.Scene arg0, UnityEngine.SceneManagement.Scene arg1)
     {
-        if (string.Equals(self.gameObject.name, "Elderbug") && string.Equals(self.FsmName, "npc_control"))
-        {
-            self.transform.localScale = new(2f, 2f, 2f);
-            self.transform.localPosition = new(126.36f, 12.35f, 0f);
-        }
-        else if (string.Equals(self.FsmName, "Thorn Counter"))
-            PowerManager.GetPower<QueenThornsPower>().ModifyThorns(self);
-        orig(self);
+        if (GameManager.instance?.IsGameplayScene() == true)
+            PowerManager.ExecuteSceneActions();
     }
 
     /// <summary>
@@ -44,20 +50,59 @@ internal static class LoreManager
             PowerManager.DisableAllPowers();
     }
 
+    private static bool ModHooks_GetPlayerBoolHook(string name, bool orig)
+    {
+        if (name == "LoreArtifact")
+            return _active;
+        return orig;
+    }
+
     #endregion
 
     #region Methods
 
     public static void Initialize()
     {
-        On.PlayMakerFSM.OnEnable += PlayMakerFSM_OnEnable;
+        ModHooks.GetPlayerBoolHook += ModHooks_GetPlayerBoolHook;
         On.HutongGames.PlayMaker.Actions.SendEventByName.OnEnter += EndAllPowers;
+        UnityEngine.SceneManagement.SceneManager.activeSceneChanged += SceneManager_activeSceneChanged;
+        LoreMaster.Instance.Handler.StartCoroutine(WaitForPlayerControl());
+        Module = ItemChangerMod.Modules.GetOrAdd<LorePowerModule>();
+        _active = true;
     }
 
     public static void Unload()
     {
-        On.PlayMakerFSM.OnEnable -= PlayMakerFSM_OnEnable;
+        if (!_active)
+            return;
+        ModHooks.GetPlayerBoolHook -= ModHooks_GetPlayerBoolHook;
+        UnityEngine.SceneManagement.SceneManager.activeSceneChanged -= SceneManager_activeSceneChanged;
         On.HutongGames.PlayMaker.Actions.SendEventByName.OnEnter -= EndAllPowers;
+        IEnumerable<Power> activePowers = PowerManager.GetAllActivePowers();
+        LoreMaster.Instance.Handler.StopAllCoroutines();
+        foreach (Power power in activePowers)
+            power.DisablePower(true);
+        Module = null;
+        _active = false;
+    }
+
+    private static IEnumerator WaitForPlayerControl()
+    {
+        yield return new WaitForFinishedEnteringScene();
+        // Just to make sure the controller exist. A desperate attempt.
+        if (HeroController.instance?.acceptingInput != true)
+            yield return new WaitUntil(() => HeroController.instance?.acceptingInput == true);
+        IEnumerable<Power> activePowers = PowerManager.GetAllActivePowers();
+        foreach (Power power in activePowers)
+            try
+            {
+                power.EnablePower();
+            }
+            catch (System.Exception exception)
+            {
+                string message = string.Format("Failed to active power: '{0}'. Error: '{1}'", power.PowerName, exception.ToString());
+                LogHelper.Write<LoreMaster>(message, KorzUtils.Enums.LogType.Error);
+            }
     }
 
     #endregion

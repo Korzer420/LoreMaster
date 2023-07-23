@@ -1,6 +1,8 @@
-﻿using ItemChanger.Modules;
+﻿using ItemChanger;
+using ItemChanger.Modules;
 using LoreCore.Items;
 using LoreMaster.LorePowers;
+using LoreMaster.LorePowers.QueensGarden;
 using LoreMaster.Manager;
 using System.Collections.Generic;
 
@@ -17,6 +19,12 @@ public class LorePowerModule : Module
 
     public int AcquiredLore { get; set; } = 0;
 
+    public static int MajorGlyphSlots { get; set; } = 0;
+
+    public static int MediumGlyphSlots { get; set; } = 0;
+
+    public static int SmallGlyphSlots { get; set; } = 0;
+
     #endregion
 
     #region Eventhandler
@@ -26,10 +34,10 @@ public class LorePowerModule : Module
         if (PowerManager.GetPowerByKey(key) is Power power)
         {
             AcquiredPowers.Add(power.PowerName);
-            if (LoreManager.UseCustomText && !string.IsNullOrEmpty(power.CustomText))
+            if (LoreManager.GlobalSaveData.EnableCustomText && !string.IsNullOrEmpty(power.CustomText))
                 originalText = power.CustomText;
             originalText += $"<page>[{power.PowerName}]<br>";
-            if (LoreManager.UseHints)
+            if (LoreManager.GlobalSaveData.ShowHint)
                 originalText += power.Hint;
             else
                 originalText += power.Description;
@@ -39,17 +47,23 @@ public class LorePowerModule : Module
         return originalText;
     }
 
+    private void ModifyThorns(PlayMakerFSM fsm) => PowerManager.GetPower<QueenThornsPower>().ModifyThorns(fsm);
+
     #endregion
 
     #region Methods
 
     public override void Initialize()
-        => PowerLoreItem.AcquirePowerItem += PowerLoreItem_AcquirePowerItem;
-
+    {
+        PowerLoreItem.AcquirePowerItem += PowerLoreItem_AcquirePowerItem;
+        Events.AddFsmEdit(new("Thorn Counter"), ModifyThorns);
+    }
 
     public override void Unload()
-        => PowerLoreItem.AcquirePowerItem -= PowerLoreItem_AcquirePowerItem;
-
+    {
+        PowerLoreItem.AcquirePowerItem -= PowerLoreItem_AcquirePowerItem;
+        Events.RemoveFsmEdit(new("Thorn Counter"), ModifyThorns);
+    }
 
     #endregion
 }

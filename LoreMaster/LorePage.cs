@@ -5,11 +5,7 @@ using ItemChanger.FsmStateActions;
 using KorzUtils.Helper;
 using LoreMaster.Enums;
 using LoreMaster.LorePowers;
-using LoreMaster.LorePowers.CityOfTears;
-using LoreMaster.LorePowers.FungalWastes;
 using LoreMaster.LorePowers.HowlingCliffs;
-using LoreMaster.Manager;
-using SFCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,9 +22,7 @@ internal class LorePage
 
     private static Sprite _emptySprite;
 
-    private static Sprite _notActive;
-
-    private static GameObject[] _loreObjects;
+    private static GameObject[] _glyphObjects;
 
     private static SpriteRenderer _stagEgg;
 
@@ -38,10 +32,6 @@ internal class LorePage
 
     private static string _lastState;
 
-    private static int _selectedEffect = 0;
-
-    private static GameObject _totalLore;
-
     #endregion
 
     #region Constructors
@@ -49,20 +39,13 @@ internal class LorePage
     static LorePage()
     {
         _emptySprite = GameObject.Find("_GameCameras").transform.Find("HudCamera/Inventory/Charms/Backboards/BB 3").GetComponent<SpriteRenderer>().sprite;
-        _notActive = SpriteHelper.CreateSprite<LoreMaster>("Base.DisabledPower");
         for (int i = 1; i < 16; i++)
-            _sprites.Add((Area)i, SpriteHelper.CreateSprite<LoreMaster>($"Base.Tablets.{(Area)i}"));
+            _sprites.Add((Area)i, SpriteHelper.CreateSprite<LoreMaster>($"Sprites.Tablets.{(Area)i}"));
     }
 
     #endregion
 
     #region Methods
-
-    /// <summary>
-    /// Passes the power to the inventory page.
-    /// </summary>
-    internal static void PassPowers(List<Power> powers)
-        => _powers = powers;
 
     /// <summary>
     /// Updates the inventory page according to the acquired and currently active powers.
@@ -72,7 +55,7 @@ internal class LorePage
     {
         try
         {
-            for (int i = 0; i < _loreObjects.Length; i++)
+            for (int i = 0; i < _glyphObjects.Length; i++)
             {
                 //if (_loreObjects[i] == null)
                 //{
@@ -137,7 +120,7 @@ internal class LorePage
             _controlElements.Clear();
             PlayMakerFSM fsm = lorePage.LocateMyFSM("Empty UI");
 
-            // Add index variable
+            // Add index variable for glyph slot
             List<FsmInt> intVariables = fsm.FsmVariables.IntVariables.ToList();
             FsmInt indexVariable = new() { Name = "ItemIndex", Value = 0 };
             intVariables.Add(indexVariable);
@@ -172,10 +155,10 @@ internal class LorePage
             // Generates all power objects
             float xPosition = -11f; // in 1,5f steps
             float yPosition = 4.6f; // in -2f steps
-            _loreObjects = new GameObject[_powers.Count];
-            for (int i = 1; i <= _powers.Count; i++)
+            _glyphObjects = new GameObject[21];
+            for (int i = 1; i <= 21; i++)
             {
-                GameObject tablet = new("Power " + i);
+                GameObject tablet = new("Glyph Slot " + i);
                 tablet.transform.SetParent(powerList.transform);
                 tablet.transform.localScale = new Vector3(.9f, .9f, 1f);
                 tablet.transform.position = new Vector3(xPosition, yPosition, -3f);
@@ -196,7 +179,7 @@ internal class LorePage
                 child.AddComponent<SpriteRenderer>().sprite = _emptySprite;
                 child.GetComponent<SpriteRenderer>().sortingLayerID = 629535577;
                 child.GetComponent<SpriteRenderer>().sortingLayerName = "HUD";
-                _loreObjects[i - 1] = tablet;
+                _glyphObjects[i - 1] = tablet;
             }
 
             // Removing the jump from arrow button to arrow button.
@@ -224,7 +207,7 @@ internal class LorePage
                 Name = "Powers",
                 Actions = new FsmStateAction[]
                 {
-                    new Lambda(() => fsm.gameObject.LocateMyFSM("Update Cursor").FsmVariables.FindFsmGameObject("Item").Value = _loreObjects[indexVariable.Value]),
+                    new Lambda(() => fsm.gameObject.LocateMyFSM("Update Cursor").FsmVariables.FindFsmGameObject("Item").Value = _glyphObjects[indexVariable.Value]),
                     new SetSpriteRendererOrder()
                     {
                         gameObject = new() { GameObject = fsm.FsmVariables.FindFsmGameObject("Cursor Glow") },
@@ -242,93 +225,94 @@ internal class LorePage
             // Add transition from init to main
             currentWorkingState.AddTransition("FINISHED", "Powers");
 
-            currentWorkingState = fsm.GetState("Powers");
+            //currentWorkingState = fsm.GetState("Powers");
 
-            fsm.AddState(new FsmState(fsm.Fsm) { Name = "Up Press" });
-            fsm.AddState(new FsmState(fsm.Fsm) { Name = "Right Press" });
-            fsm.AddState(new FsmState(fsm.Fsm) { Name = "Down Press" });
-            fsm.AddState(new FsmState(fsm.Fsm) { Name = "Left Press" });
-            fsm.AddState(new FsmState(fsm.Fsm) { Name = "Toggle Power" });
+            //fsm.AddState(new FsmState(fsm.Fsm) { Name = "Up Press" });
+            //fsm.AddState(new FsmState(fsm.Fsm) { Name = "Right Press" });
+            //fsm.AddState(new FsmState(fsm.Fsm) { Name = "Down Press" });
+            //fsm.AddState(new FsmState(fsm.Fsm) { Name = "Left Press" });
+            //fsm.AddState(new FsmState(fsm.Fsm) { Name = "Toggle Power" });
 
-            currentWorkingState.AddTransition("UI UP", "Up Press");
-            currentWorkingState.AddTransition("UI RIGHT", "Right Press");
-            currentWorkingState.AddTransition("UI DOWN", "Down Press");
-            currentWorkingState.AddTransition("UI LEFT", "Left Press");
-            currentWorkingState.AddTransition("UI CONFIRM", "Toggle Power");
+            //currentWorkingState.AddTransition("UI UP", "Up Press");
+            //currentWorkingState.AddTransition("UI RIGHT", "Right Press");
+            //currentWorkingState.AddTransition("UI DOWN", "Down Press");
+            //currentWorkingState.AddTransition("UI LEFT", "Left Press");
+            //currentWorkingState.AddTransition("UI CONFIRM", "Toggle Power");
 
-            // Left
-            currentWorkingState = fsm.GetState("Left Press");
-            currentWorkingState.AddTransition("OUT", "L Arrow");
-            currentWorkingState.AddTransition("FINISHED", "Powers");
-            currentWorkingState.AddLastAction(new Lambda(() =>
-            {
-                if (indexVariable.Value == 0 || indexVariable.Value % 10 == 0)
-                {
-                    indexVariable.Value = -2;
-                    fsm.SendEvent("OUT");
-                    return;
-                }
-                indexVariable.Value = indexVariable.Value == -1 ? 9 : indexVariable.Value - 1;
-                fsm.SendEvent("FINISHED");
-            }));
-            fsm.GetState("R Arrow").AddTransition("UI LEFT", "Left Press");
+            //// Left
+            //currentWorkingState = fsm.GetState("Left Press");
+            //currentWorkingState.AddTransition("OUT", "L Arrow");
+            //currentWorkingState.AddTransition("FINISHED", "Powers");
+            //currentWorkingState.AddLastAction(new Lambda(() =>
+            //{
+            //    if (indexVariable.Value == 0 || indexVariable.Value % 10 == 0)
+            //    {
+            //        indexVariable.Value = -2;
+            //        fsm.SendEvent("OUT");
+            //        return;
+            //    }
+            //    indexVariable.Value = indexVariable.Value == -1 ? 9 : indexVariable.Value - 1;
+            //    fsm.SendEvent("FINISHED");
+            //}));
+            //fsm.GetState("R Arrow").AddTransition("UI LEFT", "Left Press");
 
-            // Right
-            currentWorkingState = fsm.GetState("Right Press");
-            currentWorkingState.AddTransition("OUT", "R Arrow");
-            currentWorkingState.AddTransition("FINISHED", "Powers");
-            currentWorkingState.AddLastAction(new Lambda(() =>
-            {
-                if (indexVariable.Value == 9 || indexVariable.Value % 10 == 9)
-                {
-                    fsm.SendEvent(indexVariable.Value == 59 ? "STAG" : "OUT");
-                    indexVariable.Value = -1;
-                    fsm.SendEvent("OUT");
-                    return;
-                }
-                indexVariable.Value = indexVariable.Value == -2 ? 0 : indexVariable.Value + 1;
-                fsm.SendEvent("FINISHED");
-            }));
-            fsm.GetState("L Arrow").AddTransition("UI RIGHT", "Right Press");
+            //// Right
+            //currentWorkingState = fsm.GetState("Right Press");
+            //currentWorkingState.AddTransition("OUT", "R Arrow");
+            //currentWorkingState.AddTransition("FINISHED", "Powers");
+            //currentWorkingState.AddLastAction(new Lambda(() =>
+            //{
+            //    if (indexVariable.Value == 9 || indexVariable.Value % 10 == 9)
+            //    {
+            //        fsm.SendEvent(indexVariable.Value == 59 ? "STAG" : "OUT");
+            //        indexVariable.Value = -1;
+            //        fsm.SendEvent("OUT");
+            //        return;
+            //    }
+            //    indexVariable.Value = indexVariable.Value == -2 ? 0 : indexVariable.Value + 1;
+            //    fsm.SendEvent("FINISHED");
+            //}));
+            //fsm.GetState("L Arrow").AddTransition("UI RIGHT", "Right Press");
 
-            // Up
-            currentWorkingState = fsm.GetState("Up Press");
-            currentWorkingState.AddTransition("FINISHED", "Powers");
-            currentWorkingState.AddLastAction(new Lambda(() =>
-            {
-                if (indexVariable.Value < 10)
-                    indexVariable.Value += 50;
-                else
-                    indexVariable.Value -= 10;
-                fsm.SendEvent("FINISHED");
-            }));
+            //// Up
+            //currentWorkingState = fsm.GetState("Up Press");
+            //currentWorkingState.AddTransition("FINISHED", "Powers");
+            //currentWorkingState.AddLastAction(new Lambda(() =>
+            //{
+            //    if (indexVariable.Value < 10)
+            //        indexVariable.Value += 50;
+            //    else
+            //        indexVariable.Value -= 10;
+            //    fsm.SendEvent("FINISHED");
+            //}));
 
-            // Down
-            currentWorkingState = fsm.GetState("Down Press");
-            currentWorkingState.AddTransition("FINISHED", "Powers");
-            currentWorkingState.AddLastAction(new Lambda(() =>
-            {
-                if (indexVariable.Value >= 50)
-                    indexVariable.Value -= 50;
-                else
-                    indexVariable.Value += 10;
-                fsm.SendEvent("FINISHED");
-            }));
+            //// Down
+            //currentWorkingState = fsm.GetState("Down Press");
+            //currentWorkingState.AddTransition("FINISHED", "Powers");
+            //currentWorkingState.AddLastAction(new Lambda(() =>
+            //{
+            //    if (indexVariable.Value >= 50)
+            //        indexVariable.Value -= 50;
+            //    else
+            //        indexVariable.Value += 10;
+            //    fsm.SendEvent("FINISHED");
+            //}));
 
-            // Toggle
-            currentWorkingState = fsm.GetState("Toggle Power");
-            currentWorkingState.AddTransition("FINISHED", "Powers");
-            currentWorkingState.AddLastAction(new Lambda(() =>
-            {
+            //// Toggle
+            //currentWorkingState = fsm.GetState("Toggle Power");
+            //currentWorkingState.AddTransition("FINISHED", "Powers");
+            //currentWorkingState.AddLastAction(new Lambda(() =>
+            //{
 
-            }));
+            //}));
 
-            _totalLore = GameObject.Instantiate(GameObject.Find("_GameCameras").transform.Find("HudCamera/Inventory/Charms/Text Name").gameObject);
-            _totalLore.transform.SetParent(lorePage.transform);
-            _totalLore.transform.position = new(-9.5106f, 0.9982f, 0f);
-            _totalLore.GetComponent<TextMeshPro>().text = "Total Lore Amount: 0";
-            _totalLore.GetComponent<TextMeshPro>().fontSize = 2;
-
+            // Add seperators
+            GameObject separators = UnityEngine.Object.Instantiate(GameObject.Find("_GameCameras").transform.Find("HudCamera/Inventory/Inv/Divider L").gameObject);
+            separators.transform.SetParent(lorePage.transform);
+            separators.transform.localPosition = new(-2.8f, -8.3055f, 1f);
+            separators.transform.localScale = new(6.6422f, 0.5253f, 1.3674f);
+            UnityEngine.Object.Instantiate(separators, lorePage.transform);
+            UnityEngine.Object.Instantiate(separators, lorePage.transform);
             BuildExtraItems(lorePage);
 
             lorePage.SetActive(false);
@@ -418,7 +402,7 @@ internal class LorePage
         SpriteRenderer spriteRenderer = jokerScroll.AddComponent<SpriteRenderer>();
         spriteRenderer.sortingLayerID = 629535577;
         spriteRenderer.sortingLayerName = "HUD";
-        spriteRenderer.sprite = SpriteHelper.CreateSprite<LoreMaster>("Base.SummoningScroll");
+        spriteRenderer.sprite = SpriteHelper.CreateSprite<LoreMaster>("Sprites.SummoningScroll");
         GameObject jokerAmount = GameObject.Instantiate(GameObject.Find("_GameCameras").transform.Find("HudCamera/Inventory/Charms/Text Desc").gameObject);
         jokerAmount.transform.SetParent(jokerScroll.transform);
         jokerAmount.transform.localScale = new(1.2f, 1.2f, 1);
@@ -437,7 +421,7 @@ internal class LorePage
         spriteRenderer = cleanseScroll.AddComponent<SpriteRenderer>();
         spriteRenderer.sortingLayerID = 629535577;
         spriteRenderer.sortingLayerName = "HUD";
-        spriteRenderer.sprite = SpriteHelper.CreateSprite<LoreMaster>("Base.CurseDispell");
+        spriteRenderer.sprite = SpriteHelper.CreateSprite<LoreMaster>("Sprites.CurseDispell");
         GameObject cleanseAmount = GameObject.Instantiate(GameObject.Find("_GameCameras").transform.Find("HudCamera/Inventory/Charms/Text Desc").gameObject);
         cleanseAmount.transform.SetParent(cleanseScroll.transform);
         cleanseAmount.transform.localScale = new(1.2f, 1.2f, 1);
@@ -572,13 +556,11 @@ internal class LorePage
 
         fsm.GetState("Move Pane R").AddFirstAction(new Lambda(() =>
         {
-            _selectedEffect = 0;
             interactSprite.GetComponent<SpriteRenderer>().sprite = null;
         }));
 
         fsm.GetState("Move Pane L").AddFirstAction(new Lambda(() =>
         {
-            _selectedEffect = 0;
             interactSprite.GetComponent<SpriteRenderer>().sprite = null;
         }));
     }

@@ -15,7 +15,6 @@ using LoreMaster.LorePowers.QueensGarden;
 using LoreMaster.LorePowers.RestingGrounds;
 using LoreMaster.LorePowers.Waterways;
 using LoreMaster.LorePowers.WhitePalace;
-using LoreMaster.SaveManagement;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -105,6 +104,10 @@ public static class PowerManager
         new DiminishingCursePower(),
         new SacredShellPower()
     };
+    private static string[] _majorPowers = new string[3];
+    private static string[] _mediumPowers = new string[5];
+    private static string[] _smallPowers = new string[8];
+    private static List<string> _permanentPowers = new();
 
     #endregion
 
@@ -118,7 +121,27 @@ public static class PowerManager
     /// <summary>
     /// Gets or sets the control state of the power inventory page.
     /// </summary>
-    public static PowerControlState ControlState { get; set; }
+    public static PowerControlState ControlState { get; set; } = PowerControlState.ToggleAccess;
+
+    /// <summary>
+    /// Gets all currently active major powers.
+    /// </summary>
+    public static string[] ActiveMajorPowers => _majorPowers;
+
+    /// <summary>
+    /// Gets all currently active major powers.
+    /// </summary>
+    public static string[] ActiveMediumPowers => _mediumPowers;
+
+    /// <summary>
+    /// Gets all currently active major powers.
+    /// </summary>
+    public static string[] ActiveSmallPowers => _smallPowers;
+
+    /// <summary>
+    /// Gets all currently active permanent powers
+    /// </summary>
+    public static List<string> PermanentPowers => _permanentPowers;
 
     #endregion
 
@@ -148,8 +171,7 @@ public static class PowerManager
             return null;
         power = _powerList.FirstOrDefault(x => string.Equals(name, x.PowerName, StringComparison.CurrentCultureIgnoreCase));
         // Second attempt with removed white spaces.
-        if (power != null)
-            power = _powerList.FirstOrDefault(x => string.Equals(name, x.PowerName.Replace(" ", ""), StringComparison.CurrentCultureIgnoreCase));
+        power ??= _powerList.FirstOrDefault(x => string.Equals(name, x.PowerName.Replace(" ", ""), StringComparison.CurrentCultureIgnoreCase));
         return power;
     }
 
@@ -194,6 +216,15 @@ public static class PowerManager
     {
         if (!_powerList.Any(x => x.GetType() == power.GetType()))
             _powerList.Add(power);
+    }
+
+    /// <summary>
+    /// Returns all active powers.
+    /// </summary>
+    public static IEnumerable<Power> GetAllActivePowers()
+    {
+        IEnumerable<string> allActivePowerNames = ActiveMajorPowers.Concat(ActiveMediumPowers).Concat(ActiveSmallPowers).Concat(PermanentPowers);
+        return _powerList.Where(x => allActivePowerNames.Contains(x.PowerName));
     }
 
     #endregion

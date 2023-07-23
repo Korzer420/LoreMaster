@@ -1,12 +1,9 @@
-using HutongGames.PlayMaker;
 using KorzUtils.Helper;
 using LoreMaster.Enums;
 using LoreMaster.Manager;
-using Modding;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using TMPro;
 using UnityEngine;
 
@@ -15,8 +12,6 @@ namespace LoreMaster.LorePowers.Crossroads;
 public class GreaterMindPower : Power
 {
     #region Members
-
-    private Sprite _loreSprite;
 
     private GameObject _loreTracker;
 
@@ -44,10 +39,7 @@ public class GreaterMindPower : Power
 
     #region Constructors
 
-    public GreaterMindPower() : base("Greater Mind", Area.Crossroads)
-    {
-        _loreSprite = SpriteHelper.CreateSprite<LoreMaster>("Base.Lore");
-    }
+    public GreaterMindPower() : base("Greater Mind", Area.Crossroads) { }
 
     #endregion
 
@@ -58,21 +50,14 @@ public class GreaterMindPower : Power
     /// </summary>
     public override Action SceneAction => () =>
     {
-        try
-        {
-            if (_loreTracker == null)
-                Initialize();
-        }
-        catch (Exception)
-        { }
+        if (_loreTracker == null)
+            Initialize();
     };
 
     /// <summary>
     /// Gets the cost of the glory effect.
     /// </summary>
-    public static bool PermanentTracker { get; set; }
-
-    public static bool NormalTracker { get; set; }
+    public static bool PermanentTracker => LoreManager.GlobalSaveData.TrackerPermanently;
 
     #endregion
 
@@ -123,10 +108,10 @@ public class GreaterMindPower : Power
 
     /// <inheritdoc/>
     protected override void TwistEnable() => On.HutongGames.PlayMaker.Actions.PlayerDataBoolTest.OnEnter += PlayerDataBoolTest_OnEnter;
-    
+
     /// <inheritdoc/>
     protected override void TwistDisable() => On.HutongGames.PlayMaker.Actions.PlayerDataBoolTest.OnEnter -= PlayerDataBoolTest_OnEnter;
-    
+
     #endregion
 
     #region Private Methods
@@ -141,7 +126,7 @@ public class GreaterMindPower : Power
             go.GetComponent<DisplayItemAmount>().textObject.text = "";
             go.GetComponent<DisplayItemAmount>().textObject.fontSize = fontSize;
             go.GetComponent<DisplayItemAmount>().textObject.gameObject.name = "Counter";
-            go.GetComponent<SpriteRenderer>().sprite = _loreSprite;
+            go.GetComponent<SpriteRenderer>().sprite = SpriteHelper.CreateSprite<LoreCore.LoreCore>("Sprites.Tablets.Deepnest");
             go.GetComponent<BoxCollider2D>().size = new Vector2(1.5f, 1f);
             go.GetComponent<BoxCollider2D>().offset = new Vector2(0.5f, 0f);
         }

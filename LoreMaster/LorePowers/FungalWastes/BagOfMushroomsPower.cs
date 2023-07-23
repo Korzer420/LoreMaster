@@ -40,10 +40,10 @@ public class BagOfMushroomsPower : Power
     {
         Hint += " WARNING: The yellow one causes a nausea effect! If you don't want that to happen, you can turn off the effect in the mod settings. Eating the yellow mushroom will then only give a small effect.";
         Description += " WARNING: The yellow one causes a nausea effect! If you don't want that to happen, you can turn off the effect in the mod settings. Eating the yellow mushroom will then only give a small effect.";
-        _mushroomSprites[0] = SpriteHelper.CreateSprite<LoreMaster>("Base.CleansingMushroom");
-        _mushroomSprites[1] = SpriteHelper.CreateSprite<LoreMaster>("Base.AdrenalineMushroom");
-        _mushroomSprites[2] = SpriteHelper.CreateSprite<LoreMaster>("Base.SuperMushroom");
-        _mushroomSprites[3] = SpriteHelper.CreateSprite<LoreMaster>("Base.MiniMushroom");
+        _mushroomSprites[0] = SpriteHelper.CreateSprite<LoreMaster>("Sprites.CleansingMushroom");
+        _mushroomSprites[1] = SpriteHelper.CreateSprite<LoreMaster>("Sprites.AdrenalineMushroom");
+        _mushroomSprites[2] = SpriteHelper.CreateSprite<LoreMaster>("Sprites.SuperMushroom");
+        _mushroomSprites[3] = SpriteHelper.CreateSprite<LoreMaster>("Sprites.MiniMushroom");
     }
 
     #endregion
@@ -394,7 +394,7 @@ public class BagOfMushroomsPower : Power
     {
         if (active)
         {
-            if (/*SettingManager.Instance.DisableYellowMushroom*/true)
+            if (LoreManager.GlobalSaveData.DisableNausea)
                 HeroController.instance.AddMPCharge(HasEatenTwice ? 5 : 10);
             else
             {
@@ -497,7 +497,7 @@ public class BagOfMushroomsPower : Power
             {
                 passedTime = 0f;
                 timer = LoreMaster.Instance.Generator.Next(10, 61);
-                if (passedTime >= 5f/*SettingManager.Instance.DisableYellowMushroom*/)
+                if (LoreManager.GlobalSaveData.DisableNausea)
                 {
                     _twistedTimeScale = 1 + (float)LoreMaster.Instance.Generator.NextDouble();
                     AdrenalineMushroom(true);

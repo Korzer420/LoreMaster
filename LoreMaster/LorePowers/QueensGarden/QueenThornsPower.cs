@@ -166,7 +166,7 @@ public class QueenThornsPower : Power
         if (_sprites[1] == null)
         {
             _sprites[0] = CharmIconList.Instance.spriteList[12];
-            _sprites[1] = SpriteHelper.CreateSprite<LoreMaster>("Base.Queens_Thorns");
+            _sprites[1] = SpriteHelper.CreateSprite<LoreMaster>("Sprites.Queens_Thorns");
         }
     }
 

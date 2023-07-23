@@ -1102,7 +1102,7 @@ internal class YouLikeJazzPower : Power
 //"Bee 1	What do we do now? (everybody looks around blankly)",
 //"Bee 2	Cannonball! Woooo! (dives into the honey)",
 //"General	(into his mic) We're shutting down honey production! Mission abort.",
-//"Jackson, the Pollen Jock	Aborting pollination and nectar detail. Returning to base.",
+//"Jackson, the Pollen Jock	Aborting pollination and nectar detail. Returning to Sprites.",
 //"Back at the hive, all the bees are lounging around, sunning themselves. The factory is deserted. Cut to outside, flowers in the park wither away. Time lapse shows the grass, flowers, and trees in the park turn gray and dead. At her shop, Vanessa scrawls NO MORE FLOWERS on a sign on the door. Back at the factory, Barry runs up a flight of stairs to an office suite, where Adam is packing up a box of belongings.",
 //"Barry:	Adam, you wouldn't believe how much honey was out there.",
 //"Adam:	Oh, yeah?",

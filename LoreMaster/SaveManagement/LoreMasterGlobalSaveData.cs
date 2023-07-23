@@ -22,11 +22,6 @@ public class LoreMasterGlobalSaveData
     public bool DisableNausea { get; set; }
 
     /// <summary>
-    /// Gets or sets the flag that indicates if the bomb spells can be cast via quick cast.
-    /// </summary>
-    public bool BombQuickCast { get; set; }
-
-    /// <summary>
     /// Gets or sets the value that indicates, if the tracker from Greater Mind should be displayed permanently or fade away after 5 seconds.
     /// </summary>
     public bool TrackerPermanently { get; set; }

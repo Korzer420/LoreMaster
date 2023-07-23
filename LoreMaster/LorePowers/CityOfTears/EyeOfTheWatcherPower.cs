@@ -14,7 +14,7 @@ public class EyeOfTheWatcherPower : Power
 {
     #region Members
 
-    private Sprite _eyeSprite = SpriteHelper.CreateSprite<LoreMaster>("Base.EyeOfLurien");
+    private Sprite _eyeSprite = SpriteHelper.CreateSprite<LoreMaster>("Sprites.EyeOfLurien");
 
     private GameObject _eye;
 

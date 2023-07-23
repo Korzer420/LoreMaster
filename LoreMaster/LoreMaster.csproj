@@ -25,6 +25,11 @@
   </ItemGroup>
   
   <ItemGroup>
+    <None Remove="k4c0hb5f.u3g~" />
+    <None Remove="Resources\Items.json" />
+  </ItemGroup>
+  
+  <ItemGroup>
     <Reference Include="Assembly-CSharp">
       <HintPath>..\..\..\..\..\Program Files\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
