@@ -105,7 +105,7 @@
     "$type": "ItemChanger.Items.IntItem, ItemChanger",
     "fieldName": "mysticScrolls",
     "amount": 1,
-    "name": "Mystic_Scroll",
+    "name": "Mystical_Scroll",
     "UIDef": {
       "$type": "ItemChanger.UIDefs.MsgUIDef, ItemChanger",
       "name": {

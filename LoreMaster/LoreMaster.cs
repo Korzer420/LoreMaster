@@ -86,7 +86,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         orig(self, permaDeath, bossRush);
 
         // To do: Rando check
-        ItemChangerMod.AddPlacements(CreateTeleporter());
+        CreateVanillaPlacements(true);
         LoreManager.Initialize();
     }
 
@@ -307,15 +307,6 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
             Finder.DefineCustomItem(item);
     }
 
-    private static List<AbstractPlacement> CreateTeleporter()
-    {
-        List<AbstractPlacement> teleporter = new()
-        {
-
-        };
-        return teleporter;
-    }
-
     /// <summary>
     /// Creates and adds all placement with their vanilla items to the save file.
     /// </summary>
@@ -402,14 +393,14 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
             GeneratePlacement(Dialogue_Tiso_Colosseum, Tiso_Colosseum),
             GeneratePlacement(Dialogue_Tiso_Crossroads, Tiso_Crossroads),
             GeneratePlacement(Dialogue_Tiso_Dirtmouth, Tiso_Dirtmouth),
-            // Zote
+            //// Zote
             GeneratePlacement(Dialogue_Zote_Greenpath, Zote_Greenpath),
             GeneratePlacement(Dialogue_Zote_Dirtmouth_Intro, Zote_Dirtmouth_Intro),
             GeneratePlacement(Dialogue_Zote_City, Zote_City),
             GeneratePlacement(Dialogue_Zote_Deepnest, Zote_Deepnest),
             GeneratePlacement(Dialogue_Zote_Colosseum, Zote_Colosseum),
             GeneratePlacement(Dialogue_Zote_Dirtmouth_After_Colosseum, Zote_Dirtmouth_After_Colosseum),
-            // Cloth
+            //// Cloth
             GeneratePlacement(Dialogue_Cloth_Fungal_Wastes, Cloth_Fungal_Wastes),
             GeneratePlacement(Dialogue_Cloth_Basin, Cloth_Basin),
             GeneratePlacement(Dialogue_Cloth_Deepnest, Cloth_Deepnest),
@@ -420,7 +411,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
                 trueLocation = Finder.GetLocation(Cloth_Ghost),
                 falseLocation = Finder.GetLocation(Cloth_Town),
                 Test = new ClothTest()
-            }.Wrap().Add(Finder.GetItem(Cloth_End))
+            }.Wrap().Add(Finder.GetItem(Dialogue_Cloth_Ghost))
         };
 
         int[] loreCost = new int[]

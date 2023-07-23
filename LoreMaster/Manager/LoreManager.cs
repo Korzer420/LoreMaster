@@ -67,7 +67,7 @@ internal static class LoreManager
         On.HutongGames.PlayMaker.Actions.SendEventByName.OnEnter += EndAllPowers;
         UnityEngine.SceneManagement.SceneManager.activeSceneChanged += SceneManager_activeSceneChanged;
         LoreMaster.Instance.Handler.StartCoroutine(WaitForPlayerControl());
-        Module = ItemChangerMod.Modules.GetOrAdd<LorePowerModule>();
+        Module = ItemChangerMod.Modules?.GetOrAdd<LorePowerModule>();
         _active = true;
     }
 

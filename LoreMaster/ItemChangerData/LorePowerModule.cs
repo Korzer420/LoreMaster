@@ -19,11 +19,11 @@ public class LorePowerModule : Module
 
     public int AcquiredLore { get; set; } = 0;
 
-    public static int MajorGlyphSlots { get; set; } = 0;
+    public int MajorGlyphSlots { get; set; } = 0;
 
-    public static int MediumGlyphSlots { get; set; } = 0;
+    public int MediumGlyphSlots { get; set; } = 0;
 
-    public static int SmallGlyphSlots { get; set; } = 0;
+    public int SmallGlyphSlots { get; set; } = 0;
 
     #endregion
 
