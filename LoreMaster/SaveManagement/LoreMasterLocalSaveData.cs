@@ -19,16 +19,6 @@ public class LoreMasterLocalSaveData
     public GameMode GameMode { get; set; }
 
     /// <summary>
-    /// Gets or sets the amount of joker scrolls the player has.
-    /// </summary>
-    public int JokerScrolls { get; set; }
-
-    /// <summary>
-    /// Gets or sets the amount cleansing scrolls the player has.
-    /// </summary>
-    public int CleansingScrolls { get; set; }
-
-    /// <summary>
     /// Gets or sets the state of the inventory power page.
     /// </summary>
     public PowerControlState PageState { get; set; }

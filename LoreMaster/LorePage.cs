@@ -3,6 +3,7 @@ using HutongGames.PlayMaker.Actions;
 using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
 using KorzUtils.Helper;
+using LoreCore;
 using LoreMaster.Enums;
 using LoreMaster.LorePowers;
 using LoreMaster.LorePowers.HowlingCliffs;
@@ -14,11 +15,9 @@ using UnityEngine;
 
 namespace LoreMaster;
 
-internal class LorePage
+internal static class LorePage
 {
     #region Members
-
-    private static List<Power> _powers = new();
 
     private static Sprite _emptySprite;
 
@@ -32,6 +31,35 @@ internal class LorePage
 
     private static string _lastState;
 
+    private static Vector3[] _glyphPositions = new Vector3[]
+    {
+        // Major Glyphs
+        new(0, 4.55f, -3f),
+        new(-6.55f, -2.45f, -3),
+        new(6.55f, -2.45f, -3),
+        // Minor Glyphs
+        new(-3.275f, 2.5f, -3),
+        new(-3.275f, -0.4f, -3),
+        new(0, -3.1f, -3),
+        new(3.275f, 2.5f, -3),
+        new(3.275f, -0.4f, -3),
+        // Small Glyphs
+        new(-6.25f, 3.8f, -3),
+        new(-5.45f, 1, -3),
+        new(-3.45f, 5, -3),
+        new(6.25f, 3.8f, -3),
+        new(5.45f, 1, -3),
+        new(3.45f, 5, -3),
+        new(-3.3f, -3.2f, -3),
+        new(3.3f, -3.2f, -3),
+        // Permanent Glyphs
+        new(-5, -5.3f, -3),
+        new(-2.5f, -5.3f, -3),
+        new(0, -5.3f, -3),
+        new(2.5f, -5.3f, -3),
+        new(5, -5.3f, -3),
+    };
+
     #endregion
 
     #region Constructors
@@ -40,7 +68,7 @@ internal class LorePage
     {
         _emptySprite = GameObject.Find("_GameCameras").transform.Find("HudCamera/Inventory/Charms/Backboards/BB 3").GetComponent<SpriteRenderer>().sprite;
         for (int i = 1; i < 16; i++)
-            _sprites.Add((Area)i, SpriteHelper.CreateSprite<LoreMaster>($"Sprites.Tablets.{(Area)i}"));
+            _sprites.Add((Area)i, SpriteHelper.CreateSprite<LoreCore.LoreCore>($"Sprites.Tablets.{(Area)i}"));
     }
 
     #endregion
@@ -57,47 +85,10 @@ internal class LorePage
         {
             for (int i = 0; i < _glyphObjects.Length; i++)
             {
-                //if (_loreObjects[i] == null)
-                //{
-                //    LoreMaster.Instance.LogDebug("Lore Object " + i + " doesn't exist");
-                //    continue;
-                //}
-
-                //if (_powers[i].State == PowerState.Active)
-                //{
-                //    _loreObjects[i].GetComponentInChildren<SpriteRenderer>().sprite = _sprites[_powers[i].Location];
-                //    _loreObjects[i].GetComponentInChildren<SpriteRenderer>().color = Color.white;
-                //    _loreObjects[i].transform.eulerAngles = new Vector3(0f, 0f, 0f);
-                //}
-                //else if (_powers[i].State == PowerState.Twisted)
-                //{
-                //    _loreObjects[i].GetComponentInChildren<SpriteRenderer>().sprite = _sprites[_powers[i].Location];
-                //    _loreObjects[i].GetComponentInChildren<SpriteRenderer>().color = new(1f, 0f, 1f);
-                //    _loreObjects[i].transform.eulerAngles = new Vector3(0f, 0f, 180f);
-                //}
-                //else if (PowerManager.HasObtainedPower)
-                //{
-                //    _loreObjects[i].GetComponentInChildren<SpriteRenderer>().sprite = _notActive;
-                //    _loreObjects[i].GetComponentInChildren<SpriteRenderer>().color = Color.red;
-                //    _loreObjects[i].transform.eulerAngles = new Vector3(0f, 0f, 0f);
-                //}
-                //else
-                //{
-                //    _loreObjects[i].GetComponentInChildren<SpriteRenderer>().sprite = _emptySprite;
-                //    _loreObjects[i].GetComponentInChildren<SpriteRenderer>().color = Color.white;
-                //    _loreObjects[i].transform.eulerAngles = new Vector3(0f, 0f, 0f);
-                //}
             }
             _stagEgg.sprite = StagAdoptionPower.Instance.CanSpawnStag
                 ? StagAdoptionPower.Instance.InventorySprites[0]
                 : StagAdoptionPower.Instance.InventorySprites[1];
-            //_controlElements["Joker"].SetActive(LoreManager.JokerScrolls >= 0);
-            //_controlElements["Joker"].GetComponentInChildren<TextMeshPro>().text = LoreManager.JokerScrolls.ToString();
-            //_controlElements["Cleanse"].SetActive(LoreManager.CleansingScrolls >= 0);
-            //_controlElements["Cleanse"].GetComponentInChildren<TextMeshPro>().text = LoreManager.CleansingScrolls.ToString();
-
-            //_totalLore.SetActive(true);
-            //_totalLore.GetComponent<TextMeshPro>().text = "Total Lore amount: " + PowerManager.ObtainedPowers.Count;
 
         }
         catch (Exception exception)
@@ -106,6 +97,40 @@ internal class LorePage
         }
         return true;
     }
+
+    /*
+        Main Glyph positions Scale 1.5:
+        0 4,55 -3 (Up)
+       -6,55 -2,45 -3 (Left)
+        6,55 -2,45 -3 (Right)
+
+        Minor Glyph positions Scale 1.2:
+        -3,275 2,5 -3 (Top Left)
+        -3,275 -0,4 -3 (Bottom Left)
+        0 -3,1 -3 (Bottom Mid)
+        3,275 2,5 -3 (Top Right)
+        3,275 -0,4 -3 (Bottom Right)
+
+        Small Glyph positions Scale 1:
+        -6,25 3,8 -3 (Top Left)
+        -5,45 1 -3 (Left upper)
+        -3,45 5 -3 (Top on the left side)
+        6,25 3,8 -3 (Top Right) 
+        5,45 1 -3 (Right upper)
+        3,45 5 -3 (Top on the right side)
+        -3,3 -3,2 -3 (Bottom left)
+        3,3 -3,2 -3 (Bottom Right)
+
+        Permanent Glyphs Scale 1.2:
+        -5 -5,3 -3
+        -2,5 -5,3 -3
+        0 -5,3 -3
+        2,5 -5,3 -3
+        5 -5,3 -3
+
+        Divider:
+        
+     */
 
     /// <summary>
     /// Generates the inventory page.
@@ -125,7 +150,7 @@ internal class LorePage
             FsmInt indexVariable = new() { Name = "ItemIndex", Value = 0 };
             intVariables.Add(indexVariable);
             fsm.FsmVariables.IntVariables = intVariables.ToArray();
-            
+
             // Generates the power holder
             GameObject powerList = new("Power List");
             powerList.transform.SetParent(lorePage.transform);
@@ -134,14 +159,17 @@ internal class LorePage
 
             GameObject powerTitle = GameObject.Instantiate(GameObject.Find("_GameCameras").transform.Find("HudCamera/Inventory/Charms/Text Name").gameObject);
             powerTitle.transform.SetParent(lorePage.transform);
-            powerTitle.transform.localPosition = new(13f, -7.5f, -2f);
+            powerTitle.transform.position = new(10.95f, 0.05f, 0.3f);
             powerTitle.GetComponent<TextMeshPro>().text = "";
+            powerTitle.GetComponent<TextMeshPro>().fontSize = 5;
             _controlElements.Add("powerTitle", powerTitle);
 
             GameObject powerDescription = GameObject.Instantiate(GameObject.Find("_GameCameras").transform.Find("HudCamera/Inventory/Charms/Text Desc").gameObject);
             powerDescription.transform.SetParent(lorePage.transform);
-            powerDescription.transform.localPosition = new(13f, -9f, 1f);
+            powerDescription.transform.position = new(10.8973f, -1.05f, 3.3f);
             powerDescription.GetComponent<TextMeshPro>().text = "";
+            powerDescription.GetComponent<TextMeshPro>().fontSize = 3;
+            powerDescription.GetComponent<TextContainer>().size = new(5f, 20f);
             _controlElements.Add("powerDescription", powerDescription);
 
             GameObject confirmButton = GameObject.Instantiate(GameObject.Find("_GameCameras").transform.Find("HudCamera/Inventory/Charms/Confirm Action").gameObject);
@@ -153,21 +181,18 @@ internal class LorePage
             _controlElements.Add("confirmButton", confirmButton);
 
             // Generates all power objects
-            float xPosition = -11f; // in 1,5f steps
-            float yPosition = 4.6f; // in -2f steps
-            _glyphObjects = new GameObject[21];
+            _glyphObjects = new GameObject[22];
             for (int i = 1; i <= 21; i++)
             {
                 GameObject tablet = new("Glyph Slot " + i);
                 tablet.transform.SetParent(powerList.transform);
-                tablet.transform.localScale = new Vector3(.9f, .9f, 1f);
-                tablet.transform.position = new Vector3(xPosition, yPosition, -3f);
-                xPosition += 1.5f;
-                if (xPosition > 2.5f)
-                {
-                    xPosition = -11;
-                    yPosition -= 2f;
-                }
+                if (i <= 3)
+                    tablet.transform.localScale = new Vector3(1.5f, 1.5f, 1f);
+                else if (i <= 8 || i >= 18)
+                    tablet.transform.localScale = new Vector3(1.2f, 1.2f, 1f);
+                else
+                    tablet.transform.localScale = new Vector3(1f, 1f, 1f);
+                tablet.transform.position = _glyphPositions[i - 1];
                 tablet.layer = lorePage.layer;
                 // The cursor need a collider to jump to
                 tablet.AddComponent<BoxCollider2D>().offset = new(0f, 0f);
@@ -307,14 +332,19 @@ internal class LorePage
             //}));
 
             // Add seperators
-            GameObject separators = UnityEngine.Object.Instantiate(GameObject.Find("_GameCameras").transform.Find("HudCamera/Inventory/Inv/Divider L").gameObject);
-            separators.transform.SetParent(lorePage.transform);
-            separators.transform.localPosition = new(-2.8f, -8.3055f, 1f);
-            separators.transform.localScale = new(6.6422f, 0.5253f, 1.3674f);
-            UnityEngine.Object.Instantiate(separators, lorePage.transform);
-            UnityEngine.Object.Instantiate(separators, lorePage.transform);
-            BuildExtraItems(lorePage);
+            GameObject leftSeparator = UnityEngine.Object.Instantiate(GameObject.Find("_GameCameras").transform.Find("HudCamera/Inventory/Inv/Divider L").gameObject);
+            leftSeparator.transform.SetParent(lorePage.transform);
+            leftSeparator.transform.position = new(-8.15f, -0.7555f, 3.3f);
+            leftSeparator.transform.localScale = new(6.6422f, 0.5253f, 1.3674f);
+            GameObject rightSeparator = UnityEngine.Object.Instantiate(leftSeparator, lorePage.transform);
+            rightSeparator.transform.position = new(7.95f, -0.7555f, 3.3f);
+            rightSeparator.transform.localScale = new(6.6422f, 0.5253f, 1.3674f);
+            GameObject bottomSeparator = UnityEngine.Object.Instantiate(leftSeparator, lorePage.transform);
+            bottomSeparator.transform.position = new(-0.55f, -4.1919f, 3.3f);
+            bottomSeparator.transform.localScale = new(6.6422f, 0.5253f, 1.3674f);
+            bottomSeparator.transform.SetRotationZ(0f);
 
+            BuildExtraItems(lorePage);
             lorePage.SetActive(false);
         }
         catch (Exception exception)

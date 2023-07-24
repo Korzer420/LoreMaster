@@ -4,6 +4,7 @@ using LoreCore.Items;
 using LoreMaster.LorePowers;
 using LoreMaster.LorePowers.QueensGarden;
 using LoreMaster.Manager;
+using Modding;
 using System.Collections.Generic;
 
 namespace LoreMaster.ItemChangerData;
@@ -17,13 +18,17 @@ public class LorePowerModule : Module
 
     public List<string> AcquiredPowers { get; set; } = new();
 
-    public int AcquiredLore { get; set; } = 0;
-
     public int MajorGlyphSlots { get; set; } = 0;
 
-    public int MediumGlyphSlots { get; set; } = 0;
+    public int MinorGlyphSlots { get; set; } = 0;
 
     public int SmallGlyphSlots { get; set; } = 0;
+
+    public int MysticalScrolls { get; set; } = 0;
+
+    public int CleansingScrolls { get; set; } = 0;
+
+    public bool HasStagEgg { get; set; }
 
     #endregion
 
@@ -43,11 +48,32 @@ public class LorePowerModule : Module
                 originalText += power.Description;
             LorePage.UpdateLorePage();
         }
-        AcquiredLore++;
         return originalText;
     }
 
     private void ModifyThorns(PlayMakerFSM fsm) => PowerManager.GetPower<QueenThornsPower>().ModifyThorns(fsm);
+
+    private int ModHooks_SetPlayerIntHook(string name, int orig)
+    {
+        if (name == "majorGlyphSlots")
+            MajorGlyphSlots += orig;
+        else if (name == "minorGlyphSlots")
+            MinorGlyphSlots += orig;
+        else if (name == "smallGlyphSlots")
+            SmallGlyphSlots += orig;
+        else if (name == "cleansingScrolls")
+            CleansingScrolls += orig;
+        else if (name == "mysticScrolls")
+            MysticalScrolls += orig;
+        return orig;
+    }
+
+    private bool ModHooks_SetPlayerBoolHook(string name, bool orig)
+    {
+        if (name == "hasStagEgg")
+            HasStagEgg = orig;
+        return orig;
+    }
 
     #endregion
 
@@ -57,12 +83,16 @@ public class LorePowerModule : Module
     {
         PowerLoreItem.AcquirePowerItem += PowerLoreItem_AcquirePowerItem;
         Events.AddFsmEdit(new("Thorn Counter"), ModifyThorns);
+        ModHooks.SetPlayerIntHook += ModHooks_SetPlayerIntHook;
+        ModHooks.SetPlayerBoolHook += ModHooks_SetPlayerBoolHook;
     }
 
     public override void Unload()
     {
         PowerLoreItem.AcquirePowerItem -= PowerLoreItem_AcquirePowerItem;
         Events.RemoveFsmEdit(new("Thorn Counter"), ModifyThorns);
+        ModHooks.SetPlayerIntHook -= ModHooks_SetPlayerIntHook;
+        ModHooks.SetPlayerBoolHook -= ModHooks_SetPlayerBoolHook;
     }
 
     #endregion
