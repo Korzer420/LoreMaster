@@ -1,5 +1,5 @@
 using HutongGames.PlayMaker.Actions;
-using ItemChanger.Extensions;
+using KorzUtils.Helper;
 using LoreMaster.Enums;
 using Modding;
 using System.Collections;
@@ -77,9 +77,9 @@ public class MarissasAudiencePower : Power
     protected override void Initialize()
     {
         GameObject charmEffects = GameObject.Find("Charm Effects");
-        _companions[0] = charmEffects.LocateMyFSM("Spawn Grimmchild").GetState("Spawn").GetFirstActionOfType<SpawnObjectFromGlobalPool>().gameObject.Value;
-        _companions[1] = charmEffects.LocateMyFSM("Weaverling Control").GetState("Spawn").GetFirstActionOfType<SpawnObjectFromGlobalPool>().gameObject.Value;
-        _companions[2] = charmEffects.LocateMyFSM("Hatchling Spawn").GetState("Hatch").GetFirstActionOfType<SpawnObjectFromGlobalPool>().gameObject.Value;
+        _companions[0] = charmEffects.LocateMyFSM("Spawn Grimmchild").GetState("Spawn").GetFirstAction<SpawnObjectFromGlobalPool>().gameObject.Value;
+        _companions[1] = charmEffects.LocateMyFSM("Weaverling Control").GetState("Spawn").GetFirstAction<SpawnObjectFromGlobalPool>().gameObject.Value;
+        _companions[2] = charmEffects.LocateMyFSM("Hatchling Spawn").GetState("Hatch").GetFirstAction<SpawnObjectFromGlobalPool>().gameObject.Value;
     }
 
     /// <inheritdoc/>

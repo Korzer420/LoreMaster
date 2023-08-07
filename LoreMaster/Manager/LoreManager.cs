@@ -1,5 +1,6 @@
 using ItemChanger;
 using KorzUtils.Helper;
+using LoreMaster.Enums;
 using LoreMaster.ItemChangerData;
 using LoreMaster.LorePowers;
 using LoreMaster.SaveManagement;
@@ -19,11 +20,13 @@ internal static class LoreManager
 
     private static bool _active;
 
+    private static LorePowerModule _module;
+
     #endregion
 
     #region Properties
 
-    public static LorePowerModule Module { get; set; }
+    public static LorePowerModule Module => _module ??= ItemChangerMod.Modules?.GetOrAdd<LorePowerModule>();
 
     public static LoreMasterGlobalSaveData GlobalSaveData { get; set; } = new();
 
@@ -67,7 +70,6 @@ internal static class LoreManager
         On.HutongGames.PlayMaker.Actions.SendEventByName.OnEnter += EndAllPowers;
         UnityEngine.SceneManagement.SceneManager.activeSceneChanged += SceneManager_activeSceneChanged;
         LoreMaster.Instance.Handler.StartCoroutine(WaitForPlayerControl());
-        Module = ItemChangerMod.Modules?.GetOrAdd<LorePowerModule>();
         _active = true;
     }
 
@@ -82,7 +84,7 @@ internal static class LoreManager
         LoreMaster.Instance.Handler.StopAllCoroutines();
         foreach (Power power in activePowers)
             power.DisablePower(true);
-        Module = null;
+        _module = null;
         _active = false;
     }
 

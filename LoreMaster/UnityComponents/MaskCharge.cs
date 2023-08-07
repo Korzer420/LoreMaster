@@ -1,6 +1,6 @@
-using ItemChanger.Extensions;
-using ItemChanger.FsmStateActions;
 
+using ItemChanger.FsmStateActions;
+using KorzUtils.Helper;
 using System.Collections;
 using UnityEngine;
 
@@ -37,10 +37,8 @@ public class MaskCharge : MonoBehaviour
 
             PlayMakerFSM fsm = hitbox.LocateMyFSM("set_thorn_damage");
             fsm.FsmName = "set_ring_damage";
-            fsm.GetState("Set").ReplaceAction(new Lambda(() =>
-            {
-                fsm.FsmVariables.FindFsmInt("Damage").Value = Mathf.Min(20, PlayerData.instance.GetInt(nameof(PlayerData.instance.nailDamage)) / 2);
-            }), 0);
+            fsm.GetState("Set").ReplaceAction(0, () 
+                => fsm.FsmVariables.FindFsmInt("Damage").Value = Mathf.Min(20, PDHelper.NailDamage / 2));
         }
 
         _rune[0] = GameObject.Instantiate(LoreMaster.Instance.PreloadedObjects["Battle Scene/HK Prime/Focus Blast/focus_ring"], transform);

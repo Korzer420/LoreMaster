@@ -1,5 +1,6 @@
-using ItemChanger.Extensions;
+
 using ItemChanger.FsmStateActions;
+using KorzUtils.Helper;
 using LoreMaster.Enums;
 
 using System.Collections;
@@ -82,21 +83,21 @@ public class LifebloodOmenPower : Power
             _ghost.name = "Lifeblood Ghost";
             _ghost.GetComponent<tk2dSprite>().color = Color.cyan;
             PlayMakerFSM fsm = _ghost.LocateMyFSM("Control");
-            fsm.GetState("Set Level").RemoveAction(0);
-            fsm.GetState("Set Level").AddLastAction(new Lambda(() =>
+            fsm.GetState("Set Level").RemoveActions(0);
+            fsm.GetState("Set Level").AddActions(() =>
             {
                 fsm.FsmVariables.FindFsmInt("Grimmchild Level").Value = 1;
                 fsm.SendEvent("LEVEL 1");
-            }));
+            });
             // Prevent grimm music playing.
             fsm.GetState("Alert Pause").RemoveTransitionsTo("Music");
             fsm.GetState("Alert Pause").AddTransition("FINISHED", "Set Angle");
 
             // Remove accordion fanfare
-            fsm.GetState("Fanfare 1").RemoveAction(0);
+            fsm.GetState("Fanfare 1").RemoveActions(0);
 
             // Reward
-            fsm.GetState("Explode").ReplaceAction(new Lambda(() =>
+            fsm.GetState("Explode").ReplaceAction(4, () =>
             {
                 fsm.FsmVariables.FindFsmGameObject("Explode Effects").Value.SetActive(true);
                 if (State == PowerState.Twisted)
@@ -104,8 +105,7 @@ public class LifebloodOmenPower : Power
                 else
                     for (int i = 0; i < 3 * (index + 1); i++)
                         EventRegister.SendEvent("ADD BLUE HEALTH");
-
-            }), 4);
+            });
             fsm.SendEvent("START");
             if (State == PowerState.Twisted)
             {
@@ -116,7 +116,7 @@ public class LifebloodOmenPower : Power
                         GameObject blocker = GameObject.Instantiate(LoreMaster.Instance.PreloadedObjects["Dream Gate"]);
                         blocker.SetActive(true);
                         GameObject.Destroy(blocker.transform.GetChild(0));
-                        blocker.LocateMyFSM("Control").GetState("Init").RemoveAction(1);
+                        blocker.LocateMyFSM("Control").GetState("Init").RemoveActions(1);
                         blocker.transform.localScale = new(1f, 1f);
                         // Remove camera lock.
                         GameObject.Destroy(blocker.transform.GetChild(0)); 

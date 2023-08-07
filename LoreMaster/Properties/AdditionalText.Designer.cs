@@ -106,6 +106,60 @@ namespace LoreMaster.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die This vessel allows you to store the most powerful abilities that Hallownest has to offers ähnelt.
+        /// </summary>
+        internal static string Greater_Glyph_Description {
+            get {
+                return ResourceManager.GetString("Greater_Glyph_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Greater Glyph ähnelt.
+        /// </summary>
+        internal static string Greater_Glyph_Title {
+            get {
+                return ResourceManager.GetString("Greater_Glyph_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die This weak vessel allows you to store a small ability, which you still might found useful. ähnelt.
+        /// </summary>
+        internal static string Lesser_Glyph_Description {
+            get {
+                return ResourceManager.GetString("Lesser_Glyph_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Small Glyph ähnelt.
+        /// </summary>
+        internal static string Lesser_Glyph_Title {
+            get {
+                return ResourceManager.GetString("Lesser_Glyph_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die This vessel allows you to store a mediocre powerful ability. ähnelt.
+        /// </summary>
+        internal static string Medium_Glyph_Description {
+            get {
+                return ResourceManager.GetString("Medium_Glyph_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Minor Glyph ähnelt.
+        /// </summary>
+        internal static string Medium_Glyph_Title {
+            get {
+                return ResourceManager.GetString("Medium_Glyph_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Congratulations, you killed the only happy bug in the entire kingdom. Are you proud of yourself? Not only did you want to kill them, but you commited to 100+ hits... Good luck in the next run :) ähnelt.
         /// </summary>
         internal static string Menderbug_Regret {
@@ -147,6 +201,24 @@ namespace LoreMaster.Properties {
         internal static string Menderbug_Warning_4 {
             get {
                 return ResourceManager.GetString("Menderbug_Warning_4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die A socket seems to have burned itself inside of your shell. What&apos;s the purpose of that? ähnelt.
+        /// </summary>
+        internal static string Permanent_Glyph_Description {
+            get {
+                return ResourceManager.GetString("Permanent_Glyph_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die ??? ähnelt.
+        /// </summary>
+        internal static string Permanent_Glyph_Title {
+            get {
+                return ResourceManager.GetString("Permanent_Glyph_Title", resourceCulture);
             }
         }
         

@@ -132,6 +132,24 @@
   <data name="FULL_DIAMOND_HEART_NAME" xml:space="preserve">
     <value>Diamond Heart</value>
   </data>
+  <data name="Greater_Glyph_Description" xml:space="preserve">
+    <value>This vessel allows you to store the most powerful abilities that Hallownest has to offers</value>
+  </data>
+  <data name="Greater_Glyph_Title" xml:space="preserve">
+    <value>Greater Glyph</value>
+  </data>
+  <data name="Lesser_Glyph_Description" xml:space="preserve">
+    <value>This weak vessel allows you to store a small ability, which you still might found useful.</value>
+  </data>
+  <data name="Lesser_Glyph_Title" xml:space="preserve">
+    <value>Small Glyph</value>
+  </data>
+  <data name="Medium_Glyph_Description" xml:space="preserve">
+    <value>This vessel allows you to store a mediocre powerful ability.</value>
+  </data>
+  <data name="Medium_Glyph_Title" xml:space="preserve">
+    <value>Minor Glyph</value>
+  </data>
   <data name="Menderbug_Regret" xml:space="preserve">
     <value>Congratulations, you killed the only happy bug in the entire kingdom. Are you proud of yourself? Not only did you want to kill them, but you commited to 100+ hits... Good luck in the next run :)</value>
   </data>
@@ -146,6 +164,12 @@
   </data>
   <data name="Menderbug_Warning_4" xml:space="preserve">
     <value>Don't say I didn't warn you</value>
+  </data>
+  <data name="Permanent_Glyph_Description" xml:space="preserve">
+    <value>A socket seems to have burned itself inside of your shell. What's the purpose of that?</value>
+  </data>
+  <data name="Permanent_Glyph_Title" xml:space="preserve">
+    <value>???</value>
   </data>
   <data name="SHELLLESS_DIAMOND_HEART_DESCRIPTION" xml:space="preserve">
     <value>&lt;br&gt;The core is pulsing in the rate of your heart. Just having the pure diamond core near you, let you feel the pressure. It just needs the right vessel to hold it.</value>

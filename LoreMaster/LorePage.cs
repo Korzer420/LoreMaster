@@ -1,12 +1,14 @@
 using HutongGames.PlayMaker;
 using HutongGames.PlayMaker.Actions;
-using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
+using KorzUtils.Data;
 using KorzUtils.Helper;
-using LoreCore;
 using LoreMaster.Enums;
+using LoreMaster.ItemChangerData;
 using LoreMaster.LorePowers;
 using LoreMaster.LorePowers.HowlingCliffs;
+using LoreMaster.Manager;
+using LoreMaster.Properties;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,33 +33,34 @@ internal static class LorePage
 
     private static string _lastState;
 
-    private static Vector3[] _glyphPositions = new Vector3[]
+    private static (Vector3, PowerRank)[] _glyphPositions = new (Vector3, PowerRank)[]
     {
-        // Major Glyphs
-        new(0, 4.55f, -3f),
-        new(-6.55f, -2.45f, -3),
-        new(6.55f, -2.45f, -3),
-        // Minor Glyphs
-        new(-3.275f, 2.5f, -3),
-        new(-3.275f, -0.4f, -3),
-        new(0, -3.1f, -3),
-        new(3.275f, 2.5f, -3),
-        new(3.275f, -0.4f, -3),
-        // Small Glyphs
-        new(-6.25f, 3.8f, -3),
-        new(-5.45f, 1, -3),
-        new(-3.45f, 5, -3),
-        new(6.25f, 3.8f, -3),
-        new(5.45f, 1, -3),
-        new(3.45f, 5, -3),
-        new(-3.3f, -3.2f, -3),
-        new(3.3f, -3.2f, -3),
-        // Permanent Glyphs
-        new(-5, -5.3f, -3),
-        new(-2.5f, -5.3f, -3),
-        new(0, -5.3f, -3),
-        new(2.5f, -5.3f, -3),
-        new(5, -5.3f, -3),
+        // --First "line"--
+        (new(-6.25f, 3.8f, -3), PowerRank.Lower),
+        (new(-3.45f, 5, -3), PowerRank.Lower),
+        (new(0, 4.55f, -3f), PowerRank.Greater),
+        (new(3.45f, 5, -3), PowerRank.Lower),
+        (new(6.25f, 3.8f, -3), PowerRank.Lower),
+        // --Second "line"--
+        (new(-3.275f, 2.5f, -3), PowerRank.Medium),
+        (new(3.275f, 2.5f, -3), PowerRank.Medium),
+        // --Third "line"--
+        (new(-5.45f, 1, -3), PowerRank.Lower),
+        (new(-3.275f, -0.4f, -3), PowerRank.Medium),
+        (new(3.275f, -0.4f, -3), PowerRank.Medium),
+        (new(5.45f, 1, -3), PowerRank.Lower),
+        // --Fourth "Line"--
+        (new(-6.55f, -2.45f, -3), PowerRank.Greater),
+        (new(-3.3f, -3.2f, -3), PowerRank.Lower),
+        (new(0, -3.1f, -3), PowerRank.Medium),
+        (new(3.3f, -3.2f, -3), PowerRank.Lower),
+        (new(6.55f, -2.45f, -3), PowerRank.Greater),
+        // --Fifth "Line"--
+        (new(-5, -5.3f, -3), PowerRank.Permanent),
+        (new(-2.5f, -5.3f, -3), PowerRank.Permanent),
+        (new(0, -5.3f, -3), PowerRank.Permanent),
+        (new(2.5f, -5.3f, -3), PowerRank.Permanent),
+        (new(5, -5.3f, -3), PowerRank.Permanent),
     };
 
     #endregion
@@ -85,6 +88,15 @@ internal static class LorePage
         {
             for (int i = 0; i < _glyphObjects.Length; i++)
             {
+                (int, PowerRank) data = GetMatchingIndex(i);
+                SpriteRenderer spriteRenderer = _glyphObjects[i].GetComponentInChildren<SpriteRenderer>();
+                if (LoreManager.Module.IsIndexAvailable(data))
+                {
+                    Power power = PowerManager.GetPowerInSlot(data);
+                    spriteRenderer.sprite = power == null ? _emptySprite : _sprites[power.Location];
+                }
+                else
+                    spriteRenderer.sprite = null;
             }
             _stagEgg.sprite = StagAdoptionPower.Instance.CanSpawnStag
                 ? StagAdoptionPower.Instance.InventorySprites[0]
@@ -97,40 +109,6 @@ internal static class LorePage
         }
         return true;
     }
-
-    /*
-        Main Glyph positions Scale 1.5:
-        0 4,55 -3 (Up)
-       -6,55 -2,45 -3 (Left)
-        6,55 -2,45 -3 (Right)
-
-        Minor Glyph positions Scale 1.2:
-        -3,275 2,5 -3 (Top Left)
-        -3,275 -0,4 -3 (Bottom Left)
-        0 -3,1 -3 (Bottom Mid)
-        3,275 2,5 -3 (Top Right)
-        3,275 -0,4 -3 (Bottom Right)
-
-        Small Glyph positions Scale 1:
-        -6,25 3,8 -3 (Top Left)
-        -5,45 1 -3 (Left upper)
-        -3,45 5 -3 (Top on the left side)
-        6,25 3,8 -3 (Top Right) 
-        5,45 1 -3 (Right upper)
-        3,45 5 -3 (Top on the right side)
-        -3,3 -3,2 -3 (Bottom left)
-        3,3 -3,2 -3 (Bottom Right)
-
-        Permanent Glyphs Scale 1.2:
-        -5 -5,3 -3
-        -2,5 -5,3 -3
-        0 -5,3 -3
-        2,5 -5,3 -3
-        5 -5,3 -3
-
-        Divider:
-        
-     */
 
     /// <summary>
     /// Generates the inventory page.
@@ -146,10 +124,11 @@ internal static class LorePage
             PlayMakerFSM fsm = lorePage.LocateMyFSM("Empty UI");
 
             // Add index variable for glyph slot
-            List<FsmInt> intVariables = fsm.FsmVariables.IntVariables.ToList();
-            FsmInt indexVariable = new() { Name = "ItemIndex", Value = 0 };
-            intVariables.Add(indexVariable);
-            fsm.FsmVariables.IntVariables = intVariables.ToArray();
+            fsm.AddVariable("ItemIndex", 0);
+            FsmInt indexVariable = fsm.FsmVariables.FindFsmInt("ItemIndex");
+            // Add variable for checking which transition entered the check state
+            fsm.AddVariable("sourceStateId", 0);
+            FsmInt enteredIndex = fsm.FsmVariables.FindFsmInt("sourceStateId");
 
             // Generates the power holder
             GameObject powerList = new("Power List");
@@ -181,18 +160,19 @@ internal static class LorePage
             _controlElements.Add("confirmButton", confirmButton);
 
             // Generates all power objects
-            _glyphObjects = new GameObject[22];
+            _glyphObjects = new GameObject[21];
             for (int i = 1; i <= 21; i++)
             {
                 GameObject tablet = new("Glyph Slot " + i);
                 tablet.transform.SetParent(powerList.transform);
-                if (i <= 3)
+                if (_glyphPositions[i - 1].Item2 == PowerRank.Greater)
                     tablet.transform.localScale = new Vector3(1.5f, 1.5f, 1f);
-                else if (i <= 8 || i >= 18)
-                    tablet.transform.localScale = new Vector3(1.2f, 1.2f, 1f);
-                else
+                else if (_glyphPositions[i - 1].Item2 == PowerRank.Lower)
                     tablet.transform.localScale = new Vector3(1f, 1f, 1f);
-                tablet.transform.position = _glyphPositions[i - 1];
+                else
+                    tablet.transform.localScale = new Vector3(1.2f, 1.2f, 1f);
+
+                tablet.transform.position = _glyphPositions[i - 1].Item1;
                 tablet.layer = lorePage.layer;
                 // The cursor need a collider to jump to
                 tablet.AddComponent<BoxCollider2D>().offset = new(0f, 0f);
@@ -214,7 +194,7 @@ internal static class LorePage
             FsmState currentWorkingState = fsm.GetState("Init Heart Piece");
             currentWorkingState.Name = "Init Lore";
             currentWorkingState.RemoveTransitionsTo("L Arrow");
-            currentWorkingState.AddLastAction(new Lambda(() =>
+            currentWorkingState.AddActions(() =>
             {
                 int runs = 0;
                 foreach (Transform child in lorePage.transform)
@@ -224,105 +204,192 @@ internal static class LorePage
                     if (runs == 5)
                         break;
                 }
-            }));
-
-            // Create main state
-            fsm.AddState(new FsmState(fsm.Fsm)
-            {
-                Name = "Powers",
-                Actions = new FsmStateAction[]
-                {
-                    new Lambda(() => fsm.gameObject.LocateMyFSM("Update Cursor").FsmVariables.FindFsmGameObject("Item").Value = _glyphObjects[indexVariable.Value]),
-                    new SetSpriteRendererOrder()
-                    {
-                        gameObject = new() { GameObject = fsm.FsmVariables.FindFsmGameObject("Cursor Glow") },
-                        order = 0,
-                        delay = 0f
-                    },
-                    new Lambda(() => fsm.gameObject.LocateMyFSM("Update Cursor").SendEvent("UPDATE CURSOR")),
-                    new Lambda(() =>
-                    {
-
-                    })
-                }
             });
 
-            // Add transition from init to main
+            // Setup main state
+            fsm.AddState("Powers", new List<FsmStateAction>()
+            {
+                FsmHelper.WrapAction(() => LogHelper.Write("Called main state with: "+indexVariable.Value)),
+                FsmHelper.WrapAction(() => fsm.gameObject.LocateMyFSM("Update Cursor").FsmVariables.FindFsmGameObject("Item").Value = _glyphObjects[indexVariable.Value]),
+                new SetSpriteRendererOrder()
+                {
+                    gameObject = new() { GameObject = fsm.FsmVariables.FindFsmGameObject("Cursor Glow") },
+                    order = 0,
+                    delay = 0f
+                },
+                FsmHelper.WrapAction(() => fsm.gameObject.LocateMyFSM("Update Cursor").SendEvent("UPDATE CURSOR")),
+                FsmHelper.WrapAction(() =>
+                {
+                    int selectedIndex = indexVariable.Value;
+                    if (selectedIndex >= 0 && selectedIndex < 21)
+                    {
+                        (int, PowerRank) selectedPowerSlot = GetMatchingIndex(selectedIndex);
+                        Power selectedPower = PowerManager.GetPowerInSlot(selectedPowerSlot);
+                        string titleText;
+                        string descriptionText;
+                        if (selectedPower != null)
+                        {
+                            titleText = selectedPower.PowerName;
+                            descriptionText = LoreManager.GlobalSaveData.ShowHint ? selectedPower.Hint : selectedPower.Description;
+                        }
+                        else
+                        {
+                            titleText = selectedPowerSlot.Item2 switch
+                            {
+                                PowerRank.Greater => AdditionalText.Greater_Glyph_Title,
+                                PowerRank.Medium => AdditionalText.Medium_Glyph_Title,
+                                PowerRank.Lower => AdditionalText.Lesser_Glyph_Title,
+                                _ => AdditionalText.Permanent_Glyph_Title
+                            };
+                            descriptionText = selectedPowerSlot.Item2 switch
+                            {
+                                PowerRank.Greater => AdditionalText.Greater_Glyph_Description,
+                                PowerRank.Medium => AdditionalText.Medium_Glyph_Description,
+                                PowerRank.Lower => AdditionalText.Lesser_Glyph_Description,
+                                _ => AdditionalText.Permanent_Glyph_Description
+                            };
+                        }
+                        powerTitle.GetComponent<TextMeshPro>().text = titleText;
+                        powerDescription.GetComponent<TextMeshPro>().text = descriptionText;
+                    }
+                })
+            }, null);
             currentWorkingState.AddTransition("FINISHED", "Powers");
 
-            //currentWorkingState = fsm.GetState("Powers");
+            // Setup state to skip unreachable items.
+            fsm.AddState("Repeat?", () =>
+            {
+                if (indexVariable.Value < 0 || indexVariable.Value >= 16)
+                    fsm.SendEvent("FINISHED");
+                else if (!LoreManager.Module.IsIndexAvailable(GetMatchingIndex(indexVariable.Value)))
+                    fsm.SendEvent(enteredIndex.Value switch
+                    {
+                        0 => "REPEAT UP",
+                        1 => "REPEAT RIGHT",
+                        2 => "REPEAT DOWN",
+                        _ => "REPEAT LEFT"
+                    });
+                else
+                    fsm.SendEvent("FINISHED");
+            }, FsmTransitionData.FromTargetState("Powers").WithEventName("FINISHED"));
 
-            //fsm.AddState(new FsmState(fsm.Fsm) { Name = "Up Press" });
-            //fsm.AddState(new FsmState(fsm.Fsm) { Name = "Right Press" });
-            //fsm.AddState(new FsmState(fsm.Fsm) { Name = "Down Press" });
-            //fsm.AddState(new FsmState(fsm.Fsm) { Name = "Left Press" });
-            //fsm.AddState(new FsmState(fsm.Fsm) { Name = "Toggle Power" });
+            // Up handling
+            fsm.AddState("Up Press", () =>
+            {
+                enteredIndex.Value = 0;
+                if (indexVariable.Value <= 4)
+                    indexVariable.Value += 16;
+                else if (indexVariable.Value == 5)
+                    indexVariable.Value = 1;
+                else if (indexVariable.Value == 6)
+                    indexVariable.Value = 3;
+                else if (indexVariable.Value == 7)
+                    indexVariable.Value = 0;
+                else if (indexVariable.Value <= 9)
+                    indexVariable.Value -= 3;
+                else if (indexVariable.Value == 10)
+                    indexVariable.Value = 4;
+                else if (indexVariable.Value <= 12)
+                    indexVariable.Value -= 4;
+                else if (indexVariable.Value == 13)
+                    indexVariable.Value = 2;
+                else
+                    indexVariable.Value -= 5;
+                fsm.SendEvent("FINISHED");
+            }, FsmTransitionData.FromTargetState("Repeat?").WithEventName("FINISHED"));
 
-            //currentWorkingState.AddTransition("UI UP", "Up Press");
-            //currentWorkingState.AddTransition("UI RIGHT", "Right Press");
-            //currentWorkingState.AddTransition("UI DOWN", "Down Press");
-            //currentWorkingState.AddTransition("UI LEFT", "Left Press");
-            //currentWorkingState.AddTransition("UI CONFIRM", "Toggle Power");
+            // Down handling
+            fsm.AddState("Down Press", () =>
+            {
+                enteredIndex.Value = 2;
+                if (indexVariable.Value == 0)
+                    indexVariable.Value = 7;
+                else if (indexVariable.Value == 1)
+                    indexVariable.Value = 5;
+                else if (indexVariable.Value == 2)
+                    indexVariable.Value = 13;
+                else if (indexVariable.Value == 3)
+                    indexVariable.Value = 6;
+                else if (indexVariable.Value == 4)
+                    indexVariable.Value = 10;
+                else if (indexVariable.Value <= 6)
+                    indexVariable.Value += 3;
+                else if (indexVariable.Value <= 8)
+                    indexVariable.Value += 4;
+                else if (indexVariable.Value <= 15)
+                    indexVariable.Value += 5;
+                else
+                    indexVariable.Value -= 16;
+                fsm.SendEvent("FINISHED");
+            }, FsmTransitionData.FromTargetState("Repeat?").WithEventName("FINISHED"));
 
-            //// Left
-            //currentWorkingState = fsm.GetState("Left Press");
-            //currentWorkingState.AddTransition("OUT", "L Arrow");
-            //currentWorkingState.AddTransition("FINISHED", "Powers");
-            //currentWorkingState.AddLastAction(new Lambda(() =>
+            // Right handling
+            fsm.AddState("Right Press", () =>
+            {
+                enteredIndex.Value = 1;
+                if (indexVariable.Value == -2)
+                    indexVariable.Value = 0;
+                else if (indexVariable.Value == 4 || (indexVariable.Value > 5 && indexVariable.Value % 5 == 0))
+                {
+                    indexVariable.Value = -1; // To right arrow
+                    fsm.SendEvent("OUT");
+                    return;
+                }
+                else if (indexVariable.Value == 5)
+                    indexVariable.Value = 2;
+                else if (indexVariable.Value == 6)
+                    indexVariable.Value = 4;
+                else
+                    indexVariable.Value++;
+                fsm.SendEvent("FINISHED");
+            }, FsmTransitionData.FromTargetState("R Arrow").WithEventName("OUT"),
+                FsmTransitionData.FromTargetState("Repeat?").WithEventName("FINISHED"));
+
+            // Left handling
+            fsm.AddState("Left Press", () =>
+            {
+                enteredIndex.Value = 3;
+                if (indexVariable.Value == -1)
+                    indexVariable.Value = 4;
+                else if (indexVariable.Value == 0 || indexVariable.Value == 7 || indexVariable.Value == 11 || indexVariable.Value == 16)
+                {
+                    indexVariable.Value = -1; // To left arrow
+                    fsm.SendEvent("OUT");
+                    return;
+                }
+                else if (indexVariable.Value == 5)
+                    indexVariable.Value = 0;
+                else if (indexVariable.Value == 6)
+                    indexVariable.Value = 2;
+                else
+                    indexVariable.Value--;
+                fsm.SendEvent("FINISHED");
+            }, FsmTransitionData.FromTargetState("L Arrow").WithEventName("OUT"),
+                FsmTransitionData.FromTargetState("Repeat?").WithEventName("FINISHED"));
+            fsm.GetState("R Arrow").InsertActions(0, () => LogHelper.Write("Entered R Arrow"));
+
+            currentWorkingState = fsm.GetState("Repeat?");
+            currentWorkingState.AddTransition("FINISHED", "Powers");
+            currentWorkingState.AddTransition("REPEAT UP", "Up Press");
+            currentWorkingState.AddTransition("REPEAT RIGHT", "Right Press");
+            currentWorkingState.AddTransition("REPEAT DOWN", "Down Press");
+            currentWorkingState.AddTransition("REPEAT LEFT", "Left Press");
+
+            // Allow transitions from the main state to the movement states.
+            currentWorkingState = fsm.GetState("Powers");
+            currentWorkingState.AddTransition("UI UP", "Up Press");
+            currentWorkingState.AddTransition("UI RIGHT", "Right Press");
+            currentWorkingState.AddTransition("UI DOWN", "Down Press");
+            currentWorkingState.AddTransition("UI LEFT", "Left Press");
+
+            fsm.GetState("L Arrow").AddTransition("UI RIGHT", "Right Press");
+            fsm.GetState("R Arrow").AddTransition("UI LEFT", "Left Press");
+
+            //fsm.AddState("Toggle", () =>
             //{
-            //    if (indexVariable.Value == 0 || indexVariable.Value % 10 == 0)
-            //    {
-            //        indexVariable.Value = -2;
-            //        fsm.SendEvent("OUT");
-            //        return;
-            //    }
-            //    indexVariable.Value = indexVariable.Value == -1 ? 9 : indexVariable.Value - 1;
-            //    fsm.SendEvent("FINISHED");
-            //}));
-            //fsm.GetState("R Arrow").AddTransition("UI LEFT", "Left Press");
 
-            //// Right
-            //currentWorkingState = fsm.GetState("Right Press");
-            //currentWorkingState.AddTransition("OUT", "R Arrow");
-            //currentWorkingState.AddTransition("FINISHED", "Powers");
-            //currentWorkingState.AddLastAction(new Lambda(() =>
-            //{
-            //    if (indexVariable.Value == 9 || indexVariable.Value % 10 == 9)
-            //    {
-            //        fsm.SendEvent(indexVariable.Value == 59 ? "STAG" : "OUT");
-            //        indexVariable.Value = -1;
-            //        fsm.SendEvent("OUT");
-            //        return;
-            //    }
-            //    indexVariable.Value = indexVariable.Value == -2 ? 0 : indexVariable.Value + 1;
-            //    fsm.SendEvent("FINISHED");
-            //}));
-            //fsm.GetState("L Arrow").AddTransition("UI RIGHT", "Right Press");
-
-            //// Up
-            //currentWorkingState = fsm.GetState("Up Press");
-            //currentWorkingState.AddTransition("FINISHED", "Powers");
-            //currentWorkingState.AddLastAction(new Lambda(() =>
-            //{
-            //    if (indexVariable.Value < 10)
-            //        indexVariable.Value += 50;
-            //    else
-            //        indexVariable.Value -= 10;
-            //    fsm.SendEvent("FINISHED");
-            //}));
-
-            //// Down
-            //currentWorkingState = fsm.GetState("Down Press");
-            //currentWorkingState.AddTransition("FINISHED", "Powers");
-            //currentWorkingState.AddLastAction(new Lambda(() =>
-            //{
-            //    if (indexVariable.Value >= 50)
-            //        indexVariable.Value -= 50;
-            //    else
-            //        indexVariable.Value += 10;
-            //    fsm.SendEvent("FINISHED");
-            //}));
-
+            //}, FsmTransitionData.FromTargetState("Powers").WithEventName("UI Confirm"), 
+            //   FsmTransitionData.FromTargetState("Powers").WithEventName("Cancel"));
             //// Toggle
             //currentWorkingState = fsm.GetState("Toggle Power");
             //currentWorkingState.AddTransition("FINISHED", "Powers");
@@ -344,7 +411,7 @@ internal static class LorePage
             bottomSeparator.transform.localScale = new(6.6422f, 0.5253f, 1.3674f);
             bottomSeparator.transform.SetRotationZ(0f);
 
-            BuildExtraItems(lorePage);
+            //BuildExtraItems(lorePage);
             lorePage.SetActive(false);
         }
         catch (Exception exception)
@@ -352,6 +419,17 @@ internal static class LorePage
             LoreMaster.Instance.LogError("An error occured in the inventory: " + exception.Message);
             LoreMaster.Instance.LogError("An error occured in the inventory: " + exception.StackTrace);
         }
+    }
+
+    internal static (int, PowerRank) GetMatchingIndex(int index)
+    {
+        (Vector3, PowerRank) rank = _glyphPositions[index];
+        int typeIndex = _glyphPositions.Where(x => x.Item2 == rank.Item2)
+            .Select(x => x.Item1)
+            .ToList()
+            .IndexOf(rank.Item1);
+        LogHelper.Write("Type index: " + typeIndex + " from type: " + rank.Item2);
+        return new(typeIndex, rank.Item2);
     }
 
     private static void BuildExtraItems(GameObject lorePage)
@@ -418,7 +496,7 @@ internal static class LorePage
             }
         };
         fsm.AddState(currentWorkingState);
-        fsm.GetState("Stag Egg").AddTransition("UI CONFIRM", currentWorkingState);
+        fsm.GetState("Stag Egg").AddTransition("UI CONFIRM", "Spawn");
         currentWorkingState.AddTransition("FINISHED", "Stag Egg");
         fsm.GetState("Right Press").AddTransition("STAG", "Stag Egg");
         stagEgg.SetActive(false);
@@ -461,7 +539,7 @@ internal static class LorePage
         cleanseScroll.SetActive(false);
         _controlElements.Add("Cleanse", cleanseScroll);
 
-        GameObject cursor = lorePage.FindChild("Cursor");
+        GameObject cursor = lorePage.transform.Find("Cursor").gameObject;
         _controlElements.Add("Cursor", cursor);
         GameObject interactSprite = new("Interact Option");
         interactSprite.transform.SetParent(cursor.transform);
@@ -584,15 +662,8 @@ internal static class LorePage
         fsm.GetState("Select Cleanse Scroll").AddTransition("UI RIGHT", "R Arrow");
         fsm.GetState("Toggle Cleanse Scroll").AddTransition("FINISHED", "Select Cleanse Scroll");
 
-        fsm.GetState("Move Pane R").AddFirstAction(new Lambda(() =>
-        {
-            interactSprite.GetComponent<SpriteRenderer>().sprite = null;
-        }));
-
-        fsm.GetState("Move Pane L").AddFirstAction(new Lambda(() =>
-        {
-            interactSprite.GetComponent<SpriteRenderer>().sprite = null;
-        }));
+        fsm.GetState("Move Pane R").InsertActions(0, () => interactSprite.GetComponent<SpriteRenderer>().sprite = null);
+        fsm.GetState("Move Pane L").InsertActions(0, () => interactSprite.GetComponent<SpriteRenderer>().sprite = null);
     }
 
     internal static void ActivateStagEgg() => _stagEgg.gameObject.SetActive(true);

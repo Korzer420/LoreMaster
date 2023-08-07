@@ -1,6 +1,7 @@
 using HutongGames.PlayMaker.Actions;
-using ItemChanger.Extensions;
+
 using ItemChanger.FsmStateActions;
+using KorzUtils.Helper;
 using LoreMaster.Enums;
 
 using LoreMaster.Manager;
@@ -31,7 +32,10 @@ public class DreamBlessingPower : Power
 
     #region Properties
 
-    public GameObject WeaverPrefab => _weaverlingPrefab == null ? _weaverlingPrefab = GameObject.Find("Knight/Charm Effects").LocateMyFSM("Weaverling Control").GetState("Spawn").GetFirstActionOfType<SpawnObjectFromGlobalPool>().gameObject.Value : _weaverlingPrefab;
+    public GameObject WeaverPrefab => _weaverlingPrefab == null ? _weaverlingPrefab = GameObject.Find("Knight/Charm Effects")
+            .LocateMyFSM("Weaverling Control")
+            .GetState("Spawn")
+            .GetFirstAction<SpawnObjectFromGlobalPool>().gameObject.Value : _weaverlingPrefab;
 
     #endregion
 

@@ -1,6 +1,6 @@
 using HutongGames.PlayMaker;
 using HutongGames.PlayMaker.Actions;
-using ItemChanger.Extensions;
+
 using ItemChanger.FsmStateActions;
 using KorzUtils.Helper;
 using LoreMaster.Enums;
@@ -56,8 +56,8 @@ public class TouristPower : Power
                     nailSmithCost.GetState("Send Text").Actions[2],
                 }
             });
-            self.GetState("Gate").GetFirstActionOfType<SetFsmGameObject>().setValue.Value = self.gameObject;
-            self.GetState("Gate").GetFirstActionOfType<CallMethodProper>().parameters[0].SetValue("Temple_Door");
+            self.GetState("Gate").GetFirstAction<SetFsmGameObject>().setValue.Value = self.gameObject;
+            self.GetState("Gate").GetFirstAction<CallMethodProper>().parameters[0].SetValue("Temple_Door");
 
             self.GetState("Enter Anim?").AdjustTransition("FINISHED", "Gate");
             self.GetState("Gate").AddTransition("NO", "In Range");

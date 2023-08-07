@@ -1,9 +1,9 @@
 using HutongGames.PlayMaker;
 using ItemChanger;
-using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
+using KorzUtils.Data;
+using KorzUtils.Helper;
 using LoreMaster.Enums;
-using LoreMaster.Manager;
 using Modding;
 using System;
 using System.Collections;
@@ -61,27 +61,17 @@ public class BestMenderInTheWorldPower : Power
             if (state != null)
             {
                 Component.Destroy(self.GetComponent<NonBouncer>());
-                FsmState cancel = new(self.Fsm)
+                self.AddState("Unbreakable", () =>
                 {
-                    Name = "Unbreakable",
-                    Actions = new FsmStateAction[]
-                    {
-                        new Lambda(() =>
-                        {
-                            if(State == PowerState.Active)
-                                LoreMaster.Instance.Handler.StartCoroutine(Shuckle(self.transform));
-                            else if(PlayerData.instance.GetInt("geo") > 50)
-                                HeroController.instance.TakeGeo(50);
-                            else
-                                HeroController.instance.TakeDamage(null, GlobalEnums.CollisionSide.top, 1, 1);
-
-                        })
-                    }
-                };
-                self.AddState(state);
+                    if (State == PowerState.Active)
+                        LoreMaster.Instance.Handler.StartCoroutine(Shuckle(self.transform));
+                    else if (PlayerData.instance.GetInt("geo") > 50)
+                        HeroController.instance.TakeGeo(50);
+                    else
+                        HeroController.instance.TakeDamage(null, GlobalEnums.CollisionSide.top, 1, 1);
+                }, FsmTransitionData.FromTargetState(State == PowerState.Active ? "Idle" : "No Rotate Check").WithEventName("FINISHED"));
                 state.ClearTransitions();
-                state.AddTransition("FINISHED", cancel);
-                cancel.AddTransition("FINISHED", State == PowerState.Active ? "Idle" : "No Rotate Check");
+                state.AddTransition("FINISHED", "Unbreakable");
             }
         }
         orig(self);

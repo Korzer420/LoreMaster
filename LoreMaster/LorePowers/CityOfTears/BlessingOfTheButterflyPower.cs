@@ -1,5 +1,6 @@
-using ItemChanger.Extensions;
+
 using ItemChanger.FsmStateActions;
+using KorzUtils.Helper;
 using LoreMaster.Enums;
 using Modding;
 using MonoMod.Cil;
@@ -135,11 +136,11 @@ public class BlessingOfTheButterflyPower : Power
         fsm.FsmVariables.FindFsmInt("attackType").Value = 2;
 
         // Check for terrain
-        fsm.GetState("Send Event").InsertAction(new Lambda(() =>
+        fsm.GetState("Send Event").InsertActions(2, () =>
         {
             if (fsm.FsmVariables.FindFsmInt("Layer").Value == 8)
                 fsm.SendEvent("CANCEL");
-        }), 2);
+        });
 
         if (_rightHitbox != null)
             GameObject.Destroy(_rightHitbox);
@@ -156,11 +157,11 @@ public class BlessingOfTheButterflyPower : Power
         fsm.FsmVariables.FindFsmInt("attackType").Value = 2;
 
         // Check for terrain
-        fsm.GetState("Send Event").InsertAction(new Lambda(() =>
+        fsm.GetState("Send Event").InsertActions(2, () =>
         {
             if (fsm.FsmVariables.FindFsmInt("Layer").Value == 8)
                 fsm.SendEvent("CANCEL");
-        }),2);
+        });
 
         _leftHitbox.gameObject.SetActive(false);
         _rightHitbox.gameObject.SetActive(false);

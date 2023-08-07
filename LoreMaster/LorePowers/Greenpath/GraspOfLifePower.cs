@@ -1,5 +1,6 @@
-using ItemChanger.Extensions;
+
 using ItemChanger.FsmStateActions;
+using KorzUtils.Helper;
 using LoreMaster.Enums;
 
 using Modding;
@@ -95,13 +96,13 @@ public class GraspOfLifePower : Power
                         cheer.transform.localPosition = go.transform.localPosition;
                         Component.Destroy(cheer.LocateMyFSM("Deactivate on Hit"));
                         foreach (Transform child in cheer.transform)
-                            child.gameObject.LocateMyFSM("damages_enemy").GetState("Send Event").ReplaceAction(new Lambda(() =>
+                            child.gameObject.LocateMyFSM("damages_enemy").GetState("Send Event").ReplaceAction(0, () =>
                             {
                                 child.gameObject.LocateMyFSM("damages_enemy").FsmVariables.FindFsmInt("damageDealt").Value = hasUnn ? 20 : 10;
-                            }), 0);
+                            });
                         cheer.SetActive(true);
                         // We destroy the object instead of disabling it.
-                        cheer.LocateMyFSM("FSM").GetState("Destroy").ReplaceAction(new Lambda(() => GameObject.Destroy(cheer)), 0);
+                        cheer.LocateMyFSM("FSM").GetState("Destroy").ReplaceAction(0, () => GameObject.Destroy(cheer));
                     }
                     catch (Exception exception)
                     {

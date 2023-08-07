@@ -1,3 +1,4 @@
+using KorzUtils.Helper;
 using LoreMaster.Enums;
 using LoreMaster.LorePowers;
 using LoreMaster.LorePowers.Ancient_Basin;
@@ -107,7 +108,7 @@ public static class PowerManager
     private static string[] _majorPowers = new string[3];
     private static string[] _mediumPowers = new string[5];
     private static string[] _smallPowers = new string[8];
-    private static List<string> _permanentPowers = new();
+    private static string[] _permanentPowers = new string[5];
 
     #endregion
 
@@ -141,7 +142,7 @@ public static class PowerManager
     /// <summary>
     /// Gets all currently active permanent powers
     /// </summary>
-    public static List<string> PermanentPowers => _permanentPowers;
+    public static string[] PermanentPowers => _permanentPowers;
 
     #endregion
 
@@ -244,6 +245,26 @@ public static class PowerManager
                 {
                     LoreMaster.Instance.LogError("Error while executing scene action for " + power.PowerName + ": " + exception.Message + "StackTrace: " + exception.StackTrace);
                 }
+    }
+
+    internal static Power GetPowerInSlot((int, PowerRank) powerIndex)
+    {
+        try
+        {
+            string powerName = powerIndex.Item2 switch
+            {
+                PowerRank.Permanent => PermanentPowers[powerIndex.Item1],
+                PowerRank.Lower => ActiveSmallPowers[powerIndex.Item1],
+                PowerRank.Medium => ActiveMediumPowers[powerIndex.Item1],
+                _ => ActiveMajorPowers[powerIndex.Item1],
+            };
+            return GetPowerByName(powerName);
+        }
+        catch (Exception exception)
+        {
+            LogHelper.Write("An error occured while trying to find power on slot.", exception);
+            return null;
+        }
     }
 
     #endregion

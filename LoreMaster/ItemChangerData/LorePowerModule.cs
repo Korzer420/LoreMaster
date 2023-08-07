@@ -1,6 +1,7 @@
 ﻿using ItemChanger;
 using ItemChanger.Modules;
 using LoreCore.Items;
+using LoreMaster.Enums;
 using LoreMaster.LorePowers;
 using LoreMaster.LorePowers.QueensGarden;
 using LoreMaster.Manager;
@@ -93,6 +94,17 @@ public class LorePowerModule : Module
         Events.RemoveFsmEdit(new("Thorn Counter"), ModifyThorns);
         ModHooks.SetPlayerIntHook -= ModHooks_SetPlayerIntHook;
         ModHooks.SetPlayerBoolHook -= ModHooks_SetPlayerBoolHook;
+    }
+
+    public bool IsIndexAvailable((int, PowerRank) powerIndex)
+    {
+        return powerIndex.Item2 switch
+        {
+            PowerRank.Permanent => true,
+            PowerRank.Lower => SmallGlyphSlots >= powerIndex.Item1 + 1,
+            PowerRank.Medium => MinorGlyphSlots >= powerIndex.Item1 + 1,
+            _ => MajorGlyphSlots >= powerIndex.Item1 + 1
+        };
     }
 
     #endregion
