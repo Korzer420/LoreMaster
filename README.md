@@ -35,6 +35,13 @@ You can change these options in the mod menu ingame:
 - Disable yellow mushroom: If on, the yellow mushroom effect of the Bag of Mushroom ability will be disabled (Replaced with just a very very small soul gain).
 - Allow Bomb Quickcast: If on, the bomb spell from "Grass Bombardement" can be cast via quick cast. If you want to do fireball skips it is recommended to turn this off.
 
+## Extra Mode
+This mode does modify the game a bit:
+- Adds a "quest chain" to Elderbug.
+- You cannot interact with lore tablets nor NPC (besides Elderbug and one other character). These abilities will be unlocked by the Elderbug quest chain.
+- Allows you to change the requirement for opening the Black egg temple to obtaining certain amount of lore or lore + dreamers.
+- **Hard and Heroic mode**: Will apply negative effects from lore powers which you haven't obtained yet. In heroic mode the positive effects are removed completely, you can just get rid of the negative onces.
+
 ## Inventory Page
 Talking to Elderbug (or if randomized, finding the item) gives you access to the lore power inventory page in which you can see the hints/descriptions of the powers again and toggle them on/off while sitting on a bench.
 
