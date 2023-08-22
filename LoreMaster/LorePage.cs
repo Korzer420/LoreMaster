@@ -384,7 +384,7 @@ internal static class LorePage
 
             fsm.GetState("L Arrow").AddTransition("UI RIGHT", "Right Press");
             fsm.GetState("R Arrow").AddTransition("UI LEFT", "Left Press");
-
+            a
             //fsm.AddState("Toggle", () =>
             //{
 
