@@ -1,10 +1,7 @@
-
-using ItemChanger.FsmStateActions;
 using KorzUtils.Helper;
 using LoreMaster.Enums;
 
 using System.Collections;
-using System.Reflection;
 using UnityEngine;
 
 namespace LoreMaster.LorePowers.HowlingCliffs;
@@ -22,6 +19,12 @@ public class LifebloodOmenPower : Power
     #region Constructors
 
     public LifebloodOmenPower() : base("Lifeblood Omen", Area.Cliffs) { }
+
+    #endregion
+
+    #region Properties
+
+    public override PowerRank Rank => PowerRank.Medium;
 
     #endregion
 

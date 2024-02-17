@@ -86,6 +86,9 @@ public class LorePowerModule : Module
         Events.AddFsmEdit(new("Thorn Counter"), ModifyThorns);
         ModHooks.SetPlayerIntHook += ModHooks_SetPlayerIntHook;
         ModHooks.SetPlayerBoolHook += ModHooks_SetPlayerBoolHook;
+        foreach (Power power in PowerManager.GetAllPowers())
+            if (power.Rank != PowerRank.Permanent)
+                AcquiredPowers.Add(power.PowerName);
     }
 
     public override void Unload()

@@ -20,6 +20,12 @@ public class RequiemPower : Power
 
     #endregion
 
+    #region Properties
+
+    public override PowerRank Rank => PowerRank.Permanent;
+
+    #endregion
+
     #region Event Handler
 
     private void CheckForDeathInput(On.GameManager.orig_BeginSceneTransition orig, GameManager self, GameManager.SceneLoadInfo info)

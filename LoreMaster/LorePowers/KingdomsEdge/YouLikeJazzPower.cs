@@ -29,6 +29,8 @@ internal class YouLikeJazzPower : Power
 
     public FsmVariables HatchlingVariables => _hatchlingVariables == null ? _hatchlingVariables = GameObject.Find("Charm Effects").LocateMyFSM("Hatchling Spawn").FsmVariables : _hatchlingVariables;
 
+    public override PowerRank Rank => PowerRank.Medium;
+
     #endregion
 
     #region Event handler

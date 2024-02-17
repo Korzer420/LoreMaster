@@ -1,5 +1,3 @@
-
-using ItemChanger.FsmStateActions;
 using KorzUtils.Helper;
 using LoreMaster.Enums;
 using Modding;
@@ -50,6 +48,8 @@ public class BlessingOfTheButterflyPower : Power
             return _wings; 
         }
     }
+
+    public override PowerRank Rank => PowerRank.Medium;
 
     #endregion
 

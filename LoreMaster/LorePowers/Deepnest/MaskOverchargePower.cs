@@ -35,6 +35,8 @@ public class MaskOverchargePower : Power
         }
     }
 
+    public override PowerRank Rank => PowerRank.Greater;
+
     #endregion
 
     #region Event Handler

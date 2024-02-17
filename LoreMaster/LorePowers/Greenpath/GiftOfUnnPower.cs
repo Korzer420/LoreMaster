@@ -23,6 +23,12 @@ public class GiftOfUnnPower : Power
 
     #endregion
 
+    #region Properties
+
+    public override PowerRank Rank => PowerRank.Medium;
+
+    #endregion
+
     #region Event Handler
 
     private void OnPlayerDataBoolTestAction(On.HutongGames.PlayMaker.Actions.PlayerDataBoolTest.orig_OnEnter orig, HutongGames.PlayMaker.Actions.PlayerDataBoolTest self)

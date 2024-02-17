@@ -11,6 +11,12 @@ public class SacredShellPower : Power
 
     #endregion
 
+    #region Properties
+
+    public override PowerRank Rank => PowerRank.Greater;
+
+    #endregion
+
     #region Event Handler
 
     private int ModHooks_AfterTakeDamageHook(int hazardType, int damageAmount) => State == PowerState.Twisted 

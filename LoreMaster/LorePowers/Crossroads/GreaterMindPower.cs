@@ -59,6 +59,8 @@ public class GreaterMindPower : Power
     /// </summary>
     public static bool PermanentTracker => LoreManager.GlobalSaveData.TrackerPermanently;
 
+    public override PowerRank Rank => PowerRank.Permanent;
+
     #endregion
 
     #region Event handler

@@ -37,6 +37,8 @@ public class UnitedWeStandPower : Power
         }
     }
 
+    public override PowerRank Rank => PowerRank.Medium;
+
     #endregion
 
     #region Event Handler

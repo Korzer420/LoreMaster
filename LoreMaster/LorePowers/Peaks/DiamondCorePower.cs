@@ -59,6 +59,8 @@ public class DiamondCorePower : Power
         }
     };
 
+    public override PowerRank Rank => PowerRank.Medium;
+
     #endregion
 
     #region Event handler

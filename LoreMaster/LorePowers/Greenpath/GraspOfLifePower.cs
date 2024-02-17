@@ -70,6 +70,8 @@ public class GraspOfLifePower : Power
         }
     }
 
+    public override PowerRank Rank => PowerRank.Greater;
+
     #endregion
 
     #region Event handler

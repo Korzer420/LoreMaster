@@ -26,6 +26,8 @@ public class EternalSentinelPower : Power
 
     public tk2dSprite BaldurSprite => _baldurSprite == null ? _baldurSprite = GameObject.Find("Knight/Charm Effects").transform.Find("Blocker Shield").gameObject.GetComponentInChildren<tk2dSprite>() : _baldurSprite;
 
+    public override PowerRank Rank => PowerRank.Medium;
+
     #endregion
 
     #region Event Handler

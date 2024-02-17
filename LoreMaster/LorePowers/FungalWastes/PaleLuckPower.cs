@@ -20,6 +20,12 @@ public class PaleLuckPower : Power
 
     #endregion
 
+    #region Properties
+
+    public override PowerRank Rank => PowerRank.Medium;
+
+    #endregion
+
     #region Event Handler
 
     /// <summary>

@@ -34,6 +34,8 @@ public class HappyFatePower : Power
         }
     }
 
+    public override PowerRank Rank => PowerRank.Medium;
+
     #endregion
 
     #region Event handler

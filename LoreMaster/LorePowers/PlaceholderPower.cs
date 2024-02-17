@@ -1,3 +1,5 @@
+using LoreMaster.Enums;
+
 namespace LoreMaster.LorePowers;
 
 /// <summary>
@@ -5,8 +7,7 @@ namespace LoreMaster.LorePowers;
 /// </summary>
 internal class PlaceholderPower : Power
 {
-    public PlaceholderPower() : base("Placeholder", Enums.Area.None)
-    {
-        Rank = Enums.PowerRank.None;
-    }
+    public PlaceholderPower() : base("Placeholder", Enums.Area.None) { }
+
+    public override PowerRank Rank => PowerRank.None;
 }

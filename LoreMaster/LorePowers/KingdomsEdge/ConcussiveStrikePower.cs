@@ -44,6 +44,8 @@ public class ConcussiveStrikePower : Power
 
     public MethodInfo InvulnerableCall => _invulnerableCall == null ? _invulnerableCall = HeroController.instance.GetType().GetMethod("Invulnerable", BindingFlags.NonPublic | BindingFlags.Instance) : _invulnerableCall;
 
+    public override PowerRank Rank => PowerRank.Greater;
+
     #endregion
 
     #region Event Handler

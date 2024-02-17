@@ -50,6 +50,8 @@ public class StagAdoptionPower : Power
     /// </summary>
     public double HatchMoment { get; set; }
 
+    public override PowerRank Rank => PowerRank.Permanent;
+
     #endregion
 
     #region Event handler

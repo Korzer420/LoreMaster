@@ -205,8 +205,6 @@ public static class PowerManager
     internal static void DisableAllPowers()
     {
         CanPowersActivate = false;
-        foreach (Power power in _powerList.Where(x => x.State == PowerState.Active))
-            power.DisablePower(true);
     }
 
     /// <summary>
@@ -228,15 +226,21 @@ public static class PowerManager
         return _powerList.Where(x => allActivePowerNames.Contains(x.PowerName));
     }
 
+    /// <summary>
+    /// Get all powers from a certain rank.
+    /// </summary>
+    public static IEnumerable<Power> GetPowersByRank(PowerRank powerRank, bool onlyObtained = true)
+        => _powerList.Where(x => x.Rank == powerRank && (!onlyObtained || LoreManager.Module.AcquiredPowers.Contains(x.PowerName)));
+
     #endregion
 
-    /// <summary>
-    /// Let all powers execute their behaviour for entering a new room.
-    /// </summary>
+        /// <summary>
+        /// Let all powers execute their behaviour for entering a new room.
+        /// </summary>
     internal static void ExecuteSceneActions()
     {
-        foreach (Power power in _powerList)
-            if (power.State == PowerState.Active && power.SceneAction != null)
+        foreach (Power power in GetAllActivePowers())
+            if (power.SceneAction != null)
                 try
                 {
                     power.SceneAction.Invoke();
@@ -264,6 +268,37 @@ public static class PowerManager
         {
             LogHelper.Write("An error occured while trying to find power on slot.", exception);
             return null;
+        }
+    }
+
+    internal static void SwapPower((int, PowerRank) powerIndex, string newPower)
+    {
+        try
+        {
+            LogHelper.Write("Swap power");
+            Power activePower = GetPowerInSlot(powerIndex);
+            activePower?.DisablePower();
+            switch (powerIndex.Item2)
+            {
+                case PowerRank.Greater:
+                    ActiveMajorPowers[powerIndex.Item1] = newPower;
+                    break;
+                case PowerRank.Medium:
+                    ActiveMediumPowers[powerIndex.Item1] = newPower;
+                    break;
+                default:
+                    ActiveSmallPowers[powerIndex.Item1] = newPower;
+                    break;
+            }
+            if (!string.IsNullOrEmpty(newPower))
+            {
+                LogHelper.Write("Enable " + newPower);
+                GetPowerByName(newPower).EnablePower();
+            }
+        }
+        catch (Exception exception)
+        {
+            LogHelper.Write("An error occured while trying to swap powers.", exception);
         }
     }
 

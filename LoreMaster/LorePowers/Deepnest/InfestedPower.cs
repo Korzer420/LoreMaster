@@ -43,6 +43,8 @@ public class InfestedPower : Power
         }
     };
 
+    public override PowerRank Rank => PowerRank.Greater;
+
     #endregion
 
     #region Event handler

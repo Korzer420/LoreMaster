@@ -27,6 +27,8 @@ public class OverwhelmingPowerPower : Power
 
     public bool HasFullSoul => _hasFullSoulMeter;
 
+    public override PowerRank Rank => PowerRank.Greater;
+
     #endregion
 
     #region Event Handler

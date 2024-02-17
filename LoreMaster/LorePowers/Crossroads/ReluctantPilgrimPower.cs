@@ -23,6 +23,8 @@ public class ReluctantPilgrimPower : Power
     /// </summary>
     public bool IsPlayerGrounded => (int)HeroController.instance.hero_state < 3;
 
+    public override PowerRank Rank => PowerRank.Medium;
+
     #endregion
 
     #region Event Handler

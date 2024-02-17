@@ -1,7 +1,6 @@
 using HutongGames.PlayMaker.Actions;
 using KorzUtils.Helper;
 using LoreMaster.Enums;
-
 using MonoMod.Cil;
 using System;
 using UnityEngine;
@@ -16,6 +15,12 @@ public class ScrewTheRulesPower : Power
     #region Constructors
 
     public ScrewTheRulesPower() : base("Screw the Rules", Area.Dirtmouth) { }
+
+    #endregion
+
+    #region Properties
+
+    public override PowerRank Rank => PowerRank.Medium;
 
     #endregion
 

@@ -28,6 +28,8 @@ public class EternalValorPower : Power
 
     public float StackTimer => State == PowerState.Twisted ? 1f : 0.5f;
 
+    public override PowerRank Rank => PowerRank.Greater;
+
     #region Event Handler
 
     /// <summary>

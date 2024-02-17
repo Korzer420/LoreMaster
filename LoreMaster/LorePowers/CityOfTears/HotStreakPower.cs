@@ -21,6 +21,12 @@ public class HotStreakPower : Power
 
     #endregion
 
+    #region Properties
+
+    public override PowerRank Rank => PowerRank.Greater;
+
+    #endregion
+
     #region Event Handler
 
     /// <summary>

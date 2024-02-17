@@ -27,6 +27,12 @@ public class ShiningBoundPower : Power
 
     #endregion
 
+    #region Properties
+
+    public override PowerRank Rank => PowerRank.Medium;
+
+    #endregion
+
     #region Event handler
 
     private void BossSequenceController_ApplyBindings(ILContext il)

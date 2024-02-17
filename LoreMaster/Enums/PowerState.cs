@@ -6,6 +6,11 @@ namespace LoreMaster.Enums;
 public enum PowerState
 {
     /// <summary>
+    /// The power has not been obtained yet.
+    /// </summary>
+    NotObtained,
+
+    /// <summary>
     /// The power was obtained but is not enabled.
     /// </summary>
     Disabled,

@@ -37,6 +37,8 @@ public class DreamBlessingPower : Power
             .GetState("Spawn")
             .GetFirstAction<SpawnObjectFromGlobalPool>().gameObject.Value : _weaverlingPrefab;
 
+    public override PowerRank Rank => PowerRank.Greater;
+
     #endregion
 
     #region Event Handler
@@ -93,9 +95,7 @@ public class DreamBlessingPower : Power
         else if (key.Equals("DREAMERS_INSPECT_RG4"))
             return LoreManager.GlobalSaveData.ShowHint ? " Invoking her children from her victim." : " Spawn 2 weavers for the current room.";
         else if (key.Equals("DREAMERS_INSPECT_RG5"))
-            return StayTwisted 
-                ? " [Cursed: " + PowerName + "] " + (LoreManager.GlobalSaveData.ShowHint ? TwistedHint : TwistedDescription )
-                : " [" + PowerName + "] " + (LoreManager.GlobalSaveData.ShowHint ? "The dream artifact uses the power it absorbs from their powerful victims to use it's hidden power." : "Defeated Dreamers grant the dream nail an additional effect (doubled with awoken dreamnail).");
+            return " [" + PowerName + "] " + (LoreManager.GlobalSaveData.ShowHint ? "The dream artifact uses the power it absorbs from their powerful victims to use it's hidden power." : "Defeated Dreamers grant the dream nail an additional effect (doubled with awoken dreamnail).");
         return string.Empty;
     }
 

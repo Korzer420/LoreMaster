@@ -24,6 +24,8 @@ public class TouristPower : Power
     /// </summary>
     public static bool Inspected { get; set; }
 
+    public override PowerRank Rank => PowerRank.Permanent;
+
     #endregion
 
     #region Event handler

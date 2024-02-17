@@ -28,6 +28,8 @@ public class MindblastOfUnnPower : Power
 
     public override Action SceneAction => () => _enemies.Clear();
 
+    public override PowerRank Rank => PowerRank.Medium;
+
     #endregion
 
     #region Event handler

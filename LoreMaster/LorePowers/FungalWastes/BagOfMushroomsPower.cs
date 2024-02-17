@@ -71,6 +71,8 @@ public class BagOfMushroomsPower : Power
     /// </summary>
     public bool HasEatenTwice => _lastMushrooms[1] == _activeEffect;
 
+    public override PowerRank Rank => PowerRank.Greater;
+
     #endregion
 
     #region Event Handler

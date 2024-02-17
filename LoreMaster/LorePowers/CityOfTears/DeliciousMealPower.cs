@@ -30,6 +30,8 @@ public class DeliciousMealPower : Power
 
     public GameObject EggObject => _eggObject == null ? _eggObject = GameObject.Find("_GameCameras").transform.Find("HudCamera/Inventory/Inv/Equipment/Rancid Egg").gameObject : _eggObject;
 
+    public override PowerRank Rank => PowerRank.Medium;
+
     #endregion
 
     #region Event Handler

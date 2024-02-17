@@ -23,9 +23,9 @@ public abstract class Power
         Location = area;
         string powerType = GetType().Name;
         Hint = Properties.PowerHints.ResourceManager.GetString(powerType.Substring(0, powerType.Length - 5));
-        TwistedHint = "<color=#c034eb>"+ Properties.TwistedPowerHints.ResourceManager.GetString(powerType.Substring(0, powerType.Length - 5)) + "</color>";
+        TwistedHint = "<color=#c034eb>" + Properties.TwistedPowerHints.ResourceManager.GetString(powerType.Substring(0, powerType.Length - 5)) + "</color>";
         Description = Properties.PowerDescriptions.ResourceManager.GetString(powerType.Substring(0, powerType.Length - 5));
-        TwistedDescription = "<color=#c034eb>"+Properties.TwistedPowerDescriptions.ResourceManager.GetString(powerType.Substring(0, powerType.Length - 5)) + "</color>";
+        TwistedDescription = "<color=#c034eb>" + Properties.TwistedPowerDescriptions.ResourceManager.GetString(powerType.Substring(0, powerType.Length - 5)) + "</color>";
     }
 
     #endregion
@@ -77,7 +77,7 @@ public abstract class Power
     /// <summary>
     /// Gets or sets the tag, to determine how this power activation behave.
     /// </summary>
-    public PowerRank Rank { get; set; } = PowerRank.Lower;
+    public virtual PowerRank Rank => PowerRank.Lower;
 
     /// <summary>
     /// Gets or sets the action the power should execute on a scene change (gameplay scene only)
@@ -89,14 +89,6 @@ public abstract class Power
     /// </summary>
     public static bool FakeDamage { get; set; }
 
-    /// <summary>
-    /// Gets or sets the flag that indicates whether the power should stay twisted even if it is obtained.
-    /// </summary>
-    public bool StayTwisted { get; set; }
-
-    /// <summary>
-    /// Gets or sets the current state of powers.
-    /// </summary>
     public PowerState State { get; set; }
 
     #endregion
@@ -153,6 +145,7 @@ public abstract class Power
             if (_initialized)
                 return true;
             Initialize();
+            Enable();
             _initialized = true;
             return true;
         }
@@ -168,13 +161,11 @@ public abstract class Power
     /// </summary>
     internal void EnablePower()
     {
-        if (State == PowerState.Active || !PowerManager.CanPowersActivate)
-            return;
         try
         {
             if (InitializePower())
             {
-                
+                Enable();
                 LoreMaster.Instance.LogDebug("Activated " + PowerName);
             }
         }
@@ -182,7 +173,6 @@ public abstract class Power
         {
             LoreMaster.Instance.LogError("Error while loading " + PowerName + ": " + exception.Message);
             LoreMaster.Instance.LogError(exception.StackTrace);
-            State = PowerState.Disabled;
         }
     }
 
@@ -192,24 +182,21 @@ public abstract class Power
     /// <param name="backToMenu">This is used to tell <see cref="EnablePower"/> to do the initialize again, if you reload the game.</param>
     internal void DisablePower(bool backToMenu = false)
     {
-        if (State != PowerState.Disabled)
+        try
         {
-            try
-            {
-                if (_runningCoroutine != null)
-                    LoreMaster.Instance.Handler.StopCoroutine(_runningCoroutine);
-                LoreMaster.Instance.LogDebug("Disabled " + PowerName);
-                State = PowerState.Disabled;
-            }
-            catch (Exception exception)
-            {
-                LoreMaster.Instance.LogError("Error while disabling " + PowerName + ": " + exception.Message);
-                LoreMaster.Instance.LogError("Error while loading " + PowerName + ": " + exception.Source);
-                LoreMaster.Instance.LogError("Error while loading " + PowerName + ": " + exception.StackTrace);
-            }
+            if (_runningCoroutine != null)
+                LoreMaster.Instance.Handler.StopCoroutine(_runningCoroutine);
+            Disable();
+            LoreMaster.Instance.LogDebug("Disabled " + PowerName);
+        }
+        catch (Exception exception)
+        {
+            LoreMaster.Instance.LogError("Error while disabling " + PowerName + ": " + exception.Message);
+            LoreMaster.Instance.LogError("Error while loading " + PowerName + ": " + exception.Source);
+            LoreMaster.Instance.LogError("Error while loading " + PowerName + ": " + exception.StackTrace);
         }
         if (backToMenu)
-        { 
+        {
             Terminate();
             _initialized = false;
         }

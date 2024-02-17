@@ -25,6 +25,12 @@ public class FollowTheLightPower : Power
 
     #endregion
 
+    #region Properties
+
+    public override PowerRank Rank => PowerRank.Permanent;
+
+    #endregion
+
     #region Event handler
 
     private void HeroController_Start(On.HeroController.orig_Start orig, HeroController self)

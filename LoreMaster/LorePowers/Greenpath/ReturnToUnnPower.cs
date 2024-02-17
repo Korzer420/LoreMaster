@@ -38,7 +38,7 @@ public class ReturnToUnnPower : Power
 
     /// <inheritdoc/>
     protected override void Enable() 
-    { 
+    {
         StartRoutine(() => AdjustMovementSpeed());
         On.HutongGames.PlayMaker.Actions.SetFloatValue.OnEnter += SetFloatValue_OnEnter;
     }
@@ -72,6 +72,7 @@ public class ReturnToUnnPower : Power
     /// <returns></returns>
     private IEnumerator AdjustMovementSpeed()
     {
+        LogHelper.Write("Enter coroutine");
         while (true)
         {
             yield return null;

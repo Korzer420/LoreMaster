@@ -4,6 +4,7 @@ using KorzUtils.Helper;
 using LoreCore.Data;
 using LoreCore.Other;
 using LoreMaster.Manager;
+using LoreMaster.ModInterop;
 using LoreMaster.SaveManagement;
 using LoreMaster.UnityComponents;
 using Modding;
@@ -167,6 +168,9 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
             On.UIManager.StartNewGame += UIManager_StartNewGame;
             On.UIManager.ContinueGame += UIManager_ContinueGame;
             On.UIManager.ReturnToMainMenu += UIManager_ReturnToMainMenu;
+
+            if (ModHooks.GetMod("DebugMod") is Mod)
+                HookDebug();
         }
         catch (Exception exception)
         {
@@ -466,6 +470,12 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
     private AbstractPlacement GeneratePlacement(string itemName, string locationName)
         => Finder.GetLocation(locationName).Wrap().Add(Finder.GetItem(itemName));
 
+    #endregion
+
+    #region ModInterop
+
+    private void HookDebug() => DebugInterop.Initialize();
+    
     #endregion
 
     #endregion

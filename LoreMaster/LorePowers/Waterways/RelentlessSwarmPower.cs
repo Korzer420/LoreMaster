@@ -13,6 +13,12 @@ public class RelentlessSwarmPower : Power
 
     #endregion
 
+    #region Properties
+
+    public override PowerRank Rank => PowerRank.Medium;
+
+    #endregion
+
     #region Event Handler
 
     private void SpellFluke_DoDamage(On.SpellFluke.orig_DoDamage orig, SpellFluke self, GameObject obj, int upwardRecursionAmount, bool burst)

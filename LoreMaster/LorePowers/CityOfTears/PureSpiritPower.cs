@@ -1,9 +1,6 @@
 using HutongGames.PlayMaker.Actions;
-
-using ItemChanger.FsmStateActions;
 using KorzUtils.Helper;
 using LoreMaster.Enums;
-
 using System.Collections;
 using UnityEngine;
 
@@ -34,6 +31,8 @@ internal class PureSpiritPower : Power
     #region Properties
 
     public GameObject Hitbox => _hitbox == null ? _hitbox = HeroController.instance.transform.Find("Charm Effects/Thorn Hit/Hit D").gameObject : _hitbox;
+
+    public override PowerRank Rank => PowerRank.Medium;
 
     #endregion
 
