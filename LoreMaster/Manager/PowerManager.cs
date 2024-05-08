@@ -275,7 +275,6 @@ public static class PowerManager
     {
         try
         {
-            LogHelper.Write("Swap power");
             Power activePower = GetPowerInSlot(powerIndex);
             activePower?.DisablePower();
             switch (powerIndex.Item2)

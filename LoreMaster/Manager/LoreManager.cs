@@ -1,6 +1,5 @@
 using ItemChanger;
 using KorzUtils.Helper;
-using LoreMaster.Enums;
 using LoreMaster.ItemChangerData;
 using LoreMaster.LorePowers;
 using LoreMaster.SaveManagement;

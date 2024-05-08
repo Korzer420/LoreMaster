@@ -25,11 +25,16 @@ public class LorePowerModule : Module
 
     public int SmallGlyphSlots { get; set; } = 0;
 
-    public int MysticalScrolls { get; set; } = 0;
+    public int MysticalScrolls { get; set; } = 3;
 
-    public int CleansingScrolls { get; set; } = 0;
+    public int CleansingScrolls { get; set; } = 3;
 
     public bool HasStagEgg { get; set; }
+
+    /// <summary>
+    /// Gets or sets the power in the temp slot.
+    /// </summary>
+    public string TempPower { get; set; }
 
     #endregion
 

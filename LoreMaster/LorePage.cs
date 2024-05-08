@@ -157,21 +157,15 @@ internal static class LorePage
         powerTitle.GetComponent<TextMeshPro>().fontSize = 5;
         _controlElements.Add("PowerTitle", powerTitle);
 
-        GameObject powerDescription = GameObject.Instantiate(GameObject.Find("_GameCameras").transform.Find("HudCamera/Inventory/Charms/Text Desc").gameObject);
-        powerDescription.transform.SetParent(lorePage.transform);
-        powerDescription.transform.position = new(8.3973f, -5.8f, 3.3f);
-        powerDescription.GetComponent<TextMeshPro>().text = "";
-        powerDescription.GetComponent<TextMeshPro>().fontSize = 3;
-        powerDescription.GetComponent<TextContainer>().size = new(8f, 20f);
-        _controlElements.Add("PowerDescription", powerDescription);
+        GenerateTextObject(lorePage, "PowerDescription", new(8.3973f, -5.8f, 3.3f), 5, new(8f, 20f));
 
-        GameObject confirmButton = GameObject.Instantiate(GameObject.Find("_GameCameras").transform.Find("HudCamera/Inventory/Charms/Confirm Action").gameObject);
-        confirmButton.transform.SetParent(lorePage.transform);
-        UnityEngine.Object.Destroy(confirmButton.GetComponent<PlayMakerFSM>());
-        confirmButton.transform.localPosition = new(3.72f, -3.36f, -30.13f);
-        confirmButton.transform.Find("Text").GetComponent<TextMeshPro>().text = "Toggle Power";
-        confirmButton.SetActive(false);
-        _controlElements.Add("confirmButton", confirmButton);
+        //GameObject confirmButton = GameObject.Instantiate(GameObject.Find("_GameCameras").transform.Find("HudCamera/Inventory/Charms/Confirm Action").gameObject);
+        //confirmButton.transform.SetParent(lorePage.transform);
+        //UnityEngine.Object.Destroy(confirmButton.GetComponent<PlayMakerFSM>());
+        //confirmButton.transform.localPosition = new(3.72f, -3.36f, -30.13f);
+        //confirmButton.transform.Find("Text").GetComponent<TextMeshPro>().text = "Toggle Power";
+        //confirmButton.SetActive(false);
+        //_controlElements.Add("confirmButton", confirmButton);
 
         GameObject rotateLeftArrow = new("MoveLeft");
         rotateLeftArrow.transform.SetParent(lorePage.transform);
@@ -191,29 +185,32 @@ internal static class LorePage
         rotateLeftArrow.layer = lorePage.layer;
         rotateRightArrow.layer = lorePage.layer;
 
-        GameObject firstSetBoni = GameObject.Instantiate(powerTitle);
-        firstSetBoni.transform.SetParent(lorePage.transform);
-        firstSetBoni.transform.localPosition = new(15.5f, -14.5f, 1f);
-        firstSetBoni.GetComponent<TextMeshPro>().text = "Unstoppable Force";
-        firstSetBoni.GetComponent<TextMeshPro>().fontSize = 6;
-        _controlElements.Add("FirstSetBoni", firstSetBoni);
+        GenerateTextObject(lorePage, "FirstSetBoni", new(11.45f, -6.95f, 3.3f), 6);
+        //GameObject firstSetBoni = GameObject.Instantiate(powerTitle);
+        //firstSetBoni.transform.SetParent(lorePage.transform);
+        //firstSetBoni.transform.localPosition = new(15.5f, -14.5f, 1f);
+        //firstSetBoni.GetComponent<TextMeshPro>().text = "Unstoppable Force";
+        //firstSetBoni.GetComponent<TextMeshPro>().fontSize = 6;
+        //_controlElements.Add("FirstSetBoni", firstSetBoni);
 
-        GameObject secondSetBoni = GameObject.Instantiate(powerTitle);
-        secondSetBoni.transform.SetParent(lorePage.transform);
-        secondSetBoni.transform.localPosition = new(15.5f, -16f, 1f);
-        secondSetBoni.GetComponent<TextMeshPro>().text = "Unstoppable Force";
-        secondSetBoni.GetComponent<TextMeshPro>().fontSize = 6;
-        _controlElements.Add("SecondSetBoni", secondSetBoni);
+        GenerateTextObject(lorePage, "SecondSetBoni", new(11.45f, -8.45f, 3.3f), 6);
+        //GameObject secondSetBoni = GameObject.Instantiate(powerTitle);
+        //secondSetBoni.transform.SetParent(lorePage.transform);
+        //secondSetBoni.transform.localPosition = new(15.5f, -16f, 1f);
+        //secondSetBoni.GetComponent<TextMeshPro>().text = "Unstoppable Force";
+        //secondSetBoni.GetComponent<TextMeshPro>().fontSize = 6;
+        //_controlElements.Add("SecondSetBoni", secondSetBoni);
 
-        GameObject thirdSetBoni = GameObject.Instantiate(powerTitle);
-        thirdSetBoni.transform.SetParent(lorePage.transform);
-        thirdSetBoni.transform.localPosition = new(15.5f, -17.5f, 1f);
-        thirdSetBoni.GetComponent<TextMeshPro>().text = "Unstoppable Force";
-        thirdSetBoni.GetComponent<TextMeshPro>().fontSize = 6;
-        _controlElements.Add("ThirdSetBoni", thirdSetBoni);
+        GenerateTextObject(lorePage, "ThirdSetBoni", new(11.45f, -9.95f, 3.3f), 6);
+        //GameObject thirdSetBoni = GameObject.Instantiate(powerTitle);
+        //thirdSetBoni.transform.SetParent(lorePage.transform);
+        //thirdSetBoni.transform.localPosition = new(15.5f, -17.5f, 1f);
+        //thirdSetBoni.GetComponent<TextMeshPro>().text = "Unstoppable Force";
+        //thirdSetBoni.GetComponent<TextMeshPro>().fontSize = 6;
+        //_controlElements.Add("ThirdSetBoni", thirdSetBoni);
 
         // Generates all power objects
-        _glyphObjects = new GameObject[21];
+        _glyphObjects = new GameObject[24];
         for (int i = 1; i <= 21; i++)
         {
             Vector3 scale;
@@ -238,8 +235,12 @@ internal static class LorePage
         bottomSeparator.transform.SetRotationZ(0f);
 
         // Extra items
-        GenerateSpriteObject(lorePage, "Knowledge Scrolls", "SummoningScroll", new(4.45f, -1.95f, 0), new(1.5f, 1.5f));
-        GenerateSpriteObject(lorePage, "Cleansing Scrolls", "CurseDispell", new(7.45f, -1.95f, 0f), new(1.5f, 1.5f));
+        GameObject knowledgeScrolls = GenerateSpriteObject(lorePage, "Knowledge Scrolls", "SummoningScroll", new(4.45f, -1.95f, 0), new(1.5f, 1.5f));
+        GenerateTextObject(knowledgeScrolls, "KnowledgeScrollCount", new(5.15f, -7.1f), 8);
+        _glyphObjects[21] = knowledgeScrolls;
+        GameObject cleanseScrolls = GenerateSpriteObject(lorePage, "Cleansing Scrolls", "CurseDispell", new(7.45f, -1.95f, 0f), new(1.5f, 1.5f));
+        GenerateTextObject(cleanseScrolls, "CleansingScrollsCount", new(8.25f, -7.1f, 0f), 8);
+        _glyphObjects[22] = cleanseScrolls;
         GenerateSpriteObject(lorePage, "Stag Egg", "Stag_Egg", new(5.95f, -6f, 0f), new(1.2f, 1.2f));
     }
 
@@ -318,6 +319,21 @@ internal static class LorePage
                         _controlElements["PowerTitle"].GetComponent<TextMeshPro>().text = titleText;
                         _controlElements["PowerDescription"].GetComponent<TextMeshPro>().text = descriptionText;
                     }
+                    else if (selectedIndex == 21)
+                    {
+                        _controlElements["PowerTitle"].GetComponent<TextMeshPro>().text = "Knowledge Scroll";
+                        _controlElements["PowerDescription"].GetComponent<TextMeshPro>().text = "(Not implemented) \r\nWritten by Elderbug, this scroll contains energy capable of mimicking (almost) any knowledge, that can be found in this Kingdom. Though it is quite unstable and may break with your shell.";
+                    }
+                    else if (selectedIndex == 22)
+                    {
+                        _controlElements["PowerTitle"].GetComponent<TextMeshPro>().text = "Cleansing Scroll";
+                        _controlElements["PowerDescription"].GetComponent<TextMeshPro>().text = "Written by Elderbug, this scroll contains the ability to empty your mind regardless of where you are. Might be useful to adapt to the dangers below more quickly.";
+                    }
+                    else if (selectedIndex == 23)
+                    {
+                        _controlElements["PowerTitle"].GetComponent<TextMeshPro>().text = "Stag Egg";
+                        _controlElements["PowerDescription"].GetComponent<TextMeshPro>().text = "It feels like something is moving rapidly inside...";
+                    }
                 })
             }, null);
         currentWorkingState.AddTransition("FINISHED", "Powers");
@@ -343,8 +359,28 @@ internal static class LorePage
         // Setup state to skip unreachable items.
         fsm.AddState("Repeat?", () =>
         {
-            if (indexVariable.Value < 0 || indexVariable.Value >= 16)
+            if (indexVariable.Value < 0 || (indexVariable.Value >= 16 && indexVariable.Value < 21))
                 fsm.SendEvent("FINISHED");
+            else if (indexVariable.Value > 20)
+            {
+                bool available;
+                if (indexVariable.Value == 21)
+                    available = true;
+                else if (indexVariable.Value == 22)
+                    available = LoreManager.Module.CleansingScrolls > 0;
+                else
+                    available = LoreManager.Module.HasStagEgg;
+                if (available)
+                    fsm.SendEvent("FINISHED");
+                else
+                    fsm.SendEvent(enteredIndex.Value switch
+                    {
+                        0 => "REPEAT UP",
+                        1 => "REPEAT RIGHT",
+                        2 => "REPEAT DOWN",
+                        _ => "REPEAT LEFT"
+                    });
+            }
             else if (!LoreManager.Module.IsIndexAvailable(GetMatchingIndex(indexVariable.Value)))
                 fsm.SendEvent(enteredIndex.Value switch
                 {
@@ -377,6 +413,10 @@ internal static class LorePage
                 indexVariable.Value -= 4;
             else if (indexVariable.Value == 13)
                 indexVariable.Value = 2;
+            else if (indexVariable.Value == 21 || indexVariable.Value == 22)
+                indexVariable.Value = 23;
+            else if (indexVariable.Value == 23)
+                indexVariable.Value = 21;
             else
                 indexVariable.Value -= 5;
             fsm.SendEvent("FINISHED");
@@ -402,6 +442,10 @@ internal static class LorePage
                 indexVariable.Value += 4;
             else if (indexVariable.Value <= 15)
                 indexVariable.Value += 5;
+            else if (indexVariable.Value == 21 || indexVariable.Value == 22)
+                indexVariable.Value = 23;
+            else if (indexVariable.Value == 23)
+                indexVariable.Value = 21;
             else
                 indexVariable.Value -= 16;
             fsm.SendEvent("FINISHED");
@@ -413,14 +457,14 @@ internal static class LorePage
             enteredIndex.Value = 1;
             if (indexVariable.Value == -2)
                 indexVariable.Value = 0;
-            else if (indexVariable.Value == 4 || (indexVariable.Value > 5 && indexVariable.Value % 5 == 0))
+            else if (indexVariable.Value == 22 || indexVariable.Value == 23)
             {
                 indexVariable.Value = -1; // To right arrow
                 fsm.SendEvent("OUT");
                 return;
             }
-            else if (indexVariable.Value == 5)
-                indexVariable.Value = 2;
+            else if (indexVariable.Value == 4 || (indexVariable.Value > 5 && indexVariable.Value % 5 == 0))
+                indexVariable.Value = 21;
             else if (indexVariable.Value == 6)
                 indexVariable.Value = 4;
             else
@@ -434,7 +478,9 @@ internal static class LorePage
         {
             enteredIndex.Value = 3;
             if (indexVariable.Value == -1)
-                indexVariable.Value = 4;
+                indexVariable.Value = 22;
+            else if (indexVariable.Value == 23)
+                indexVariable.Value = 20;
             else if (indexVariable.Value == 0 || indexVariable.Value == 7 || indexVariable.Value == 11 || indexVariable.Value == 16)
             {
                 indexVariable.Value = -1; // To left arrow
@@ -443,8 +489,6 @@ internal static class LorePage
             }
             else if (indexVariable.Value == 5)
                 indexVariable.Value = 0;
-            else if (indexVariable.Value == 6)
-                indexVariable.Value = 2;
             else
                 indexVariable.Value--;
             fsm.SendEvent("FINISHED");
@@ -480,7 +524,9 @@ internal static class LorePage
             _controlElements["MoveRight"].SetActive(false);
 
             _availablePowers.Clear();
-            Power power = PowerManager.GetPowerInSlot(GetMatchingIndex(indexVariable.Value));
+            Power power = indexVariable.Value == 21 
+                ? PowerManager.GetPowerByName(LoreManager.Module.TempPower)
+                : PowerManager.GetPowerInSlot(GetMatchingIndex(indexVariable.Value));
             chosenPower.Value = power == null ? -1 : 0;
             // Adjust sprite.
             if (power != null)
@@ -534,6 +580,11 @@ internal static class LorePage
             FsmTransitionData.FromTargetState("Powers").WithEventName("FINISHED"));
         fsm.AddState("Init Toggle", () =>
         {
+            if (indexVariable.Value == 21)
+            {
+                fsm.SendEvent("Cancel");
+                return;
+            }
             (int, PowerRank) selectedGlyph = GetMatchingIndex(indexVariable.Value);
             if (selectedGlyph.Item2 == PowerRank.Permanent)
             {
@@ -621,10 +672,10 @@ internal static class LorePage
             : _controlElements["MoveRight"];
         Vector3 defaultPosition = toMove.transform.position;
         float passedTime = 0f;
-        while(passedTime < 0.05f)
+        while (passedTime < 0.05f)
         {
-            toMove.transform.position += left 
-                ? new Vector3(Time.deltaTime * 2, 0f) 
+            toMove.transform.position += left
+                ? new Vector3(Time.deltaTime * 2, 0f)
                 : new Vector3(Time.deltaTime * -2, 0f);
             yield return null;
             passedTime += Time.deltaTime;
@@ -667,8 +718,8 @@ internal static class LorePage
         GameObject spriteObject = new($"{objectName} Sprite");
         spriteObject.transform.SetParent(holderObject.transform);
         spriteObject.transform.localPosition = new(0f, 0f, 0f);
-        spriteObject.transform.localScale = scale == default 
-            ? new(1f, 1f, 1f) 
+        spriteObject.transform.localScale = scale == default
+            ? new(1f, 1f, 1f)
             : scale;
         spriteObject.layer = parent.layer;
         spriteObject.AddComponent<SpriteRenderer>().sprite = sprite;
@@ -676,6 +727,21 @@ internal static class LorePage
         spriteObject.GetComponent<SpriteRenderer>().sortingLayerName = "HUD";
 
         return holderObject;
+    }
+
+    private static GameObject GenerateTextObject(GameObject parent, string objectName, Vector3 position, float fontSize, Vector3 size = default)
+    {
+        GameObject textObject = GameObject.Instantiate(_controlElements["PowerTitle"]);
+        Component.Destroy(textObject.GetComponent<ChangeFontByLanguage>());
+        textObject.name = objectName;
+        textObject.transform.SetParent(parent.transform);
+        textObject.transform.position = position;
+        textObject.GetComponent<TextMeshPro>().text = "3";
+        textObject.GetComponent<TextMeshPro>().fontSize = fontSize;
+        if (size != default)
+            textObject.GetComponent<TextContainer>().size = size;
+        _controlElements.Add(objectName, textObject);
+        return textObject;
     }
 
     private static void BuildExtraItems(GameObject lorePage)
