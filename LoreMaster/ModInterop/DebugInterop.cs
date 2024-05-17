@@ -26,6 +26,7 @@ public static class DebugInterop
         LoreManager.Module.AcquiredPowers.Clear();
         foreach (Power power in PowerManager.GetAllPowers())
             LoreManager.Module.AcquiredPowers.Add(power.PowerName);
+        LorePage.UpdateLorePage();
         Console.AddLine("Unlocked all powers and glyphs.");
     }
 
@@ -41,6 +42,7 @@ public static class DebugInterop
         foreach (Power power in PowerManager.GetAllActivePowers())
             power.DisablePower();
         LoreManager.Module.AcquiredPowers.Clear();
+        LorePage.UpdateLorePage();
         Console.AddLine("Removed all powers and glyphs");
     }
 

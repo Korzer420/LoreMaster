@@ -8,13 +8,13 @@ using LoreMaster.LorePowers;
 using LoreMaster.LorePowers.HowlingCliffs;
 using LoreMaster.Manager;
 using LoreMaster.Properties;
+using RandomizerMod.RandomizerData;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
-using static tk2dSpriteCollectionDefinition;
 
 namespace LoreMaster;
 
@@ -24,22 +24,22 @@ internal static class LorePage
 
     private const int SortingLayerId = 629535577;
 
-    private static Sprite _emptySprite;
-
     private static GameObject[] _glyphObjects;
 
     private static SpriteRenderer _stagEgg;
 
-    private static Dictionary<Area, Sprite> _sprites = new();
+    private static Dictionary<Area, Sprite> _tabletSprites = [];
 
-    private static Dictionary<string, GameObject> _controlElements = new();
+    private static Dictionary<string, Sprite> _emptySprites = [];
+
+    private static Dictionary<string, GameObject> _controlElements = [];
 
     private static string _lastState;
 
-    private static List<Power> _availablePowers = new();
+    private static List<Power> _availablePowers = [];
 
-    private static (Vector3, PowerRank)[] _glyphPositions = new (Vector3, PowerRank)[]
-    {
+    private static (Vector3, PowerRank)[] _glyphPositions =
+    [
         // --First "line"--
         (new(-11.25f, 3.8f, -3), PowerRank.Lower),
         (new(-8.45f, 5, -3), PowerRank.Lower),
@@ -66,7 +66,7 @@ internal static class LorePage
         (new(-5, -5.3f, -3), PowerRank.Permanent),
         (new(-2.5f, -5.3f, -3), PowerRank.Permanent),
         (new(0, -5.3f, -3), PowerRank.Permanent),
-    };
+    ];
 
     #endregion
 
@@ -74,9 +74,15 @@ internal static class LorePage
 
     static LorePage()
     {
-        _emptySprite = GameObject.Find("_GameCameras").transform.Find("HudCamera/Inventory/Charms/Backboards/BB 3").GetComponent<SpriteRenderer>().sprite;
+        _emptySprites.Add("Empty_Permanent", GameObject.Find("_GameCameras").transform.Find("HudCamera/Inventory/Charms/Backboards/BB 3").GetComponent<SpriteRenderer>().sprite);
+        _emptySprites.Add("MajorGlyph_Locked", SpriteHelper.CreateSprite<LoreMaster>("Sprites.MajorGlyph_Locked"));
+        _emptySprites.Add("MajorGlyph_Unlocked", SpriteHelper.CreateSprite<LoreMaster>("Sprites.MajorGlyph_Unlocked"));
+        _emptySprites.Add("MinorGlyph_Locked", SpriteHelper.CreateSprite<LoreMaster>("Sprites.MinorGlyph_Locked"));
+        _emptySprites.Add("MinorGlyph_Unlocked", SpriteHelper.CreateSprite<LoreMaster>("Sprites.MinorGlyph_Unlocked"));
+        _emptySprites.Add("SmallGlyph_Locked", SpriteHelper.CreateSprite<LoreMaster>("Sprites.SmallGlyph_Locked"));
+        _emptySprites.Add("SmallGlyph_Unlocked", SpriteHelper.CreateSprite<LoreMaster>("Sprites.SmallGlyph_Unlocked"));
         for (int i = 1; i < 16; i++)
-            _sprites.Add((Area)i, SpriteHelper.CreateSprite<LoreCore.LoreCore>($"Sprites.Tablets.{(Area)i}"));
+            _tabletSprites.Add((Area)i, SpriteHelper.CreateSprite<LoreCore.LoreCore>($"Sprites.Tablets.{(Area)i}"));
     }
 
     #endregion
@@ -91,26 +97,28 @@ internal static class LorePage
     {
         try
         {
-            for (int i = 0; i < _glyphObjects.Length; i++)
+            for (int i = 0; i < 21; i++)
             {
                 (int, PowerRank) data = GetMatchingIndex(i);
                 SpriteRenderer spriteRenderer = _glyphObjects[i].GetComponentInChildren<SpriteRenderer>();
                 if (LoreManager.Module.IsIndexAvailable(data))
                 {
                     Power power = PowerManager.GetPowerInSlot(data);
-                    spriteRenderer.sprite = power == null ? _emptySprite : _sprites[power.Location];
+                    if (power != null)
+                        spriteRenderer.sprite = _tabletSprites[power.Location];
+                    else
+                        spriteRenderer.sprite = GetSlotSprite(data.Item2, false);
                 }
                 else
-                    spriteRenderer.sprite = null;
+                    spriteRenderer.sprite = GetSlotSprite(data.Item2);
             }
-            _stagEgg.sprite = StagAdoptionPower.Instance.CanSpawnStag
-                ? StagAdoptionPower.Instance.InventorySprites[0]
-                : StagAdoptionPower.Instance.InventorySprites[1];
-
+            //_stagEgg.sprite = StagAdoptionPower.Instance.CanSpawnStag
+            //    ? StagAdoptionPower.Instance.InventorySprites[0]
+            //    : StagAdoptionPower.Instance.InventorySprites[1];
         }
         catch (Exception exception)
         {
-            LoreMaster.Instance.LogError("Error when updating inventory: " + exception.Message);
+            LogHelper.Write<LoreMaster>("Error while updating inventory", exception);
         }
         return true;
     }
@@ -136,8 +144,7 @@ internal static class LorePage
         }
         catch (Exception exception)
         {
-            LoreMaster.Instance.LogError("An error occured in the inventory: " + exception.Message);
-            LoreMaster.Instance.LogError("An error occured in the inventory: " + exception.StackTrace);
+            LogHelper.Write<LoreMaster>("Error while generating inventory", exception);
         }
     }
 
@@ -220,7 +227,7 @@ internal static class LorePage
                 scale = new Vector3(1f, 1f, 1f);
             else
                 scale = new Vector3(1.2f, 1.2f, 1f);
-            GameObject glyphObject = GenerateSpriteObject(powerList, $"Glyph Slot {i}", _emptySprite, _glyphPositions[i - 1].Item1, scale);
+            GameObject glyphObject = GenerateSpriteObject(powerList, $"Glyph Slot {i}", GetSlotSprite(PowerRank.Permanent), _glyphPositions[i - 1].Item1, scale);
             _glyphObjects[i - 1] = glyphObject;
         }
 
@@ -524,15 +531,16 @@ internal static class LorePage
             _controlElements["MoveRight"].SetActive(false);
 
             _availablePowers.Clear();
-            Power power = indexVariable.Value == 21 
+            (int, PowerRank) rank = GetMatchingIndex(indexVariable.Value);
+            Power power = indexVariable.Value == 21
                 ? PowerManager.GetPowerByName(LoreManager.Module.TempPower)
-                : PowerManager.GetPowerInSlot(GetMatchingIndex(indexVariable.Value));
+                : PowerManager.GetPowerInSlot(rank);
             chosenPower.Value = power == null ? -1 : 0;
             // Adjust sprite.
             if (power != null)
-                _glyphObjects[indexVariable.Value].GetComponentInChildren<SpriteRenderer>().sprite = _sprites[power.Location];
+                _glyphObjects[indexVariable.Value].GetComponentInChildren<SpriteRenderer>().sprite = _tabletSprites[power.Location];
             else
-                _glyphObjects[indexVariable.Value].GetComponentInChildren<SpriteRenderer>().sprite = _emptySprite;
+                _glyphObjects[indexVariable.Value].GetComponentInChildren<SpriteRenderer>().sprite = GetSlotSprite(rank.Item2, true);
         }, FsmTransitionData.FromTargetState("Powers").WithEventName("FINISHED"));
         fsm.AddState("Swap Left", () =>
         {
@@ -636,14 +644,14 @@ internal static class LorePage
             if (chosenPower.Value != -1)
             {
                 Power power = _availablePowers[chosenPower.Value];
-                _glyphObjects[indexVariable.Value].GetComponentInChildren<SpriteRenderer>().sprite = _sprites[power.Location];
+                _glyphObjects[indexVariable.Value].GetComponentInChildren<SpriteRenderer>().sprite = _tabletSprites[power.Location];
                 _controlElements["PowerTitle"].GetComponent<TextMeshPro>().text = power.PowerName;
                 _controlElements["PowerDescription"].GetComponent<TextMeshPro>().text = power.Hint;
             }
             else
             {
                 (int, PowerRank) selectedPowerSlot = GetMatchingIndex(indexVariable.Value);
-                _glyphObjects[indexVariable.Value].GetComponentInChildren<SpriteRenderer>().sprite = _emptySprite;
+                _glyphObjects[indexVariable.Value].GetComponentInChildren<SpriteRenderer>().sprite = GetSlotSprite(selectedPowerSlot.Item2, false);
                 _controlElements["PowerTitle"].GetComponent<TextMeshPro>().text = selectedPowerSlot.Item2 switch
                 {
                     PowerRank.Greater => AdditionalText.Greater_Glyph_Title,
@@ -978,6 +986,15 @@ internal static class LorePage
         fsm.GetState("Move Pane L").InsertActions(0, () => interactSprite.GetComponent<SpriteRenderer>().sprite = null);
     }
 
+    private static Sprite GetSlotSprite(PowerRank rank, bool locked = true)
+        => rank switch
+        {
+            PowerRank.Greater => locked ? _emptySprites["MajorGlyph_Locked"] : _emptySprites["MajorGlyph_Unlocked"],
+            PowerRank.Medium => locked ? _emptySprites["MinorGlyph_Locked"] : _emptySprites["MinorGlyph_Unlocked"],
+            PowerRank.Lower => locked ? _emptySprites["SmallGlyph_Locked"] : _emptySprites["SmallGlyph_Unlocked"],
+            _ => _emptySprites["Empty_Permanent"]
+        };
+    
     internal static void ActivateStagEgg() => _stagEgg.gameObject.SetActive(true);
 
     #endregion

@@ -2,10 +2,13 @@ using ItemChanger;
 using ItemChanger.Locations;
 using KorzUtils.Helper;
 using LoreCore.Data;
+using LoreCore.Enums;
+using LoreCore.Modules;
 using LoreCore.Other;
 using LoreMaster.Manager;
 using LoreMaster.ModInterop;
 using LoreMaster.SaveManagement;
+using LoreMaster.Settings;
 using LoreMaster.UnityComponents;
 using Modding;
 using Newtonsoft.Json;
@@ -39,6 +42,8 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
     /// Gets or sets the running instance of the mod.
     /// </summary>
     public static LoreMaster Instance { get; set; }
+
+    public RandoSettings RandomizerSettings { get; set; } = new();
 
     /// <summary>
     /// Gets or sets the preloaded object, used by various different powers.
@@ -80,9 +85,15 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
     {
         orig(self, permaDeath, bossRush);
 
+        // If any traveller location is already known to IC, the rando did setup the traveller stages already.
+        if (!ItemChanger.Internal.Ref.Settings?.Placements?.ContainsKey(Dialogue_Quirrel_City) == true)
+            foreach (Traveller traveller in TravellerControlModule.CurrentModule.Stages.Keys)
+                TravellerControlModule.CurrentModule.Stages[traveller] = 0;
+
         // To do: Rando check
-        CreateVanillaPlacements(true);
+        CreateVanillaPlacements(!RandoInterop.PlayingRandomizer);
         LoreManager.Initialize();
+        LorePage.UpdateLorePage();
     }
 
     #endregion
@@ -309,11 +320,9 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
     /// <param name="generateSettings">If <paramref name="generateSettings"/> the item changer settings will be generated. Only use this, if rando is not unused.</param>
     public void CreateVanillaPlacements(bool generateSettings = false)
     {
-        if (generateSettings)
-            ItemChangerMod.CreateSettingsProfile(false);
-        LoreCore.LoreCore.Instance.CreateVanillaCustomLore();
-        List<AbstractPlacement> placements = new()
-        {
+        LoreCore.LoreCore.Instance.CreateVanillaCustomLore(generateSettings);
+        List<AbstractPlacement> placements =
+        [
             // Npc
             GeneratePlacement(Dialogue_Bardoon, Bardoon),
             GeneratePlacement(Dialogue_Bretta, Bretta),
@@ -357,7 +366,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
             // Point of interest
             GeneratePlacement(Inscription_City_Fountain, City_Fountain),
             GeneratePlacement(Inscription_Dreamer_Tablet, Dreamer_Tablet),
-            GeneratePlacement(Inspect_Stag_Egg, Stag_Nest).Add(Finder.GetItem("Stag_Egg")),
+            GeneratePlacement(Inspect_Stag_Egg, Stag_Nest),
             GeneratePlacement(ItemList.Lore_Tablet_Record_Bela, LocationList.Lore_Tablet_Record_Bela),
             GeneratePlacement(Inspect_Beast_Den_Altar, Beast_Den_Altar),
             GeneratePlacement(Inspect_Garden_Golem, Garden_Golem),
@@ -408,10 +417,10 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
                 falseLocation = Finder.GetLocation(Cloth_Town),
                 Test = new ClothTest()
             }.Wrap().Add(Finder.GetItem(Dialogue_Cloth_Ghost))
-        };
+        ];
 
-        int[] loreCost = new int[]
-        {
+        int[] loreCost =
+        [
             2,
             5,
             7,
@@ -430,19 +439,19 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
             77,
             86,
             99
-        };
-        string[] items = new string[]
-        {
+        ];
+        string[] items =
+        [
             "Small_Glyph",
             "Minor_Glyph",
             "Small_Glyph",
             "Major_Glyph", // 10
             "Small_Glyph",
-            "Mystical_Scroll",
+            "Cleansing_Scroll",
             "Minor_Glyph",
             "Small_Glyph",
             "Major_Glyph", // 40
-            "Cleansing_Scroll",
+            "Mystical_Scroll",
             "Small_Glyph",
             "Minor_Glyph",
             "Small_Glyph",
@@ -451,17 +460,20 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
             "Small_Glyph",
             "Minor_Glyph",
             "Small_Glyph"
-        };
+        ];
 
-        AbstractPlacement elderBugPlacement = Finder.GetLocation(Elderbug_Shop).Wrap();
+        AbstractPlacement elderBugPlacement = ItemChanger.Internal.Ref.Settings.Placements.ContainsKey(Elderbug_Shop) 
+            ? ItemChanger.Internal.Ref.Settings.Placements[Elderbug_Shop]
+            : Finder.GetLocation(Elderbug_Shop).Wrap();
         for (int i = 0; i < items.Length; i++)
         {
             AbstractItem abstractItem = Finder.GetItem(items[i]);
-            abstractItem.tags ??= new List<Tag>();
+            abstractItem.tags ??= [];
             abstractItem.AddTag(new CostTag() { Cost = new LoreCost() { NeededLore = loreCost[i] } });
             elderBugPlacement.Add(abstractItem);
         }
-        placements.Add(elderBugPlacement);
+        if (!ItemChanger.Internal.Ref.Settings.Placements.ContainsKey(Elderbug_Shop))
+            placements.Add(elderBugPlacement);
         placements.Add(Finder.GetLocation("City_Teleporter").Wrap().Add(Finder.GetItem("City_Ticket")));
         placements.Add(Finder.GetLocation("Temple_Teleporter").Wrap().Add(Finder.GetItem("Temple_Ticket")));
         ItemChangerMod.AddPlacements(placements);
@@ -475,6 +487,8 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
     #region ModInterop
 
     private void HookDebug() => DebugInterop.Initialize();
+
+    private void HookRando() => RandoInterop.Initialize();
     
     #endregion
 

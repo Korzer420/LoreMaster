@@ -1,5 +1,6 @@
 ﻿using ItemChanger;
 using ItemChanger.Modules;
+using KorzUtils.Helper;
 using LoreCore.Items;
 using LoreMaster.Enums;
 using LoreMaster.LorePowers;
@@ -25,9 +26,9 @@ public class LorePowerModule : Module
 
     public int SmallGlyphSlots { get; set; } = 0;
 
-    public int MysticalScrolls { get; set; } = 3;
+    public int MysticalScrolls { get; set; } = 0;
 
-    public int CleansingScrolls { get; set; } = 3;
+    public int CleansingScrolls { get; set; } = 0;
 
     public bool HasStagEgg { get; set; }
 
@@ -47,11 +48,7 @@ public class LorePowerModule : Module
             AcquiredPowers.Add(power.PowerName);
             if (LoreManager.GlobalSaveData.EnableCustomText && !string.IsNullOrEmpty(power.CustomText))
                 originalText = power.CustomText;
-            originalText += $"<page>[{power.PowerName}]<br>";
-            if (LoreManager.GlobalSaveData.ShowHint)
-                originalText += power.Hint;
-            else
-                originalText += power.Description;
+            originalText += $"<page>Absorbed power: {power.PowerName}<br>{power.Hint}";
             LorePage.UpdateLorePage();
         }
         return originalText;
