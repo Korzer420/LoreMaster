@@ -159,12 +159,17 @@ internal static class LorePage
 
         GameObject powerTitle = GameObject.Instantiate(GameObject.Find("_GameCameras").transform.Find("HudCamera/Inventory/Charms/Text Name").gameObject);
         powerTitle.transform.SetParent(lorePage.transform);
-        powerTitle.transform.position = new(8.45f, 0.05f, 0.3f);
+        powerTitle.transform.position = new(8.45f, 1.05f, 0.3f);
         powerTitle.GetComponent<TextMeshPro>().text = "";
         powerTitle.GetComponent<TextMeshPro>().fontSize = 5;
         _controlElements.Add("PowerTitle", powerTitle);
 
-        GenerateTextObject(lorePage, "PowerDescription", new(8.3973f, -5.8f, 3.3f), 5, new(8f, 20f));
+        GameObject powerDescription = GenerateTextObject(lorePage, "PowerDescription", new(8.3973f, 1.1f /*-5.8f*/, 3.3f), 5, new(9f, 8f));
+        TextMeshPro description = powerDescription.GetComponent<TextMeshPro>();
+        description.OverflowMode = TextOverflowModes.Truncate;
+        description.enableAutoSizing = true;
+        description.fontSizeMax = 5;
+        description.fontSizeMin = 2;
 
         //GameObject confirmButton = GameObject.Instantiate(GameObject.Find("_GameCameras").transform.Find("HudCamera/Inventory/Charms/Confirm Action").gameObject);
         //confirmButton.transform.SetParent(lorePage.transform);
@@ -192,7 +197,7 @@ internal static class LorePage
         rotateLeftArrow.layer = lorePage.layer;
         rotateRightArrow.layer = lorePage.layer;
 
-        GenerateTextObject(lorePage, "FirstSetBoni", new(11.45f, -6.95f, 3.3f), 6);
+        GenerateTextObject(lorePage, "FirstSetBoni", new(5.85f, - 7.15f, 3.3f), 6).GetComponent<TextMeshPro>().text = "??????????";
         //GameObject firstSetBoni = GameObject.Instantiate(powerTitle);
         //firstSetBoni.transform.SetParent(lorePage.transform);
         //firstSetBoni.transform.localPosition = new(15.5f, -14.5f, 1f);
@@ -200,7 +205,7 @@ internal static class LorePage
         //firstSetBoni.GetComponent<TextMeshPro>().fontSize = 6;
         //_controlElements.Add("FirstSetBoni", firstSetBoni);
 
-        GenerateTextObject(lorePage, "SecondSetBoni", new(11.45f, -8.45f, 3.3f), 6);
+        GenerateTextObject(lorePage, "SecondSetBoni", new(5.85f, -8.65f, 3.3f), 6).GetComponent<TextMeshPro>().text = "??????????";
         //GameObject secondSetBoni = GameObject.Instantiate(powerTitle);
         //secondSetBoni.transform.SetParent(lorePage.transform);
         //secondSetBoni.transform.localPosition = new(15.5f, -16f, 1f);
@@ -208,7 +213,7 @@ internal static class LorePage
         //secondSetBoni.GetComponent<TextMeshPro>().fontSize = 6;
         //_controlElements.Add("SecondSetBoni", secondSetBoni);
 
-        GenerateTextObject(lorePage, "ThirdSetBoni", new(11.45f, -9.95f, 3.3f), 6);
+        GenerateTextObject(lorePage, "ThirdSetBoni", new(5.85f, -10.15f, 3.3f), 6).GetComponent<TextMeshPro>().text = "??????????";
         //GameObject thirdSetBoni = GameObject.Instantiate(powerTitle);
         //thirdSetBoni.transform.SetParent(lorePage.transform);
         //thirdSetBoni.transform.localPosition = new(15.5f, -17.5f, 1f);
@@ -242,13 +247,16 @@ internal static class LorePage
         bottomSeparator.transform.SetRotationZ(0f);
 
         // Extra items
-        GameObject knowledgeScrolls = GenerateSpriteObject(lorePage, "Knowledge Scrolls", "SummoningScroll", new(4.45f, -1.95f, 0), new(1.5f, 1.5f));
-        GenerateTextObject(knowledgeScrolls, "KnowledgeScrollCount", new(5.15f, -7.1f), 8);
+        GameObject knowledgeScrolls = GenerateSpriteObject(lorePage, "Knowledge Scrolls", "SummoningScroll", new(4f, -2.3f, 0), new(1.5f, 1.5f));
+        knowledgeScrolls.transform.localScale = new(0.8f, 0.8f);
+        GenerateTextObject(knowledgeScrolls, "KnowledgeScrollCount", new(4.6f, -7.3f), 8);
         _glyphObjects[21] = knowledgeScrolls;
-        GameObject cleanseScrolls = GenerateSpriteObject(lorePage, "Cleansing Scrolls", "CurseDispell", new(7.45f, -1.95f, 0f), new(1.5f, 1.5f));
-        GenerateTextObject(cleanseScrolls, "CleansingScrollsCount", new(8.25f, -7.1f, 0f), 8);
+        GameObject cleanseScrolls = GenerateSpriteObject(lorePage, "Cleansing Scrolls", "CurseDispell", new(4f, -3.8f, 0f), new(1.5f, 1.5f));
+        cleanseScrolls.transform.localScale = new(0.8f, 0.8f);
+        GenerateTextObject(cleanseScrolls, "CleansingScrollsCount", new(4.6f, -8.8f, 0f), 8);
         _glyphObjects[22] = cleanseScrolls;
-        GenerateSpriteObject(lorePage, "Stag Egg", "Stag_Egg", new(5.95f, -6f, 0f), new(1.2f, 1.2f));
+        GameObject stagEgg = GenerateSpriteObject(lorePage, "Stag Egg", "Stag_Egg", new(4f, -5.3f, 0f), new(1.2f, 1.2f));
+        stagEgg.transform.localScale = new(0.8f, 0.8f);
     }
 
     private static void SetupFsm(PlayMakerFSM fsm, GameObject lorePage)
@@ -298,6 +306,7 @@ internal static class LorePage
                     if (selectedIndex >= 0 && selectedIndex < 21)
                     {
                         (int, PowerRank) selectedPowerSlot = GetMatchingIndex(selectedIndex);
+
                         Power selectedPower = PowerManager.GetPowerInSlot(selectedPowerSlot);
                         string titleText;
                         string descriptionText;
@@ -315,11 +324,19 @@ internal static class LorePage
                                 PowerRank.Lower => AdditionalText.Lesser_Glyph_Title,
                                 _ => AdditionalText.Permanent_Glyph_Title
                             };
+
+                            bool available = selectedPowerSlot.Item2 switch
+                            {
+                                PowerRank.Greater => selectedPowerSlot.Item1 < LoreManager.Module.MajorGlyphSlots,
+                                PowerRank.Medium => selectedPowerSlot.Item1 < LoreManager.Module.MinorGlyphSlots,
+                                PowerRank.Lower => selectedPowerSlot.Item1 < LoreManager.Module.SmallGlyphSlots,
+                                _ => true
+                            };
                             descriptionText = selectedPowerSlot.Item2 switch
                             {
-                                PowerRank.Greater => AdditionalText.Greater_Glyph_Description,
-                                PowerRank.Medium => AdditionalText.Medium_Glyph_Description,
-                                PowerRank.Lower => AdditionalText.Lesser_Glyph_Description,
+                                PowerRank.Greater => available ? AdditionalText.Greater_Glyph_Description : AdditionalText.Greater_Glyph_Description_Locked,
+                                PowerRank.Medium => available ? AdditionalText.Medium_Glyph_Description : AdditionalText.Medium_Glyph_Description_Locked,
+                                PowerRank.Lower => available ? AdditionalText.Lesser_Glyph_Description : AdditionalText.Lesser_Glyph_Description_Locked,
                                 _ => AdditionalText.Permanent_Glyph_Description
                             };
                         }
@@ -366,9 +383,7 @@ internal static class LorePage
         // Setup state to skip unreachable items.
         fsm.AddState("Repeat?", () =>
         {
-            if (indexVariable.Value < 0 || (indexVariable.Value >= 16 && indexVariable.Value < 21))
-                fsm.SendEvent("FINISHED");
-            else if (indexVariable.Value > 20)
+            if (indexVariable.Value > 20)
             {
                 bool available;
                 if (indexVariable.Value == 21)
@@ -388,14 +403,6 @@ internal static class LorePage
                         _ => "REPEAT LEFT"
                     });
             }
-            else if (!LoreManager.Module.IsIndexAvailable(GetMatchingIndex(indexVariable.Value)))
-                fsm.SendEvent(enteredIndex.Value switch
-                {
-                    0 => "REPEAT UP",
-                    1 => "REPEAT RIGHT",
-                    2 => "REPEAT DOWN",
-                    _ => "REPEAT LEFT"
-                });
             else
                 fsm.SendEvent("FINISHED");
         }, FsmTransitionData.FromTargetState("Powers").WithEventName("FINISHED"));
@@ -420,10 +427,8 @@ internal static class LorePage
                 indexVariable.Value -= 4;
             else if (indexVariable.Value == 13)
                 indexVariable.Value = 2;
-            else if (indexVariable.Value == 21 || indexVariable.Value == 22)
-                indexVariable.Value = 23;
-            else if (indexVariable.Value == 23)
-                indexVariable.Value = 21;
+            else if (indexVariable.Value == 21 || indexVariable.Value == 22 || indexVariable.Value == 23)
+                indexVariable.Value = indexVariable.Value;
             else
                 indexVariable.Value -= 5;
             fsm.SendEvent("FINISHED");
@@ -449,10 +454,8 @@ internal static class LorePage
                 indexVariable.Value += 4;
             else if (indexVariable.Value <= 15)
                 indexVariable.Value += 5;
-            else if (indexVariable.Value == 21 || indexVariable.Value == 22)
-                indexVariable.Value = 23;
-            else if (indexVariable.Value == 23)
-                indexVariable.Value = 21;
+            else if (indexVariable.Value == 21 || indexVariable.Value == 22 || indexVariable.Value == 23)
+                indexVariable.Value = indexVariable.Value;
             else
                 indexVariable.Value -= 16;
             fsm.SendEvent("FINISHED");
@@ -464,7 +467,7 @@ internal static class LorePage
             enteredIndex.Value = 1;
             if (indexVariable.Value == -2)
                 indexVariable.Value = 0;
-            else if (indexVariable.Value == 22 || indexVariable.Value == 23)
+            else if (indexVariable.Value == 23)
             {
                 indexVariable.Value = -1; // To right arrow
                 fsm.SendEvent("OUT");
@@ -485,9 +488,7 @@ internal static class LorePage
         {
             enteredIndex.Value = 3;
             if (indexVariable.Value == -1)
-                indexVariable.Value = 22;
-            else if (indexVariable.Value == 23)
-                indexVariable.Value = 20;
+                indexVariable.Value = 23;
             else if (indexVariable.Value == 0 || indexVariable.Value == 7 || indexVariable.Value == 11 || indexVariable.Value == 16)
             {
                 indexVariable.Value = -1; // To left arrow
@@ -994,7 +995,7 @@ internal static class LorePage
             PowerRank.Lower => locked ? _emptySprites["SmallGlyph_Locked"] : _emptySprites["SmallGlyph_Unlocked"],
             _ => _emptySprites["Empty_Permanent"]
         };
-    
+
     internal static void ActivateStagEgg() => _stagEgg.gameObject.SetActive(true);
 
     #endregion

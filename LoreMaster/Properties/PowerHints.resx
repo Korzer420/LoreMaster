@@ -178,7 +178,7 @@
     <value>Grants you the power of Unn.</value>
   </data>
   <data name="GloryOfTheWealth" xml:space="preserve">
-    <value>Your enemies may "share" more of their wealth with you. Your wealth may protect you from the hits of those peasants... for a fee of course. Press Quick Map + Up to activate the effect and Quick Map + Down to cancel the effect. (In case you forget this input combination, the effect also deactivates itself once the leave the room). The cost increase fast over time while the effect is active and slowly decrease once inactive. If you are really greedy, the cost decrease faster. The great civilians of Hallownest call this power "Pay 2 Win".</value>
+    <value>Your enemies may "share" more of their wealth with you. Your wealth may protect you from the hits of those peasants... for a fee of course. Press Quick Map + Up to activate the effect and Quick Map + Down to cancel the effect. The cost increase fast over time while the effect is active and slowly decrease once inactive. If you are really greedy, the cost decrease faster. The great civilians of Hallownest call this power "Pay 2 Win".</value>
   </data>
   <data name="GraspOfLife" xml:space="preserve">
     <value>While running on the ground, the breath of life shall grow grass below your feet. Sometimes, a pale blessed one may appear instead. Killing it, shall let your hear the cheers of the normal one.</value>

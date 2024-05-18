@@ -106,11 +106,20 @@ namespace LoreMaster.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die This vessel allows you to store the most powerful abilities that Hallownest has to offers ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die This vessel allows you to store the most powerful abilities that Hallownest has to offer. ähnelt.
         /// </summary>
         internal static string Greater_Glyph_Description {
             get {
                 return ResourceManager.GetString("Greater_Glyph_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die This vessel allows you to store the most powerful abilities that Hallownest has to offer. It seems to be sealed at the moment. Maybe Elderbug does know more about this? ähnelt.
+        /// </summary>
+        internal static string Greater_Glyph_Description_Locked {
+            get {
+                return ResourceManager.GetString("Greater_Glyph_Description_Locked", resourceCulture);
             }
         }
         
@@ -133,6 +142,15 @@ namespace LoreMaster.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die This weak vessel allows you to store a small ability, which you still might found useful. It hasn&apos;t awakend yet, though. Maybe Elderbug does know more about this? ähnelt.
+        /// </summary>
+        internal static string Lesser_Glyph_Description_Locked {
+            get {
+                return ResourceManager.GetString("Lesser_Glyph_Description_Locked", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Small Glyph ähnelt.
         /// </summary>
         internal static string Lesser_Glyph_Title {
@@ -147,6 +165,15 @@ namespace LoreMaster.Properties {
         internal static string Medium_Glyph_Description {
             get {
                 return ResourceManager.GetString("Medium_Glyph_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die This vessel allows you to store a mediocre powerful ability. It doesn&apos;t emit any energy at the moment. Maybe Elderbug does know more about this? ähnelt.
+        /// </summary>
+        internal static string Medium_Glyph_Description_Locked {
+            get {
+                return ResourceManager.GetString("Medium_Glyph_Description_Locked", resourceCulture);
             }
         }
         

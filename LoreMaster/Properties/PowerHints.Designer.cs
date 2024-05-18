@@ -241,7 +241,7 @@ namespace LoreMaster.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Your enemies may &quot;share&quot; more of their wealth with you. Your wealth may protect you from the hits of those peasants... for a fee of course. Press Quick Map + Up to activate the effect and Quick Map + Down to cancel the effect. (In case you forget this input combination, the effect also deactivates itself once the leave the room). The cost increase fast over time while the effect is active and slowly decrease once inactive. If you are really greedy, the cost decrease faster. The great civilians of Hallownest [Rest der Zeichenfolge wurde abgeschnitten]&quot;; ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Your enemies may &quot;share&quot; more of their wealth with you. Your wealth may protect you from the hits of those peasants... for a fee of course. Press Quick Map + Up to activate the effect and Quick Map + Down to cancel the effect. The cost increase fast over time while the effect is active and slowly decrease once inactive. If you are really greedy, the cost decrease faster. The great civilians of Hallownest call this power &quot;Pay 2 Win&quot;. ähnelt.
         /// </summary>
         internal static string GloryOfTheWealth {
             get {

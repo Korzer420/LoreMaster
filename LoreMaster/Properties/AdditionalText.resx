@@ -133,7 +133,10 @@
     <value>Diamond Heart</value>
   </data>
   <data name="Greater_Glyph_Description" xml:space="preserve">
-    <value>This vessel allows you to store the most powerful abilities that Hallownest has to offers</value>
+    <value>This vessel allows you to store the most powerful abilities that Hallownest has to offer.</value>
+  </data>
+  <data name="Greater_Glyph_Description_Locked" xml:space="preserve">
+    <value>This vessel allows you to store the most powerful abilities that Hallownest has to offer. It seems to be sealed at the moment. Maybe Elderbug does know more about this?</value>
   </data>
   <data name="Greater_Glyph_Title" xml:space="preserve">
     <value>Greater Glyph</value>
@@ -141,11 +144,17 @@
   <data name="Lesser_Glyph_Description" xml:space="preserve">
     <value>This weak vessel allows you to store a small ability, which you still might found useful.</value>
   </data>
+  <data name="Lesser_Glyph_Description_Locked" xml:space="preserve">
+    <value>This weak vessel allows you to store a small ability, which you still might found useful. It hasn't awakend yet, though. Maybe Elderbug does know more about this?</value>
+  </data>
   <data name="Lesser_Glyph_Title" xml:space="preserve">
     <value>Small Glyph</value>
   </data>
   <data name="Medium_Glyph_Description" xml:space="preserve">
     <value>This vessel allows you to store a mediocre powerful ability.</value>
+  </data>
+  <data name="Medium_Glyph_Description_Locked" xml:space="preserve">
+    <value>This vessel allows you to store a mediocre powerful ability. It doesn't emit any energy at the moment. Maybe Elderbug does know more about this?</value>
   </data>
   <data name="Medium_Glyph_Title" xml:space="preserve">
     <value>Minor Glyph</value>
