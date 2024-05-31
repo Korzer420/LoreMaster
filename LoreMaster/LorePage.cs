@@ -197,7 +197,7 @@ internal static class LorePage
         rotateLeftArrow.layer = lorePage.layer;
         rotateRightArrow.layer = lorePage.layer;
 
-        GenerateTextObject(lorePage, "FirstSetBoni", new(5.85f, - 7.15f, 3.3f), 6).GetComponent<TextMeshPro>().text = "??????????";
+        //GenerateTextObject(lorePage, "FirstSetBoni", new(5.85f, - 7.15f, 3.3f), 6).GetComponent<TextMeshPro>().text = "??????????";
         //GameObject firstSetBoni = GameObject.Instantiate(powerTitle);
         //firstSetBoni.transform.SetParent(lorePage.transform);
         //firstSetBoni.transform.localPosition = new(15.5f, -14.5f, 1f);
@@ -205,7 +205,7 @@ internal static class LorePage
         //firstSetBoni.GetComponent<TextMeshPro>().fontSize = 6;
         //_controlElements.Add("FirstSetBoni", firstSetBoni);
 
-        GenerateTextObject(lorePage, "SecondSetBoni", new(5.85f, -8.65f, 3.3f), 6).GetComponent<TextMeshPro>().text = "??????????";
+        //GenerateTextObject(lorePage, "SecondSetBoni", new(5.85f, -8.65f, 3.3f), 6).GetComponent<TextMeshPro>().text = "??????????";
         //GameObject secondSetBoni = GameObject.Instantiate(powerTitle);
         //secondSetBoni.transform.SetParent(lorePage.transform);
         //secondSetBoni.transform.localPosition = new(15.5f, -16f, 1f);
@@ -213,7 +213,7 @@ internal static class LorePage
         //secondSetBoni.GetComponent<TextMeshPro>().fontSize = 6;
         //_controlElements.Add("SecondSetBoni", secondSetBoni);
 
-        GenerateTextObject(lorePage, "ThirdSetBoni", new(5.85f, -10.15f, 3.3f), 6).GetComponent<TextMeshPro>().text = "??????????";
+        //GenerateTextObject(lorePage, "ThirdSetBoni", new(5.85f, -10.15f, 3.3f), 6).GetComponent<TextMeshPro>().text = "??????????";
         //GameObject thirdSetBoni = GameObject.Instantiate(powerTitle);
         //thirdSetBoni.transform.SetParent(lorePage.transform);
         //thirdSetBoni.transform.localPosition = new(15.5f, -17.5f, 1f);
@@ -257,6 +257,7 @@ internal static class LorePage
         _glyphObjects[22] = cleanseScrolls;
         GameObject stagEgg = GenerateSpriteObject(lorePage, "Stag Egg", "Stag_Egg", new(4f, -5.3f, 0f), new(1.2f, 1.2f));
         stagEgg.transform.localScale = new(0.8f, 0.8f);
+        _glyphObjects[23] = stagEgg;
     }
 
     private static void SetupFsm(PlayMakerFSM fsm, GameObject lorePage)
@@ -427,8 +428,10 @@ internal static class LorePage
                 indexVariable.Value -= 4;
             else if (indexVariable.Value == 13)
                 indexVariable.Value = 2;
-            else if (indexVariable.Value == 21 || indexVariable.Value == 22 || indexVariable.Value == 23)
-                indexVariable.Value = indexVariable.Value;
+            else if (indexVariable.Value == 22 || indexVariable.Value == 23)
+                indexVariable.Value--;
+            else if (indexVariable.Value == 21)
+                indexVariable.Value += 2;
             else
                 indexVariable.Value -= 5;
             fsm.SendEvent("FINISHED");
@@ -454,8 +457,10 @@ internal static class LorePage
                 indexVariable.Value += 4;
             else if (indexVariable.Value <= 15)
                 indexVariable.Value += 5;
-            else if (indexVariable.Value == 21 || indexVariable.Value == 22 || indexVariable.Value == 23)
-                indexVariable.Value = indexVariable.Value;
+            else if (indexVariable.Value == 21 || indexVariable.Value == 22)
+                indexVariable.Value++;
+            else if (indexVariable.Value == 23)
+                indexVariable.Value = 21;
             else
                 indexVariable.Value -= 16;
             fsm.SendEvent("FINISHED");
@@ -551,7 +556,7 @@ internal static class LorePage
                 chosenPower.Value--;
             // Make small cursor animation.
             LoreMaster.Instance.Handler.StartCoroutine(PlayArrowAnimation(true));
-        }, FsmTransitionData.FromTargetState("Clear Selection").WithEventName("Cancel"));
+        }, FsmTransitionData.FromTargetState("Clear Selection").WithEventName("CANCEL"));
         fsm.GetState("Swap Left").AddActions(new Wait()
         {
             time = new(0.1f),
@@ -565,7 +570,7 @@ internal static class LorePage
                 chosenPower.Value++;
             // Make small cursor animation.
             LoreMaster.Instance.Handler.StartCoroutine(PlayArrowAnimation(false));
-        }, FsmTransitionData.FromTargetState("Clear Selection").WithEventName("Cancel"));
+        }, FsmTransitionData.FromTargetState("Clear Selection").WithEventName("CANCEL"));
         fsm.GetState("Swap Right").AddActions(new Wait()
         {
             time = new(0.1f),
@@ -584,25 +589,29 @@ internal static class LorePage
                     return;
                 PowerManager.SwapPower(powerIndex, _availablePowers[chosenPower.Value].PowerName);
             }
-        }, FsmTransitionData.FromTargetState("Clear Selection").WithEventName("FINISHED"));
+        }, FsmTransitionData.FromTargetState("Clear Selection").WithEventName("FINISHED"),
+           FsmTransitionData.FromTargetState("Clear Selection").WithEventName("CANCEL"));
         fsm.AddState("Remind for bench", charmFsm.GetState("Bench Reminder").GetActions(),
+            FsmTransitionData.FromTargetState("Powers").WithEventName("FINISHED"));
+        fsm.AddState("Remind for Dirtmouth bench", charmFsm.GetState("Bench Reminder").GetActions(),
             FsmTransitionData.FromTargetState("Powers").WithEventName("FINISHED"));
         fsm.AddState("Init Toggle", () =>
         {
             if (indexVariable.Value == 21)
             {
-                fsm.SendEvent("Cancel");
+                fsm.SendEvent("CANCEL");
                 return;
             }
             (int, PowerRank) selectedGlyph = GetMatchingIndex(indexVariable.Value);
             if (selectedGlyph.Item2 == PowerRank.Permanent)
             {
-                fsm.SendEvent("Cancel");
+                fsm.SendEvent("CANCEL");
                 return;
             }
             else if (!PDHelper.AtBench)
             {
                 // Show "You need to be at a bench prompt"
+                GameHelper.OneTimeMessage("CHARM_REMINDER", "You need to sit on a bench to focus power.");
                 fsm.SendEvent("NOT BENCH");
                 return;
             }
@@ -617,7 +626,8 @@ internal static class LorePage
             if (!string.IsNullOrEmpty(powerInSlot) && UnityEngine.SceneManagement.SceneManager.GetActiveScene().name != "Town")
             {
                 // Show "can only change in Dirtmouth"
-                fsm.SendEvent("Cancel");
+                GameHelper.OneTimeMessage("CHARM_REMINDER", "To swap focused power, you need to sit in Dirtmouth.");
+                fsm.SendEvent("DIRTMOUTH");
                 return;
             }
             _availablePowers.Clear();
@@ -626,7 +636,7 @@ internal static class LorePage
             _availablePowers.AddRange(PowerManager.GetPowersByRank(selectedGlyph.Item2).Except(_availablePowers));
             if (!_availablePowers.Any())
             {
-                fsm.SendEvent("Cancel");
+                fsm.SendEvent("CANCEL");
                 return;
             }
             // Move Cursor out of Screen
@@ -637,8 +647,9 @@ internal static class LorePage
             _controlElements["MoveRight"].transform.position = _glyphPositions[indexVariable.Value].Item1 + new Vector3(1.5f, 0f);
             _controlElements["MoveRight"].SetActive(true);
         },
-           FsmTransitionData.FromTargetState("Clear Selection").WithEventName("Cancel"),
-           FsmTransitionData.FromTargetState("Remind for bench").WithEventName("NOT BENCH"));
+           FsmTransitionData.FromTargetState("Clear Selection").WithEventName("CANCEL"),
+           FsmTransitionData.FromTargetState("Remind for bench").WithEventName("NOT BENCH"),
+           FsmTransitionData.FromTargetState("Remind for Dirtmouth bench").WithEventName("DIRTMOUTH"));
         fsm.AddState("Toggle", () =>
         {
             // Adjust name, sprite and description.
@@ -668,7 +679,7 @@ internal static class LorePage
                     _ => AdditionalText.Permanent_Glyph_Description
                 }; ;
             }
-        }, FsmTransitionData.FromTargetState("Clear Selection").WithEventName("Cancel"),
+        }, FsmTransitionData.FromTargetState("Clear Selection").WithEventName("CANCEL"),
         FsmTransitionData.FromTargetState("Adjust Power").WithEventName("UI CONFIRM"),
         FsmTransitionData.FromTargetState("Swap Left").WithEventName("UI LEFT"),
         FsmTransitionData.FromTargetState("Swap Right").WithEventName("UI RIGHT"));

@@ -35,20 +35,15 @@ public class StagAdoptionPower : Power
 
     public bool CanSpawnStag { get; set; }
 
-    internal Sprite[] InventorySprites { get; } = new Sprite[]
-    {
+    internal Sprite[] InventorySprites { get; } =
+    [
         SpriteHelper.CreateSprite<LoreMaster>("Sprites.Stag_Egg"),
         SpriteHelper.CreateSprite<LoreMaster>("Sprites.Stag_Egg_Broken")
-    };
+    ];
 
     public PlayMakerFSM MenuFsm => _menuFsm == null ? _menuFsm = GameObject.Find("_GameCameras").transform.Find("HudCamera/Menus").gameObject.LocateMyFSM("Open Stag") : _menuFsm;
 
     public override Action SceneAction => () => MenuFsm.SendEvent("DESPAWN");
-
-    /// <summary>
-    /// Gets or sets the last hatch moment to determine if the egg should respawn.
-    /// </summary>
-    public double HatchMoment { get; set; }
 
     public override PowerRank Rank => PowerRank.Permanent;
 
@@ -142,8 +137,8 @@ public class StagAdoptionPower : Power
         });
         fsm.FsmVariables.FindFsmInt("Current Position").Value = -1;
         FsmState mapState = fsm.GetState("Open map");
-        mapState.Actions = new FsmStateAction[]
-        {
+        mapState.Actions =
+        [
             mapState.Actions[0],
             mapState.Actions[1],
             new Lambda(() =>
@@ -151,7 +146,7 @@ public class StagAdoptionPower : Power
                 MenuFsm.FsmVariables.FindFsmGameObject("Requester").Value = miniStag;
                 MenuFsm.SendEvent("OPEN STAG MENU");
             })
-        };
+        ];
         fsm.GetState("Check Result").AddTransition("FINISHED", "HUD Return");
         fsm.GetState("Check Result").InsertActions(0, () =>
         {
@@ -167,6 +162,5 @@ public class StagAdoptionPower : Power
         travel.transform.localScale = new(2f, 1f, 1f);
         travel.LocateMyFSM("Travel Range").GetState("Init").InsertActions(3, () => travel.LocateMyFSM("Travel Range").FsmVariables.FindFsmGameObject("Parent").Value = miniStag);
         CanSpawnStag = false;
-        HatchMoment = Time.realtimeSinceStartupAsDouble;
     }
 }
