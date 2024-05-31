@@ -1,9 +1,7 @@
 using HutongGames.PlayMaker;
-
 using ItemChanger.FsmStateActions;
 using KorzUtils.Helper;
 using LoreMaster.Enums;
-
 using Modding;
 using System;
 using System.Collections.Generic;
@@ -110,6 +108,7 @@ public class StagAdoptionPower : Power
         {
             CanSpawnStag = orig;
             LorePage.ActivateStagEgg();
+            LorePage.UpdateLorePage();
         }
         return orig;
     }

@@ -5,7 +5,11 @@ using KorzUtils.Data;
 using KorzUtils.Helper;
 using LoreMaster.Enums;
 using LoreMaster.LorePowers;
+using LoreMaster.LorePowers.CityOfTears;
+using LoreMaster.LorePowers.Crossroads;
+using LoreMaster.LorePowers.Dirtmouth;
 using LoreMaster.LorePowers.HowlingCliffs;
+using LoreMaster.LorePowers.QueensGarden;
 using LoreMaster.Manager;
 using LoreMaster.Properties;
 using RandomizerMod.RandomizerData;
@@ -112,9 +116,26 @@ internal static class LorePage
                 else
                     spriteRenderer.sprite = GetSlotSprite(data.Item2);
             }
-            //_stagEgg.sprite = StagAdoptionPower.Instance.CanSpawnStag
-            //    ? StagAdoptionPower.Instance.InventorySprites[0]
-            //    : StagAdoptionPower.Instance.InventorySprites[1];
+            if (StagAdoptionPower.Instance != null)
+                _stagEgg.sprite = StagAdoptionPower.Instance.CanSpawnStag
+                    ? StagAdoptionPower.Instance.InventorySprites[0]
+                    : StagAdoptionPower.Instance.InventorySprites[1];
+            if (LoreManager.Module.MysticalScrolls > 0)
+                _glyphObjects[21].SetActive(true);
+            if (LoreManager.Module.CleansingScrolls > 0)
+                _glyphObjects[23].SetActive(true);
+            _glyphObjects[23].SetActive(PowerManager.HasObtainedPower<StagAdoptionPower>());
+
+            if (PowerManager.HasObtainedPower<TouristPower>())
+                _glyphObjects[16].GetComponentInChildren<SpriteRenderer>().sprite = _tabletSprites[Area.CityOfTears];
+            if (PowerManager.HasObtainedPower<GreaterMindPower>())
+                _glyphObjects[17].GetComponentInChildren<SpriteRenderer>().sprite = _tabletSprites[Area.Crossroads];
+            if (PowerManager.HasObtainedPower<RequiemPower>())
+                _glyphObjects[18].GetComponentInChildren<SpriteRenderer>().sprite = _tabletSprites[Area.Dirtmouth];
+            if (PowerManager.HasObtainedPower<StagAdoptionPower>())
+                _glyphObjects[19].GetComponentInChildren<SpriteRenderer>().sprite = _tabletSprites[Area.Cliffs];
+            if (PowerManager.HasObtainedPower<FollowTheLightPower>())
+                _glyphObjects[20].GetComponentInChildren<SpriteRenderer>().sprite = _tabletSprites[Area.QueensGarden];
         }
         catch (Exception exception)
         {
@@ -251,13 +272,17 @@ internal static class LorePage
         knowledgeScrolls.transform.localScale = new(0.8f, 0.8f);
         GenerateTextObject(knowledgeScrolls, "KnowledgeScrollCount", new(4.6f, -7.3f), 8);
         _glyphObjects[21] = knowledgeScrolls;
+        knowledgeScrolls.SetActive(false);
         GameObject cleanseScrolls = GenerateSpriteObject(lorePage, "Cleansing Scrolls", "CurseDispell", new(4f, -3.8f, 0f), new(1.5f, 1.5f));
         cleanseScrolls.transform.localScale = new(0.8f, 0.8f);
         GenerateTextObject(cleanseScrolls, "CleansingScrollsCount", new(4.6f, -8.8f, 0f), 8);
         _glyphObjects[22] = cleanseScrolls;
+        cleanseScrolls.SetActive(false);
         GameObject stagEgg = GenerateSpriteObject(lorePage, "Stag Egg", "Stag_Egg", new(4f, -5.3f, 0f), new(1.2f, 1.2f));
         stagEgg.transform.localScale = new(0.8f, 0.8f);
         _glyphObjects[23] = stagEgg;
+        stagEgg.SetActive(false);
+        _stagEgg = stagEgg.GetComponentInChildren<SpriteRenderer>();
     }
 
     private static void SetupFsm(PlayMakerFSM fsm, GameObject lorePage)
@@ -309,6 +334,7 @@ internal static class LorePage
                         (int, PowerRank) selectedPowerSlot = GetMatchingIndex(selectedIndex);
 
                         Power selectedPower = PowerManager.GetPowerInSlot(selectedPowerSlot);
+                        LogHelper.Write<LoreMaster>("Rank is: "+selectedPowerSlot.Item2.ToString()+", Index: "+selectedPowerSlot.Item1+", Power name: "+selectedPower?.PowerName);
                         string titleText;
                         string descriptionText;
                         if (selectedPower != null)
@@ -386,15 +412,11 @@ internal static class LorePage
         {
             if (indexVariable.Value > 20)
             {
-                bool available;
-                if (indexVariable.Value == 21)
-                    available = true;
-                else if (indexVariable.Value == 22)
-                    available = LoreManager.Module.CleansingScrolls > 0;
-                else
-                    available = LoreManager.Module.HasStagEgg;
-                if (available)
+                if (_glyphObjects[indexVariable.Value].activeSelf)
+                { 
                     fsm.SendEvent("FINISHED");
+                    return;
+                }
                 else
                     fsm.SendEvent(enteredIndex.Value switch
                     {
@@ -479,7 +501,11 @@ internal static class LorePage
                 return;
             }
             else if (indexVariable.Value == 4 || (indexVariable.Value > 5 && indexVariable.Value % 5 == 0))
-                indexVariable.Value = 21;
+                indexVariable.Value = _glyphObjects[21].activeSelf 
+                ? 21
+                : _glyphObjects[22].activeSelf 
+                    ? 22
+                    : 23;
             else if (indexVariable.Value == 6)
                 indexVariable.Value = 4;
             else
@@ -493,7 +519,11 @@ internal static class LorePage
         {
             enteredIndex.Value = 3;
             if (indexVariable.Value == -1)
-                indexVariable.Value = 23;
+                indexVariable.Value = _glyphObjects[21].activeSelf
+                ? 21
+                : _glyphObjects[22].activeSelf
+                    ? 22
+                    : 23;
             else if (indexVariable.Value == 0 || indexVariable.Value == 7 || indexVariable.Value == 11 || indexVariable.Value == 16)
             {
                 indexVariable.Value = -1; // To left arrow
@@ -537,6 +567,9 @@ internal static class LorePage
             _controlElements["MoveRight"].SetActive(false);
 
             _availablePowers.Clear();
+            if (indexVariable.Value == 23)
+                return;
+            
             (int, PowerRank) rank = GetMatchingIndex(indexVariable.Value);
             Power power = indexVariable.Value == 21
                 ? PowerManager.GetPowerByName(LoreManager.Module.TempPower)
@@ -597,8 +630,18 @@ internal static class LorePage
             FsmTransitionData.FromTargetState("Powers").WithEventName("FINISHED"));
         fsm.AddState("Init Toggle", () =>
         {
-            if (indexVariable.Value == 21)
+            if (indexVariable.Value > 20 && indexVariable.Value != 23)
             {
+                fsm.SendEvent("CANCEL");
+                return;
+            }
+            else if (indexVariable.Value == 23)
+            {
+                if (StagAdoptionPower.Instance.CanSpawnStag)
+                {
+                    StagAdoptionPower.Instance.SpawnStag();
+                    UpdateLorePage();
+                }
                 fsm.SendEvent("CANCEL");
                 return;
             }
@@ -647,9 +690,9 @@ internal static class LorePage
             _controlElements["MoveRight"].transform.position = _glyphPositions[indexVariable.Value].Item1 + new Vector3(1.5f, 0f);
             _controlElements["MoveRight"].SetActive(true);
         },
-           FsmTransitionData.FromTargetState("Clear Selection").WithEventName("CANCEL"),
-           FsmTransitionData.FromTargetState("Remind for bench").WithEventName("NOT BENCH"),
-           FsmTransitionData.FromTargetState("Remind for Dirtmouth bench").WithEventName("DIRTMOUTH"));
+        FsmTransitionData.FromTargetState("Clear Selection").WithEventName("CANCEL"),
+        FsmTransitionData.FromTargetState("Remind for bench").WithEventName("NOT BENCH"),
+        FsmTransitionData.FromTargetState("Remind for Dirtmouth bench").WithEventName("DIRTMOUTH"));
         fsm.AddState("Toggle", () =>
         {
             // Adjust name, sprite and description.
@@ -780,52 +823,41 @@ internal static class LorePage
         FsmState currentWorkingState = new(fsm.Fsm)
         {
             Name = "Stag Egg",
-            Actions = new FsmStateAction[]
-            {
+            Actions =
+            [
                     new Lambda(() => fsm.gameObject.LocateMyFSM("Update Cursor").FsmVariables.FindFsmGameObject("Item").Value = stagEgg),
-                    new SetSpriteRendererOrder()
-                    {
-                        gameObject = new() { GameObject = fsm.FsmVariables.FindFsmGameObject("Cursor Glow") },
-                        order = 0,
-                        delay = 0f
-                    },
-                    new Lambda(() => fsm.gameObject.LocateMyFSM("Update Cursor").SendEvent("UPDATE CURSOR")),
-                    new Lambda(() =>
-                    {
-
-                        if(!stagEgg.activeSelf)
-                        {
-                            _controlElements["confirmButton"].SetActive(false);
-                            fsm.SendEvent(_lastState == "Select Joker Scroll" ? "UI LEFT" : "UI RIGHT");
-                            _lastState = "Stag Egg";
-                            return;
-                        }
-                        _lastState = "Stag Egg";
-                        _controlElements["powerTitle"].GetComponent<TextMeshPro>().text = StagAdoptionPower.Instance.CanSpawnStag ? "Stag Egg" : "Broken Stag Egg";
-                        _controlElements["powerDescription"].GetComponent<TextMeshPro>().text = StagAdoptionPower.Instance.CanSpawnStag
-                        ? "You can feel something moving in there... maybe tapping it does the trick?"
-                        : "The empty shell of a stag. They probably now live a happier life... somewhere.";
-                        _controlElements["confirmButton"].SetActive(StagAdoptionPower.Instance.CanSpawnStag);
-                    })
-            }
+                new SetSpriteRendererOrder()
+                {
+                    gameObject = new() { GameObject = fsm.FsmVariables.FindFsmGameObject("Cursor Glow") },
+                    order = 0,
+                    delay = 0f
+                },
+                new Lambda(() => fsm.gameObject.LocateMyFSM("Update Cursor").SendEvent("UPDATE CURSOR")),
+                new Lambda(() =>
+                {
+                    _lastState = "Stag Egg";
+                    _controlElements["powerTitle"].GetComponent<TextMeshPro>().text = StagAdoptionPower.Instance.CanSpawnStag ? "Stag Egg" : "Broken Stag Egg";
+                    _controlElements["powerDescription"].GetComponent<TextMeshPro>().text = StagAdoptionPower.Instance.CanSpawnStag
+                    ? "You can feel something moving in there... maybe tapping it does the trick?"
+                    : "The empty shell of a stag. They probably now live a happier life... somewhere.";
+                    _controlElements["confirmButton"].SetActive(StagAdoptionPower.Instance.CanSpawnStag);
+                })
+            ]
         };
         currentWorkingState.AddTransition("UI LEFT", "Left Press");
         fsm.AddState(currentWorkingState);
         currentWorkingState = new FsmState(fsm.Fsm)
         {
             Name = "Spawn",
-            Actions = new FsmStateAction[]
-            {
+            Actions =
+            [
                 new Lambda(() =>
                 {
-                    if(!StagAdoptionPower.Instance.CanSpawnStag)
-                        fsm.SendEvent("FINISHED");
-                    StagAdoptionPower.Instance.SpawnStag();
-                    _stagEgg.sprite = StagAdoptionPower.Instance.InventorySprites[1];
+
                     _controlElements["powerTitle"].GetComponent<TextMeshPro>().text = "Broken Stag Egg";
                     _controlElements["powerDescription"].GetComponent<TextMeshPro>().text = "The empty shell of a stag. They probably now live a happier life... somewhere.";
                 })
-            }
+            ]
         };
         fsm.AddState(currentWorkingState);
         fsm.GetState("Stag Egg").AddTransition("UI CONFIRM", "Spawn");
@@ -833,169 +865,9 @@ internal static class LorePage
         fsm.GetState("Right Press").AddTransition("STAG", "Stag Egg");
         stagEgg.SetActive(false);
 
-        GameObject jokerScroll = new("Joker Scrolls");
-        jokerScroll.transform.SetParent(lorePage.transform);
-        jokerScroll.transform.localScale = new(1.2f, 1.2f, 1f);
-        jokerScroll.transform.position = new(6.0254f, -5.4418f, -3f);
-        jokerScroll.layer = lorePage.layer;
-        jokerScroll.AddComponent<BoxCollider2D>().offset = new(0f, 0f);
-        SpriteRenderer spriteRenderer = jokerScroll.AddComponent<SpriteRenderer>();
-        spriteRenderer.sortingLayerID = SortingLayerId;
-        spriteRenderer.sortingLayerName = "HUD";
-        spriteRenderer.sprite = SpriteHelper.CreateSprite<LoreMaster>("Sprites.SummoningScroll");
-        GameObject jokerAmount = GameObject.Instantiate(GameObject.Find("_GameCameras").transform.Find("HudCamera/Inventory/Charms/Text Desc").gameObject);
-        jokerAmount.transform.SetParent(jokerScroll.transform);
-        jokerAmount.transform.localScale = new(1.2f, 1.2f, 1);
-        jokerAmount.transform.localPosition = new(5.7527f, -5.8764f, -6f);
-        jokerAmount.GetComponent<TextMeshPro>().text = "0";
-        jokerAmount.SetActive(true);
-        jokerScroll.SetActive(false);
-        _controlElements.Add("Joker", jokerScroll);
-
-        GameObject cleanseScroll = new("Cleanse Scrolls");
-        cleanseScroll.transform.SetParent(lorePage.transform);
-        cleanseScroll.transform.localScale = new(1.2f, 1.2f, 1f);
-        cleanseScroll.transform.position = new(8.0254f, -5.4418f, -3f);
-        cleanseScroll.layer = lorePage.layer;
-        cleanseScroll.AddComponent<BoxCollider2D>().offset = new(0f, 0f);
-        spriteRenderer = cleanseScroll.AddComponent<SpriteRenderer>();
-        spriteRenderer.sortingLayerID = SortingLayerId;
-        spriteRenderer.sortingLayerName = "HUD";
-        spriteRenderer.sprite = SpriteHelper.CreateSprite<LoreMaster>("Sprites.CurseDispell");
-        GameObject cleanseAmount = GameObject.Instantiate(GameObject.Find("_GameCameras").transform.Find("HudCamera/Inventory/Charms/Text Desc").gameObject);
-        cleanseAmount.transform.SetParent(cleanseScroll.transform);
-        cleanseAmount.transform.localScale = new(1.2f, 1.2f, 1);
-        cleanseAmount.transform.localPosition = new(5.7527f, -5.8764f, -6f);
-        cleanseAmount.GetComponent<TextMeshPro>().text = "0";
-        cleanseAmount.SetActive(true);
-        cleanseScroll.SetActive(false);
-        _controlElements.Add("Cleanse", cleanseScroll);
-
         GameObject cursor = lorePage.transform.Find("Cursor").gameObject;
         _controlElements.Add("Cursor", cursor);
-        GameObject interactSprite = new("Interact Option");
-        interactSprite.transform.SetParent(cursor.transform);
-        interactSprite.transform.localPosition = new(0f, 0f, -6f);
-        interactSprite.layer = cursor.layer;
-        interactSprite.AddComponent<SpriteRenderer>().sortingLayerID = 62935577;
-        interactSprite.GetComponent<SpriteRenderer>().sortingLayerName = "HUD";
-        interactSprite.SetActive(true);
-
-        fsm.AddState(new FsmState(fsm.Fsm)
-        {
-            Name = "Select Joker Scroll",
-            Actions = new FsmStateAction[]
-            {
-                new Lambda(() => fsm.gameObject.LocateMyFSM("Update Cursor").FsmVariables.FindFsmGameObject("Item").Value = jokerScroll),
-                new SetSpriteRendererOrder()
-                {
-                    gameObject = new() { GameObject = fsm.FsmVariables.FindFsmGameObject("Cursor Glow") },
-                    order = 0,
-                    delay = 0f
-                },
-                new Lambda(() => fsm.gameObject.LocateMyFSM("Update Cursor").SendEvent("UPDATE CURSOR")),
-                new Lambda(() =>
-                {
-                    if (!jokerScroll.activeSelf)
-                    {
-                        fsm.SendEvent(_lastState == "Stag Egg" ? "UI RIGHT" : "UI LEFT");
-                        _lastState = "Select Joker Scroll";
-                        return;
-                    }
-                    _lastState = "Select Joker Scroll";
-                    _controlElements["powerTitle"].GetComponent<TextMeshPro>().text = "Knowledge Scroll";
-                    _controlElements["powerDescription"].GetComponent<TextMeshPro>().text = "A cryptic scroll written by Elderbug. Apparently this can be used once to obtain a power of your choice.";
-                    //_controlElements["confirmButton"].SetActive(LoreManager.JokerScrolls > 0);
-                })
-            }
-        });
-        fsm.AddState(new FsmState(fsm.Fsm)
-        {
-            Name = "Toggle Joker Scroll",
-            Actions = new FsmStateAction[]
-            {
-                new Lambda(() =>
-                {
-                    //if (LoreManager.JokerScrolls >= 1)
-                    //{
-                    //    if (_selectedEffect == 1)
-                    //    {
-                    //        _selectedEffect = 0;
-                    //        interactSprite.GetComponent<SpriteRenderer>().sprite = null;
-                    //    }
-                    //    else
-                    //    {
-                    //        _selectedEffect = 1;
-                    //        interactSprite.GetComponent<SpriteRenderer>().sprite = jokerScroll.GetComponent<SpriteRenderer>().sprite;
-                    //    }
-                    //}
-                    fsm.SendEvent("FINISHED");
-                })
-            }
-        });
-        fsm.AddState(new FsmState(fsm.Fsm)
-        {
-            Name = "Select Cleanse Scroll",
-            Actions = new FsmStateAction[]
-            {
-                new Lambda(() => fsm.gameObject.LocateMyFSM("Update Cursor").FsmVariables.FindFsmGameObject("Item").Value = cleanseScroll),
-                new SetSpriteRendererOrder()
-                {
-                    gameObject = new() { GameObject = fsm.FsmVariables.FindFsmGameObject("Cursor Glow") },
-                    order = 0,
-                    delay = 0f
-                },
-                new Lambda(() => fsm.gameObject.LocateMyFSM("Update Cursor").SendEvent("UPDATE CURSOR")),
-                new Lambda(() =>
-                {
-                    _lastState = "Select Cleanse Scroll";
-                    if (!cleanseScroll.activeSelf)
-                    {
-                        fsm.SendEvent("UI RIGHT");
-                        return;
-                    }
-                    _controlElements["powerTitle"].GetComponent<TextMeshPro>().text = "Cleansing Scroll";
-                    _controlElements["powerDescription"].GetComponent<TextMeshPro>().text = "A mysterious scroll written by Elderbug. If he's right, you can undo a curse spoken by acquired knowledge from you once.";
-                    //_controlElements["confirmButton"].SetActive(LoreManager.CleansingScrolls > 0);
-                })
-            }
-        });
-        fsm.AddState(new FsmState(fsm.Fsm)
-        {
-            Name = "Toggle Cleanse Scroll",
-            Actions = new FsmStateAction[]
-            {
-                new Lambda(() =>
-                {
-                    //if (LoreManager.CleansingScrolls >= 1)
-                    //{
-                    //    if (_selectedEffect == 2)
-                    //    {
-                    //        _selectedEffect = 0;
-                    //        interactSprite.GetComponent<SpriteRenderer>().sprite = null;
-                    //    }
-                    //    else
-                    //    {
-                    //        _selectedEffect = 2;
-                    //        interactSprite.GetComponent<SpriteRenderer>().sprite = cleanseScroll.GetComponent<SpriteRenderer>().sprite;
-                    //    }
-                    //}
-                    fsm.SendEvent("FINISHED");
-                })
-            }
-        });
         fsm.GetState("Stag Egg").AddTransition("UI RIGHT", "Select Joker Scroll");
-        fsm.GetState("Select Joker Scroll").AddTransition("UI LEFT", "Stag Egg");
-        fsm.GetState("Select Joker Scroll").AddTransition("UI CONFIRM", "Toggle Joker Scroll");
-        fsm.GetState("Select Joker Scroll").AddTransition("UI RIGHT", "Select Cleanse Scroll");
-        fsm.GetState("Toggle Joker Scroll").AddTransition("FINISHED", "Select Joker Scroll");
-        fsm.GetState("Select Cleanse Scroll").AddTransition("UI LEFT", "Select Joker Scroll");
-        fsm.GetState("Select Cleanse Scroll").AddTransition("UI CONFIRM", "Toggle Cleanse Scroll");
-        fsm.GetState("Select Cleanse Scroll").AddTransition("UI RIGHT", "R Arrow");
-        fsm.GetState("Toggle Cleanse Scroll").AddTransition("FINISHED", "Select Cleanse Scroll");
-
-        fsm.GetState("Move Pane R").InsertActions(0, () => interactSprite.GetComponent<SpriteRenderer>().sprite = null);
-        fsm.GetState("Move Pane L").InsertActions(0, () => interactSprite.GetComponent<SpriteRenderer>().sprite = null);
     }
 
     private static Sprite GetSlotSprite(PowerRank rank, bool locked = true)

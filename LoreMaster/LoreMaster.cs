@@ -23,7 +23,7 @@ using static LoreCore.Data.LocationList;
 
 namespace LoreMaster;
 
-public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocalSettings<LoreMasterLocalSaveData>, IMenuMod
+public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, IMenuMod
 {
     #region Constructors
 
@@ -262,39 +262,6 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
         };
     }
 
-    /// <summary>
-    /// Loads the data from the save file.
-    /// </summary>
-    public void OnLoadLocal(LoreMasterLocalSaveData saveData)
-    {
-        saveData ??= new();
-        saveData.PowerData ??= new();
-        LoreManager.LocalSaveData = saveData;
-    }
-
-    /// <summary>
-    /// Saves the data from the save file.
-    /// </summary>
-    LoreMasterLocalSaveData ILocalSettings<LoreMasterLocalSaveData>.OnSaveLocal()
-    {
-        LoreManager.LocalSaveData ??= new();
-        LoreMasterLocalSaveData saveData = new()
-        {
-            GameMode = LoreManager.LocalSaveData.GameMode,
-            PageState = LoreManager.LocalSaveData.PageState,
-            PowerData = LoreManager.LocalSaveData.PowerData
-        };
-        try
-        {
-            saveData.PageState = PowerManager.ControlState;
-        }
-        catch (Exception ex)
-        {
-            LogError("An error occured while saving local: " + ex.StackTrace);
-        }
-        return saveData;
-    }
-
     #endregion
 
     #region IC Setup
@@ -366,7 +333,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, ILocal
             // Point of interest
             GeneratePlacement(Inscription_City_Fountain, City_Fountain),
             GeneratePlacement(Inscription_Dreamer_Tablet, Dreamer_Tablet),
-            GeneratePlacement(Inspect_Stag_Egg, Stag_Nest),
+            GeneratePlacement(Inspect_Stag_Egg, Stag_Nest).Add(Finder.GetItem("Stag_Egg")),
             GeneratePlacement(ItemList.Lore_Tablet_Record_Bela, LocationList.Lore_Tablet_Record_Bela),
             GeneratePlacement(Inspect_Beast_Den_Altar, Beast_Den_Altar),
             GeneratePlacement(Inspect_Garden_Golem, Garden_Golem),

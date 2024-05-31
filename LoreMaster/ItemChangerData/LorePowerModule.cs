@@ -46,6 +46,18 @@ public class LorePowerModule : Module
         if (PowerManager.GetPowerByKey(key) is Power power)
         {
             AcquiredPowers.Add(power.PowerName);
+            if (power.Rank == PowerRank.Permanent)
+            {
+                int index = power.PowerName switch
+                {
+                    "Tourist" => 0,
+                    "Greater Mind" => 1,
+                    "Requiem" => 2,
+                    "Stag Adoption" => 3,
+                    _ => 4
+                };
+                PowerManager.PermanentPowers[index] = power.PowerName;
+            }
             if (LoreManager.GlobalSaveData.EnableCustomText && !string.IsNullOrEmpty(power.CustomText))
                 originalText = power.CustomText;
             originalText += $"<page>Absorbed power: {power.PowerName}<br>{power.Hint}";

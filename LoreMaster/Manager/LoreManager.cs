@@ -29,8 +29,6 @@ internal static class LoreManager
 
     public static LoreMasterGlobalSaveData GlobalSaveData { get; set; } = new();
 
-    public static LoreMasterLocalSaveData LocalSaveData { get; set; } = new();
-
     #endregion
 
     #region Eventhandler
