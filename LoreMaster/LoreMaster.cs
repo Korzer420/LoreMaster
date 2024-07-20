@@ -7,6 +7,7 @@ using LoreCore.Modules;
 using LoreCore.Other;
 using LoreMaster.Manager;
 using LoreMaster.ModInterop;
+using LoreMaster.ModInterop.Rando;
 using LoreMaster.SaveManagement;
 using LoreMaster.Settings;
 using LoreMaster.UnityComponents;
@@ -86,12 +87,13 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, IMenuM
         orig(self, permaDeath, bossRush);
 
         // If any traveller location is already known to IC, the rando did setup the traveller stages already.
-        if (!ItemChanger.Internal.Ref.Settings?.Placements?.ContainsKey(Dialogue_Quirrel_City) == true)
+        if (!ItemChanger.Internal.Ref.Settings?.Placements?.ContainsKey(Dialogue_Quirrel_City) == true
+            && TravellerControlModule.CurrentModule.Stages[Traveller.Quirrel] != 10)
             foreach (Traveller traveller in TravellerControlModule.CurrentModule.Stages.Keys)
                 TravellerControlModule.CurrentModule.Stages[traveller] = 0;
 
-        // To do: Rando check
-        CreateVanillaPlacements(!RandoInterop.PlayingRandomizer);
+        if (!RandoInterop.PlayingRandomizer || RandomizerSettings.Enabled)
+            CreateVanillaPlacements(!RandoInterop.PlayingRandomizer);
         LoreManager.Initialize();
         LorePage.UpdateLorePage();
     }
@@ -182,6 +184,9 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, IMenuM
 
             if (ModHooks.GetMod("DebugMod") is Mod)
                 HookDebug();
+
+            if (ModHooks.GetMod("Randomizer 4") is Mod)
+                RandomizerMenu.AttachMenu();
         }
         catch (Exception exception)
         {
@@ -194,13 +199,13 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, IMenuM
     /// </summary>
     public List<IMenuMod.MenuEntry> GetMenuData(IMenuMod.MenuEntry? toggleButtonEntry)
     {
-        List<IMenuMod.MenuEntry> menu = new()
-        {
+        List<IMenuMod.MenuEntry> menu =
+        [
             new()
             {
                 Name = "Custom Text",
                 Description = "Replaces the text of tablets or conversations (if available).",
-                Values = new string[] { "On", "Off" },
+                Values = ["On", "Off"],
                 Saver = option => LoreManager.GlobalSaveData.EnableCustomText = option == 0,
                 Loader = () => LoreManager.GlobalSaveData.EnableCustomText ? 0 : 1
             },
@@ -208,7 +213,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, IMenuM
             {
                 Name = "Power Explanations",
                 Description = "Determines how powers show be descripted",
-                Values = new string[] { "Vague Hints", "Descriptions" },
+                Values = ["Vague Hints", "Descriptions"],
                 Saver = option => LoreManager.GlobalSaveData.ShowHint = option == 0,
                 Loader = () => LoreManager.GlobalSaveData.ShowHint ? 0 : 1
             },
@@ -216,7 +221,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, IMenuM
             {
                 Name = "Disable Yellow Mushroom",
                 Description = "If on, the yellow mushroom will not cause a nausea effect.",
-                Values = new string[] { "On", "Off" },
+                Values = ["On", "Off"],
                 Saver = option => LoreManager.GlobalSaveData.DisableNausea = option == 0,
                 Loader = () => LoreManager.GlobalSaveData.DisableNausea ? 0 : 1
             },
@@ -224,11 +229,11 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, IMenuM
             {
                 Name = "Tracker Permanent",
                 Description = "If off, the tracker will disappear after 5 seconds.",
-                Values = new string[] { "On", "Off" },
+                Values = ["On", "Off"],
                 Saver = option => LoreManager.GlobalSaveData.TrackerPermanently = option == 0,
                 Loader = () => LoreManager.GlobalSaveData.TrackerPermanently ? 0 : 1
             }
-        };
+        ];
 
         return menu;
     }
@@ -288,6 +293,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, IMenuM
     public void CreateVanillaPlacements(bool generateSettings = false)
     {
         LoreCore.LoreCore.Instance.CreateVanillaCustomLore(generateSettings);
+
         List<AbstractPlacement> placements =
         [
             // Npc
@@ -386,68 +392,77 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, IMenuM
             }.Wrap().Add(Finder.GetItem(Dialogue_Cloth_Ghost))
         ];
 
-        int[] loreCost =
-        [
-            2,
-            5,
-            7,
-            10,
-            20,
-            25,
-            30,
-            35,
-            40,
-            45,
-            50,
-            55,
-            60,
-            65,
-            70,
-            77,
-            86,
-            99
-        ];
-        string[] items =
-        [
-            "Small_Glyph",
-            "Minor_Glyph",
-            "Small_Glyph",
-            "Major_Glyph", // 10
-            "Small_Glyph",
-            "Cleansing_Scroll",
-            "Minor_Glyph",
-            "Small_Glyph",
-            "Major_Glyph", // 40
-            "Mystical_Scroll",
-            "Small_Glyph",
-            "Minor_Glyph",
-            "Small_Glyph",
-            "Minor_Glyph",
-            "Major_Glyph", // 70
-            "Small_Glyph",
-            "Minor_Glyph",
-            "Small_Glyph"
-        ];
-
-        AbstractPlacement elderBugPlacement = ItemChanger.Internal.Ref.Settings.Placements.ContainsKey(Elderbug_Shop) 
-            ? ItemChanger.Internal.Ref.Settings.Placements[Elderbug_Shop]
-            : Finder.GetLocation(Elderbug_Shop).Wrap();
-        for (int i = 0; i < items.Length; i++)
+        if (!RandoInterop.PlayingRandomizer || (RandomizerSettings.Enabled && !RandomizerSettings.RandomizeElderbugRewards))
         {
-            AbstractItem abstractItem = Finder.GetItem(items[i]);
-            abstractItem.tags ??= [];
-            abstractItem.AddTag(new CostTag() { Cost = new LoreCost() { NeededLore = loreCost[i] } });
-            elderBugPlacement.Add(abstractItem);
+            int[] loreCost =
+            [
+                2,
+                5,
+                7,
+                10,
+                20,
+                25,
+                30,
+                35,
+                40,
+                45,
+                50,
+                55,
+                60,
+                65,
+                70,
+                77,
+                86,
+                99
+            ];
+            string[] items =
+            [
+                "Small_Glyph",
+                "Minor_Glyph",
+                "Small_Glyph",
+                "Major_Glyph", // 10
+                "Small_Glyph",
+                "Cleansing_Scroll",
+                "Minor_Glyph",
+                "Small_Glyph",
+                "Major_Glyph", // 40
+                "Mystical_Scroll",
+                "Small_Glyph",
+                "Minor_Glyph",
+                "Small_Glyph",
+                "Minor_Glyph",
+                "Major_Glyph", // 70
+                "Small_Glyph",
+                "Minor_Glyph",
+                "Small_Glyph"
+            ];
+
+            AbstractPlacement elderBugPlacement = ItemChanger.Internal.Ref.Settings.Placements.ContainsKey(Elderbug_Shop)
+                ? ItemChanger.Internal.Ref.Settings.Placements[Elderbug_Shop]
+                : Finder.GetLocation(Elderbug_Shop).Wrap();
+            for (int i = 0; i < items.Length; i++)
+            {
+                AbstractItem abstractItem = Finder.GetItem(items[i]);
+                abstractItem.tags ??= [];
+                abstractItem.AddTag(new CostTag() { Cost = new LoreCost() { NeededLore = loreCost[i] } });
+                elderBugPlacement.Add(abstractItem);
+            }
+            if (!ItemChanger.Internal.Ref.Settings.Placements.ContainsKey(Elderbug_Shop))
+                placements.Add(elderBugPlacement);
         }
-        if (!ItemChanger.Internal.Ref.Settings.Placements.ContainsKey(Elderbug_Shop))
-            placements.Add(elderBugPlacement);
         placements.Add(Finder.GetLocation("City_Teleporter").Wrap().Add(Finder.GetItem("City_Ticket")));
         placements.Add(Finder.GetLocation("Temple_Teleporter").Wrap().Add(Finder.GetItem("Temple_Ticket")));
+        placements.RemoveAll(x => x is null);
         ItemChangerMod.AddPlacements(placements);
     }
 
     private AbstractPlacement GeneratePlacement(string itemName, string locationName)
-        => Finder.GetLocation(locationName).Wrap().Add(Finder.GetItem(itemName));
+    {
+        // If the placement has already been created by rando (via LoreRando) we just add null and remove it later.
+        if (ItemChanger.Internal.Ref.Settings.Placements.ContainsKey(locationName))
+            return null;
+        return Finder.GetLocation(locationName).Wrap().Add(Finder.GetItem(itemName));
+    }
 
     #endregion
 
@@ -456,7 +471,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, IMenuM
     private void HookDebug() => DebugInterop.Initialize();
 
     private void HookRando() => RandoInterop.Initialize();
-    
+
     #endregion
 
     #endregion

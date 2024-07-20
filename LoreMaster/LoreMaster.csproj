@@ -8,215 +8,221 @@
 		<Deterministic>true</Deterministic>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<LangVersion>latest</LangVersion>
-    </PropertyGroup>
-  
-  <PropertyGroup>
-    <HollowKnightRefs>E:/Program Files/Steam/steamapps/common/Hollow Knight/hollow_knight_Data/Managed</HollowKnightRefs>
-    <ExportDir>bin\Publish</ExportDir>
-    <GenerateDocumentationFile>True</GenerateDocumentationFile>
-    <DocumentationFile></DocumentationFile>
-  </PropertyGroup>
-  
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\**\*.png" />
-	<EmbeddedResource Include="Resources\**\*.jpg" />
-    <EmbeddedResource Include="Resources\**\*.json" />
-	<EmbeddedResource Include="Resources\**\*.wav" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <None Remove="Resources\Sprites\ArrowSprite.png" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <Reference Include="Assembly-CSharp">
-      <HintPath>$(HollowKnightRefs)\Assembly-CSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="DebugMod">
-      <HintPath>$(HollowKnightRefs)\Mods\DebugMod\DebugMod.dll</HintPath>
-    </Reference>
-    <Reference Include="RandomizerMod">
-      <HintPath>..\..\..\Program Files\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\Mods\Randomizer 4\RandomizerMod.dll</HintPath>
-    </Reference>
-	  <Reference Include="SFCore">
-		  <HintPath>$(HollowKnightRefs)\Mods\SFCore\SFCore.dll</HintPath>
-	  </Reference>
-    <Reference Include="ItemChanger">
-      <HintPath>$(HollowKnightRefs)\Mods\ItemChanger\ItemChanger.dll</HintPath>
-    </Reference>
-    <Reference Include="KorzUtils">
-      <HintPath>$(HollowKnightRefs)\Mods\KorzUtils\KorzUtils.dll</HintPath>
-    </Reference>
-    <Reference Include="LoreCore">
-      <HintPath>..\..\LoreCore\LoreCore\bin\Debug\LoreCore.dll</HintPath>
-    </Reference>
-    <Reference Include="MMHOOK_Assembly-CSharp">
-      <HintPath>$(HollowKnightRefs)\MMHOOK_Assembly-CSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="MMHOOK_PlayMaker">
-      <HintPath>$(HollowKnightRefs)\MMHOOK_PlayMaker.dll</HintPath>
-    </Reference>
-    <Reference Include="Mono.Cecil">
-      <HintPath>$(HollowKnightRefs)\Mono.Cecil.dll</HintPath>
-    </Reference>
-    <Reference Include="Mono.Security">
-      <HintPath>$(HollowKnightRefs)\Mono.Security.dll</HintPath>
-    </Reference>
-    <Reference Include="MonoMod.RuntimeDetour">
-      <HintPath>$(HollowKnightRefs)\MonoMod.RuntimeDetour.dll</HintPath>
-    </Reference>
-    <Reference Include="MonoMod.Utils">
-      <HintPath>$(HollowKnightRefs)\MonoMod.Utils.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>$(HollowKnightRefs)\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="PlayMaker">
-      <HintPath>$(HollowKnightRefs)\PlayMaker.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="UnityEngine">
-      <HintPath>$(HollowKnightRefs)\UnityEngine.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.AnimationModule">
-      <HintPath>$(HollowKnightRefs)\UnityEngine.AnimationModule.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.AudioModule">
-      <HintPath>$(HollowKnightRefs)\UnityEngine.AudioModule.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.CoreModule">
-      <HintPath>$(HollowKnightRefs)\UnityEngine.CoreModule.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.ImageConversionModule">
-      <HintPath>$(HollowKnightRefs)\UnityEngine.ImageConversionModule.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.ParticleSystemModule">
-      <HintPath>$(HollowKnightRefs)\UnityEngine.ParticleSystemModule.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.Physics2DModule">
-      <HintPath>$(HollowKnightRefs)\UnityEngine.Physics2DModule.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.PhysicsModule">
-      <HintPath>$(HollowKnightRefs)\UnityEngine.PhysicsModule.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.TextRenderingModule">
-      <HintPath>$(HollowKnightRefs)\UnityEngine.TextRenderingModule.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.UI">
-      <HintPath>$(HollowKnightRefs)\UnityEngine.UI.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.UIElementsModule">
-      <HintPath>$(HollowKnightRefs)\UnityEngine.UIElementsModule.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.UIElementsNativeModule">
-      <HintPath>$(HollowKnightRefs)\UnityEngine.UIElementsNativeModule.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.UIModule">
-      <HintPath>$(HollowKnightRefs)\UnityEngine.UIModule.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  
-  <ItemGroup>
-    <Compile Update="Properties\AdditionalText.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>AdditionalText.resx</DependentUpon>
-    </Compile>
-    <Compile Update="Properties\ElderbugDialog.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>ElderbugDialog.resx</DependentUpon>
-    </Compile>
-    <Compile Update="Properties\InspectText.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>InspectText.resx</DependentUpon>
-    </Compile>
-    <Compile Update="Properties\PowerDescriptions.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>PowerDescriptions.resx</DependentUpon>
-    </Compile>
-    <Compile Update="Properties\PowerHints.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>PowerHints.resx</DependentUpon>
-    </Compile>
-    <Compile Update="Properties\PowerKeys.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>PowerKeys.resx</DependentUpon>
-    </Compile>
-    <Compile Update="Properties\ShopDescriptions.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>ShopDescriptions.resx</DependentUpon>
-    </Compile>
-    <Compile Update="Properties\TreasureHunter.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>TreasureHunter.resx</DependentUpon>
-    </Compile>
-    <Compile Update="Properties\TwistedPowerDescriptions.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>TwistedPowerDescriptions.resx</DependentUpon>
-    </Compile>
-    <Compile Update="Properties\TwistedPowerHints.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>TwistedPowerHints.resx</DependentUpon>
-    </Compile>
-  </ItemGroup>
-  
-  <ItemGroup>
-    <EmbeddedResource Update="Properties\AdditionalText.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>AdditionalText.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Properties\ElderbugDialog.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>ElderbugDialog.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Properties\InspectText.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>InspectText.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Properties\PowerDescriptions.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>PowerDescriptions.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Properties\PowerHints.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>PowerHints.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Properties\PowerKeys.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>PowerKeys.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Properties\ShopDescriptions.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>ShopDescriptions.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Properties\TreasureHunter.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>TreasureHunter.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Properties\TwistedPowerDescriptions.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>TwistedPowerDescriptions.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Properties\TwistedPowerHints.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>TwistedPowerHints.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-  </ItemGroup>
-  
-  <Target Name="CopyMod" AfterTargets="PostBuildEvent">
-    <Copy SourceFiles="$(TargetPath);$(TargetDir)$(TargetName).pdb" DestinationFolder="$(HollowKnightRefs)\Mods\$(TargetName)" OverwriteReadOnlyFiles="true" />
-  </Target>
+	</PropertyGroup>
 
-  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="cd $(HollowKnightRefs)\Mods\$(TargetName)&#xD;&#xA;del *.dll&#xD;&#xA;del *.pdb" />
-  </Target>  
+	<PropertyGroup>
+		<HollowKnightRefs>E:/Program Files/Steam/steamapps/common/Hollow Knight/hollow_knight_Data/Managed</HollowKnightRefs>
+		<ExportDir>bin\Publish</ExportDir>
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+		<DocumentationFile></DocumentationFile>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<EmbeddedResource Include="Resources\**\*.png" />
+		<EmbeddedResource Include="Resources\**\*.jpg" />
+		<EmbeddedResource Include="Resources\**\*.json" />
+		<EmbeddedResource Include="Resources\**\*.wav" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Remove="Resources\Sprites\ArrowSprite.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Reference Include="Assembly-CSharp">
+			<HintPath>$(HollowKnightRefs)\Assembly-CSharp.dll</HintPath>
+		</Reference>
+		<Reference Include="DebugMod">
+			<HintPath>$(HollowKnightRefs)\Mods\DebugMod\DebugMod.dll</HintPath>
+		</Reference>
+		<Reference Include="RandomizerMod">
+			<HintPath>$(HollowKnightRefs)\Mods\Randomizer 4\RandomizerMod.dll</HintPath>
+		</Reference>
+		<Reference Include="MenuChanger">
+			<HintPath>$(HollowKnightRefs)\Mods\MenuChanger\MenuChanger.dll</HintPath>
+		</Reference>
+		<Reference Include="SFCore">
+			<HintPath>$(HollowKnightRefs)\Mods\SFCore\SFCore.dll</HintPath>
+		</Reference>
+		<Reference Include="ItemChanger">
+			<HintPath>$(HollowKnightRefs)\Mods\ItemChanger\ItemChanger.dll</HintPath>
+		</Reference>
+		<Reference Include="KorzUtils">
+			<HintPath>$(HollowKnightRefs)\Mods\KorzUtils\KorzUtils.dll</HintPath>
+		</Reference>
+		<Reference Include="LoreCore">
+			<HintPath>$(HollowKnightRefs)\Mods\LoreCore\LoreCore.dll</HintPath>
+		</Reference>
+		<Reference Include="RandomizerCore">
+			<HintPath>$(HollowKnightRefs)\Mods\RandomizerCore\RandomizerCore.dll</HintPath>
+		</Reference>
+		<Reference Include="MMHOOK_Assembly-CSharp">
+			<HintPath>$(HollowKnightRefs)\MMHOOK_Assembly-CSharp.dll</HintPath>
+		</Reference>
+		<Reference Include="MMHOOK_PlayMaker">
+			<HintPath>$(HollowKnightRefs)\MMHOOK_PlayMaker.dll</HintPath>
+		</Reference>
+		<Reference Include="Mono.Cecil">
+			<HintPath>$(HollowKnightRefs)\Mono.Cecil.dll</HintPath>
+		</Reference>
+		<Reference Include="Mono.Security">
+			<HintPath>$(HollowKnightRefs)\Mono.Security.dll</HintPath>
+		</Reference>
+		<Reference Include="MonoMod.RuntimeDetour">
+			<HintPath>$(HollowKnightRefs)\MonoMod.RuntimeDetour.dll</HintPath>
+		</Reference>
+		<Reference Include="MonoMod.Utils">
+			<HintPath>$(HollowKnightRefs)\MonoMod.Utils.dll</HintPath>
+		</Reference>
+		<Reference Include="Newtonsoft.Json">
+			<HintPath>$(HollowKnightRefs)\Newtonsoft.Json.dll</HintPath>
+		</Reference>
+		<Reference Include="PlayMaker">
+			<HintPath>$(HollowKnightRefs)\PlayMaker.dll</HintPath>
+		</Reference>
+		<Reference Include="System" />
+		<Reference Include="UnityEngine">
+			<HintPath>$(HollowKnightRefs)\UnityEngine.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.AnimationModule">
+			<HintPath>$(HollowKnightRefs)\UnityEngine.AnimationModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.AudioModule">
+			<HintPath>$(HollowKnightRefs)\UnityEngine.AudioModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.CoreModule">
+			<HintPath>$(HollowKnightRefs)\UnityEngine.CoreModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.ImageConversionModule">
+			<HintPath>$(HollowKnightRefs)\UnityEngine.ImageConversionModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.ParticleSystemModule">
+			<HintPath>$(HollowKnightRefs)\UnityEngine.ParticleSystemModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.Physics2DModule">
+			<HintPath>$(HollowKnightRefs)\UnityEngine.Physics2DModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.PhysicsModule">
+			<HintPath>$(HollowKnightRefs)\UnityEngine.PhysicsModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.TextRenderingModule">
+			<HintPath>$(HollowKnightRefs)\UnityEngine.TextRenderingModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.UI">
+			<HintPath>$(HollowKnightRefs)\UnityEngine.UI.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.UIElementsModule">
+			<HintPath>$(HollowKnightRefs)\UnityEngine.UIElementsModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.UIElementsNativeModule">
+			<HintPath>$(HollowKnightRefs)\UnityEngine.UIElementsNativeModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.UIModule">
+			<HintPath>$(HollowKnightRefs)\UnityEngine.UIModule.dll</HintPath>
+		</Reference>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Update="Properties\AdditionalText.Designer.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>AdditionalText.resx</DependentUpon>
+		</Compile>
+		<Compile Update="Properties\ElderbugDialog.Designer.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>ElderbugDialog.resx</DependentUpon>
+		</Compile>
+		<Compile Update="Properties\InspectText.Designer.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>InspectText.resx</DependentUpon>
+		</Compile>
+		<Compile Update="Properties\PowerDescriptions.Designer.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>PowerDescriptions.resx</DependentUpon>
+		</Compile>
+		<Compile Update="Properties\PowerHints.Designer.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>PowerHints.resx</DependentUpon>
+		</Compile>
+		<Compile Update="Properties\PowerKeys.Designer.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>PowerKeys.resx</DependentUpon>
+		</Compile>
+		<Compile Update="Properties\ShopDescriptions.Designer.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>ShopDescriptions.resx</DependentUpon>
+		</Compile>
+		<Compile Update="Properties\TreasureHunter.Designer.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>TreasureHunter.resx</DependentUpon>
+		</Compile>
+		<Compile Update="Properties\TwistedPowerDescriptions.Designer.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>TwistedPowerDescriptions.resx</DependentUpon>
+		</Compile>
+		<Compile Update="Properties\TwistedPowerHints.Designer.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>TwistedPowerHints.resx</DependentUpon>
+		</Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+		<EmbeddedResource Update="Properties\AdditionalText.resx">
+			<Generator>ResXFileCodeGenerator</Generator>
+			<LastGenOutput>AdditionalText.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
+		<EmbeddedResource Update="Properties\ElderbugDialog.resx">
+			<Generator>ResXFileCodeGenerator</Generator>
+			<LastGenOutput>ElderbugDialog.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
+		<EmbeddedResource Update="Properties\InspectText.resx">
+			<Generator>ResXFileCodeGenerator</Generator>
+			<LastGenOutput>InspectText.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
+		<EmbeddedResource Update="Properties\PowerDescriptions.resx">
+			<Generator>ResXFileCodeGenerator</Generator>
+			<LastGenOutput>PowerDescriptions.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
+		<EmbeddedResource Update="Properties\PowerHints.resx">
+			<Generator>ResXFileCodeGenerator</Generator>
+			<LastGenOutput>PowerHints.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
+		<EmbeddedResource Update="Properties\PowerKeys.resx">
+			<Generator>ResXFileCodeGenerator</Generator>
+			<LastGenOutput>PowerKeys.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
+		<EmbeddedResource Update="Properties\ShopDescriptions.resx">
+			<Generator>ResXFileCodeGenerator</Generator>
+			<LastGenOutput>ShopDescriptions.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
+		<EmbeddedResource Update="Properties\TreasureHunter.resx">
+			<Generator>ResXFileCodeGenerator</Generator>
+			<LastGenOutput>TreasureHunter.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
+		<EmbeddedResource Update="Properties\TwistedPowerDescriptions.resx">
+			<Generator>ResXFileCodeGenerator</Generator>
+			<LastGenOutput>TwistedPowerDescriptions.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
+		<EmbeddedResource Update="Properties\TwistedPowerHints.resx">
+			<Generator>ResXFileCodeGenerator</Generator>
+			<LastGenOutput>TwistedPowerHints.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
+	</ItemGroup>
+
+	<Target Name="CopyMod" AfterTargets="PostBuildEvent">
+		<Copy SourceFiles="$(TargetPath);$(TargetDir)$(TargetName).pdb" DestinationFolder="$(HollowKnightRefs)\Mods\$(TargetName)" OverwriteReadOnlyFiles="true" />
+	</Target>
+
+	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+		<Exec Command="cd $(HollowKnightRefs)\Mods\$(TargetName)&#xD;&#xA;del *.dll&#xD;&#xA;del *.pdb" />
+	</Target>
 </Project>

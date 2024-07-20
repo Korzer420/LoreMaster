@@ -6,9 +6,7 @@ public class RandoSettings
 
     public bool Enabled { get; set; }
 
-    public int Glyphs { get; set; }
-
-    public bool RandomizeScrolls { get; set; }
+    public bool RandomizeElderbugRewards { get; set; }
 
     #endregion
 }
