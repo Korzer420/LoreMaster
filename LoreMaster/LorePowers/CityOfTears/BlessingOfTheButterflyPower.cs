@@ -102,16 +102,16 @@ public class BlessingOfTheButterflyPower : Power
             LoreMaster.Instance.LogError("Couldn't find Vector2 match for double jump.");
     }
 
-    private bool HeroController_CanDoubleJump(On.HeroController.orig_CanDoubleJump orig, HeroController self)
-    {
-        return orig(self) && !_doubleJumpOnCooldown;
-    }
+    //private bool HeroController_CanDoubleJump(On.HeroController.orig_CanDoubleJump orig, HeroController self)
+    //{
+    //    return orig(self) && !_doubleJumpOnCooldown;
+    //}
 
-    private void DoubleJumpCooldown(On.HeroController.orig_DoDoubleJump orig, HeroController self)
-    {
-        orig(self);
-        LoreMaster.Instance.Handler.StartCoroutine(DoubleJumpCooldown());
-    }
+    //private void DoubleJumpCooldown(On.HeroController.orig_DoDoubleJump orig, HeroController self)
+    //{
+    //    orig(self);
+    //    LoreMaster.Instance.Handler.StartCoroutine(DoubleJumpCooldown());
+    //}
 
     #endregion
 
@@ -191,21 +191,10 @@ public class BlessingOfTheButterflyPower : Power
         On.HeroController.DoDoubleJump -= HeroController_DoDoubleJump;
         IL.HeroController.DoubleJump -= HeroController_DoubleJump;
     }
+
+    protected override void EnemyBuff(HealthManager enemy, GameObject enemyObject) 
+        => LoreMaster.Instance.Handler.StartCoroutine(JumpyEnemy(enemy, enemyObject));
     
-    /// <inheritdoc/>
-    protected override void TwistEnable()
-    {
-        On.HeroController.CanDoubleJump += HeroController_CanDoubleJump;
-        On.HeroController.DoDoubleJump += DoubleJumpCooldown;
-    }
-
-    /// <inheritdoc/>
-    protected override void TwistDisable()
-    {
-        On.HeroController.CanDoubleJump -= HeroController_CanDoubleJump;
-        On.HeroController.DoDoubleJump -= DoubleJumpCooldown;
-    }
-
     #endregion
 
     #region Private Methods
@@ -230,12 +219,20 @@ public class BlessingOfTheButterflyPower : Power
         _rightHitbox.SetActive(false);
     }
 
-    private IEnumerator DoubleJumpCooldown()
+    private IEnumerator JumpyEnemy(HealthManager enemy, GameObject enemyObject)
     {
-        _doubleJumpOnCooldown = true;
-        yield return new WaitForSeconds(3f);
-        Wings.SetActive(true);
-        _doubleJumpOnCooldown = false;
+        while (enemy != null && !enemy.GetIsDead())
+        {
+            float jumpTimer = UnityEngine.Random.Range(5, 16);
+            float passedTime = 0f;
+            while(passedTime < jumpTimer)
+            {
+                yield return null;
+                passedTime += Time.deltaTime;
+            }
+            bool isLeft = enemyObject.transform.position.x < HeroController.instance.transform.position.x;
+            enemyObject.GetComponent<Rigidbody2D>().AddForce(new(UnityEngine.Random.Range(0, 4) * (isLeft ? 1 : -1), UnityEngine.Random.Range(1, 5)));
+        }
     }
 
     #endregion

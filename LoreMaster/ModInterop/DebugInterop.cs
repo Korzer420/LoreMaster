@@ -26,11 +26,11 @@ public static class DebugInterop
         LoreManager.Module.AcquiredPowers.Clear();
         foreach (Power power in PowerManager.GetAllPowers())
             LoreManager.Module.AcquiredPowers.Add(power.PowerName);
-        PowerManager.PermanentPowers[0] = "Tourist";
-        PowerManager.PermanentPowers[1] = "Greater Mind";
-        PowerManager.PermanentPowers[2] = "Requiem";
-        PowerManager.PermanentPowers[3] = "Stag Adoption";
-        PowerManager.PermanentPowers[4] = "Follow the Light";
+        PowerManager.Module.PermanentPowers[0] = "Tourist";
+        PowerManager.Module.PermanentPowers[1] = "Greater Mind";
+        PowerManager.Module.PermanentPowers[2] = "Requiem";
+        PowerManager.Module.PermanentPowers[3] = "Stag Adoption";
+        PowerManager.Module.PermanentPowers[4] = "Follow the Light";
 
         LorePage.UpdateLorePage();
         Console.AddLine("Unlocked all powers and glyphs.");
@@ -48,7 +48,7 @@ public static class DebugInterop
         foreach (Power power in PowerManager.GetAllActivePowers())
             power.DisablePower();
         for (int i = 0; i < 5; i++)
-            PowerManager.PermanentPowers[i] = null;
+            PowerManager.Module.PermanentPowers[i] = null;
         
         LoreManager.Module.AcquiredPowers.Clear();
         LorePage.UpdateLorePage();

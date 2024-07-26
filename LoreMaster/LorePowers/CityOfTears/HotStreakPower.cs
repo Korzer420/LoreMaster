@@ -1,4 +1,5 @@
 using LoreMaster.Enums;
+using LoreMaster.UnityComponents;
 using Modding;
 using System.Collections;
 using UnityEngine;
@@ -50,13 +51,22 @@ public class HotStreakPower : Power
     private int EmpowerNail(string name, int damage)
     {
         if (string.Equals(name, "nailDamage"))
-        {
-            if (State == PowerState.Active)
-                damage += _damageStacks;
-            else
-                damage = Mathf.Max(1, _damageStacks);
-        }
+            damage += _damageStacks;
         return damage;
+    }
+
+    private void HeroController_TakeDamage(On.HeroController.orig_TakeDamage orig, HeroController self, GameObject go, GlobalEnums.CollisionSide damageSide, int damageAmount, int hazardType)
+    {
+        orig(self, go, damageSide, damageAmount, hazardType);
+        GameObject enemy = (go.GetComponent<HealthManager>() ? go : null) ?? (go.transform.parent?.GetComponent<HealthManager>()
+            ? go.transform.parent.gameObject
+            : null);
+        if (enemy == null || enemy.GetComponent<EnemyBuff>()?.PowerName != PowerName)
+            return;
+        if (enemy.GetComponent<DamageHero>() is DamageHero hero)
+            hero.damageDealt++;
+        if (enemy.GetComponentInChildren<DamageHero>() is DamageHero damage)
+            damage.damageDealt++;
     }
 
     #endregion
@@ -68,6 +78,8 @@ public class HotStreakPower : Power
     {
         ModHooks.SlashHitHook += NailSlash;
         ModHooks.GetPlayerIntHook += EmpowerNail;
+        On.HeroController.TakeDamage += HeroController_TakeDamage;
+
     }
 
     /// <inheritdoc/>
@@ -81,12 +93,6 @@ public class HotStreakPower : Power
         UpdateNail();
     }
 
-    /// <inheritdoc/>
-    protected override void TwistEnable() => Enable();
-
-    /// <inheritdoc/>
-    protected override void TwistDisable() => Disable();
-
     #endregion
 
     #region Private Methods
@@ -94,7 +100,6 @@ public class HotStreakPower : Power
     /// <summary>
     /// Waits for the hit to finish and then checks if an enemy was hit.
     /// </summary>
-    /// <returns></returns>
     private IEnumerator HitCooldown()
     {
         // Give the event handler time to acknowledge a hit.

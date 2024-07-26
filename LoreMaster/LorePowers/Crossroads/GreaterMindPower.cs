@@ -1,9 +1,12 @@
+using ItemChanger;
 using KorzUtils.Helper;
 using LoreMaster.Enums;
 using LoreMaster.Manager;
+using Modding;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 
@@ -87,32 +90,27 @@ public class GreaterMindPower : Power
     /// <inheritdoc/>
     protected override void Initialize()
     {
-        GameObject prefab = GameObject.Find("_GameCameras").transform.Find("HudCamera/Inventory/Inv/Inv_Items/Geo").gameObject;
-        GameObject hudCanvas = GameObject.Find("_GameCameras").transform.Find("HudCamera/Hud Canvas").gameObject;
-        _loreTracker = GameObject.Instantiate(prefab, hudCanvas.transform, true);
-        _loreTracker.name = "Lore Tracker";
-        PositionHudElement(_loreTracker, 3);
-        _loreTracker.SetActive(false);
+        //GameObject prefab = GameObject.Find("_GameCameras").transform.Find("HudCamera/Inventory/Inv/Inv_Items/Geo").gameObject;
+        //GameObject hudCanvas = GameObject.Find("_GameCameras").transform.Find("HudCamera/Hud Canvas").gameObject;
+        //_loreTracker = GameObject.Instantiate(prefab, hudCanvas.transform, true);
+        //_loreTracker.name = "Lore Tracker";
+        //PositionHudElement(_loreTracker, 3);
+        //_loreTracker.SetActive(false);
     }
 
     /// <inheritdoc/>
     protected override void Enable()
     {
-        if (_loreTracker != null)
-        {
-            _loreTracker.SetActive(true);
-            UpdateLoreCounter();
-        }
+        //if (_loreTracker != null)
+        //{
+        //    _loreTracker.SetActive(true);
+        //    UpdateLoreCounter();
+        //}
     }
 
     /// <inheritdoc/>
-    protected override void Disable() => _loreTracker?.SetActive(false);
-
-    /// <inheritdoc/>
-    protected override void TwistEnable() => On.HutongGames.PlayMaker.Actions.PlayerDataBoolTest.OnEnter += PlayerDataBoolTest_OnEnter;
-
-    /// <inheritdoc/>
-    protected override void TwistDisable() => On.HutongGames.PlayMaker.Actions.PlayerDataBoolTest.OnEnter -= PlayerDataBoolTest_OnEnter;
+    protected override void Disable() { }
+        //=> _loreTracker?.SetActive(false);
 
     #endregion
 
@@ -124,11 +122,11 @@ public class GreaterMindPower : Power
         {
             go.transform.localPosition = new(-3.66f, -4.32f, 0f);
             go.transform.localScale = new(1.3824f, 1.3824f, 1.3824f);
-            go.GetComponent<DisplayItemAmount>().playerDataInt = go.name;
+            go.GetComponent<DisplayItemAmount>().playerDataInt = PowerName;
             go.GetComponent<DisplayItemAmount>().textObject.text = "";
             go.GetComponent<DisplayItemAmount>().textObject.fontSize = fontSize;
             go.GetComponent<DisplayItemAmount>().textObject.gameObject.name = "Counter";
-            go.GetComponent<SpriteRenderer>().sprite = SpriteHelper.CreateSprite<LoreCore.LoreCore>("Sprites.Tablets.Deepnest");
+            go.GetComponent<SpriteRenderer>().sprite = SpriteHelper.CreateSprite<LoreCore.LoreCore>("Sprites.Tablets.Crossroads");
             go.GetComponent<BoxCollider2D>().size = new Vector2(1.5f, 1f);
             go.GetComponent<BoxCollider2D>().offset = new Vector2(0.5f, 0f);
         }

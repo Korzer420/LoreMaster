@@ -61,7 +61,7 @@ internal static class LorePage
         // --Fourth "Line"--
         (new(-11.55f, -2.45f, -3), PowerRank.Greater),
         (new(-8.3f, -3.2f, -3), PowerRank.Lower),
-        (new(-5, -3.1f, -3), PowerRank.Medium),
+        (new(-5, -2.8f, -3), PowerRank.Medium),
         (new(-1.7f, -3.2f, -3), PowerRank.Lower),
         (new(1.55f, -2.45f, -3), PowerRank.Greater),
         // --Fifth "Line"--
@@ -114,7 +114,10 @@ internal static class LorePage
                         spriteRenderer.sprite = GetSlotSprite(data.Item2, false);
                 }
                 else
+                {
+                    LogHelper.Write("Warum bist du hier?");
                     spriteRenderer.sprite = GetSlotSprite(data.Item2);
+                }
             }
             if (StagAdoptionPower.Instance != null)
                 _stagEgg.sprite = StagAdoptionPower.Instance.CanSpawnStag
@@ -248,11 +251,12 @@ internal static class LorePage
         {
             Vector3 scale;
             if (_glyphPositions[i - 1].Item2 == PowerRank.Greater)
-                scale = new Vector3(1.5f, 1.5f, 1f);
-            else if (_glyphPositions[i - 1].Item2 == PowerRank.Lower)
-                scale = new Vector3(1f, 1f, 1f);
+                scale = new Vector3(3f, 3f, 1f);
+            else if (_glyphPositions[i - 1].Item2 == PowerRank.Medium)
+                scale = new Vector3(2.5f, 2.5f, 1f);
             else
-                scale = new Vector3(1.2f, 1.2f, 1f);
+                scale = new Vector3(2f, 2f, 1f);
+
             GameObject glyphObject = GenerateSpriteObject(powerList, $"Glyph Slot {i}", GetSlotSprite(PowerRank.Permanent), _glyphPositions[i - 1].Item1, scale);
             _glyphObjects[i - 1] = glyphObject;
         }
@@ -334,7 +338,6 @@ internal static class LorePage
                         (int, PowerRank) selectedPowerSlot = GetMatchingIndex(selectedIndex);
 
                         Power selectedPower = PowerManager.GetPowerInSlot(selectedPowerSlot);
-                        LogHelper.Write<LoreMaster>("Rank is: "+selectedPowerSlot.Item2.ToString()+", Index: "+selectedPowerSlot.Item1+", Power name: "+selectedPower?.PowerName);
                         string titleText;
                         string descriptionText;
                         if (selectedPower != null)
@@ -413,7 +416,7 @@ internal static class LorePage
             if (indexVariable.Value > 20)
             {
                 if (_glyphObjects[indexVariable.Value].activeSelf)
-                { 
+                {
                     fsm.SendEvent("FINISHED");
                     return;
                 }
@@ -501,9 +504,9 @@ internal static class LorePage
                 return;
             }
             else if (indexVariable.Value == 4 || (indexVariable.Value > 5 && indexVariable.Value % 5 == 0))
-                indexVariable.Value = _glyphObjects[21].activeSelf 
+                indexVariable.Value = _glyphObjects[21].activeSelf
                 ? 21
-                : _glyphObjects[22].activeSelf 
+                : _glyphObjects[22].activeSelf
                     ? 22
                     : 23;
             else if (indexVariable.Value == 6)
@@ -569,7 +572,7 @@ internal static class LorePage
             _availablePowers.Clear();
             if (indexVariable.Value == 23)
                 return;
-            
+
             (int, PowerRank) rank = GetMatchingIndex(indexVariable.Value);
             Power power = indexVariable.Value == 21
                 ? PowerManager.GetPowerByName(LoreManager.Module.TempPower)
@@ -579,7 +582,7 @@ internal static class LorePage
             if (power != null)
                 _glyphObjects[indexVariable.Value].GetComponentInChildren<SpriteRenderer>().sprite = _tabletSprites[power.Location];
             else
-                _glyphObjects[indexVariable.Value].GetComponentInChildren<SpriteRenderer>().sprite = GetSlotSprite(rank.Item2, true);
+                _glyphObjects[indexVariable.Value].GetComponentInChildren<SpriteRenderer>().sprite = GetSlotSprite(rank.Item2);
         }, FsmTransitionData.FromTargetState("Powers").WithEventName("FINISHED"));
         fsm.AddState("Swap Left", () =>
         {
@@ -587,6 +590,7 @@ internal static class LorePage
                 chosenPower.Value = _availablePowers.Count - 1;
             else
                 chosenPower.Value--;
+            LogHelper.Write<LoreMaster>("Chosen power index: " + chosenPower.Value);
             // Make small cursor animation.
             LoreMaster.Instance.Handler.StartCoroutine(PlayArrowAnimation(true));
         }, FsmTransitionData.FromTargetState("Clear Selection").WithEventName("CANCEL"));
@@ -601,6 +605,7 @@ internal static class LorePage
                 chosenPower.Value = -1;
             else
                 chosenPower.Value++;
+            LogHelper.Write<LoreMaster>("Chosen power index: " + chosenPower.Value);
             // Make small cursor animation.
             LoreMaster.Instance.Handler.StartCoroutine(PlayArrowAnimation(false));
         }, FsmTransitionData.FromTargetState("Clear Selection").WithEventName("CANCEL"));
@@ -613,15 +618,15 @@ internal static class LorePage
         {
             // 0 is always the already selected power.
             // -1 is no power.
-            if (chosenPower.Value != 0)
-            {
-                (int, PowerRank) powerIndex = GetMatchingIndex(indexVariable.Value);
-                Power powerInSlot = PowerManager.GetPowerInSlot(powerIndex);
-                // Check if no power was selected before and now not again.
-                if (chosenPower.Value == -1 && powerInSlot == null)
-                    return;
+            (int, PowerRank) powerIndex = GetMatchingIndex(indexVariable.Value);
+            Power powerInSlot = PowerManager.GetPowerInSlot(powerIndex);
+            // Check if no power was selected before and now not again.
+            if (chosenPower.Value == -1 && powerInSlot == null)
+                return;
+            else if (chosenPower.Value == -1)
+                PowerManager.GetPowerInSlot(powerIndex).DisablePower();
+            else
                 PowerManager.SwapPower(powerIndex, _availablePowers[chosenPower.Value].PowerName);
-            }
         }, FsmTransitionData.FromTargetState("Clear Selection").WithEventName("FINISHED"),
            FsmTransitionData.FromTargetState("Clear Selection").WithEventName("CANCEL"));
         fsm.AddState("Remind for bench", charmFsm.GetState("Bench Reminder").GetActions(),
@@ -661,9 +666,9 @@ internal static class LorePage
 
             string powerInSlot = selectedGlyph.Item2 switch
             {
-                PowerRank.Greater => PowerManager.ActiveMajorPowers[selectedGlyph.Item1],
-                PowerRank.Medium => PowerManager.ActiveMediumPowers[selectedGlyph.Item1],
-                _ => PowerManager.ActiveSmallPowers[selectedGlyph.Item1]
+                PowerRank.Greater => PowerManager.Module.MajorPowers[selectedGlyph.Item1],
+                PowerRank.Medium => PowerManager.Module.MinorPowers[selectedGlyph.Item1],
+                _ => PowerManager.Module.SmallPowers[selectedGlyph.Item1]
             };
 
             if (!string.IsNullOrEmpty(powerInSlot) && UnityEngine.SceneManagement.SceneManager.GetActiveScene().name != "Town")

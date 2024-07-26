@@ -18,7 +18,7 @@ public class LorePowerModule : Module
 {
     #region Properties
 
-    public List<string> AcquiredPowers { get; set; } = new();
+    public List<string> AcquiredPowers { get; set; } = [];
 
     public int MajorGlyphSlots { get; set; } = 0;
 
@@ -29,6 +29,19 @@ public class LorePowerModule : Module
     public int MysticalScrolls { get; set; } = 0;
 
     public int CleansingScrolls { get; set; } = 0;
+
+    public string[] MajorPowers { get; set; } = new string[3];
+
+    public string[] MinorPowers { get; set; } = new string[5];
+
+    public string[] SmallPowers { get; set; } = new string[8];
+
+    public string[] PermanentPowers { get; set; } = new string[5];
+
+    /// <summary>
+    /// Gets or sets the flag that indicates if powers can be activated. This is used for end cutscenes.
+    /// </summary>
+    public bool CanPowersActivate { get; set; } = true;
 
     public bool HasStagEgg { get; set; }
 
@@ -56,7 +69,7 @@ public class LorePowerModule : Module
                     "Stag Adoption" => 3,
                     _ => 4
                 };
-                PowerManager.PermanentPowers[index] = power.PowerName;
+                PowerManager.Module.PermanentPowers[index] = power.PowerName;
             }
             if (LoreManager.GlobalSaveData.EnableCustomText && !string.IsNullOrEmpty(power.CustomText))
                 originalText = power.CustomText;

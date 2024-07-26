@@ -1,6 +1,8 @@
+using HutongGames.PlayMaker;
 using HutongGames.PlayMaker.Actions;
 using KorzUtils.Helper;
 using LoreMaster.Enums;
+using LoreMaster.UnityComponents;
 using Modding;
 using System.Collections;
 using System.Collections.Generic;
@@ -71,6 +73,58 @@ public class MarissasAudiencePower : Power
         return newScene;
     }
 
+    //private GameObject GrimmEnemyRange_GetTarget(On.GrimmEnemyRange.orig_GetTarget orig, GrimmEnemyRange self)
+    //{
+    //    if (self.gameObject.GetComponent<EnemyBuff>()?.PowerName == PowerName)
+    //    {
+    //        LogHelper.Write<LoreMaster>("GetRange");
+    //        return Vector2.Distance(self.transform.position, HeroController.instance.transform.position) < 20
+    //            ? HeroController.instance.gameObject
+    //            : null;
+    //    }
+    //    return orig(self);
+    //}
+
+    //private void PlayMakerFSM_OnEnable(On.PlayMakerFSM.orig_OnEnable orig, PlayMakerFSM self)
+    //{
+    //    if (self.FsmName == "Control" && self.Fsm.GameObjectName.Contains("Grimmchild") && self.GetComponent<EnemyBuff>()?.PowerName == PowerName)
+    //    {
+    //        GameObject enemy = self.GetComponent<EnemyBuff>().Enemy;
+    //        // Set grimm level (affects damage and attack speed)
+    //        int grimmLevel = Random.Range(2, 5);
+    //        self.GetState("Init").AdjustTransitions("Level " + grimmLevel);
+    //        // Force quick spawn.
+    //        self.FsmVariables.GetFsmBool("Scene Appear").Value = true;
+    //        // Make follow target the enemy.
+    //        self.GetState("Change").GetFirstAction<GetScale>().gameObject.GameObject = enemy;
+    //        FsmState followState = self.GetState("Follow");
+    //        followState.GetFirstAction<GrimmChildFly>().objectB = enemy;
+    //        followState.GetFirstAction<GetDistance>().gameObject.GameObject = enemy;
+    //        followState.GetFirstAction<DistanceFlySmooth>().gameObject.GameObject = enemy;
+    //        self.GetState("Tele").GetFirstAction<GetPosition>().gameObject.GameObject = enemy;
+    //        self.GetState("Antic").GetFirstAction<DistanceFlySmooth>().target = enemy;
+
+    //        // 50% extra attack speed when on level four
+    //        if (self.FsmVariables.GetFsmInt("Damage").Value == 11)
+    //            followState.GetFirstAction<FloatSubtract>().subtract = 2f;
+    //        // Ignore the bench check.
+    //        self.GetState("Idle Anim").AdjustTransitions("Change");
+    //    }
+    //    orig(self);
+    //}
+
+    //private void SpawnObjectFromGlobalPool_OnEnter(On.HutongGames.PlayMaker.Actions.SpawnObjectFromGlobalPool.orig_OnEnter orig, SpawnObjectFromGlobalPool self)
+    //{
+    //    orig(self);
+    //    if (self.IsCorrectContext("Control", null, "Shoot") && self.Fsm.GameObjectName.Contains("Grimmchild") && self.Fsm.GameObject.GetComponent<EnemyBuff>()?.PowerName == PowerName)
+    //    {
+    //        self.storeObject.Value.transform.Find("Enemy Damager").gameObject.SetActive(false);
+    //        self.storeObject.Value.AddComponent<DamageHero>().damageDealt = self.Fsm.Variables.GetFsmInt("Damage").Value >= 8 ? 2 : 1;
+    //        self.storeObject.Value.AddComponent<EnemyBuff>().PowerName = PowerName;
+    //    }
+    //}
+
+
     #endregion
 
     #region Control
@@ -85,8 +139,8 @@ public class MarissasAudiencePower : Power
     }
 
     /// <inheritdoc/>
-    protected override void Enable() 
-    { 
+    protected override void Enable()
+    {
         StartRoutine(GatherAudience);
         ModHooks.BeforeSceneLoadHook += ModHooks_BeforeSceneLoadHook;
     }
@@ -103,20 +157,6 @@ public class MarissasAudiencePower : Power
             GameObject.Destroy(_revek);
     }
 
-    /// <inheritdoc/>
-    protected override void TwistEnable() 
-    { 
-        Enable();
-        UnityEngine.SceneManagement.SceneManager.activeSceneChanged += ReactivateRevek;
-    }
-
-    /// <inheritdoc/>
-    protected override void TwistDisable()
-    {
-        Disable();
-        UnityEngine.SceneManagement.SceneManager.activeSceneChanged -= ReactivateRevek;
-    }
-
     #endregion
 
     #region Private Methods
@@ -124,7 +164,6 @@ public class MarissasAudiencePower : Power
     /// <summary>
     /// Spawns occasionally a crowd of companions or revek if marissa is dead.
     /// </summary>
-    /// <returns></returns>
     private IEnumerator GatherAudience()
     {
         while (true)
@@ -170,22 +209,6 @@ public class MarissasAudiencePower : Power
                     GameObject.Destroy(companion);
                 _extraCompanions.Clear();
             }
-        }
-    }
-
-    private void ReactivateRevek(UnityEngine.SceneManagement.Scene arg0, UnityEngine.SceneManagement.Scene arg1)
-    {
-        try
-        {
-            if(_revek != null)
-            {
-                _revek.SetActive(false);
-                _revek.SetActive(true);
-                _revek.LocateMyFSM("Control").SetState("Appear Pause");
-            }
-        }
-        catch (System.Exception)
-        {
         }
     }
 

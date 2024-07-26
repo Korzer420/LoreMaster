@@ -1,5 +1,6 @@
 using LoreMaster.Enums;
 using LoreMaster.Manager;
+using LoreMaster.UnityComponents;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -49,7 +50,6 @@ public abstract class Power
 
     /// <summary>
     /// Gets or set the clear description of the power.
-    /// <para/>Only used if <see cref="LoreMaster.UseHints"/> is <see langword="false"/>.
     /// </summary>
     public string Description { get; set; }
 
@@ -60,7 +60,6 @@ public abstract class Power
 
     /// <summary>
     /// Gets or sets the hint of the power. It gets displayed after the lore text (or <see cref="CustomText"/> if set) ingame.
-    /// <para/>Only used if <see cref="LoreMaster.UseHints"/> is <see langword="true"/>.
     /// </summary>
     public string Hint { get; protected set; }
 
@@ -129,7 +128,7 @@ public abstract class Power
     /// Determines how the power might modify enemies.
     /// If left untouched, a random modifier is applied.
     /// </summary>
-    protected virtual void EnemyBuff(HealthManager enemy) => ApplyRandomBuff(enemy);
+    protected virtual void EnemyBuff(HealthManager enemy, GameObject enemyObject) => ApplyRandomBuff(enemy);
 
     #endregion
 
@@ -166,7 +165,7 @@ public abstract class Power
             if (InitializePower())
             {
                 Enable();
-                LoreMaster.Instance.LogDebug("Activated " + PowerName);
+                LoreMaster.Instance.Log("Activated " + PowerName);
             }
         }
         catch (Exception exception)
@@ -202,7 +201,11 @@ public abstract class Power
         }
     }
 
-    internal void CastOnEnemy(HealthManager enemy) => EnemyBuff(enemy);
+    internal void CastOnEnemy(GameObject enemy)
+    {
+        enemy.AddComponent<EnemyBuff>().PowerName = PowerName;
+        EnemyBuff(enemy.GetComponent<HealthManager>(), enemy);
+    }
 
     #endregion
 
@@ -211,8 +214,6 @@ public abstract class Power
     /// <summary>
     /// Start a coroutine on this power. This coroutine will be cancelled once the power disables itself.
     /// </summary>
-    /// <param name="coroutine"></param>
-    /// <param name="overwrite"></param>
     protected void StartRoutine(Func<IEnumerator> coroutine, bool overwrite = true)
     {
         if (_runningCoroutine != null)
@@ -220,7 +221,7 @@ public abstract class Power
                 LoreMaster.Instance.Handler.StopCoroutine(_runningCoroutine);
             else
             {
-                LoreMaster.Instance.LogDebug($"Power {PowerName} tried starting a main coroutine while one is already active.");
+                LoreMaster.Instance.LogWarn($"Power {PowerName} tried starting a main coroutine while one is already active.");
                 return;
             }
         _runningCoroutine = LoreMaster.Instance.Handler.StartCoroutine(coroutine.Invoke());
@@ -229,11 +230,10 @@ public abstract class Power
     /// <summary>
     /// Check if a random buff is applied to the enemy.
     /// </summary>
-    /// <param name="healthManager"></param>
     private void ApplyRandomBuff(HealthManager healthManager)
     {
         int rolled = UnityEngine.Random.Range(1, 101);
-        if (healthManager.hp <= 1 || rolled <= 30)
+        if (healthManager.hp <= 1 || healthManager.hp >= 200 || rolled <= 30)
             return;
         else if (rolled <= 55)
             healthManager.hp = Convert.ToInt32(healthManager.hp * UnityEngine.Random.Range(1.25f, 3.5f));

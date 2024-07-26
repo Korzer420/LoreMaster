@@ -80,6 +80,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, IMenuM
     {
         orig(self);
         LoreManager.Initialize();
+        CoroutineHelper.WaitFrames(() => LorePage.UpdateLorePage(), true, 300);
     }
 
     private void UIManager_StartNewGame(On.UIManager.orig_StartNewGame orig, UIManager self, bool permaDeath, bool bossRush)
@@ -186,7 +187,10 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, IMenuM
                 HookDebug();
 
             if (ModHooks.GetMod("Randomizer 4") is Mod)
+            {
                 RandomizerMenu.AttachMenu();
+                HookRando();
+            }
         }
         catch (Exception exception)
         {

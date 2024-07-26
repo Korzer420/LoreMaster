@@ -79,27 +79,10 @@ public class DeliciousMealPower : Power
         ModHooks.LanguageGetHook -= CheckForEgg;
     }
 
-    /// <inheritdoc/>
-    protected override void TwistEnable()
+    protected override void EnemyBuff(HealthManager enemy, GameObject enemyObject)
     {
-        ModHooks.HeroUpdateHook += ConsumeEgg;
-        ModHooks.LanguageGetHook += CheckForEgg;
-        _poggy = GameObject.Instantiate(LoreMaster.Instance.PreloadedObjects["Ghost NPC"].transform.Find("Character Sprite").gameObject);
-        GameObject.DontDestroyOnLoad(_poggy);
-        _poggy.SetActive(true);
-        Component.Destroy(_poggy.GetComponent<PlayMakerFSM>());
-        Component.Destroy(_poggy.GetComponent<PlayMakerFSM>());
-        StartRoutine(() => RumblingStomach());
-    }
-
-    /// <inheritdoc/>
-    protected override void TwistDisable()
-    {
-        ModHooks.HeroUpdateHook -= ConsumeEgg;
-        ModHooks.LanguageGetHook -= CheckForEgg;
-        GameObject.Destroy(_poggy);
-        _poggy = null;
-        _hungerTimer = 120f;
+        base.EnemyBuff(enemy, enemyObject);
+        enemy.StartCoroutine(RumblingStomach(enemy, enemyObject));
     }
 
     #endregion
@@ -205,28 +188,27 @@ public class DeliciousMealPower : Power
         rancidEggCount.color = Color.white;
     }
 
-    private IEnumerator RumblingStomach()
+    private IEnumerator RumblingStomach(HealthManager enemy, GameObject enemyObject)
     {
-        _hungerTimer = 120f;
-        tk2dSprite poggySprite = _poggy.GetComponent<tk2dSprite>();
-        poggySprite.color = Color.white;
-        // This should render the ghost in front of every object.
-        poggySprite.SortingOrder = 1;
-        _poggy.transform.localScale = new(-1.08f, 1.08f, 1.08f);
-        while (true)
+        float passedTime = 0f;
+        float totalPassedTime = 0f;
+        DamageHero damageComponent = enemyObject.GetComponent<DamageHero>();
+        tk2dSprite sprite = enemyObject.GetComponent<tk2dSprite>();
+
+        if (damageComponent is null)
+            yield break;
+        while(!enemy.GetIsDead())
         {
-            _hungerTimer -= Time.deltaTime;
-            poggySprite.color = new Color(1f, _hungerTimer / 120, _hungerTimer / 120);
-            _poggy.transform.position = HeroController.instance.transform.position - new Vector3(_hungerTimer / 120 * 12, 2 - (_hungerTimer / 30), 0f);
-            if (!HeroController.instance.acceptingInput || PlayerData.instance.GetBool("atBench"))
-                yield return new WaitUntil(() => HeroController.instance.acceptingInput && !PlayerData.instance.GetBool("atBench"));
-            if (_hungerTimer <= 0f)
-            {
-                _hungerTimer = 120f;
-                HeroController.instance.TakeDamage(null, GlobalEnums.CollisionSide.left, 99, 1);
-                yield return new WaitForSeconds(4f);
-            }
             yield return null;
+            passedTime += Time.deltaTime;
+            totalPassedTime += Time.deltaTime;
+            if (passedTime >= 10f)
+            { 
+                passedTime = 0f;
+                enemy.hp += 15;
+                damageComponent.damageDealt++;
+            }
+            sprite.color = new(Math.Min(255, totalPassedTime), sprite.color.g, sprite.color.b);
         }
     }
 

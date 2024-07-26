@@ -1,5 +1,7 @@
+using ItemChanger;
 using KorzUtils.Helper;
 using LoreMaster.Enums;
+using LoreMaster.ItemChangerData;
 using LoreMaster.LorePowers;
 using LoreMaster.LorePowers.Ancient_Basin;
 using LoreMaster.LorePowers.CityOfTears;
@@ -29,8 +31,8 @@ public static class PowerManager
 {
     #region Members
 
-    private static List<Power> _powerList = new()
-    {
+    private static List<Power> _powerList =
+    [
         // Dirtmouth/King's Pass
         new WellFocusedPower(),
         new ScrewTheRulesPower(),
@@ -104,45 +106,13 @@ public static class PowerManager
         new ShiningBoundPower(),
         new DiminishingCursePower(),
         new SacredShellPower()
-    };
-    private static string[] _majorPowers = new string[3];
-    private static string[] _mediumPowers = new string[5];
-    private static string[] _smallPowers = new string[8];
-    private static string[] _permanentPowers = new string[5];
+    ];
 
     #endregion
 
     #region Properties
 
-    /// <summary>
-    /// Gets or sets the flag that indicates if powers can be activated. This is used for end cutscenes.
-    /// </summary>
-    public static bool CanPowersActivate { get; set; } = true;
-
-    /// <summary>
-    /// Gets or sets the control state of the power inventory page.
-    /// </summary>
-    public static PowerControlState ControlState { get; set; } = PowerControlState.ToggleAccess;
-
-    /// <summary>
-    /// Gets all currently active major powers.
-    /// </summary>
-    public static string[] ActiveMajorPowers => _majorPowers;
-
-    /// <summary>
-    /// Gets all currently active major powers.
-    /// </summary>
-    public static string[] ActiveMediumPowers => _mediumPowers;
-
-    /// <summary>
-    /// Gets all currently active major powers.
-    /// </summary>
-    public static string[] ActiveSmallPowers => _smallPowers;
-
-    /// <summary>
-    /// Gets all currently active permanent powers
-    /// </summary>
-    public static string[] PermanentPowers => _permanentPowers;
+    public static LorePowerModule Module => ItemChangerMod.Modules?.GetOrAdd<LorePowerModule>();
 
     #endregion
 
@@ -202,10 +172,7 @@ public static class PowerManager
     /// <summary>
     /// Disables all powers. WHO WOULD'VE THOUGHT??? :O
     /// </summary>
-    internal static void DisableAllPowers()
-    {
-        CanPowersActivate = false;
-    }
+    internal static void DisableAllPowers() => Module.CanPowersActivate = false;
 
     /// <summary>
     /// Adds a power to the internal list.
@@ -222,7 +189,7 @@ public static class PowerManager
     /// </summary>
     public static IEnumerable<Power> GetAllActivePowers()
     {
-        IEnumerable<string> allActivePowerNames = ActiveMajorPowers.Concat(ActiveMediumPowers).Concat(ActiveSmallPowers).Concat(PermanentPowers);
+        IEnumerable<string> allActivePowerNames = Module.MajorPowers.Concat(Module.MinorPowers).Concat(Module.SmallPowers).Concat(Module.PermanentPowers);
         return _powerList.Where(x => allActivePowerNames.Contains(x.PowerName));
     }
 
@@ -234,9 +201,9 @@ public static class PowerManager
 
     #endregion
 
-        /// <summary>
-        /// Let all powers execute their behaviour for entering a new room.
-        /// </summary>
+    /// <summary>
+    /// Let all powers execute their behaviour for entering a new room.
+    /// </summary>
     internal static void ExecuteSceneActions()
     {
         foreach (Power power in GetAllActivePowers())
@@ -257,10 +224,10 @@ public static class PowerManager
         {
             string powerName = powerIndex.Item2 switch
             {
-                PowerRank.Permanent => PermanentPowers[powerIndex.Item1],
-                PowerRank.Lower => ActiveSmallPowers[powerIndex.Item1],
-                PowerRank.Medium => ActiveMediumPowers[powerIndex.Item1],
-                _ => ActiveMajorPowers[powerIndex.Item1],
+                PowerRank.Permanent => Module.PermanentPowers[powerIndex.Item1],
+                PowerRank.Lower => Module.SmallPowers[powerIndex.Item1],
+                PowerRank.Medium => Module.MinorPowers[powerIndex.Item1],
+                _ => Module.MajorPowers[powerIndex.Item1],
             };
             return GetPowerByName(powerName);
         }
@@ -280,18 +247,17 @@ public static class PowerManager
             switch (powerIndex.Item2)
             {
                 case PowerRank.Greater:
-                    ActiveMajorPowers[powerIndex.Item1] = newPower;
+                    Module.MajorPowers[powerIndex.Item1] = newPower;
                     break;
                 case PowerRank.Medium:
-                    ActiveMediumPowers[powerIndex.Item1] = newPower;
+                    Module.MinorPowers[powerIndex.Item1] = newPower;
                     break;
                 default:
-                    ActiveSmallPowers[powerIndex.Item1] = newPower;
+                    Module.SmallPowers[powerIndex.Item1] = newPower;
                     break;
             }
             if (!string.IsNullOrEmpty(newPower))
             {
-                LogHelper.Write("Enable " + newPower);
                 GetPowerByName(newPower).EnablePower();
             }
         }

@@ -2,6 +2,7 @@ using ItemChanger;
 using KorzUtils.Helper;
 using LoreMaster.ItemChangerData;
 using LoreMaster.LorePowers;
+using LoreMaster.LorePowers.CityOfTears;
 using LoreMaster.SaveManagement;
 using Modding;
 using System.Collections;
@@ -19,13 +20,11 @@ internal static class LoreManager
 
     private static bool _active;
 
-    private static LorePowerModule _module;
-
     #endregion
 
     #region Properties
 
-    public static LorePowerModule Module => _module ??= ItemChangerMod.Modules?.GetOrAdd<LorePowerModule>();
+    public static LorePowerModule Module => ItemChangerMod.Modules?.GetOrAdd<LorePowerModule>();
 
     public static LoreMasterGlobalSaveData GlobalSaveData { get; set; } = new();
 
@@ -57,6 +56,13 @@ internal static class LoreManager
         return orig;
     }
 
+    private static void HealthManager_OnEnable(On.HealthManager.orig_OnEnable orig, HealthManager self)
+    {
+        orig(self);
+        LogHelper.Write<LoreMaster>("Enable enemy");
+        PowerManager.GetPower<MarissasAudiencePower>().CastOnEnemy(self.gameObject);
+    }
+
     #endregion
 
     #region Methods
@@ -67,6 +73,7 @@ internal static class LoreManager
         On.HutongGames.PlayMaker.Actions.SendEventByName.OnEnter += EndAllPowers;
         UnityEngine.SceneManagement.SceneManager.activeSceneChanged += SceneManager_activeSceneChanged;
         LoreMaster.Instance.Handler.StartCoroutine(WaitForPlayerControl());
+        On.HealthManager.OnEnable += HealthManager_OnEnable;
         _active = true;
     }
 
@@ -77,11 +84,11 @@ internal static class LoreManager
         ModHooks.GetPlayerBoolHook -= ModHooks_GetPlayerBoolHook;
         UnityEngine.SceneManagement.SceneManager.activeSceneChanged -= SceneManager_activeSceneChanged;
         On.HutongGames.PlayMaker.Actions.SendEventByName.OnEnter -= EndAllPowers;
+        On.HealthManager.OnEnable -= HealthManager_OnEnable;
         IEnumerable<Power> activePowers = PowerManager.GetAllActivePowers();
         LoreMaster.Instance.Handler.StopAllCoroutines();
         foreach (Power power in activePowers)
             power.DisablePower(true);
-        _module = null;
         _active = false;
     }
 
