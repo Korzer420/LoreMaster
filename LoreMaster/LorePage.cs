@@ -114,10 +114,7 @@ internal static class LorePage
                         spriteRenderer.sprite = GetSlotSprite(data.Item2, false);
                 }
                 else
-                {
-                    LogHelper.Write("Warum bist du hier?");
                     spriteRenderer.sprite = GetSlotSprite(data.Item2);
-                }
             }
             if (StagAdoptionPower.Instance != null)
                 _stagEgg.sprite = StagAdoptionPower.Instance.CanSpawnStag
@@ -257,7 +254,7 @@ internal static class LorePage
             else
                 scale = new Vector3(2f, 2f, 1f);
 
-            GameObject glyphObject = GenerateSpriteObject(powerList, $"Glyph Slot {i}", GetSlotSprite(PowerRank.Permanent), _glyphPositions[i - 1].Item1, scale);
+            GameObject glyphObject = GenerateSpriteObject(powerList, $"Glyph Slot {i}", GetSlotSprite(PowerRank.Permanent), _glyphPositions[i - 1].Item1, _glyphPositions[i - 1].Item2, scale);
             _glyphObjects[i - 1] = glyphObject;
         }
 
@@ -272,17 +269,17 @@ internal static class LorePage
         bottomSeparator.transform.SetRotationZ(0f);
 
         // Extra items
-        GameObject knowledgeScrolls = GenerateSpriteObject(lorePage, "Knowledge Scrolls", "SummoningScroll", new(4f, -2.3f, 0), new(1.5f, 1.5f));
+        GameObject knowledgeScrolls = GenerateSpriteObject(lorePage, "Knowledge Scrolls", "SummoningScroll", new(4f, -2.3f, 0), PowerRank.None, new(1.5f, 1.5f));
         knowledgeScrolls.transform.localScale = new(0.8f, 0.8f);
         GenerateTextObject(knowledgeScrolls, "KnowledgeScrollCount", new(4.6f, -7.3f), 8);
         _glyphObjects[21] = knowledgeScrolls;
         knowledgeScrolls.SetActive(false);
-        GameObject cleanseScrolls = GenerateSpriteObject(lorePage, "Cleansing Scrolls", "CurseDispell", new(4f, -3.8f, 0f), new(1.5f, 1.5f));
+        GameObject cleanseScrolls = GenerateSpriteObject(lorePage, "Cleansing Scrolls", "CurseDispell", new(4f, -3.8f, 0f), PowerRank.None, new(1.5f, 1.5f));
         cleanseScrolls.transform.localScale = new(0.8f, 0.8f);
         GenerateTextObject(cleanseScrolls, "CleansingScrollsCount", new(4.6f, -8.8f, 0f), 8);
         _glyphObjects[22] = cleanseScrolls;
         cleanseScrolls.SetActive(false);
-        GameObject stagEgg = GenerateSpriteObject(lorePage, "Stag Egg", "Stag_Egg", new(4f, -5.3f, 0f), new(1.2f, 1.2f));
+        GameObject stagEgg = GenerateSpriteObject(lorePage, "Stag Egg", "Stag_Egg", new(4f, -5.3f, 0f), PowerRank.None, new(1.2f, 1.2f));
         stagEgg.transform.localScale = new(0.8f, 0.8f);
         _glyphObjects[23] = stagEgg;
         stagEgg.SetActive(false);
@@ -582,7 +579,7 @@ internal static class LorePage
             if (power != null)
                 _glyphObjects[indexVariable.Value].GetComponentInChildren<SpriteRenderer>().sprite = _tabletSprites[power.Location];
             else
-                _glyphObjects[indexVariable.Value].GetComponentInChildren<SpriteRenderer>().sprite = GetSlotSprite(rank.Item2);
+                _glyphObjects[indexVariable.Value].GetComponentInChildren<SpriteRenderer>().sprite = GetSlotSprite(rank.Item2, false);
         }, FsmTransitionData.FromTargetState("Powers").WithEventName("FINISHED"));
         fsm.AddState("Swap Left", () =>
         {
@@ -771,10 +768,10 @@ internal static class LorePage
         return new(typeIndex, rank.Item2);
     }
 
-    private static GameObject GenerateSpriteObject(GameObject parent, string objectName, string spriteName, Vector3 position, Vector3 scale = default)
-        => GenerateSpriteObject(parent, objectName, SpriteHelper.CreateSprite<LoreMaster>($"Sprites.{spriteName}"), position, scale);
+    private static GameObject GenerateSpriteObject(GameObject parent, string objectName, string spriteName, Vector3 position, PowerRank rank, Vector3 scale = default)
+        => GenerateSpriteObject(parent, objectName, SpriteHelper.CreateSprite<LoreMaster>($"Sprites.{spriteName}"), position, rank, scale);
 
-    private static GameObject GenerateSpriteObject(GameObject parent, string objectName, Sprite sprite, Vector3 position, Vector3 scale = default)
+    private static GameObject GenerateSpriteObject(GameObject parent, string objectName, Sprite sprite, Vector3 position, PowerRank rank, Vector3 scale = default)
     {
         GameObject holderObject = new(objectName);
         holderObject.transform.SetParent(parent.transform);
@@ -782,6 +779,13 @@ internal static class LorePage
         holderObject.layer = parent.layer;
         // The cursor need a collider to jump to
         holderObject.AddComponent<BoxCollider2D>().offset = new(0f, 0f);
+        holderObject.GetComponent<BoxCollider2D>().size = rank switch
+        {
+            PowerRank.Greater => new(2.2f, 2.2f),
+            PowerRank.Lower => new(1.5f, 1.5f),
+            PowerRank.None => new(1f, 1f),
+            _ => new(2f, 2f)
+        };
 
         GameObject spriteObject = new($"{objectName} Sprite");
         spriteObject.transform.SetParent(holderObject.transform);
