@@ -2,7 +2,6 @@ using HutongGames.PlayMaker;
 using HutongGames.PlayMaker.Actions;
 using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
-using KorzUtils.Helper;
 using LoreMaster.Enums;
 using LoreMaster.Helper;
 using LoreMaster.LorePowers;
@@ -16,6 +15,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using SpriteHelper = KorzUtils.Helper.SpriteHelper;
 
 namespace LoreMaster;
 

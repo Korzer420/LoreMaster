@@ -2,8 +2,6 @@ using HutongGames.PlayMaker.Actions;
 using ItemChanger;
 using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
-using KorzUtils.Helper;
-using LoreMaster.Helper;
 using LoreMaster.Manager;
 using System.Linq;
 using UnityEngine;
@@ -44,8 +42,7 @@ internal class ZoteGreenpathLocation : DialogueLocation
                 })
             }
         });
-
-        fsm.GetState("Unfurl").AdjustTransition("FINISHED", "Check Spawn");
+        KorzUtils.Helper.FsmHelper.AdjustTransition(fsm.GetState("Unfurl"), "FINISHED", "Check Spawn");
         fsm.GetState("Check Spawn").AddTransition("FINISHED", "Intro Fly");
     }
 
@@ -71,12 +68,12 @@ internal class ZoteGreenpathLocation : DialogueLocation
         });
         if (fsm.FsmName == "FSM")
         {
-            fsm.GetState("Check").AdjustTransition("DESTROY", "Check Zote Spawn");
+            KorzUtils.Helper.FsmHelper.AdjustTransition(fsm.GetState("Check"), "DESTROY", "Check Zote Spawn");
             fsm.GetState("Check Zote Spawn").AddTransition("FINISHED", "Destroy");
         }
         else
         {
-            fsm.GetState("State 1").AdjustTransition("KILLED", "Check Zote Spawn");
+            KorzUtils.Helper.FsmHelper.AdjustTransition(fsm.GetState("State 1"), "KILLED", "Check Zote Spawn");
             fsm.GetState("Check Zote Spawn").AddTransition("FINISHED", "State 2");
         }
     }

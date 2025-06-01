@@ -1,10 +1,8 @@
 using HutongGames.PlayMaker;
 using HutongGames.PlayMaker.Actions;
-using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
 using KorzUtils.Helper;
 using LoreMaster.Enums;
-using LoreMaster.Helper;
 using UnityEngine;
 
 namespace LoreMaster.LorePowers.QueensGarden;
@@ -82,7 +80,7 @@ public class FollowTheLightPower : Power
     private void AddDreamGateTeleport()
     {
         PlayMakerFSM fsm = HeroController.instance.gameObject.LocateMyFSM("Dream Nail");
-        GameObject dreamGate = fsm.GetState("Spawn Gate").GetFirstActionOfType<SpawnObjectFromGlobalPool>().gameObject.Value;
+        GameObject dreamGate = fsm.GetState("Spawn Gate").GetFirstAction<SpawnObjectFromGlobalPool>().gameObject.Value;
         fsm.AddState(new FsmState(fsm.Fsm)
         {
             Name = "Set Light Gate",
@@ -129,7 +127,7 @@ public class FollowTheLightPower : Power
                 })
             }
         });
-        fsm.GetState("Dream Gate?").InsertAction(new Lambda(() =>
+        fsm.GetState("Dream Gate?").InsertActions(3, new Lambda(() =>
         {
             if (State == PowerState.Active)
             {
@@ -139,7 +137,7 @@ public class FollowTheLightPower : Power
                     fsm.SendEvent("MOVE");
             }
 
-        }), 3);
+        }));
         fsm.GetState("Dream Gate?").AddTransition("PLACE", "Set Light Gate");
         fsm.GetState("Dream Gate?").AddTransition("MOVE", "Move to Light Gate");
         fsm.GetState("Set Light Gate").AddTransition("FINISHED", "Slash Antic");

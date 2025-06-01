@@ -1,5 +1,5 @@
 using HutongGames.PlayMaker;
-using ItemChanger.Extensions;
+
 using ItemChanger.FsmStateActions;
 using KorzUtils.Helper;
 using LoreMaster.Enums;
@@ -133,7 +133,7 @@ public class StagAdoptionPower : Power
         fsm.GetState("Activate 2").AddTransition("FINISHED", "Start Audio");
         fsm.GetState("Convo?").ClearTransitions();
         fsm.GetState("Convo?").AddTransition("FINISHED", "Open map");
-        fsm.GetState("In Range").AddFirstAction(new Lambda(() =>
+        fsm.GetState("In Range").InsertActions(0,new Lambda(() =>
         {
             GameObject prompt = fsm.FsmVariables.FindFsmGameObject("Prompt").Value;
             prompt.transform.position = miniStag.transform.position + new Vector3(0f, 2f, 0f);
@@ -151,7 +151,7 @@ public class StagAdoptionPower : Power
             })
         };
         fsm.GetState("Check Result").AddTransition("FINISHED", "HUD Return");
-        fsm.GetState("Check Result").AddFirstAction(new Lambda(() =>
+        fsm.GetState("Check Result").InsertActions(0, new Lambda(() =>
         {
             if (string.IsNullOrEmpty(fsm.FsmVariables.FindFsmString("Selection Result").Value))
                 fsm.SendEvent("FINISHED");
@@ -163,7 +163,7 @@ public class StagAdoptionPower : Power
         GameObject travel = miniStag.transform.Find("Travel Range").gameObject;
         travel.transform.localPosition = new(-12.6f, -2.6f, 1f);
         travel.transform.localScale = new(2f, 1f, 1f);
-        travel.LocateMyFSM("Travel Range").GetState("Init").InsertAction(new Lambda(() => travel.LocateMyFSM("Travel Range").FsmVariables.FindFsmGameObject("Parent").Value = miniStag), 3);
+        travel.LocateMyFSM("Travel Range").GetState("Init").InsertActions(3, new Lambda(() => travel.LocateMyFSM("Travel Range").FsmVariables.FindFsmGameObject("Parent").Value = miniStag));
         CanSpawnStag = false;
         HatchMoment = Time.realtimeSinceStartupAsDouble;
     }

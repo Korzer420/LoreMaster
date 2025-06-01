@@ -1,14 +1,10 @@
 using HutongGames.PlayMaker;
 using ItemChanger;
-using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
 using ItemChanger.Locations;
 using ItemChanger.Util;
 using KorzUtils.Helper;
-using LoreMaster.Helper;
-using System.Collections;
 using System.Linq;
-using UnityEngine;
 
 namespace LoreMaster.ItemChangerData.Locations;
 
@@ -50,7 +46,7 @@ internal class DreamNailLocation : AutoLocation
             fsm.GetState("Give Items").AddTransition("CONVO_FINISH", "Box Down");
             fsm.GetState("Impact").AdjustTransition("FINISHED", "Give Items");
             // Remove the box down event (the textbox will be handled in the UIDef)
-            fsm.GetState("Box Down").RemoveAction(0);
+            fsm.GetState("Box Down").RemoveActions(0);
         }
         else
             fsm.GetState("Idle").ClearTransitions();

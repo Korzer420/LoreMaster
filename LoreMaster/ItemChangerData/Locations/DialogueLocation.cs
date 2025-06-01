@@ -1,7 +1,5 @@
 using HutongGames.PlayMaker;
 using ItemChanger;
-using ItemChanger.Extensions;
-using ItemChanger.FsmStateActions;
 using ItemChanger.Locations;
 using ItemChanger.Util;
 using KorzUtils.Helper;
@@ -84,20 +82,20 @@ internal class DialogueLocation : AutoLocation
                 fsm.AddState(new FsmState(fsm.Fsm)
                 {
                     Name = "Give Items",
-                    Actions = new FsmStateAction[]
-                    {
-                        new Lambda(() =>
+                    Actions =
+                    [
+                        new ItemChanger.FsmStateActions.Lambda(() =>
                         {
                             PlayMakerFSM control = fsm.gameObject.LocateMyFSM("npc_control");
                             control.GetState("Idle").ClearTransitions();
                         }),
-                        new AsyncLambda(callback => ItemUtility.GiveSequentially(Placement.Items, Placement, new GiveInfo
+                        new ItemChanger.FsmStateActions.AsyncLambda(callback => ItemUtility.GiveSequentially(Placement.Items, Placement, new GiveInfo
                         {
                             FlingType = flingType,
                             Container = Container.Tablet,
                             MessageType = name == LocationList.Dreamer_Tablet ? MessageType.Big : MessageType.Any,
                         }, callback), "CONVO_FINISH")
-                    }
+                    ]
                 });
 
                 // Zote Dirtmouth 2....
@@ -112,15 +110,15 @@ internal class DialogueLocation : AutoLocation
                 if (fsm.GetState("Talk R") is FsmState state)
                     state.AdjustTransition("FINISHED", "Give Items");
                 if (fsm.GetState("Check Active") is FsmState state2)
-                    state2.Actions = new FsmStateAction[1]
-                    {
-                        new Lambda(() =>
+                    state2.Actions =
+                    [
+                        new ItemChanger.FsmStateActions.Lambda(() =>
                         {
                             fsm.SendEvent(fsm.gameObject.name != "Dung Defender NPC" || PlayerData.instance.GetBool(nameof(PlayerData.instance.killedDungDefender))
                              ? "FINISHED"
                              : "DESTROY");
                         })
-                    };
+                    ];
                 fsm.GetState("Give Items").AddTransition("CONVO_FINISH", transitionEnd);
             }
         }

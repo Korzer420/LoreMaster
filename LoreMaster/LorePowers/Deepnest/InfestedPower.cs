@@ -1,5 +1,5 @@
 using HutongGames.PlayMaker.Actions;
-using ItemChanger.Extensions;
+
 using KorzUtils.Helper;
 using LoreMaster.Enums;
 using LoreMaster.UnityComponents;
@@ -30,7 +30,7 @@ public class InfestedPower : Power
 
     #region Properties
 
-    public GameObject WeaverPrefab => _weaverPrefab == null ? GameObject.Find("Knight/Charm Effects").LocateMyFSM("Weaverling Control").GetState("Spawn").GetFirstActionOfType<SpawnObjectFromGlobalPool>().gameObject.Value : _weaverPrefab;
+    public GameObject WeaverPrefab => _weaverPrefab == null ? GameObject.Find("Knight/Charm Effects").LocateMyFSM("Weaverling Control").GetState("Spawn").GetFirstAction<SpawnObjectFromGlobalPool>().gameObject.Value : _weaverPrefab;
 
     public override System.Action SceneAction => () => 
     {
@@ -106,7 +106,7 @@ public class InfestedPower : Power
 
     /// <inheritdoc/>
     protected override void Initialize()
-     => _weaverPrefab = GameObject.Find("Knight/Charm Effects").LocateMyFSM("Weaverling Control").GetState("Spawn").GetFirstActionOfType<SpawnObjectFromGlobalPool>().gameObject.Value;
+     => _weaverPrefab = GameObject.Find("Knight/Charm Effects").LocateMyFSM("Weaverling Control").GetState("Spawn").GetFirstAction<SpawnObjectFromGlobalPool>().gameObject.Value;
     
     /// <inheritdoc/>
     protected override void Enable()
@@ -207,7 +207,7 @@ public class InfestedPower : Power
         spider.SetActive(true);
         spider.AddComponent<IgnoreTerrain>();
         Component.Destroy(spider.GetComponent<CircleCollider2D>());
-        spider.LocateMyFSM("Control").GetState("Chase - In Sight").GetFirstActionOfType<FloatCompare>().float2.Value = 120f;
+        spider.LocateMyFSM("Control").GetState("Chase - In Sight").GetFirstAction<FloatCompare>().float2.Value = 120f;
         if (bigSpider)
             spider.name = "Big Spider";
         Vector3 heroPosition = HeroController.instance.transform.position;

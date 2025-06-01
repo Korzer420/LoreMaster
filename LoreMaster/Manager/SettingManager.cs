@@ -1,12 +1,10 @@
 using GlobalEnums;
 using HutongGames.PlayMaker;
 using ItemChanger;
-using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
 using ItemChanger.Modules;
 using KorzUtils.Helper;
 using LoreMaster.Enums;
-using LoreMaster.Helper;
 using LoreMaster.ItemChangerData.Locations;
 using LoreMaster.LorePowers;
 using LoreMaster.LorePowers.CityOfTears;
@@ -141,7 +139,7 @@ public class SettingManager
             On.PlayerData.IntAdd += PlayerData_IntAdd;
             ModHooks.LanguageGetHook += LoreManager.Instance.GetText;
             ModHooks.GetPlayerBoolHook += CheckIfInventoryAccessible;
-            
+
             SendEventByName.OnEnter += EndAllPowers;
             On.PlayMakerFSM.OnEnable += FsmEdits;
             AbstractItem.BeforeGiveGlobal += GiveLoreItem;
@@ -357,10 +355,10 @@ public class SettingManager
                 {
                     if (self.GetState("In Range") is FsmState state)
                     {
-                        if (state.GetFirstActionOfType<ShowPromptMarker>() is ShowPromptMarker marker)
+                        if (state.GetFirstAction<ShowPromptMarker>() is ShowPromptMarker marker)
                             marker.labelName.Value = "???";
                         if (self.GetState("In Range Turns") is FsmState secondState)
-                            secondState.GetFirstActionOfType<ShowPromptMarker>().labelName.Value = "???";
+                            secondState.GetFirstAction<ShowPromptMarker>().labelName.Value = "???";
                         self.AddState(new FsmState(self.Fsm)
                         {
                             Name = "Block Interaction",
@@ -413,7 +411,7 @@ public class SettingManager
         }
         catch (Exception exception)
         {
-            LoreMaster.Instance.LogError("Couldn't modify fsm " + self.FsmName + ": "+exception.Message+" at " + exception.StackTrace);
+            LoreMaster.Instance.LogError("Couldn't modify fsm " + self.FsmName + ": " + exception.Message + " at " + exception.StackTrace);
         }
 
         orig(self);
@@ -584,7 +582,7 @@ public class SettingManager
         {
             // Ensures that the flower doesn't get destroyed instantly when powers apply fake damage.
             PlayMakerFSM fsm = HeroController.instance.proxyFSM;
-            fsm.GetState("Flower?").ReplaceAction(new Lambda(() =>
+            fsm.GetState("Flower?").ReplaceAction(0, new Lambda(() =>
             {
                 if (Power.FakeDamage
                 || !PlayerData.instance.GetBool(nameof(PlayerData.instance.hasXunFlower))
@@ -595,7 +593,7 @@ public class SettingManager
                     fsm.SendEvent("FINISHED");
                 }
             })
-            { Name = "Fake Damage" }, 0);
+            { Name = "Fake Damage" });
 
             _fromMenu = false;
             PowerManager.FirstPowerInitialization();
@@ -616,12 +614,12 @@ public class SettingManager
         ElderbugLocation.ItemThrown = false;
         self.GetState("Convo Choice").Actions = new HutongGames.PlayMaker.FsmStateAction[]
         {
-            self.GetState("Sly Rescued").GetFirstActionOfType<HutongGames.PlayMaker.Actions.AudioPlayerOneShot>(),
+            self.GetState("Sly Rescued").GetFirstAction<HutongGames.PlayMaker.Actions.AudioPlayerOneShot>(),
             new Lambda(() =>
             {
                 try
                 {
-                    DialogueBox box = self.GetState("Sly Rescued").GetFirstActionOfType<HutongGames.PlayMaker.Actions.CallMethodProper>().gameObject.GameObject.Value.GetComponent<DialogueBox>();
+                    DialogueBox box = self.GetState("Sly Rescued").GetFirstAction<HutongGames.PlayMaker.Actions.CallMethodProper>().gameObject.GameObject.Value.GetComponent<DialogueBox>();
                     if (ElderbugState == 0)
                         box.StartConversation("Elderbug_Met", "Elderbug");
                     else if (PlayerData.instance.GetBool(nameof(PlayerData.instance.hasXunFlower)) && !PlayerData.instance.GetBool(nameof(PlayerData.instance.xunFlowerBroken))

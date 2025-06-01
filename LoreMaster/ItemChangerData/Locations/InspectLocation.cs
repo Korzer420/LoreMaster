@@ -1,9 +1,10 @@
 using HutongGames.PlayMaker;
 using ItemChanger;
-using ItemChanger.Extensions;
+
 using ItemChanger.FsmStateActions;
 using ItemChanger.Locations;
 using ItemChanger.Util;
+using KorzUtils.Helper;
 using LoreMaster.ItemChangerData.Other;
 using System.Linq;
 using UnityEngine;
@@ -58,8 +59,8 @@ internal class InspectLocation : ContainerLocation
         fsm.AddState(new FsmState(fsm.Fsm)
         {
             Name = "Give Items",
-            Actions = new FsmStateAction[]
-            {
+            Actions =
+            [
                 new Lambda(() => fsm.GetState("Idle").ClearTransitions()),
                 new AsyncLambda(callback => ItemUtility.GiveSequentially(Placement.Items, Placement, new GiveInfo
                 {
@@ -67,7 +68,7 @@ internal class InspectLocation : ContainerLocation
                     Container = Container.Tablet,
                     MessageType = MessageType.Lore
                 }, callback), "CONVO_FINISH")
-            }
+            ]
         });
         fsm.GetState("Give Items").AddTransition("CONVO_FINISH", "Look Up End?");
         fsm.GetState("Hero Look Up?").ClearTransitions();

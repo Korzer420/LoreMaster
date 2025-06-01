@@ -4,6 +4,7 @@ using LoreMaster.Enums;
 using LoreMaster.ItemChangerData.Locations;
 using LoreMaster.ItemChangerData.Other;
 using LoreMaster.Manager;
+using RandomizerCore.Json;
 using RandomizerCore.Logic;
 using RandomizerCore.LogicItems;
 using RandomizerMod.RC;
@@ -41,6 +42,7 @@ public class LogicManager
     {
         if (!RandomizerManager.Settings.Enabled)
             return;
+        JsonLogicFormat jsonLogicFormat = new();
         Term loreTerm = null;
         if (RandomizerManager.Settings.BlackEggTempleCondition != BlackEggTempleCondition.Dreamers
             || RandomizerManager.Settings.RandomizeElderbugRewards
@@ -77,7 +79,7 @@ public class LogicManager
         if (RandomizerManager.Settings.RandomizeNpc || RandomizerManager.Settings.DefineRefs)
         {
             using Stream stream = typeof(LogicManager).Assembly.GetManifestResourceStream("LoreMaster.Resources.Randomizer.Logic.NpcLogic.json");
-            builder.DeserializeJson(LogicManagerBuilder.JsonType.Locations, stream);
+            builder.DeserializeFile(LogicFileType.Locations, jsonLogicFormat, stream);
             if (RandomizerManager.Settings.CursedListening)
                 foreach (string npc in RandomizerRequestModifier.NpcLocations)
                     builder.DoLogicEdit(new(npc, "(ORIG) + LISTEN"));
@@ -94,7 +96,7 @@ public class LogicManager
         if (RandomizerManager.Settings.RandomizeDreamWarriorStatues || RandomizerManager.Settings.DefineRefs)
         {
             using Stream stream = typeof(LogicManager).Assembly.GetManifestResourceStream("LoreMaster.Resources.Randomizer.Logic.DreamWarriorLogic.json");
-            builder.DeserializeJson(LogicManagerBuilder.JsonType.Locations, stream);
+            builder.DeserializeFile(LogicFileType.Locations, jsonLogicFormat, stream);
             if (RandomizerManager.Settings.CursedReading)
                 foreach (string warrior in RandomizerRequestModifier.DreamWarriorLocations)
                     builder.DoLogicEdit(new(warrior, "(ORIG) + READ"));
@@ -111,7 +113,7 @@ public class LogicManager
         if (RandomizerManager.Settings.RandomizeDreamDialogue || RandomizerManager.Settings.DefineRefs)
         {
             using Stream stream = typeof(LogicManager).Assembly.GetManifestResourceStream("LoreMaster.Resources.Randomizer.Logic.DreamLogic.json");
-            builder.DeserializeJson(LogicManagerBuilder.JsonType.Locations, stream);
+            builder.DeserializeFile(LogicFileType.Locations, jsonLogicFormat, stream);
 
             // The crystal shaman and Pale King items cannot be obtained until their dream dialogue has been acquired.
             builder.DoLogicEdit(new(LocationNames.Descending_Dark, "(ORIG) + DREAMNAIL"));
@@ -129,7 +131,7 @@ public class LogicManager
         if (RandomizerManager.Settings.RandomizePointsOfInterest || RandomizerManager.Settings.DefineRefs)
         {
             using Stream stream = typeof(LogicManager).Assembly.GetManifestResourceStream("LoreMaster.Resources.Randomizer.Logic.PointOfInterestLogic.json");
-            builder.DeserializeJson(LogicManagerBuilder.JsonType.Locations, stream);
+            builder.DeserializeFile(LogicFileType.Locations, jsonLogicFormat, stream);
 
             if (RandomizerManager.Settings.CursedReading)
             {
@@ -161,7 +163,7 @@ public class LogicManager
                 builder.GetOrAddTerm("TISO");
                 builder.GetOrAddTerm("ZOTE");
                 using Stream stream = typeof(LogicManager).Assembly.GetManifestResourceStream("LoreMaster.Resources.Randomizer.Logic.TravellerLogic.json");
-                builder.DeserializeJson(LogicManagerBuilder.JsonType.Locations, stream);
+                builder.DeserializeFile(LogicFileType.Locations, jsonLogicFormat, stream);
 
                 // Determine the spawn order.
                 LoreManager.Instance.Traveller.Clear();
@@ -311,7 +313,7 @@ public class LogicManager
             Term iselda = builder.GetOrAddTerm("CHARTSAVAILABLE");
             builder.AddItem(new BoolItem(ItemList.Lemm_Order, iselda));
             using Stream treasureStream = typeof(LogicManager).Assembly.GetManifestResourceStream("LoreMaster.Resources.Randomizer.Logic.TreasureLogic.json");
-            builder.DeserializeJson(LogicManagerBuilder.JsonType.Locations, treasureStream);
+            builder.DeserializeFile(LogicFileType.Locations, jsonLogicFormat, treasureStream);
             if (RandomizerManager.Settings.CursedListening)
                 for (int i = 0; i < 14; i++)
                     builder.DoLogicEdit(new(RandomizerRequestModifier.TreasureLocation[i], "(ORIG) + LISTEN"));
@@ -342,19 +344,19 @@ public class LogicManager
         if (RandomizerManager.Settings.CursedListening)
         {
             using Stream listenStream = typeof(LogicManager).Assembly.GetManifestResourceStream("LoreMaster.Resources.Randomizer.Logic.ListenLogicModifier.json");
-            builder.DeserializeJson(LogicManagerBuilder.JsonType.LogicEdit, listenStream);
+            builder.DeserializeFile(LogicFileType.LogicEdit, jsonLogicFormat, listenStream);
         }
 
         if (RandomizerManager.Settings.CursedReading)
         {
             using Stream readStream = typeof(LogicManager).Assembly.GetManifestResourceStream("LoreMaster.Resources.Randomizer.Logic.ReadLogicModifier.json");
-            builder.DeserializeJson(LogicManagerBuilder.JsonType.LogicEdit, readStream);
+            builder.DeserializeFile(LogicFileType.LogicEdit, jsonLogicFormat, readStream);
         }
 
         if (RandomizerManager.Settings.RandomizeElderbugRewards || RandomizerManager.Settings.DefineRefs)
         {
             using Stream stream = typeof(LogicManager).Assembly.GetManifestResourceStream("LoreMaster.Resources.Randomizer.Logic.ElderbugLogic.json");
-            builder.DeserializeJson(LogicManagerBuilder.JsonType.Locations, stream);
+            builder.DeserializeFile(LogicFileType.Locations, jsonLogicFormat, stream);
             builder.AddItem(new EmptyItem(ItemList.Joker_Scroll));
             builder.AddItem(new EmptyItem(ItemList.Cleansing_Scroll));
             builder.AddItem(new EmptyItem(ItemList.Cleansing_Scroll_Double));

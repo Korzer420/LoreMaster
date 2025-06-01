@@ -1,7 +1,7 @@
 using HutongGames.PlayMaker;
 using HutongGames.PlayMaker.Actions;
 using ItemChanger;
-using ItemChanger.Extensions;
+
 using ItemChanger.FsmStateActions;
 using ItemChanger.Placements;
 using KorzUtils.Helper;
@@ -212,10 +212,10 @@ internal class TreasureHunterPower : Power
                 extraState.AddTransition("KEY", "Box Up YN");
                 extraState.AddTransition("NO KEY", "Box Up");
                 self.GetState("Check Key").RemoveTransitionsTo("Box Up");
-                self.GetState("Check Key").AddTransition("NO KEY", extraState);
+                self.GetState("Check Key").AddTransition("NO KEY", "Check Magic Key");
             }
             else if (string.Equals(self.FsmName, "Control") && string.Equals(self.gameObject.name, "abyss_door"))
-                self.GetState("Check").AddLastAction(new Lambda(() =>
+                self.GetState("Check").AddActions(new Lambda(() =>
                 {
                     if (Treasures["magicKey"] != TreasureState.NotObtained)
                         self.SendEvent("READY");
@@ -333,9 +333,9 @@ internal class TreasureHunterPower : Power
         On.HutongGames.PlayMaker.Actions.SetPlayerDataBool.OnEnter -= SetPlayerDataBool_OnEnter;
     }
 
-#endregion
+    #endregion
 
-#region Methods
+    #region Methods
 
     private IEnumerator WaitForItemList(ActivateGameObject self)
     {
@@ -412,20 +412,20 @@ internal class TreasureHunterPower : Power
 
     private void MoreDoorsPreview(string doorName)
     {
-        string keyName = DoorData.Get(doorName).Key.ItemName;
+        string keyName = DoorData.GetDoor(doorName).Key.ItemName;
         AbstractPlacement placement = ItemChanger.Internal.Ref.Settings.GetPlacements().FirstOrDefault(x => x.Items.Any(x => x.name == keyName));
         if (placement == null || placement.Items.First(x => x.name == keyName).IsObtained())
             return;
 
         PlayMakerFSM playMakerFSM = PlayMakerFSM.FindFsmOnGameObject(FsmVariables.GlobalVariables.GetFsmGameObject("Enemy Dream Msg").Value, "Display");
         playMakerFSM.FsmVariables.GetFsmInt("Convo Amount").Value = 1;
-        playMakerFSM.FsmVariables.GetFsmString("Convo Title").Value = "Master_Key_Preview-"+ placement.Name.Replace('_', ' ').Replace('-', ' ');
+        playMakerFSM.FsmVariables.GetFsmString("Convo Title").Value = "Master_Key_Preview-" + placement.Name.Replace('_', ' ').Replace('-', ' ');
         playMakerFSM.SendEvent("DISPLAY ENEMY DREAM");
     }
 
-#endregion
+    #endregion
 
-#region Inventory Screen
+    #region Inventory Screen
 
     public static void BuildInventory(GameObject treasureChartPage)
     {
@@ -539,7 +539,7 @@ internal class TreasureHunterPower : Power
         FsmState currentWorkingState = inventoryFsm.GetState("Init Heart Piece");
         currentWorkingState.Name = "Init Lore";
         currentWorkingState.RemoveTransitionsTo("L Arrow");
-        currentWorkingState.AddLastAction(new Lambda(() =>
+        currentWorkingState.AddActions(new Lambda(() =>
         {
             foreach (Transform child in charts.transform)
                 child.gameObject.SetActive(true);
@@ -648,7 +648,7 @@ internal class TreasureHunterPower : Power
         currentWorkingState = fsm.GetState("Left Press");
         currentWorkingState.AddTransition("OUT", "L Arrow");
         currentWorkingState.AddTransition("FINISHED", "Handle Item");
-        currentWorkingState.AddLastAction(new Lambda(() =>
+        currentWorkingState.AddActions(new Lambda(() =>
         {
             if (indexVariable.Value == 0 || indexVariable.Value == 7 || indexVariable.Value == 14)
             {
@@ -668,7 +668,7 @@ internal class TreasureHunterPower : Power
         currentWorkingState = fsm.GetState("Right Press");
         currentWorkingState.AddTransition("OUT", "R Arrow");
         currentWorkingState.AddTransition("FINISHED", "Handle Item");
-        currentWorkingState.AddLastAction(new Lambda(() =>
+        currentWorkingState.AddActions(new Lambda(() =>
         {
             if (indexVariable.Value == 6 || indexVariable.Value == 13 || indexVariable.Value == 20 || indexVariable.Value == 17)
             {
@@ -684,7 +684,7 @@ internal class TreasureHunterPower : Power
         // Up
         currentWorkingState = fsm.GetState("Up Press");
         currentWorkingState.AddTransition("FINISHED", "Handle Item");
-        currentWorkingState.AddLastAction(new Lambda(() =>
+        currentWorkingState.AddActions(new Lambda(() =>
         {
             // For charts
             if (indexVariable.Value <= 6)
@@ -702,7 +702,7 @@ internal class TreasureHunterPower : Power
         // Down
         currentWorkingState = fsm.GetState("Down Press");
         currentWorkingState.AddTransition("FINISHED", "Handle Item");
-        currentWorkingState.AddLastAction(new Lambda(() =>
+        currentWorkingState.AddActions(new Lambda(() =>
         {
             // For charts
             if (indexVariable.Value >= 7 && indexVariable.Value < 14)
@@ -737,7 +737,7 @@ internal class TreasureHunterPower : Power
         }
         else if (Treasures.ContainsKey(name) && Treasures[name] == TreasureState.NotObtained)
         {
-            int treasureIndex = Treasures.Keys.IndexOf(name);
+            int treasureIndex = ItemChanger.Extensions.Extensions.IndexOf(Treasures.Keys, name);
             if (treasureIndex < 4)
             {
                 PlayerData.instance.SetBool("foundTrinket" + (treasureIndex + 1), true);
@@ -762,5 +762,5 @@ internal class TreasureHunterPower : Power
         return orig;
     }
 
-#endregion
+    #endregion
 }

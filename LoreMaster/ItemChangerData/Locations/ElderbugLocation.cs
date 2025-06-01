@@ -1,10 +1,11 @@
 using HutongGames.PlayMaker;
 using HutongGames.PlayMaker.Actions;
 using ItemChanger;
-using ItemChanger.Extensions;
+
 using ItemChanger.FsmStateActions;
 using ItemChanger.Locations;
 using ItemChanger.Util;
+using KorzUtils.Helper;
 using LoreMaster.ItemChangerData.Other;
 using LoreMaster.Randomizer;
 using System;
@@ -28,7 +29,6 @@ internal class ElderbugLocation : AutoLocation
     protected override void OnLoad()
     {
         Events.AddFsmEdit("Town", new("Elderbug", "Conversation Control"), ModifyElderbug);
-        LoreMaster.Instance.Log("Elderbug location name is: " + name);
         if (name == LocationList.Elderbug_Reward_Prefix + "1")
             Events.AddSceneChangeEdit("Town", a =>
             {
@@ -77,8 +77,8 @@ internal class ElderbugLocation : AutoLocation
         fsm.AddState(new FsmState(fsm.Fsm)
         {
             Name = Placement.Name,
-            Actions = new FsmStateAction[]
-            {
+            Actions =
+            [
                 new Lambda(() =>
                 {
                     string conversationName = Placement.Name;
@@ -88,11 +88,11 @@ internal class ElderbugLocation : AutoLocation
                         conversationName = "Elderbug_Gain_Listening";
                     else
                         conversationName = $"Elderbug_Task_{Convert.ToInt32(conversationName.Substring(16)) + 1}";
-                    fsm.GetState("Sly Rescued").GetFirstActionOfType<CallMethodProper>().gameObject.GameObject.Value
+                    fsm.GetState("Sly Rescued").GetFirstAction<CallMethodProper>().gameObject.GameObject.Value
                     .GetComponent<DialogueBox>()
                     .StartConversation(conversationName, "Elderbug");
                 })
-            }
+            ]
         });
 
         fsm.AddState(new FsmState(fsm.Fsm)

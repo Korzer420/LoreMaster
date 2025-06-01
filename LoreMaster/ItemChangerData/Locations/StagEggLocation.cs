@@ -1,10 +1,11 @@
 using HutongGames.PlayMaker;
 using ItemChanger;
-using ItemChanger.Extensions;
+
 using ItemChanger.FsmStateActions;
 using ItemChanger.Items;
 using ItemChanger.Locations;
 using ItemChanger.Util;
+using KorzUtils.Helper;
 using LoreMaster.LorePowers.HowlingCliffs;
 using LoreMaster.Randomizer;
 using System;

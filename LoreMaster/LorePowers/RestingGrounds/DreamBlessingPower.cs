@@ -1,13 +1,10 @@
 using HutongGames.PlayMaker.Actions;
 using ItemChanger.Extensions;
-using ItemChanger.FsmStateActions;
 using LoreMaster.Enums;
-using LoreMaster.Helper;
 using LoreMaster.Manager;
 using LoreMaster.UnityComponents;
 using MonoMod.Cil;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 

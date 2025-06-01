@@ -1,6 +1,5 @@
 using HutongGames.PlayMaker;
 using HutongGames.PlayMaker.Actions;
-using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
 using KorzUtils.Helper;
 using LoreMaster.Enums;
@@ -43,7 +42,7 @@ public class GrassBombardementPower : Power
     /// Gets or sets the explosion prefab.
     /// </summary>
     public static GameObject Explosion =>
-        LoreMaster.Instance.PreloadedObjects["Ceiling Dropper"].LocateMyFSM("Ceiling Dropper").GetState("Explode").GetFirstActionOfType<SpawnObjectFromGlobalPool>().gameObject.Value;
+        LoreMaster.Instance.PreloadedObjects["Ceiling Dropper"].LocateMyFSM("Ceiling Dropper").GetState("Explode").GetFirstAction<SpawnObjectFromGlobalPool>().gameObject.Value;
 
     /// <summary>
     /// Gets or sets the needed jumps for a bomb drop (twisted only)
@@ -76,7 +75,7 @@ public class GrassBombardementPower : Power
                     new Trigger2dEvent()
                     {
                         collideTag = new() { Value = "Wall Breaker", RawValue = "Wall Breaker"},
-                        sendEvent = self.GetState("Transient").GetFirstActionOfType<Trigger2dEvent>().sendEvent,
+                        sendEvent = self.GetState("Transient").GetFirstAction<Trigger2dEvent>().sendEvent,
                         storeCollider = new("None"),
                         collideLayer = new()
                     }
@@ -93,7 +92,7 @@ public class GrassBombardementPower : Power
                     new Trigger2dEvent()
                     {
                         collideTag = new() { Value = "Wall Breaker", RawValue = "Wall Breaker"},
-                        sendEvent = self.GetState("Transient").GetFirstActionOfType<Trigger2dEvent>().sendEvent,
+                        sendEvent = self.GetState("Transient").GetFirstAction<Trigger2dEvent>().sendEvent,
                         storeCollider = new("None"),
                         collideLayer = new()
                     }
@@ -110,9 +109,9 @@ public class GrassBombardementPower : Power
                 multipleBreak.AddTransition("QUAKE FALL END", "Explosion Quake");
                 multipleBreak.AddTransition("VANISHED", "Transient");
 
-                self.GetState("Solid").AddTransition("BOMBED", explosionState);
+                self.GetState("Solid").AddTransition("BOMBED", explosionState.Name);
                 self.GetState("Solid").AddTransition("POWERBOMBED", "PD Bool?");
-                self.GetState("Transient").AddTransition("BOMBED", multipleBreak);
+                self.GetState("Transient").AddTransition("BOMBED", multipleBreak.Name);
                 self.GetState("Transient").AddTransition("POWERBOMBED", "PD Bool?");
             }
             else if (string.Equals(self.FsmName, "Detect Quake"))
@@ -274,10 +273,10 @@ public class GrassBombardementPower : Power
         };
         powerBomb.AddTransition("FINISHED", "Spell End");
 
-        fsm.GetState("Spell Choice").AddTransition("BOMB", normalBomb);
-        fsm.GetState("Spell Choice").AddTransition("POWERBOMB", powerBomb);
-        fsm.GetState("QC").AddTransition("BOMB", normalBomb);
-        fsm.GetState("QC").AddTransition("POWERBOMB", powerBomb);
+        fsm.GetState("Spell Choice").AddTransition("BOMB", normalBomb.Name);
+        fsm.GetState("Spell Choice").AddTransition("POWERBOMB", powerBomb.Name);
+        fsm.GetState("QC").AddTransition("BOMB", normalBomb.Name);
+        fsm.GetState("QC").AddTransition("POWERBOMB", powerBomb.Name);
 
         if (_bombPrefab == null)
         {

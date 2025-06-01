@@ -1,5 +1,5 @@
 using HutongGames.PlayMaker.Actions;
-using ItemChanger.Extensions;
+
 using ItemChanger.FsmStateActions;
 using KorzUtils.Helper;
 using LoreMaster.Enums;
@@ -196,7 +196,7 @@ internal class PureSpiritPower : Power
         hitbox.name = "Orb Hitbox";
         PlayMakerFSM fsm = hitbox.LocateMyFSM("damages_enemy");
         fsm.FsmName = "Orb Damage";
-        fsm.GetState("Send Event").InsertAction(new Lambda(() =>
+        fsm.GetState("Send Event").InsertActions(7, new Lambda(() =>
         {
             fsm.FsmVariables.FindFsmInt("damageDealt").Value = PlayerData.instance.GetBool(nameof(PlayerData.instance.equippedCharm_19))
             ? 4
@@ -206,7 +206,7 @@ internal class PureSpiritPower : Power
             if (_followed != HeroController.instance.transform && !fsm.FsmVariables.FindFsmGameObject("Collider").Value.gameObject.name.Contains("Fireball"))
                 SpawnExplosion(fsm.transform.parent);
         }
-        ), 7);
+        ));
         hitbox.transform.localPosition = new(0, 0);
         LoreMaster.Instance.Handler.StartCoroutine(BlinkHitbox(hitbox));
     }
@@ -245,7 +245,7 @@ internal class PureSpiritPower : Power
         GameObject explosion = GameObject.Instantiate(LoreMaster.Instance.PreloadedObjects["Ceiling Dropper"]
             .LocateMyFSM("Ceiling Dropper")
             .GetState("Explode")
-            .GetFirstActionOfType<SpawnObjectFromGlobalPool>().gameObject.Value);
+            .GetFirstAction<SpawnObjectFromGlobalPool>().gameObject.Value);
 
         explosion.name = "Bomb Explosion";
         explosion.SetActive(false);

@@ -1,8 +1,6 @@
 using ItemChanger;
 using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
-using KorzUtils.Helper;
-using LoreMaster.Helper;
 using LoreMaster.Manager;
 using System.Linq;
 
@@ -26,8 +24,8 @@ internal class ZoteDeepnestLocation : DialogueLocation
         fsm.AddState(new HutongGames.PlayMaker.FsmState(fsm.Fsm)
         {
             Name = "Spawn Control",
-            Actions = new HutongGames.PlayMaker.FsmStateAction[]
-            {
+            Actions =
+            [
                 new Lambda(() => 
                 {
                     if(LoreManager.Instance.Traveller[Enums.Traveller.Zote].CurrentStage >= LoreManager.Instance.Traveller[Enums.Traveller.Zote].Locations.IndexOf("/Zote Deepnest/Faller/NPC")
@@ -36,9 +34,9 @@ internal class ZoteDeepnestLocation : DialogueLocation
                     else
                         fsm.SendEvent("DESTROY");
                 })
-            }
+            ]
         });
-        fsm.GetState("Pause").AdjustTransition("FINISHED", "Spawn Control");
+        KorzUtils.Helper.FsmHelper.AdjustTransition(fsm.GetState("Pause"), "FINISHED", "Spawn Control");
         fsm.GetState("Spawn Control").AddTransition("DESTROY", "Destroy");
         fsm.GetState("Spawn Control").AddTransition("FINISHED", "Init");
     }

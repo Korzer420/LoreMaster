@@ -1,6 +1,6 @@
 using HutongGames.PlayMaker;
 using HutongGames.PlayMaker.Actions;
-using ItemChanger.Extensions;
+
 using ItemChanger.FsmStateActions;
 using KorzUtils.Helper;
 using LoreMaster.Enums;
@@ -83,7 +83,7 @@ public class TrueFormPower : Power
     private void PlayMakerFSM_OnEnable(On.PlayMakerFSM.orig_OnEnable orig, PlayMakerFSM self)
     {
         if (self.gameObject.name.Contains("Hollow Shade Death") && string.Equals(self.FsmName, "Shade Control"))
-            self.GetState("Blow").AddLastAction(new Lambda(() =>
+            self.GetState("Blow").AddActions(new Lambda(() =>
             {
                 ModifyNailLength(-.5f);
                 _shadeState = 0;
@@ -113,12 +113,12 @@ public class TrueFormPower : Power
         {
             PlayMakerFSM deathFsm = self.Fsm.Variables.FindFsmGameObject("Corpse").Value.LocateMyFSM("Shade Control");
             FsmState state = deathFsm.GetState("Death Start");
-            state.RemoveFirstActionOfType<SendMessage>(); // Remove soul limiter handling
-            state.ReplaceAction(new Lambda(() =>
+            state.RemoveFirstAction<SendMessage>(); // Remove soul limiter handling
+            state.ReplaceAction(1, new Lambda(() =>
             {
                 deathFsm.FsmVariables.FindFsmInt("Geo").Value = _playerGeo;
             })
-            { Name = "Player Geo" }, 1);
+            { Name = "Player Geo" });
         }
     }
 
@@ -217,9 +217,9 @@ public class TrueFormPower : Power
 
                 FsmState state = shade.LocateMyFSM("Shade Control").GetState("Fly");
                 state.ClearTransitions();
-                state.RemoveFirstActionOfType<FaceObject>();
-                state.RemoveFirstActionOfType<ChaseObject>();
-                state.RemoveFirstActionOfType<ChaseObjectV2>();
+                state.RemoveFirstAction<FaceObject>();
+                state.RemoveFirstAction<ChaseObject>();
+                state.RemoveFirstAction<ChaseObjectV2>();
                 shade.transform.SetScaleX(_exit.transform.position.x < shade.transform.position.x ? 1 : -1);
                 shade.AddComponent<IgnoreTerrain>();
                 LoreMaster.Instance.Handler.StartCoroutine(MoveShadeToExit(shade.transform, _exit, 2f));

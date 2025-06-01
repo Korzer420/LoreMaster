@@ -1,10 +1,7 @@
 using HutongGames.PlayMaker.Actions;
-using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
 using KorzUtils.Helper;
 using LoreMaster.Enums;
-
-using LoreMaster.Helper;
 using Modding;
 using System;
 using System.Collections;
@@ -120,7 +117,7 @@ public class JonisProtectionPower : Power
     {
         // Shops and Stags should not be interrupted by this effect.
         if (string.Equals(self.FsmName, "Shop Region") || string.Equals(self.FsmName, "Stag Control"))
-            self.GetState("Take Control").AddLastAction(new Lambda(() =>_immune = true)
+            self.GetState("Take Control").AddActions(new Lambda(() =>_immune = true)
             { Name = "Force Immunity" });
         orig(self);
     }

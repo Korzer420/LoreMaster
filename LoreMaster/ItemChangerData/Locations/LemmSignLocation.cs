@@ -1,9 +1,10 @@
 using HutongGames.PlayMaker;
 using ItemChanger;
-using ItemChanger.Extensions;
+
 using ItemChanger.FsmStateActions;
 using ItemChanger.Locations;
 using ItemChanger.Util;
+using KorzUtils.Helper;
 using LoreMaster.Randomizer;
 using System.Linq;
 
@@ -42,10 +43,10 @@ namespace LoreMaster.ItemChangerData.Locations
                     })
                 }
             };
-            fsm.GetState("Idle").AddTransition("CONVO START", controlState);
+            fsm.GetState("Idle").AddTransition("CONVO START", "Control");
             controlState.AddTransition("FINISHED", "Box Up");
             controlState.AddTransition("ITEMS", "Talk Finish");
-            fsm.GetState("Anim End").AddLastAction(new AsyncLambda(callback => ItemUtility.GiveSequentially(Placement.Items, Placement, new GiveInfo
+            fsm.GetState("Anim End").AddActions(new AsyncLambda(callback => ItemUtility.GiveSequentially(Placement.Items, Placement, new GiveInfo
             {
                 FlingType = flingType,
                 Container = Container.Tablet,

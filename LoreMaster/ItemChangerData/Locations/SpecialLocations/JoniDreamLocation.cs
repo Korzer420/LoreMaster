@@ -1,5 +1,6 @@
-﻿using ItemChanger.Extensions;
+﻿
 using ItemChanger.FsmStateActions;
+using KorzUtils.Helper;
 using LoreMaster.Randomizer;
 using System;
 
@@ -25,11 +26,11 @@ internal class JoniDreamLocation : GhostDialogueLocation
         {
             if (self.gameObject.name == "Ghost Activator" && self.transform.childCount > 0 && string.Equals("Ghost NPC Joni", self.transform.GetChild(0)?.name)
                 && RandomizerManager.PlayingRandomizer)
-                self.GetState("Idle").ReplaceAction(new Lambda(() =>
+                self.GetState("Idle").ReplaceAction(0, new Lambda(() =>
                 {
                     if (PlayerData.instance.GetBool(nameof(PlayerData.instance.hasDreamNail)))
                         self.SendEvent("SHINY PICKED UP");
-                }), 0);
+                }));
         }
         catch (Exception exception)
         {
