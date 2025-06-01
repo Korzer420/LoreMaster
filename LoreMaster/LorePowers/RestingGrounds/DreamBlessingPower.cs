@@ -89,13 +89,13 @@ public class DreamBlessingPower : Power
     public string GetExtraText(string key)
     {
         if (key.Equals("DREAMERS_INSPECT_RG2"))
-            return LoreManager.GlobalSaveData.ShowHint ? " Through her knowledge she exposes the foes biggest weakness." : " Per 100 Essence you have a 1% chance to instant kill the enemy (capped at 175 damage).";
+            return " Through her knowledge she exposes the foes biggest weakness.";
         else if (key.Equals("DREAMERS_INSPECT_RG3"))
-            return LoreManager.GlobalSaveData.ShowHint ? " His gaze may freeze the enemy in place." : " Roots the target for 3 seconds (15 seconds cooldown)";
+            return " His gaze may freeze the enemy in place.";
         else if (key.Equals("DREAMERS_INSPECT_RG4"))
-            return LoreManager.GlobalSaveData.ShowHint ? " Invoking her children from her victim." : " Spawn 2 weavers for the current room.";
+            return " Invoking her children from her victim.";
         else if (key.Equals("DREAMERS_INSPECT_RG5"))
-            return " [" + PowerName + "] " + (LoreManager.GlobalSaveData.ShowHint ? "The dream artifact uses the power it absorbs from their powerful victims to use it's hidden power." : "Defeated Dreamers grant the dream nail an additional effect (doubled with awoken dreamnail).");
+            return " [" + PowerName + "] " + "The dream artifact uses the power it absorbs from their powerful victims to use it's hidden power.";
         return string.Empty;
     }
 

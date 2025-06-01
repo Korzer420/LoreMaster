@@ -1,5 +1,8 @@
+using HutongGames.PlayMaker.Actions;
 using ItemChanger;
+using ItemChanger.Items;
 using ItemChanger.Locations;
+using ItemChanger.UIDefs;
 using KorzUtils.Helper;
 using LoreCore.Data;
 using LoreCore.Enums;
@@ -215,14 +218,6 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, IMenuM
             },
             new()
             {
-                Name = "Power Explanations",
-                Description = "Determines how powers show be descripted",
-                Values = ["Vague Hints", "Descriptions"],
-                Saver = option => LoreManager.GlobalSaveData.ShowHint = option == 0,
-                Loader = () => LoreManager.GlobalSaveData.ShowHint ? 0 : 1
-            },
-            new()
-            {
                 Name = "Disable Yellow Mushroom",
                 Description = "If on, the yellow mushroom will not cause a nausea effect.",
                 Values = ["On", "Off"],
@@ -236,6 +231,14 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, IMenuM
                 Values = ["On", "Off"],
                 Saver = option => LoreManager.GlobalSaveData.TrackerPermanently = option == 0,
                 Loader = () => LoreManager.GlobalSaveData.TrackerPermanently ? 0 : 1
+            },
+            new()
+            {
+                Name = "Amplify enemies",
+                Description = "If on, all enemies (besides bosses) receives a random buff.",
+                Values = ["On", "Off"],
+                Saver = option => LoreManager.GlobalSaveData.AmplifyEnemies = option == 0,
+                Loader = () => LoreManager.GlobalSaveData.AmplifyEnemies ? 0 : 1
             }
         ];
 
@@ -264,10 +267,10 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, IMenuM
         LoreManager.GlobalSaveData ??= new();
         return new()
         {
-            ShowHint = LoreManager.GlobalSaveData.ShowHint,
             EnableCustomText = LoreManager.GlobalSaveData.EnableCustomText,
             TrackerPermanently = LoreManager.GlobalSaveData.TrackerPermanently,
-            DisableNausea = LoreManager.GlobalSaveData.DisableNausea
+            DisableNausea = LoreManager.GlobalSaveData.DisableNausea,
+            AmplifyEnemies = LoreManager.GlobalSaveData.AmplifyEnemies
         };
     }
 
@@ -288,6 +291,16 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, IMenuM
         };
         foreach (AbstractItem item in jsonSerializer.Deserialize<List<AbstractItem>>(new JsonTextReader(reader)))
             Finder.DefineCustomItem(item);
+
+        BigUIDef bigUIDef = Finder.GetItem(ItemNames.Focus).UIDef as BigUIDef;
+        bigUIDef.take = new BoxedString("You obtained");
+        bigUIDef.name = new BoxedString("Lore Artifact");
+        bigUIDef.buttonSkin = null;
+        bigUIDef.press = null;
+        bigUIDef.descOne = new BoxedString("Multiple glowing notches have burned themselves on your shell.");
+        bigUIDef.descTwo = new BoxedString("Open your inventory to view and change your selected powers.");
+
+        Finder.DefineCustomItem(new BoolItem() { fieldName = "LoreArtifact", setValue = true, name = "Artifact_Lore", UIDef = bigUIDef });
     }
 
     /// <summary>
@@ -440,7 +453,7 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, IMenuM
                 "Minor_Glyph",
                 "Small_Glyph"
             ];
-
+            
             AbstractPlacement elderBugPlacement = ItemChanger.Internal.Ref.Settings.Placements.ContainsKey(Elderbug_Shop)
                 ? ItemChanger.Internal.Ref.Settings.Placements[Elderbug_Shop]
                 : Finder.GetLocation(Elderbug_Shop).Wrap();
@@ -452,7 +465,11 @@ public class LoreMaster : Mod, IGlobalSettings<LoreMasterGlobalSaveData>, IMenuM
                 elderBugPlacement.Add(abstractItem);
             }
             if (!ItemChanger.Internal.Ref.Settings.Placements.ContainsKey(Elderbug_Shop))
-                placements.Add(elderBugPlacement);
+            {
+                ((ElderbugPlacement)elderBugPlacement).IsRando = false;
+                elderBugPlacement.Add(Finder.GetItem("Artifact_Lore"));
+                placements.Add(elderBugPlacement); 
+            }
         }
         placements.Add(Finder.GetLocation("City_Teleporter").Wrap().Add(Finder.GetItem("City_Ticket")));
         placements.Add(Finder.GetLocation("Temple_Teleporter").Wrap().Add(Finder.GetItem("Temple_Ticket")));

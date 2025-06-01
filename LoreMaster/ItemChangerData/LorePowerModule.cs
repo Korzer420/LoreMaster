@@ -50,6 +50,8 @@ public class LorePowerModule : Module
     /// </summary>
     public string TempPower { get; set; }
 
+    public bool HasLoreArtifact { get; set; }
+
     #endregion
 
     #region Eventhandler

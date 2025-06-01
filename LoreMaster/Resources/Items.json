@@ -110,7 +110,7 @@
       "$type": "ItemChanger.UIDefs.MsgUIDef, ItemChanger",
       "name": {
         "$type": "ItemChanger.BoxedString, ItemChanger",
-        "value": "Mystical Scroll"
+        "value": "(Not implemented) Mystical Scroll"
       },
       "shopDesc": {
         "$type": "ItemChanger.BoxedString, ItemChanger",
@@ -133,7 +133,7 @@
       "$type": "ItemChanger.UIDefs.MsgUIDef, ItemChanger",
       "name": {
         "$type": "ItemChanger.BoxedString, ItemChanger",
-        "value": "Cleansing Scroll"
+        "value": "(Not implemented) Cleansing Scroll"
       },
       "shopDesc": {
         "$type": "ItemChanger.BoxedString, ItemChanger",

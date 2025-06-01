@@ -52,15 +52,24 @@ internal static class LoreManager
     private static bool ModHooks_GetPlayerBoolHook(string name, bool orig)
     {
         if (name == "LoreArtifact")
-            return _active;
+            return ItemChangerMod.Modules?.Get<LorePowerModule>()?.HasLoreArtifact == true;
+        return orig;
+    }
+
+    private static bool ModHooks_SetPlayerBoolHook(string name, bool orig)
+    {
+        if (name == "LoreArtifact")
+            return ItemChangerMod.Modules.Get<LorePowerModule>().HasLoreArtifact = orig;
         return orig;
     }
 
     private static void HealthManager_OnEnable(On.HealthManager.orig_OnEnable orig, HealthManager self)
     {
         orig(self);
-        LogHelper.Write<LoreMaster>("Enable enemy");
-        PowerManager.GetPower<MarissasAudiencePower>().CastOnEnemy(self.gameObject);
+        if (!GlobalSaveData.AmplifyEnemies || self.hp >= 200)
+            return;
+        List<Power> powers = PowerManager.GetAllPowers();
+        powers[Random.Range(0, powers.Count)].CastOnEnemy(self.gameObject);
     }
 
     #endregion
@@ -70,6 +79,7 @@ internal static class LoreManager
     public static void Initialize()
     {
         ModHooks.GetPlayerBoolHook += ModHooks_GetPlayerBoolHook;
+        ModHooks.SetPlayerBoolHook += ModHooks_SetPlayerBoolHook;
         On.HutongGames.PlayMaker.Actions.SendEventByName.OnEnter += EndAllPowers;
         UnityEngine.SceneManagement.SceneManager.activeSceneChanged += SceneManager_activeSceneChanged;
         LoreMaster.Instance.Handler.StartCoroutine(WaitForPlayerControl());
@@ -82,6 +92,7 @@ internal static class LoreManager
         if (!_active)
             return;
         ModHooks.GetPlayerBoolHook -= ModHooks_GetPlayerBoolHook;
+        ModHooks.SetPlayerBoolHook -= ModHooks_SetPlayerBoolHook;
         UnityEngine.SceneManagement.SceneManager.activeSceneChanged -= SceneManager_activeSceneChanged;
         On.HutongGames.PlayMaker.Actions.SendEventByName.OnEnter -= EndAllPowers;
         On.HealthManager.OnEnable -= HealthManager_OnEnable;
